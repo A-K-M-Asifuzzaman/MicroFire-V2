@@ -24,7 +24,14 @@ it('returns a truthful 501 for future science services, not fabricated answers',
 it('bounds repeated POST traffic and recovers after the window', async () => {
   let time = 100_000; const post = createPostHandler(() => time);
   for (let i = 0; i < 30; i++) await post(['ask'], request('{}'));
-  expect((await post(['ask'], request('{}'))).status).toBe(429);
+  const limited = await post(['ask'], request('{}'));
+  expect(limited.status).toBe(429);
+  expect(limited.headers.get('retry-after')).toBe('60');
   time += 60_000;
   expect((await post(['ask'], request('{}'))).status).toBe(400);
+});
+it.each(['constructor', 'toString', '__proto__'])('treats inherited object name %s as an unknown API route', async (path) => {
+  const response = await createPostHandler()([path], request('{}'));
+  expect(response.status).toBe(404);
+  expect(ApiErrorSchema.parse(await response.json()).error.code).toBe('NOT_FOUND');
 });

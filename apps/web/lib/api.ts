@@ -65,10 +65,14 @@ export function createPostHandler(now: () => number = Date.now) {
   return async (path: string[], request: Request): Promise<Response> => {
     const route = path.join('/');
     const schemas: Record<string, z.ZodType> = { 'evidence/rank': RankRequestSchema, 'evidence/compare': CompareRequestSchema, ask: AskRequestSchema, 'passport/validate': PassportSchema };
-    const schema = schemas[route];
+    const schema = Object.hasOwn(schemas, route) ? schemas[route] : undefined;
     if (!schema) return apiError(404, 'NOT_FOUND', 'API route not found.');
     if (now() - windowStart >= 60_000) { windowStart = now(); requests = 0; }
-    if (++requests > 30) return apiError(429, 'RATE_LIMITED', 'Local request budget reached; retry after one minute.');
+    if (++requests > 30) {
+      const response = apiError(429, 'RATE_LIMITED', 'Local request budget reached; retry after the indicated delay.');
+      response.headers.set('Retry-After', String(Math.max(1, Math.ceil((windowStart + 60_000 - now()) / 1000))));
+      return response;
+    }
     try {
       const body = await readJson(request);
       const result = schema.safeParse(body);

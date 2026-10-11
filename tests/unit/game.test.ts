@@ -35,7 +35,7 @@ describe('P0 state and save foundation', () => {
     expect(loadProgress(storage, 'normal', 'next-catalog').status).toBe('dataset-mismatch');
     const broken = { getItem() { throw Error('disabled'); }, setItem() { throw Error('quota'); } };
     expect(loadProgress(broken, 'normal', 'p0-bass-b20-v1').status).toBe('storage-unavailable');
-    expect(saveProgress(broken, initial()).ok).toBe(false);
+    expect(saveProgress(broken, initial())).toEqual({ ok: false, reason: 'storage-unavailable' });
     const quota = { getItem: () => null, setItem() { throw Error('quota'); } };
     expect(saveProgress(quota, initial())).toEqual({ ok: false, reason: 'storage-unavailable' });
   });

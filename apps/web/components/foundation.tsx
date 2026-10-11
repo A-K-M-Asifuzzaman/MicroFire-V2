@@ -21,7 +21,13 @@ export function Foundation({ path }: { path: string }) {
     {path === '/atlas' && <><p>{catalog.experiments.length} audited fixture. Dataset {catalog.datasetVersion}. Bundled locally; no provider key required.</p>{catalog.experiments.map((e) => <article key={e.id}><h2><Link href={`/experiments/${e.id}`}>{e.title}</Link></h2><p>{e.claims[0]?.text}</p><p>{e.limitations[0]}</p></article>)}</>}
     {experiment && <>
       <h2>Documented observation</h2>{experiment.claims.map((claim) => <p key={claim.id}>{claim.text} <span className="badge">{claim.kind}</span></p>)}
-      <a href={citationUrl(experiment.sourceIds[0]!, 112)}>NASA report · Table A.1 · PDF page 112 (printed 104) ↗</a>
+      {experiment.claims.flatMap((claim) => claim.citations).map((citation, index) => {
+        const source = catalog.sources.find((item) => item.id === citation.sourceId)!;
+        const locator = citation.locator;
+        return <p key={`${citation.sourceId}-${index}`}><a href={citationUrl(citation.sourceId, locator.kind === 'pdf' ? locator.page : undefined)}>
+          {source.title} · {locator.section}{locator.kind === 'pdf' && ` · PDF page ${locator.page} (printed ${locator.printedPage})`} ↗
+        </a></p>;
+      })}
       <h2>Conditions and missing values</h2><dl>{Object.entries(experiment.conditions).map(([name, field]) => <div key={name} style={{ display: 'contents' }}><dt>{conditionLabels[name]}</dt><dd>{field.status === 'known' ? <>{field.value} {'unit' in field ? field.unit : ''}<small>{field.basis} · {field.note}</small></> : <>Unknown<small>{field.reason}</small></>}</dd></div>)}</dl>
       <p>Original airflow notation: <strong>{experiment.rawFlow}</strong>. A fan potentiometer setting is not a measured velocity.</p>
       <h2>Source correction</h2><ul>{experiment.provenance.corrections.map((c) => <li key={c}>{c}</li>)}</ul>

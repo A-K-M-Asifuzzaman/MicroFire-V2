@@ -4,7 +4,7 @@
 
 ## Repository
 
-The supplied cwd was a specification-pack directory, not a Git repository. The authorized GitHub target was empty. Created local checkout `MicroFire-V2/` with sole origin `https://github.com/A-K-M-Asifuzzaman/MicroFire-V2.git` and branch **feat/phase-zero-contracts** from the unborn initial branch. No pre-existing feature branch or application existed. The handoff SHA is the commit containing this report (`git log -1 --format=%H`); final chat reports it explicitly.
+The supplied cwd was a specification-pack directory, not a Git repository. The authorized GitHub target was empty. Created local checkout `MicroFire-V2/` with sole origin `https://github.com/A-K-M-Asifuzzaman/MicroFire-V2.git` and branch **feat/phase-zero-contracts** from the unborn initial branch. No pre-existing feature branch or application existed. Original handoff SHA: `a7fb5981d9f5ea911b9d45522889b2a7e7fd487e`. This report's original test counts are historical; see PHASE_ZERO_ACCEPTANCE.md for the subsequent review and accepted contract revision.
 
 ## Implemented architecture
 

@@ -15,7 +15,7 @@ npm run dev
 No secrets or external services are required. `/atlas` → `/experiments/bass2-b20` displays one NASA-source-checked fixture. The source PDF is linked, not bundled. A running local server works with internet disconnected; this is not a PWA installed for serverless offline navigation.
 
 ```sh
-npm run check             # lint, strict types, 19 unit tests, fixture hashes, basic security, production build
+npm run check             # lint, strict types, unit tests, fixture hashes, basic security, production build
 PLAYWRIGHT_BROWSERS_PATH=./.cache/ms-playwright npx playwright install chromium
 PLAYWRIGHT_BROWSERS_PATH=./.cache/ms-playwright npm run test:e2e
 npm audit --audit-level=high
@@ -33,6 +33,8 @@ Browser tests start and stop a production server themselves; build first. Window
 - `tests`: unit trust-boundary checks and desktop/mobile Chromium foundation journeys.
 
 Read [Phase Zero report](docs/PHASE_ZERO_REPORT.md), [API contracts](docs/API_CONTRACTS.md), [Claude ownership](docs/OWNERSHIP.md), [data provenance](docs/DATA_PROVENANCE.md), [integration requirements](docs/API_INTEGRATIONS.md) and [security](SECURITY.md).
+
+The subsequent [Phase Zero acceptance review](docs/PHASE_ZERO_ACCEPTANCE.md) records current checks, remaining gates and contract corrections. Follow its accepted local commit and OWNERSHIP.md worktree instructions before starting Phase One; the original report and scorecard retain their historical results.
 
 **Scientific correction:** upstream B20 labels 16.5% oxygen as calibrated. NASA Table A.1, PDF page 112, has calibrated initial/final oxygen **17.4%**; V2 preserves this correction and does not silently inherit legacy values. Other upstream rows require re-audit.
 

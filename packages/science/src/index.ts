@@ -10,6 +10,8 @@ export function validatePassport(input: unknown, dataset: Catalog = catalog): Pa
     if (experiments.some((e) => !e)) throw new Error('Unknown passport experiment');
     const claims = experiments.flatMap((e) => e?.claims ?? []);
     if (entry.claimIds.some((id) => !claims.some((c) => c.id === id))) throw new Error('Unknown passport claim');
+    if (claims.some((claim) => entry.claimIds.includes(claim.id) && claim.kind !== entry.observationType))
+      throw new Error('Passport observation type does not match the supporting claim');
     const supporting = claims.filter((c) => entry.claimIds.includes(c.id)).flatMap((c) => c.citations);
     const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
     if (entry.citations.some((citation) => !supporting.some((s) => same(s, citation))) ||

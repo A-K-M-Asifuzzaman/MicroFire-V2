@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CatalogSchema, ClaimSchema, FeatureSchema, PassportSchema, features, resolveFeature, missionDefinitions, MissionIdSchema, PartIdSchema } from '@microfire/shared';
-import { catalog, validatePassport } from '@microfire/science';
+import { catalog, citationUrl, validatePassport } from '@microfire/science';
 import cells from '../../data/fixtures/b20-source-cells.json';
 
 const record = catalog.experiments[0]!;
@@ -45,6 +45,17 @@ describe('scientific trust boundaries', () => {
     expect(PassportSchema.safeParse({ ...passportExample, entries: [...passportExample.entries, ...passportExample.entries] }).success).toBe(false);
     expect(PassportSchema.safeParse({ ...passportExample, entries: [{ ...passportExample.entries[0], missionId: 'lunar-habitat', scenario: 'fictional-scenario' }] }).success).toBe(false);
   });
+  it('does not let an entry relabel the epistemic type of its supporting claim', () => {
+    const wrongType = structuredClone(passportExample);
+    wrongType.entries[0]!.observationType = 'hypothesis';
+    expect(() => validatePassport(wrongType)).toThrow('observation type');
+  });
+  it('resolves the catalog source and supplied PDF locator without inventing a URL', () => {
+    const source = catalog.sources[0]!;
+    expect(citationUrl(source.id)).toBe(source.url);
+    expect(citationUrl(source.id, 112)).toBe(`${source.documentUrl}#page=112`);
+    expect(() => citationUrl('invented-source', 112)).toThrow('Unknown source');
+  });
 });
 describe('feature gates and mission interfaces', () => {
   it('covers five distinct missions and ten stable parts', () => {
@@ -66,5 +77,8 @@ describe('feature gates and mission interfaces', () => {
     expect(resolveFeature(built, []).state).toBe('locked');
     expect(resolveFeature(built, ['station-arrival']).state).toBe('available');
     expect(resolveFeature(features.find((f) => f.state === 'blocked')!, []).state).toBe('blocked');
+  });
+  it('rejects an unimplemented feature labelled Preview', () => {
+    expect(FeatureSchema.safeParse({ ...features[0], state: 'preview', implemented: false }).success).toBe(false);
   });
 });

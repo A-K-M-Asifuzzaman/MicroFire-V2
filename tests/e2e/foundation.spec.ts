@@ -14,7 +14,7 @@ test('offline source journey, keyboard access, corrected science and screenshots
   await page.getByRole('link', { name: 'B20 — opposed-flow PMMA film' }).click();
   await expect(page.getByRole('heading', { name: 'Documented observation' })).toBeVisible();
   await expect(page.getByText('17.4 vol%', { exact: false }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: /NASA report/ })).toHaveAttribute('href', /TM-20210011385.pdf#page=112$/);
+  await expect(page.getByRole('link', { name: /Table A\.1.*PDF page 112/ })).toHaveAttribute('href', /TM-20210011385.pdf#page=112$/);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `docs/qa/screenshots/dossier-${info.project.name}.png`, fullPage: true });
   expect(errors).toEqual([]);
@@ -38,6 +38,14 @@ test('API contracts, errors and no-service fallback', async ({ request }) => {
   const ask = await request.post('/api/ask', { data: { question: 'Can this certify a lunar habitat?', targetConditions: {} } });
   expect(ask.status()).toBe(501);
   expect((await ask.json()).error.code).toBe('NOT_IMPLEMENTED');
+  expect((await request.post('/api/constructor', { data: {} })).status()).toBe(404);
+  const record = body.data.items[0];
+  const mismatchedPassport = { schemaVersion: 1, purpose: 'educational-research-record', entries: [{
+    id: 'mismatched-entry', missionId: 'station-arrival', experimentIds: [record.id], claimIds: [record.claims[0].id],
+    observationType: 'hypothesis', evidenceLevel: 'direct', conclusion: 'Learner note', citations: record.claims[0].citations,
+    limitations: record.limitations, corrections: [], setupRevision: null, status: 'current', scenario: 'research', createdAt: '2026-10-11T09:00:00Z'
+  }] };
+  expect((await request.post('/api/passport/validate', { data: mismatchedPassport })).status()).toBe(400);
   const passport = await request.post('/api/passport/validate', { data: { schemaVersion: 1, purpose: 'educational-research-record', entries: [] } });
   expect((await passport.json()).data.certification).toBe(false);
   expect(response.headers()['x-content-type-options']).toBe('nosniff');

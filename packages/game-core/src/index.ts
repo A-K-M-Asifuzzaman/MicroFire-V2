@@ -46,6 +46,7 @@ export function saveProgress(storage: SaveStorage, state: GameState): { ok: bool
   const parsed = GameStateSchema.safeParse(state);
   if (!parsed.success) return { ok: false, reason: 'invalid-state' };
   const existing = loadProgress(storage, state.mode, state.datasetVersion);
+  if (existing.status === 'storage-unavailable') return { ok: false, reason: 'storage-unavailable' };
   if (!['loaded', 'empty'].includes(existing.status)) return { ok: false, reason: 'existing-save-needs-review' };
   const serialized = JSON.stringify(parsed.data);
   if (serialized.length > 500_000) return { ok: false, reason: 'invalid-state' };

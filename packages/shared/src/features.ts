@@ -9,6 +9,8 @@ export const FeatureSchema = z.strictObject({
     unitTest: TextSchema, browserTest: TextSchema, screenshot: TextSchema, checkedAt: z.iso.datetime()
   }).nullable()
 }).superRefine((f, ctx) => {
+  if (f.state === 'preview' && !f.implemented)
+    ctx.addIssue({ code: 'custom', message: 'Preview requires implemented partial behavior' });
   if (['available', 'locked'].includes(f.state) && (!f.implemented || !f.verification))
     ctx.addIssue({ code: 'custom', message: 'Available/Locked require implemented, browser-verified behavior' });
   if (f.state === 'locked' && !f.prerequisites.length)
