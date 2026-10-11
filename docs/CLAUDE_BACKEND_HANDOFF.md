@@ -4,7 +4,7 @@ Use the final local review SHA supplied in the handoff, not the primary checkout
 
 ## Compatibility
 
-No shared schema, save format, action DTO or HTTP envelope changed in this review. Existing API v1, GameState v2, Passport v1 and dataset `p0-bass-b20-v1` remain. Ask retrievalVersion is now `p1-grounded-template-v2`; ranking weights/tolerances and `p1-conditions-lexical-v1` remain. Source transcriptions, hashes and quarantine ledger are unchanged. Shared-registry explanation changes remain **pending** per the owner, even though their backend wording is accepted as a proposal. Page copy belongs to Claude.
+No shared schema, save format, action DTO or HTTP envelope changed in this review. Existing API v1, GameState v2, Passport v1 and dataset `p0-bass-b20-v1` remain. Ask retrievalVersion is now `p1-grounded-template-v2`; ranking weights/tolerances and `p1-conditions-lexical-v1` remain. Source transcriptions, hashes and quarantine ledger are unchanged. Shared-registry explanation changes remain **pending** per the owner: five are accurate as proposed; Ask should say citation-lineage checks, not imply scientific truth verification. Page copy belongs to Claude.
 
 ## UI-facing behavioral changes and examples
 
@@ -40,6 +40,21 @@ function dispatch(state: GameState, action: GameAction) {
 Incoming state must first pass load/parse; invalid incoming state is a recovery boundary, not an action failure. Existing PREREQUISITE_MISSING repair recovery and anchor/orphan save rejection remain tested. Client saves and Passport lineage are not authenticated achievements or scientific certification. Prediction gating is not a blinded study: the dossier/Assembly can already expose the same documented outcome.
 
 ## Coordination
+
+The six-reason review and exact before/after diff are in FEATURE_REGISTRY_REVIEW.md, including the recommended Ask wording and the separate methodology/home page corrections. Shared owner review under OWNERSHIP.md plus the owner's leave-pending instruction must be resolved before applying or committing `packages/shared/src/features.ts`. Do not change `state`, `implemented`, prerequisites, verification metadata, routes or IDs as part of this copy patch. Keep all missions gated. No approval has been inferred.
+
+For the eventual consumers, import these existing contracts from `@microfire/shared`; API_CONTRACTS.md defines their error behavior and examples:
+
+| Surface | Backend operation | Response contract / limitation |
+|---|---|---|
+| Workstation | GET `/api/experiments`, POST `/api/evidence/rank` | ExperimentsResponseSchema, RankResponseSchema; show coverage, reasons and retrieval-only score meaning |
+| Atlas | GET `/api/experiments` with validated filters | ExperimentsResponseSchema; `total` is catalog matches, not all NASA records |
+| Dossier/export | GET `/api/experiments/:id`, GET `/api/export?ids=bass2-b20` | ExperimentResponseSchema, ExportResponseSchema; display limitations and hash/disclaimer; comparisons require another approved record |
+| Frontier | POST `/api/gaps` | GapsResponseSchema; field matches are not answers or worldwide absence |
+| PIX | POST `/api/ask` | AskResponseSchema; branch on `abstained`, then statements/categories or code/reason; lineage is not truth verification |
+| Methodology | Backend evaluation documents, no evaluation endpoint | Read docs/evals/report.md and its small author-labelled/one-record limitations; no independent performance claim |
+
+The follow-up evaluator/report correction follows local backend commit `6a82887be81653255867fc748751e8b84b2479bd`; its local commit SHA is supplied in the handoff response. Do not assume it exists on origin/main. The evaluator's repeatability metric previously compared differently ordered objects using JSON strings; structural comparison now treats key order correctly and fails an evaluation case if repeatability breaks. Corrected repeatability is 30/30; a deliberate non-repeatability probe failed 30/30 and exited 1 as required. No runtime API contract changed.
 
 The owner requested no registry application until Claude's review; preserve Claude's uncommitted features.ts patch in MicroFire-V2-codex. No frontend component, page, CSS, Next config, shared contract or browser-test file was edited by this review. No identifiable Claude Code chat was available to message; these typed examples are the reviewable handoff, not a claim that Claude has approved them.
 
