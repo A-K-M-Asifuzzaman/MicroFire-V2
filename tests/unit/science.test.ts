@@ -33,6 +33,9 @@ describe('quarantine containment', () => {
     const smuggled = withSynthetic((e) => { e.id = 'bass2-b16'; e.provenance.upstreamRecordId = 'bass2-B16'; });
     expect(() => assertNoQuarantinedRecords(smuggled)).toThrow('Quarantined');
   });
+  it('rejects quarantined test identities even when both record IDs were renamed', () => {
+    expect(() => assertNoQuarantinedRecords(withSynthetic((e) => { e.testId = 'B16'; }))).toThrow('Quarantined');
+  });
   it('keeps B16/B19 source-checked but pending review, with the calibrated columns recorded', () => {
     const pending = quarantineLedger.records.filter((r) => r.status !== 'quarantined').map((r) => r.upstreamRecordId);
     expect(pending).toEqual(['bass2-B16', 'bass2-B19']);
@@ -98,6 +101,9 @@ describe('gaps and comparison', () => {
 });
 
 describe('citation verification and export', () => {
+  it('never verifies an empty citation trail in the pure science API', () => {
+    expect(verifyCitations({ subject: { type: 'claim', claimId: claim.id }, citations: [] })).toMatchObject({ verdict: 'lineage-mismatch', resolvedUrls: [] });
+  });
   it('verifies exact lineage and rejects wrong pages, kinds, sources and unknown values', () => {
     const ok = verifyCitations({ subject: { type: 'claim', claimId: claim.id, kind: 'observed' }, citations: [cite] });
     expect(ok).toMatchObject({ verdict: 'lineage-verified', resolvedUrls: [expect.stringMatching(/TM-20210011385\.pdf#page=112$/)] });
@@ -133,6 +139,19 @@ describe('grounded Ask', () => {
     ['Describe test B99.', 'no-relevant-evidence']
   ])('abstains on %s', (question, code) => {
     expect(ask(question)).toMatchObject({ abstained: true, code });
+  });
+  it.each(['B999', 'F123', 'GMT9999-T123'])('abstains on unknown test %s despite PMMA keyword overlap', (id) => {
+    expect(ask(`What happened with PMMA in ${id}?`)).toMatchObject({ abstained: true, code: 'no-relevant-evidence' });
+  });
+  it('explicitly marks zero target matches as an applicability gap', () => {
+    const a = ask('What happened in B20?', { material: 'cotton', pressureKpa: 101 });
+    if (a.abstained) throw new Error('The named B20 source can still be explained with an explicit target gap');
+    expect(a.statements.some((s) => s.category === 'unknown-or-gap' && /does not match any requested target conditions/.test(s.text))).toBe(true);
+  });
+  it('does not allow a cited hypothesis to be relabelled as a direct observation', () => {
+    const dataset = withSynthetic((e) => { e.claims[0]!.kind = 'hypothesis'; });
+    const hypothesis = dataset.experiments[1]!.claims[0]!;
+    expect(verifyAnswerStatements([{ category: 'direct-observation', text: hypothesis.text, claimId: hypothesis.id, citations: hypothesis.citations }], dataset)).toBe(false);
   });
   it('answers airflow questions with separated, verifiable statements and explicit gaps', () => {
     const a = ask('What does B20 establish about airflow and pressure?');

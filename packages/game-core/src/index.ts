@@ -165,6 +165,8 @@ export function transition(state: GameState, input: unknown, dataset: Catalog, a
       const wrong = requireMission(['flame-detective']); if (wrong) return wrong;
       if (!experiment(action.experimentId)) return fail('UNKNOWN_EXPERIMENT', 'Choose a validated record.');
       if (!state.inspectedExperimentIds.includes(action.experimentId)) return fail('NOT_INSPECTED', 'Inspect the record conditions before predicting.');
+      if (state.passport.entries.some((e) => e.missionId === 'flame-detective' && e.status === 'current' && e.setupRevision === state.setup.revision && e.experimentIds.includes(action.experimentId)))
+        return fail('INVALID_ACTION', 'The result is already recorded for this setup. Keep the original prediction; a new setup requires a new prediction.');
       const others = state.predictions.filter((p) => p.experimentId !== action.experimentId);
       if (others.length >= 20) return fail('LIMIT_REACHED', 'Prediction limit reached.');
       return done({ ...state, predictions: [...others, { experimentId: action.experimentId, prediction: action.prediction, setupRevision: state.setup.revision, at }] });

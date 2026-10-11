@@ -88,9 +88,11 @@ function limited(retryAfterSeconds: number) {
 }
 export function createGetHandler(limiter: RateLimiter = createMemoryLimiter(LIMITS)) {
   return (path: string[], url: URL): Response => {
-    const gate = limiter.take('read');
-    if (!gate.allowed) return limited(gate.retryAfterSeconds);
-    try { return readApi(path, url); }
+    try {
+      const gate = limiter.take('read');
+      if (!gate.allowed) return limited(gate.retryAfterSeconds);
+      return readApi(path, url);
+    }
     catch { return apiError(500, 'INTERNAL_ERROR', 'The catalog could not be read.'); }
   };
 }
@@ -144,9 +146,9 @@ export function createPostHandler(now: () => number = Date.now, limiter: RateLim
   return async (path: string[], request: Request): Promise<Response> => {
     const route = Object.hasOwn(postRoutes, path.join('/')) ? postRoutes[path.join('/')] : undefined;
     if (!route) return apiError(404, 'NOT_FOUND', 'API route not found.');
-    const gate = limiter.take('write');
-    if (!gate.allowed) return limited(gate.retryAfterSeconds);
     try {
+      const gate = limiter.take('write');
+      if (!gate.allowed) return limited(gate.retryAfterSeconds);
       const body = await readJson(request);
       const result = route.schema.safeParse(body);
       if (!result.success) return apiError(400, 'INVALID_REQUEST', 'Request does not match API v1.');

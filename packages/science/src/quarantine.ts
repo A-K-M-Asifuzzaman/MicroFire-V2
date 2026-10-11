@@ -22,7 +22,7 @@ export const isQuarantinedTestId = (testId: string) => quarantinedTests.has(test
 /** Runtime containment: a catalog that contains any quarantined record must never load. */
 export function assertNoQuarantinedRecords(dataset: Catalog): Catalog {
   for (const e of dataset.experiments)
-    if (isQuarantinedId(e.id) || isQuarantinedId(e.provenance.upstreamRecordId))
+    if (isQuarantinedId(e.id) || isQuarantinedId(e.provenance.upstreamRecordId) || isQuarantinedTestId(e.testId))
       throw new Error(`Quarantined legacy record ${e.provenance.upstreamRecordId} cannot enter the validated catalog`);
   return dataset;
 }

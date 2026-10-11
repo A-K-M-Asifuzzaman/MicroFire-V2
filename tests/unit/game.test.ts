@@ -145,6 +145,11 @@ describe('integration-review regressions', () => {
 });
 
 describe('later missions', () => {
+  it('preserves the original prediction once the result is recorded for that setup', () => {
+    const observed = play(initial(), [...station, ...assembly, ...detective.slice(0, 3)]);
+    expect(step(observed, { type: 'PREDICT_OUTCOME', experimentId: 'bass2-b20', prediction: 'I knew it would burn the entire sample.' })).toMatchObject({ ok: false, code: 'INVALID_ACTION', state: observed });
+    expect(observed.predictions[0]!.prediction).toBe('The flame will go out early.');
+  });
   it('requires a prediction for the current setup before revealing the documented result', () => {
     const s = play(initial(), [...station, ...assembly, detective[0]!]);
     expect(step(s, detective[2]!)).toMatchObject({ ok: false, code: 'PREDICTION_REQUIRED' });

@@ -68,7 +68,8 @@ export function matchTarget(e: Experiment, field: TargetField, target: string | 
   }
   const want = contentTokens(String(target)), have = new Set(contentTokens(String(c.value)));
   const ok = want.length > 0 && want.every((t) => have.has(t));
-  return { result: ok ? 'match' : 'mismatch', detail: `${field}: target "${target}", recorded "${c.value}"` };
+  const displayedTarget = String(target).length > 200 ? `${String(target).slice(0, 200)}… (truncated for display)` : String(target);
+  return { result: ok ? 'match' : 'mismatch', detail: `${field}: target "${displayedTarget}", recorded "${c.value}"` };
 }
 
 // ---------- coverage / search ----------
@@ -160,6 +161,7 @@ export function verifyCitations(request: { subject: VerifySubject; citations: Ci
   const subject = request.subject;
   let expected: Citation[];
   const issues: string[] = [];
+  if (!request.citations.length) issues.push('At least one recorded citation is required.');
   if (subject.type === 'claim') {
     const claim = dataset.experiments.flatMap((e) => e.claims).find((c) => c.id === subject.claimId);
     if (!claim) return { verdict: 'unknown-subject' as const, issues: [isQuarantinedId(subject.claimId) ? 'Claim belongs to a quarantined legacy record.' : 'Claim is not in the validated catalog.'], resolvedUrls: [], scope };
