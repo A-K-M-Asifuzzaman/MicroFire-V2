@@ -1,0 +1,22 @@
+name: New feature or stage
+about: Track implementation and truthfulness of release status
+title: '[FEATURE] '
+labels: ['feature']
+body:
+  - type: textarea
+    id: science
+    attributes:
+      label: Scientific use case and source
+      description: What real problem is solved? Which evidence supports it?
+    validations: { required: true }
+  - type: dropdown
+    id: status
+    attributes:
+      label: Current status
+      options: [coming_soon, preview, available, blocked]
+    validations: { required: true }
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Actual acceptance tests and accessibility
+    validations: { required: true }

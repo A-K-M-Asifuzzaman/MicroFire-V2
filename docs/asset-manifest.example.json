@@ -1,0 +1,20 @@
+{
+  "schema": "microfire-v2-assets-v1",
+  "assets": [
+    {
+      "id": "pix-research-bot",
+      "status": "planned",
+      "source": "Meshy (web export or verified API, owner approved)",
+      "path": "public/assets/models/pix-research-bot.glb",
+      "scientificAccuracy": "not applicable to fictional character",
+      "approvedBy": "",
+      "creditEstimate": null,
+      "creditActual": null,
+      "license": "verify before distribution",
+      "glbVerified": false,
+      "screenshots": [],
+      "apiCreditsVerified": false,
+      "sourceInputType": "manual-or-approved-API"
+    }
+  ]
+}

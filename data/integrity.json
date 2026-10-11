@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "files": {
+    "data/fixtures/catalog.json": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+    "data/fixtures/b20-source-cells.json": "10a3122c1b73e2730c75f574a947fa4d1ae09fefe182b1b9d7906a338e7ccd63"
+  }
+}

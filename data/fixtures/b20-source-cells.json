@@ -1,0 +1,22 @@
+{
+  "sourceId": "nasa-bass-ii-20210011385",
+  "documentSha256": "5ffa911fd9b6356f204646003fb9342e341810dcdfdf5cb15756e7f01ec5f770",
+  "locator": {
+    "kind": "pdf",
+    "page": 112,
+    "printedPage": "104",
+    "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+  },
+  "transcribedCells": {
+    "test": "B20",
+    "asRun": 50,
+    "material": "2-cm, 100-µm-thick PMMA",
+    "airDisplay": "5, 3, pot 0.5",
+    "calibratedInitialOxygenVolPct": 17.4,
+    "calibratedFinalOxygenVolPct": 17.4,
+    "initialOxygenVolPct": 16.5,
+    "finalOxygenVolPct": 16.5,
+    "observation": "flame burned entire sample"
+  },
+  "audit": "Agent visual check of original NASA PDF; independent human scientific review pending."
+}

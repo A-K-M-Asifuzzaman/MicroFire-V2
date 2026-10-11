@@ -1,0 +1,1 @@
+{"name":"@microfire/game-core","version":"0.1.0","private":true,"type":"module","exports":"./src/index.ts","dependencies":{"@microfire/shared":"0.1.0"}}
