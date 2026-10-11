@@ -105,6 +105,45 @@ describe('BASS-II assembly, faults and repair', () => {
   });
 });
 
+describe('integration-review regressions', () => {
+  it('recovers instead of crashing when a repair during Flame Detective revokes Assembly completion', () => {
+    const repaired = play(initial(), [...station, ...assembly, detective[0]!, { type: 'REMOVE_PART', partId: 'radiometer' }, install('radiometer'),
+      { type: 'QUALIFY_INSTRUMENT' }, detective[1]!, detective[2]!]);
+    expect(repaired.completedMissions).toEqual(['station-arrival']);
+    let result: TransitionResult | undefined;
+    expect(() => { result = step(repaired, detective[3]!); }).not.toThrow();
+    expect(result).toMatchObject({ ok: false, code: 'PREREQUISITE_MISSING', state: repaired });
+    if (result?.ok === false) expect(result.message).toMatch(/Start bass-assembly again/);
+    const recovered = play(repaired, [assembly[0]!, { type: 'OBSERVE_DOCUMENTED_RESULT', experimentId: 'bass2-b20' }, assembly.at(-1)!,
+      detective[0]!, detective[3]!]);
+    expect(recovered.completedMissions).toEqual(['station-arrival', 'bass-assembly', 'flame-detective']);
+  });
+  it('rejects completing any mission whose prerequisite is not complete', () => {
+    const s = play(initial(), [...station, ...assembly, detective[0]!, { type: 'REMOVE_PART', partId: 'exit-plate' }]);
+    for (const missionId of ['flame-detective'] as const) expect(step(s, { type: 'COMPLETE_MISSION', missionId })).toMatchObject({ ok: false, code: 'PREREQUISITE_MISSING' });
+  });
+  it('treats a misplaced anchor as a fault in qualification, saving and loading', () => {
+    const qualified = play(initial(), [...station, ...assembly]);
+    const moved = (p: typeof qualified.setup.installedParts[number]) => p.partId === 'radiometer' ? { ...p, anchorId: 'wrong-location' } : p;
+    const tampered = { ...qualified, setup: { ...qualified.setup, installedParts: qualified.setup.installedParts.map(moved) } };
+    const check = diagnose(tampered.setup.installedParts);
+    expect(check.qualified).toBe(false);
+    expect(check.faults).toEqual([expect.objectContaining({ partId: 'radiometer', code: 'WRONG_ANCHOR', repair: expect.stringMatching(/reinstall it at downstream-top-back-corner/) })]);
+    expect(saveProgress(memory(), tampered)).toEqual({ ok: false, reason: 'invalid-state' });
+    for (const state of [tampered, { ...tampered, setup: { ...tampered.setup, qualifiedRevision: null } }]) {
+      const storage = memory(); storage.setItem(saveKey('normal'), JSON.stringify(state));
+      expect(loadProgress(storage, 'normal', catalog.datasetVersion).status).toBe('corrupt');
+    }
+  });
+  it('rejects a save with a part installed without its prerequisite', () => {
+    const s = play(initial(), [...station, assembly[0]!, install('flow-duct'), install('sample-holder'), install('igniter')]);
+    const orphan = { ...s, setup: { ...s.setup, installedParts: s.setup.installedParts.filter((p) => p.partId !== 'sample-holder') } };
+    expect(diagnose(orphan.setup.installedParts).faults.some((f) => f.code === 'MISSING_PREREQUISITE' && f.partId === 'igniter')).toBe(true);
+    const storage = memory(); storage.setItem(saveKey('normal'), JSON.stringify(orphan));
+    expect(loadProgress(storage, 'normal', catalog.datasetVersion).status).toBe('corrupt');
+  });
+});
+
 describe('later missions', () => {
   it('requires a prediction for the current setup before revealing the documented result', () => {
     const s = play(initial(), [...station, ...assembly, detective[0]!]);
@@ -141,12 +180,14 @@ describe('property: random play never fabricates or duplicates evidence', () => 
     const rand = (n: number) => { seed = (seed * 1103515245 + 12345) % 2 ** 31; return (seed >>> 16) % n; };
     const script = [...station, ...assembly, ...detective, ...trial, ...lunar];
     const disrupt: GameAction[] = [install('fan', 'reversed'), { type: 'REMOVE_PART', partId: 'fan' }, { type: 'REMOVE_PART', partId: 'video-camera' },
+      { type: 'REMOVE_PART', partId: 'radiometer' }, install('radiometer'),
       install('video-camera'), install('fan'), { type: 'QUALIFY_INSTRUMENT' }, { type: 'CLASSIFY_CLAIM', claimId: 'trial-b20-thickness', kind: 'observed', evidenceLevel: 'direct' },
       ...script];
     let state = initial(), maxEntries = 0, qualified = 0, next = 0;
     for (let i = 0; i < 2000; i++) {
       const scripted = rand(4) > 0;
       const result = step(state, scripted ? script[next % script.length]! : disrupt[rand(disrupt.length)]!);
+      if (!result.ok) expect(result.code).not.toBe('INVARIANT_VIOLATION');
       if (scripted && result.ok) next++;
       else if (scripted) next = rand(script.length);
       state = result.state;

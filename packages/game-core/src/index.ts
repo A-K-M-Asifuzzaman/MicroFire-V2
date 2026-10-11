@@ -25,16 +25,21 @@ export const partDefinitions: readonly PartDefinition[] = [
 ];
 const partDef = (id: PartId) => partDefinitions.find((p) => p.id === id)!;
 
-export type Fault = { partId: PartId; code: 'MISSING' | 'REVERSED'; message: string; repair: string };
+export type Fault = { partId: PartId; code: 'MISSING' | 'WRONG_ANCHOR' | 'MISSING_PREREQUISITE' | 'REVERSED'; message: string; repair: string };
 export function diagnose(installed: readonly InstalledPart[]): { qualified: boolean; faults: Fault[] } {
   const faults: Fault[] = [];
   for (const def of partDefinitions) {
     const part = installed.find((p) => p.partId === def.id);
-    if (!part) faults.push({ partId: def.id, code: 'MISSING', message: `${def.id} is not installed.`, repair: `Install ${def.id} at ${def.anchorId}.` });
-    else if (part.orientation === 'reversed' && def.orientationFault) faults.push({ partId: def.id, code: 'REVERSED', ...def.orientationFault });
+    if (!part) { faults.push({ partId: def.id, code: 'MISSING', message: `${def.id} is not installed.`, repair: `Install ${def.id} at ${def.anchorId}.` }); continue; }
+    if (part.anchorId !== def.anchorId) faults.push({ partId: def.id, code: 'WRONG_ANCHOR', message: `${def.id} is mounted at ${part.anchorId}, not ${def.anchorId}.`, repair: `Remove ${def.id} and reinstall it at ${def.anchorId}.` });
+    const missing = def.requires.filter((r) => !installed.some((p) => p.partId === r));
+    if (missing.length) faults.push({ partId: def.id, code: 'MISSING_PREREQUISITE', message: `${def.id} is installed without ${missing.join(', ')}.`, repair: `Remove ${def.id}, install ${missing.join(', ')}, then reinstall ${def.id}.` });
+    if (part.orientation === 'reversed' && def.orientationFault) faults.push({ partId: def.id, code: 'REVERSED', ...def.orientationFault });
   }
   return { qualified: faults.length === 0, faults };
 }
+/** Faults the reducer can never create; finding one in a save means it was edited or corrupted. */
+const UNREACHABLE_FAULTS: readonly Fault['code'][] = ['WRONG_ANCHOR', 'MISSING_PREREQUISITE'];
 
 // ---------------- Claim Trial content ----------------
 /** Authored teaching statements. Only `research` statements quote the catalog; the others are labelled tutorial content, never evidence. */
@@ -55,7 +60,7 @@ export function createGameState(datasetVersion: string, mode: SessionMode, at: s
 
 export type TransitionCode = 'INVALID_ACTION' | 'UNAVAILABLE' | 'PREREQUISITE_MISSING' | 'WRONG_MISSION' | 'UNKNOWN_EXPERIMENT' | 'UNKNOWN_CLAIM' |
   'NOT_INSPECTED' | 'NOT_AN_OBSERVATION' | 'WRONG_ANCHOR' | 'ALREADY_INSTALLED' | 'NOT_INSTALLED' | 'HAS_DEPENDENTS' | 'QUALIFICATION_FAILED' |
-  'NOT_QUALIFIED' | 'PREDICTION_REQUIRED' | 'UNSUPPORTED_DECISION' | 'COMPLETION_CRITERIA_UNMET' | 'LIMIT_REACHED';
+  'NOT_QUALIFIED' | 'PREDICTION_REQUIRED' | 'UNSUPPORTED_DECISION' | 'COMPLETION_CRITERIA_UNMET' | 'LIMIT_REACHED' | 'INVARIANT_VIOLATION';
 export type TransitionResult =
   | { ok: true; state: GameState; feedback?: { correct: boolean; hint: string } }
   | { ok: false; state: GameState; code: TransitionCode; message: string; faults?: Fault[] };
@@ -102,8 +107,12 @@ export function transition(state: GameState, input: unknown, dataset: Catalog, a
   const fail = (code: TransitionCode, message: string, faults?: Fault[]): TransitionResult => ({ ok: false, state, code, message, ...(faults ? { faults } : {}) });
   if (!parsed.success) return fail('INVALID_ACTION', 'Action does not match the game contract.');
   const action = parsed.data;
-  const done = (next: GameState, feedback?: { correct: boolean; hint: string }): TransitionResult =>
-    ({ ok: true, state: GameStateSchema.parse({ ...next, updatedAt: at }), ...(feedback ? { feedback } : {}) });
+  const done = (next: GameState, feedback?: { correct: boolean; hint: string }): TransitionResult => {
+    // Safety net: a rule gap must surface as a recoverable failure with the old state, never as a thrown error.
+    const checked = GameStateSchema.safeParse({ ...next, updatedAt: at });
+    if (!checked.success) return fail('INVARIANT_VIOLATION', 'This action would produce an inconsistent game state and was not applied.');
+    return { ok: true, state: checked.data, ...(feedback ? { feedback } : {}) };
+  };
   const requireMission = (allowed: readonly MissionId[]) => state.activeMission && allowed.includes(state.activeMission) ? null
     : fail('WRONG_MISSION', `This action belongs to ${allowed.join(' or ')}.`);
   const experiment = (id: string) => dataset.experiments.find((e) => e.id === id);
@@ -195,6 +204,10 @@ export function transition(state: GameState, input: unknown, dataset: Catalog, a
     case 'COMPLETE_MISSION': {
       if (state.activeMission !== action.missionId) return fail('WRONG_MISSION', 'Start this mission before completing it.');
       if (state.completedMissions.includes(action.missionId)) return done({ ...state, activeMission: null });
+      const prerequisite = missionDefinitions.find((m) => m.id === action.missionId)!.prerequisite;
+      // A setup change can revoke an earlier completion while a later mission is active; recover, don't crash.
+      if (prerequisite && !state.completedMissions.includes(prerequisite))
+        return fail('PREREQUISITE_MISSING', `${prerequisite} proof was invalidated by a setup change. Start ${prerequisite} again, qualify the instrument and record its observation, then return to finish ${action.missionId}.`);
       const current = (m: MissionId, rev?: number) => state.passport.entries.some((e) => e.missionId === m && e.status === 'current' && (rev === undefined || e.setupRevision === rev));
       const unmet = (message: string) => fail('COMPLETION_CRITERIA_UNMET', message);
       let next = state;
@@ -270,13 +283,18 @@ export function loadProgress(storage: SaveStorage, mode: SessionMode, datasetVer
     try { state = migrateV1(result.data); migratedFrom = 1; } catch { return { status: 'corrupt' }; }
   } else return version === undefined ? { status: 'corrupt' } : { status: 'unsupported-version' };
   if (state.mode !== mode) return { status: 'corrupt' };
-  if (state.setup.qualifiedRevision !== null && !diagnose(state.setup.installedParts).qualified) return { status: 'corrupt' };
+  if (!setupIsConsistent(state)) return { status: 'corrupt' };
   if (state.datasetVersion !== datasetVersion) return { status: 'dataset-mismatch' };
   return { status: 'loaded', state, migratedFrom };
 }
+/** Rejects setups the reducer cannot produce: misplaced or orphaned parts, or a qualification the rig does not pass. */
+export function setupIsConsistent(state: GameState): boolean {
+  const check = diagnose(state.setup.installedParts);
+  return !check.faults.some((f) => UNREACHABLE_FAULTS.includes(f.code)) && (state.setup.qualifiedRevision === null || check.qualified);
+}
 export function saveProgress(storage: SaveStorage, state: GameState): { ok: boolean; reason?: 'invalid-state' | 'storage-unavailable' | 'existing-save-needs-review' } {
   const parsed = GameStateSchema.safeParse(state);
-  if (!parsed.success) return { ok: false, reason: 'invalid-state' };
+  if (!parsed.success || !setupIsConsistent(parsed.data)) return { ok: false, reason: 'invalid-state' };
   const existing = loadProgress(storage, state.mode, state.datasetVersion);
   if (existing.status === 'storage-unavailable') return { ok: false, reason: 'storage-unavailable' };
   if (!['loaded', 'empty'].includes(existing.status)) return { ok: false, reason: 'existing-save-needs-review' };

@@ -65,12 +65,21 @@ Coordination: Codex dev server on port 3102. Browser suites use 3217 and must ru
 | Per-process fixed-window limiter (300 GET/30 POST per minute); no distributed or per-client quota | High before public exposure |
 | Page CSP still allows `'unsafe-inline'`; a nonce CSP needs UI-owner agreement | Medium |
 | No comprehensive secret/history scan (gitleaks/trufflehog not installed); the pattern scan is basic | Medium |
-| CI actions pinned by major tag, not SHA; remote CI not run | Medium |
+| CI actions pinned by major tag, not SHA (remote CI on `main` passed: run 38146847081) | Medium |
 | One validated record: ranking order, comparisons and recall-type metrics are not meaningful; eval labels are author-written | High for scientific claims |
 | No independent human scientific review of B20/B16/B19 cells | High for data promotion |
 | Game parts have no sourced dimensions; mounting order is an educational model | Medium for P2 "dimensionally checked" |
 | All missions remain `coming_soon`; no UI drives the reducer; no browser verification of gameplay | Release gate |
 | Client saves are editable; no server revalidation of achievements | Known limitation |
+
+## Integration-review fixes (follow-up commit)
+
+The reviewer reproduced two gameplay defects in the gated reducer. Both are fixed at the root, with regressions that fail on `e8ea08c` and pass now:
+
+1. **High:** a repair during Flame Detective revoked Assembly completion while Flame Detective stayed active; completing it then threw `ZodError: Mission completion must be a contiguous prefix`. `COMPLETE_MISSION` now checks the prerequisite and returns recoverable `PREREQUISITE_MISSING`. The full recovery path (re-run Assembly, return, complete) is tested. `transition` also returns `INVARIANT_VIOLATION` instead of throwing if any future rule gap appears, and the random walk now churns the radiometer and asserts this code never occurs.
+2. **Medium:** `diagnose` ignored anchors, so a save with a part moved to `wrong-location` qualified and loaded. `diagnose` now reports `WRONG_ANCHOR` and `MISSING_PREREQUISITE`, and both save and load reject such setups.
+
+`OWNERSHIP.md` now points consumers at the Phase One contracts (GameState v2, implemented endpoints, abstention/404 handling). The stale "ranking semantics undefined" line in `API_CONTRACTS.md` was replaced.
 
 ## 8. Commit
 
