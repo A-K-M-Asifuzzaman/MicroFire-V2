@@ -1,0 +1,728 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Containment ledger. Records listed here are NOT validated V2 evidence and must not be served by research features, rankings, comparisons, Ask answers or gameplay.",
+  "upstream": {
+    "repository": "https://github.com/A-K-M-Asifuzzaman/MicroFire-Atlas",
+    "commit": "acb9aaa69486154da657c61469d3a1886e4c12b1",
+    "path": "apps/web/data/experiments.json",
+    "sha256": "bb756a0e8133cbe2567cdcfdc43e4efd1509fa0e699e24efa6c0d4fed194b993",
+    "recordCount": 56
+  },
+  "records": [
+    {
+      "upstreamRecordId": "sibal-GMT45-T1",
+      "candidateId": "sibal-gmt45-t1",
+      "testId": "GMT45-T1",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT45-T2",
+      "candidateId": "sibal-gmt45-t2",
+      "testId": "GMT45-T2",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT45-T4",
+      "candidateId": "sibal-gmt45-t4",
+      "testId": "GMT45-T4",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT45-T15",
+      "candidateId": "sibal-gmt45-t15",
+      "testId": "GMT45-T15",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT100-T5",
+      "candidateId": "sibal-gmt100-t5",
+      "testId": "GMT100-T5",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT100-T6",
+      "candidateId": "sibal-gmt100-t6",
+      "testId": "GMT100-T6",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT100-T13",
+      "candidateId": "sibal-gmt100-t13",
+      "testId": "GMT100-T13",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT100-T16",
+      "candidateId": "sibal-gmt100-t16",
+      "testId": "GMT100-T16",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT175-T9",
+      "candidateId": "sibal-gmt175-t9",
+      "testId": "GMT175-T9",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT175-T10",
+      "candidateId": "sibal-gmt175-t10",
+      "testId": "GMT175-T10",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT175-T18",
+      "candidateId": "sibal-gmt175-t18",
+      "testId": "GMT175-T18",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT178-T11",
+      "candidateId": "sibal-gmt178-t11",
+      "testId": "GMT178-T11",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT178-T12",
+      "candidateId": "sibal-gmt178-t12",
+      "testId": "GMT178-T12",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT178-T14",
+      "candidateId": "sibal-gmt178-t14",
+      "testId": "GMT178-T14",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT178-T17",
+      "candidateId": "sibal-gmt178-t17",
+      "testId": "GMT178-T17",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT190-T19",
+      "candidateId": "sibal-gmt190-t19",
+      "testId": "GMT190-T19",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT190-T20",
+      "candidateId": "sibal-gmt190-t20",
+      "testId": "GMT190-T20",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT190-T21",
+      "candidateId": "sibal-gmt190-t21",
+      "testId": "GMT190-T21",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT190-T22",
+      "candidateId": "sibal-gmt190-t22",
+      "testId": "GMT190-T22",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT190-T23",
+      "candidateId": "sibal-gmt190-t23",
+      "testId": "GMT190-T23",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT190-T24",
+      "candidateId": "sibal-gmt190-t24",
+      "testId": "GMT190-T24",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT216-T25",
+      "candidateId": "sibal-gmt216-t25",
+      "testId": "GMT216-T25",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT216-T26",
+      "candidateId": "sibal-gmt216-t26",
+      "testId": "GMT216-T26",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT216-T27",
+      "candidateId": "sibal-gmt216-t27",
+      "testId": "GMT216-T27",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT216-T28a",
+      "candidateId": "sibal-gmt216-t28a",
+      "testId": "GMT216-T28a",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT216-T28b",
+      "candidateId": "sibal-gmt216-t28b",
+      "testId": "GMT216-T28b",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT216-T29",
+      "candidateId": "sibal-gmt216-t29",
+      "testId": "GMT216-T29",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT96-T8",
+      "candidateId": "sibal-gmt96-t8",
+      "testId": "GMT96-T8",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT96-T7",
+      "candidateId": "sibal-gmt96-t7",
+      "testId": "GMT96-T7",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT131-T10",
+      "candidateId": "sibal-gmt131-t10",
+      "testId": "GMT131-T10",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "sibal-GMT222-T11",
+      "candidateId": "sibal-gmt222-t11",
+      "testId": "GMT222-T11",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table 7.1",
+        "pdfPage": 104,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B1",
+      "candidateId": "bass2-b1",
+      "testId": "B1",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B2",
+      "candidateId": "bass2-b2",
+      "testId": "B2",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B3",
+      "candidateId": "bass2-b3",
+      "testId": "B3",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B4",
+      "candidateId": "bass2-b4",
+      "testId": "B4",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B5",
+      "candidateId": "bass2-b5",
+      "testId": "B5",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B6",
+      "candidateId": "bass2-b6",
+      "testId": "B6",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B7",
+      "candidateId": "bass2-b7",
+      "testId": "B7",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B8",
+      "candidateId": "bass2-b8",
+      "testId": "B8",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B9",
+      "candidateId": "bass2-b9",
+      "testId": "B9",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B10",
+      "candidateId": "bass2-b10",
+      "testId": "B10",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B11",
+      "candidateId": "bass2-b11",
+      "testId": "B11",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B12",
+      "candidateId": "bass2-b12",
+      "testId": "B12",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B13",
+      "candidateId": "bass2-b13",
+      "testId": "B13",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B14",
+      "candidateId": "bass2-b14",
+      "testId": "B14",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B15",
+      "candidateId": "bass2-b15",
+      "testId": "B15",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B16",
+      "candidateId": "bass2-b16",
+      "testId": "B16",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "source-cells-checked-pending-review",
+      "reviewFile": "data/quarantine/b16-b19-source-review.json"
+    },
+    {
+      "upstreamRecordId": "bass2-B17",
+      "candidateId": "bass2-b17",
+      "testId": "B17",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 111,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B18",
+      "candidateId": "bass2-b18",
+      "testId": "B18",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B19",
+      "candidateId": "bass2-b19",
+      "testId": "B19",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "source-cells-checked-pending-review",
+      "reviewFile": "data/quarantine/b16-b19-source-review.json"
+    },
+    {
+      "upstreamRecordId": "bass2-B21",
+      "candidateId": "bass2-b21",
+      "testId": "B21",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-B22",
+      "candidateId": "bass2-b22",
+      "testId": "B22",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.1",
+        "pdfPage": 112,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-F1",
+      "candidateId": "bass2-f1",
+      "testId": "F1",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.2",
+        "pdfPage": 113,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-F2",
+      "candidateId": "bass2-f2",
+      "testId": "F2",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.2",
+        "pdfPage": 113,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    },
+    {
+      "upstreamRecordId": "bass2-F3",
+      "candidateId": "bass2-f3",
+      "testId": "F3",
+      "legacyLocator": {
+        "legacySourceId": "bass2-summary",
+        "table": "Table A.2",
+        "pdfPage": 113,
+        "verified": false
+      },
+      "status": "quarantined",
+      "reviewFile": null
+    }
+  ]
+}

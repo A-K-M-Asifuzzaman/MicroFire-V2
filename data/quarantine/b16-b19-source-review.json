@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "source-cells-checked-pending-review",
+  "decision": "Remain quarantined. Agent primary-source check only; not promoted to the runtime catalog. Promotion requires independent human scientific review, an owner-approved datasetVersion change and the per-record gate in data/migration/provenance-manifest.md.",
+  "source": {
+    "sourceId": "nasa-bass-ii-20210011385",
+    "documentUrl": "https://ntrs.nasa.gov/api/citations/20210011385/downloads/TM-20210011385.pdf",
+    "documentSha256": "5ffa911fd9b6356f204646003fb9342e341810dcdfdf5cb15756e7f01ec5f770",
+    "checkedAt": "2026-10-11T14:05:00Z",
+    "method": "Fresh download, SHA-256 matched; pdftotext -layout column offsets compared with header offsets; pages rendered at 110 dpi and visually inspected."
+  },
+  "records": [
+    {
+      "upstreamRecordId": "bass2-B16",
+      "locator": { "kind": "pdf", "page": 111, "printedPage": "103", "section": "Table A.1, B16 (as-run 51), 2014-07-02" },
+      "transcribedCells": {
+        "date": "7/2/14 GMT 183", "asRun": 51, "test": "B16", "sampleNumber": "150m",
+        "material": "2-cm 100-µm-thick PMMA", "igniter": "Integral", "flowRestrictor": 2, "sampleDistance": "Opposed",
+        "fanDisplay": "---", "airDisplay": "3, 5 pot, 0.4 pot", "radiometerGain": 250,
+        "calibratedInitialOxygenVolPct": 17.3, "calibratedFinalOxygenVolPct": 17.2,
+        "initialOxygenVolPct": 16.5, "finalOxygenVolPct": 16.4,
+        "initialCo2VolPct": 0.47, "finalCo2VolPct": 0.51, "initialCoPpm": 103, "finalCoPpm": 119,
+        "observation": "HCl 1.1 > 1.3; flame quenched after prolonged burn at 0.4 pot, one-sided flame; spread to top side and quenched immediately; did igniter wire affect top flame?"
+      },
+      "legacyValues": { "oxygen_vol_pct": 16.5, "oxygen_final_vol_pct": 16.4, "flow_verbatim": "3, 5 pot, 0.4 pot", "outcome": "quenched_low_flow", "outcome_label": "Quenched as flow was reduced", "quality_flags": [] },
+      "findings": [
+        { "severity": "high", "field": "oxygen_vol_pct / oxygen_final_vol_pct", "finding": "Legacy 16.5/16.4 come from the Initial/Final O2 columns, but the legacy note claims the calibrated column. Calibrated initial/final read 17.3/17.2.", "evidence": "Header and value text offsets coincide (calibrated 587/616, uncalibrated 643/661) and the rendered yellow calibrated columns show 17.3/17.2." },
+        { "severity": "medium", "field": "outcome", "finding": "'Quenched as flow was reduced' is an authored interpretation. The row records quenching at a potentiometer setting (0.4 pot); the pot-to-velocity relationship is not established for this row.", "evidence": "Observation column; footnote c defines pot as potentiometer." },
+        { "severity": "medium", "field": "quality_flags", "finding": "The row records an anomaly question ('did igniter wire affect top flame?') and a one-sided flame; the legacy record has no quality flag.", "evidence": "Observation column." },
+        { "severity": "low", "field": "flowRestrictor", "finding": "Flow restrictor 2 is recorded but absent from the legacy record.", "evidence": "Flow restrictor column." }
+      ]
+    },
+    {
+      "upstreamRecordId": "bass2-B19",
+      "locator": { "kind": "pdf", "page": 112, "printedPage": "104", "section": "Table A.1, B19 (as-run 52), 2014-07-02" },
+      "transcribedCells": {
+        "date": "7/2/14 GMT 183", "asRun": 52, "test": "B19", "sampleNumber": "151m",
+        "material": "2-cm, 100-µm-thick PMMA", "igniter": "Integral", "flowRestrictor": 0, "sampleDistance": "Opposed",
+        "fanDisplay": "---", "airDisplay": "10, blowoff", "radiometerGain": 250,
+        "calibratedInitialOxygenVolPct": 17.3, "calibratedFinalOxygenVolPct": 17.2,
+        "initialOxygenVolPct": 16.4, "finalOxygenVolPct": 16.3,
+        "initialCo2VolPct": 0.51, "finalCo2VolPct": 0.57, "initialCoPpm": 119, "finalCoPpm": 131,
+        "observation": "HCl 1.3 > 1.4; flame blew out at a pot of 6.0"
+      },
+      "legacyValues": { "oxygen_vol_pct": 16.4, "oxygen_final_vol_pct": 16.3, "flow_verbatim": "10, blowoff", "outcome": "blowoff", "outcome_label": "Blew off at high flow", "quality_flags": [] },
+      "findings": [
+        { "severity": "high", "field": "oxygen_vol_pct / oxygen_final_vol_pct", "finding": "Legacy 16.4/16.3 come from the Initial/Final O2 columns, but the legacy note claims the calibrated column. Calibrated initial/final read 17.3/17.2.", "evidence": "Header and value text offsets coincide (calibrated 579/608, uncalibrated 635/653) and the rendered yellow calibrated columns show 17.3/17.2." },
+        { "severity": "medium", "field": "flowRestrictor", "finding": "B19 used flow restrictor 0, whereas B16 and B20 used 2. The report states restrictors change the maximum duct flow (~55 cm/s with none, ~35 cm/s with two). Legacy omits this setup difference.", "evidence": "Flow restrictor column; PDF page 12 / printed 4, section 1.2 hardware description." },
+        { "severity": "medium", "field": "outcome", "finding": "'Blew off at high flow' is an authored interpretation. The row records blow-out at a pot of 6.0; the air velocity at blow-out is not recorded in the row.", "evidence": "Air display '10, blowoff'; observation column." }
+      ]
+    }
+  ],
+  "crossRecordFindings": [
+    "B20 (as-run 50), B16 (51) and B19 (52) ran on the same day with nominally the same PMMA film specification, but differ in calibrated initial oxygen (17.4 vs 17.3 vol%), flow sequence, sample number and, for B19, flow restrictor. They are not a controlled single-variable airflow series.",
+    "Do not apply a universal 16.x → 17.x offset: the calibrated-minus-uncalibrated difference is 0.8 (B16 initial), 0.9 (B19 initial, B20 initial) and varies by row."
+  ]
+}

@@ -2,54 +2,63 @@
 
 Source of truth: `packages/shared/src/{science,api,features,game}.ts`, exported through `@microfire/shared`. Runtime parse inputs, not merely TypeScript casts. HTTP paths are stable; every JSON response includes `apiVersion: "1"`. Breaking changes require a new version, migration design, examples/tests and coordinated Claude/Codex review. Unknown object fields are rejected.
 
-## Implemented endpoints
+## Implemented endpoints (Phase One)
+
+Every research response carries `coverage` (validated experiments/sources, quarantined candidate count, and the statement that absence from the catalog is not global absence). Render it. All JSON is `no-store`; API responses carry `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'`.
 
 | Method/path | Input | Success schema | Errors |
 |---|---|---|---|
-| GET `/api/health` | none | HealthResponseSchema | 500 |
-| GET `/api/feature-status` | none | FeaturesResponseSchema | 500 |
-| GET `/api/sources` | none | SourcesResponseSchema | 500 |
-| GET `/api/experiments` | ExperimentQuerySchema: optional exact program; limit 1–100, default 20; offset 0–100000 | ExperimentsResponseSchema | 400, 500 |
-| GET `/api/experiments/:id` | lowercase canonical IdSchema | ExperimentResponseSchema | 400, 404, 500 |
-| POST `/api/passport/validate` | PassportSchema | PassportValidationResponseSchema | 400, 413, 415, 429, 500 |
-
-Catalog list responses include items, total, limit, offset, datasetVersion. Unknown and duplicate query parameters on the list endpoint are rejected. All responses use no-store initially. Dataset IDs and file hashes provide reproducibility; conditional caching can be added in P1 without changing semantics.
-
-```json
-{"apiVersion":"1","data":{"status":"ok","phase":"zero","datasetVersion":"p0-bass-b20-v1"}}
-```
-
-Passport validation checks schema plus exact experiment → claim → source/locator lineage. It **does not** assess free-text conclusions, verify that a player completed a mission, issue achievements or certify safety. Empty passports validate structurally. Its response is deliberately explicit:
-
-```json
-{"apiVersion":"1","data":{"valid":true,"scope":"structure-and-citation-lineage-only","certification":false}}
-```
-
-## Reserved and validated, not implemented
-
-| Method/path | Request | Future success schema | Current response |
-|---|---|---|---|
-| POST `/api/evidence/rank` | RankRequestSchema | RankResponseSchema | 501 |
-| POST `/api/evidence/compare` | CompareRequestSchema: 2–4 distinct experiment IDs | CompareResponseSchema | 501 |
-| POST `/api/ask` | AskRequestSchema | AskResponseSchema | 501 |
-
-Valid example Ask request:
+| GET `/api/health` | none | HealthResponseSchema (`phase: "one"`) | 429, 500 |
+| GET `/api/feature-status` | none | FeaturesResponseSchema | 429, 500 |
+| GET `/api/sources` | none | SourcesResponseSchema | 429, 500 |
+| GET `/api/sources/:id` | IdSchema | SourceDetailResponseSchema: source + which experiments/claims/condition fields cite it | 400, 404, 429 |
+| GET `/api/experiments` | ExperimentQuerySchema: optional `q` (AND over terms, ≤200 chars), exact case-insensitive `program`, `material`, `flowDirection`; limit 1–100; offset | ExperimentsResponseSchema (+ coverage) | 400, 429 |
+| GET `/api/experiments/:id` | IdSchema | ExperimentResponseSchema | 400, 404 (message says when the ID is a quarantined candidate), 429 |
+| GET `/api/export?ids=a,b` | ExportQuerySchema: 1–20 comma-separated IDs | ExportResponseSchema: experiments, sources, page links, catalog SHA-256, disclaimer | 400, 404, 429 |
+| POST `/api/evidence/rank` | RankRequestSchema | RankResponseSchema (+ coverage) | 400, 413, 415, 429 |
+| POST `/api/evidence/compare` | CompareRequestSchema | CompareResponseSchema | 400, 404 for any unvalidated/quarantined ID, 413, 415, 429 |
+| POST `/api/gaps` | GapsRequestSchema: ≥1 target condition | GapsResponseSchema | 400, 413, 415, 429 |
+| POST `/api/citations/verify` | CitationVerifyRequestSchema: claim or condition subject + citations | CitationVerifyResponseSchema (`scope: citation-lineage-only-not-scientific-truth`) | 400, 413, 415, 429 |
+| POST `/api/ask` | AskRequestSchema | AskResponseSchema | 400, 413, 415, 429 |
+| POST `/api/passport/validate` | PassportSchema | PassportValidationResponseSchema | 400, 413, 415, 429 |
 
 ```json
-{"question":"What does this record establish about airflow?","targetConditions":{"material":"PMMA"}}
+{"apiVersion":"1","data":{"status":"ok","phase":"one","datasetVersion":"p0-bass-b20-v1"}}
 ```
 
-Actual P0 response:
+Passport validation checks schema plus exact experiment → claim → source/locator lineage. It **does not** assess free-text conclusions, verify that a player completed a mission, issue achievements or certify safety.
 
-```json
-{"apiVersion":"1","error":{"code":"NOT_IMPLEMENTED","message":"This Phase One service is not implemented. No provider was called.","retryable":false}}
-```
+### Semantics Claude must preserve
 
-All application errors follow ApiErrorSchema. POST accepts application/json, limits streamed body size to 32 KiB, and applies a process-wide 30 request/minute budget. HTTP 429 includes `Retry-After` in whole seconds and `retryable: true`; wait that delay rather than repeatedly resubmitting. It is an abuse foundation, not distributed per-user protection. No visitor identity or proxy IP is collected. Unknown API paths, including names such as `constructor`, return JSON 404; unsupported HTTP methods use framework 405 responses (not the JSON envelope).
+- **Ranking** (`p1-conditions-lexical-v1`): score = 0.7 × (requested target conditions matched) + 0.3 × (question terms found), or terms only when no targets are given. Numeric tolerances are retrieval tolerances (oxygen ±0.5 vol%, pressure ±2 kPa, flow ±1 cm/s), not scientific equivalence. Categorical targets match when every target word appears in the recorded value. Evidence level: all requested conditions matched → `direct`; some → `analogous`; none → `gap`; with no targets, at most `analogous`. Unknown recorded values (B20 gravity, pressure) are `missingFields`, never matches. Items with score 0 are omitted. With one record, every item carries the limitation that cross-study ordering is not yet meaningful.
+- **Compare** never returns `controlled` in Phase One: the schema does not capture flow restrictor, sample number or procedure, which the B16/B19 review shows can differ silently. Expect `insufficient-data` (any unknown field) or `confounded`. With one validated record, every valid request returns 404 with the catalog size. Show that, not an empty comparison table.
+- **Gaps** statuses: `covered` (a record matches within tolerance; question not necessarily answered), `conditions-differ`, `not-recorded` (field unknown in the records), `not-in-catalog`.
+- **Ask** (`p1-grounded-template-v1`) is deterministic and calls no model or provider. Answers are a list of `statements`, each with a `category` (`direct-observation`, `supported-derivation`, `scientific-interpretation`, `analogous-or-mechanistic`, `unknown-or-gap`), optional `claimId`, and citations. Every non-gap statement is citation-verified against the catalog before release. Render statements grouped by category; `answer` is a plain-text fallback. Abstentions carry `code`: `unsupported-intent` (safety/certification, lunar/Mars application, probability/forecast, operational advice, prompt injection), `no-relevant-evidence`, `quarantined-record`, `citation-verification-failed`. An abstention is a successful 200 response, not an error.
+- **Rate limits**: per-process fixed windows, 300 GET and 30 POST per minute (`RateLimiter` interface in `apps/web/lib/api.ts`). 429 carries `Retry-After`. This is not distributed or per-user.
+
+## Shared-contract changes in Phase One (explicit list for Claude review)
+
+Nothing in the UI consumed rank/compare/ask/game reducers before this phase. Existing GET shapes changed only by additive fields.
+
+| Change | Kind | Consumer impact |
+|---|---|---|
+| `CoverageSchema`; `coverage` added to Experiments and Rank responses | Additive, required field | Parse with the updated schema; render coverage |
+| `ExperimentQuerySchema` gains `q`, `material`, `flowDirection` | Additive | Previously rejected params now accepted |
+| `HealthResponseSchema.phase` is `zero \| one` | Widened | None |
+| New: `SourceDetailResponseSchema`, `GapsRequest/ResponseSchema`, `CitationVerifyRequest/ResponseSchema`, `ExportQuery/ResponseSchema`, `AnswerStatementSchema`, `AbstentionCodeSchema` | New | New endpoints only |
+| `AskResponseSchema`: abstained variant adds `code`; answered variant adds `statements` | Changed (endpoint was 501) | Use statements for display |
+| `GameStateSchema` is now **v2** (`schemaVersion: 2`): structured `installedParts` {partId, anchorId, orientation}, `predictions`, `classifications`, `decision`, `proposals`. `GameStateV1Schema` is kept for migration only | Versioned | `loadProgress` migrates v1 automatically (`migratedFrom: 1`) |
+| `GameActionSchema` adds `COLLECT_EVIDENCE` and `RECORD_DECISION` | Additive | — |
+| `transition(state, action, catalog, at, options?)` takes the catalog instead of an ID list; returns failure `message` + optional `faults`, success optional `feedback` | Changed signature | Pass `catalog` from `@microfire/science` |
+| `SaveStorage` requires `removeItem`; new `readRawSave`, `discardSave(…, 'discard-save-after-export')`, `exportPassport`, `migrateV1`, `diagnose`, `partDefinitions`, `claimTrialStatements` | Additive / interface | `localStorage` satisfies the interface |
+| `next.config.ts`: page CSP unchanged; `/api/*` gets its own strict CSP | Config | None for pages |
+| Root `package.json`: `eval:science` script, included in `npm run check` | Config | — |
+
+Proposed but **not** implemented (needs UI-owner agreement): a nonce-based page CSP via Next proxy/middleware, which would remove `'unsafe-inline'` but changes how pages render.
 
 ## Claude consumption rules (acceptance review)
 
-- Parse successful responses with the endpoint's exported response schema, and application error bodies with ApiErrorSchema. Branch on HTTP status first. 501 means the feature is unimplemented; it is not an abstaining AI answer. Requests may receive framework/proxy errors outside the JSON contract, so handle a failed JSON parse gracefully.
+- Parse successful responses with the endpoint's exported response schema, and application error bodies with ApiErrorSchema. Branch on HTTP status first. An Ask abstention is a 200 with `abstained: true`; 404 on compare/export means a record is not validated. Requests may receive framework/proxy errors outside the JSON contract, so handle a failed JSON parse gracefully.
 - GET list `total` counts matching records in the current bundled dataset before pagination. It is not the number of NASA experiments worldwide. Current coverage is exactly one fixture (`p0-bass-b20-v1`); record limitations and Preview labels must remain visible even if a list/API call succeeds. An empty filtered page does not establish absence of evidence globally.
 - Stable IDs are lowercase/hyphenated. Use `bass2-b20`, not legacy `bass2-B20`. PDF `page` is one-based physical PDF position; `printedPage` is the report's printed label, not an alternate URL page number.
 - Numeric query targets use vol% oxygen, absolute kPa pressure and cm/s airflow; no fraction or atm conversion is implied. P0 B20 oxygen is calibrated initial oxygen; flowCmS is the first logged airflow, not constant airflow. A later source with different oxygen basis must disclose it explicitly. Target categorical strings have no ontology/tolerance/ranking formula yet; P1 must agree those semantics before implementing science matching.
@@ -80,16 +89,24 @@ Claims distinguish observed, derived, interpretation, hypothesis, unknown and re
 
 ## Game and rendering contracts
 
-`GameActionSchema` defines ten typed action variants across five distinct missions. `missionDefinitions` defines the order, prerequisites, mechanic and expected artifact. `PartIdSchema` freezes ten semantic part IDs, **not scientifically verified dimensions/anchors**. P2 must source apparatus geometry before qualifying an assembly.
+`packages/game-core` is pure: no browser, Three.js or network imports. `transition(state, action, catalog, at, options?)` validates the state and action, returns `{ ok: true, state, feedback? }` or `{ ok: false, state (unchanged), code, message, faults? }`, and never throws for a bad action.
 
-`transition(state, action, knownExperimentIds, at)` currently implements idempotent evidence inspection only. Starting unbuilt missions returns UNAVAILABLE; other recognized actions return NOT_IMPLEMENTED. Failure returns the original state. No view may award completion or mint proof by bypassing the reducer. This is a contract foundation, not the P2 game reducer.
+**Production gate.** `START_MISSION` checks the shared feature registry (`registryAvailability`). All five missions are `coming_soon`, so in production every start returns `UNAVAILABLE`. Tests and a future reviewed UI pass `options.isMissionAvailable`. Flip a mission's feature state only after its whole UI loop passes browser verification. Prerequisites are enforced regardless (`PREREQUISITE_MISSING`).
 
-`GameStateSchema` v1 includes dataset version, mode, guidance, active/completed missions, inspected evidence, setup revision and passport. Completion must be a contiguous mission prefix with current passport entries; stale setup qualifications/current entries are invalid. `PassportEntrySchema` records mission, experiments, claims, citations, observation type, evidence level, learner conclusion, correction history, limitations, setup revision and scenario origin. V1's fictional lunar mission cannot award direct lunar evidence. Future genuine lunar evidence requires reviewed scenario/contract evolution rather than relaxing the label silently.
+**Missions and deterministic completion criteria**
 
-`observationType` is the epistemic kind of the supporting catalog claim(s), not the player's opinion about them. All claimIds in one entry must share that kind; validation now rejects a mismatch. Use separate entries for distinct kinds. `conclusion` and correction prose remain unverified learner notes; `scenario` identifies the mission context, while research origin belongs to the cited catalog claim. An entry may cite a research observation within the fictional lunar scenario, but cannot label it direct lunar evidence. Evidence applicability, entailment of free text, and actual mission completion are still outside this structural/lineage validator.
+| Mission | Actions | Completion requires |
+|---|---|---|
+| station-arrival | INSPECT_EVIDENCE, COLLECT_EVIDENCE (observed research claims only, after inspection) | A current station-arrival passport entry |
+| bass-assembly | INSTALL_PART / REMOVE_PART / QUALIFY_INSTRUMENT / OBSERVE_DOCUMENTED_RESULT | Qualified instrument at the current setup revision and an observation entry from it |
+| flame-detective | PREDICT_OUTCOME, then OBSERVE_DOCUMENTED_RESULT (setup actions allowed) | Prediction and observation at the current, qualified revision |
+| claim-trial | CLASSIFY_CLAIM over `claimTrialStatements` (2 research, 2 labelled tutorial statements) | Latest classification of every statement correct; wrong attempts become passport corrections |
+| lunar-habitat | RECORD_DECISION (`safe`/`unsafe` rejected), PROPOSE_NEXT_TEST | `insufficient-evidence` verdict and ≥1 proposal. Entry is `fictional-scenario`, evidence level `gap` |
 
-`createGameState`, `loadProgress`, `saveProgress` take explicit dependencies; no browser/Three.js import. Pass localStorage through the SaveStorage interface. Normal/demo use separate keys. One atomic setItem writes a whole snapshot. Corrupt, unsupported-version or dataset-mismatched saves remain untouched; caller must offer export/review/reset instead of silently overwriting. V1 is the first format; no fictitious legacy migration is claimed. A future version must ship a pure tested migration. Multi-tab conflict resolution and server sync are deferred. Client data is editable and not an anti-cheat authority.
+**Apparatus.** `partDefinitions` gives each of the ten parts its anchor, prerequisites and orientation fault/repair text, justified by the BASS-II hardware description (NTRS 20210011385, PDF page 12 / printed 4, §1.2; `BASS_HARDWARE_CITATION`). Mounting order is an **educational dependency model**, not a NASA procedure. No dimensions are asserted. `diagnose(installedParts)` lists `MISSING`/`REVERSED` faults with exact repairs. Orientation faults exist for the fan, sample holder (concurrent vs the documented opposed flow), still/video cameras and radiometer. Removing a part with installed dependents returns `HAS_DEPENDENTS`.
 
-`saveProgress` returns storage-unavailable for either read or write failure, invalid-state for invalid/oversized input, and existing-save-needs-review for corrupt/unsupported/mismatched existing data. A storage access failure must not prompt deletion or a fake successful save. `transition` expects a validated state and throws on invalid state/timestamp; action failures use TransitionResult. Handle load/parse errors before dispatch. Existing v1 state supports inspection only; P2 assembly placements, predictions and full decision history will require an explicitly versioned, reviewed state extension/migration before implementation.
+**Invalidation.** Every install/remove bumps `setup.revision`, clears qualification, marks setup-dependent passport entries `invalidated` and truncates completed missions to the prefix that still has current proof. Source-only entries (station-arrival, claim-trial) survive. Entry IDs include the setup revision, so retries are idempotent and re-observation after a change creates a new entry instead of overwriting history.
 
-Claude should consume typed actions/results identically in 3D and keyboard/2D views. Research must render without WebGL/AI. Do not add Three.js until P2 needs it; missing GLB must never block the future 2D interaction path.
+**Persistence.** Save key `microfire-v2:save:v1:{mode}` (key version, not state version) stores v2 state. `loadProgress` returns `loaded` (with `migratedFrom: 1` for Phase Zero saves; untrusted v1 parts are dropped and setup-dependent proof invalidated), `empty`, `corrupt` (including a save claiming qualification with a faulty rig), `unsupported-version`, `dataset-mismatch` or `storage-unavailable`. `saveProgress` refuses to overwrite anything not cleanly loadable. Recovery UI: offer `readRawSave` as a download, then `discardSave(storage, mode, 'discard-save-after-export')`. Normal and demo saves never share a key. Client saves are editable and are not anti-cheat or achievement authority.
+
+Claude should consume typed actions/results identically in 3D and keyboard/2D views; the renderer never computes evidence truth. Research must render without WebGL/AI.

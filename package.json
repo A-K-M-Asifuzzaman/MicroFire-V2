@@ -19,8 +19,9 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "validate:data": "node --import tsx scripts/validate-sources.ts",
+    "eval:science": "node --import tsx scripts/eval-science.ts",
     "security": "node scripts/security-check.mjs",
-    "check": "npm run lint && npm run typecheck && npm test && npm run validate:data && npm run security && npm run build"
+    "check": "npm run lint && npm run typecheck && npm test && npm run validate:data && npm run eval:science && npm run security && npm run build"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

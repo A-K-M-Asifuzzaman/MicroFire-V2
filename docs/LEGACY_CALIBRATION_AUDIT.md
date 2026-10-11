@@ -34,3 +34,24 @@ The pinned file has 56 candidate BASS-II rows. Twenty-five rows annotate their o
 Runtime containment: the catalog imports only data/fixtures/catalog.json. There is no upstream loader, ingestion scheduler or provider call. GET requests for bass2-b16/bass2-b19 do not resolve; rank/compare/Ask services return 501 rather than publishing those claims. The migration manifest's per-record review gate remains in force. A future dataset update must add original source cells, corrections, missingness, terms and tests in a reviewed V2-only commit and change datasetVersion; never patch the reference repository.
 
 Independent human scientific review and full-corpus calibration/endpoint evaluation remain **NOT TESTED**. That is a data-promotion gate, not permission to treat the legacy candidates as verified during Phase One.
+
+## Phase One B16/B19 primary-source review — 2026-10-11
+
+Machine-readable record: `data/quarantine/b16-b19-source-review.json` (hash-pinned in `data/integrity.json`). The NASA PDF was freshly downloaded and its SHA-256 re-matched (`5ffa911f…f770`). Column alignment was checked two ways: pdftotext `-layout` character offsets of each header against each value, and visual inspection of PDF pages 111 and 112 rendered at 110 dpi. The legacy file at the pinned commit re-matched `bb756a0e…b993`.
+
+| Field | B16 (as-run 51, p.111 / printed 103) | B19 (as-run 52, p.112 / printed 104) | Legacy |
+|---|---|---|---|
+| Calibrated initial / final O2 vol% | **17.3 / 17.2** | **17.3 / 17.2** | B16 16.5/16.4, B19 16.4/16.3, labelled "calibrated" |
+| Initial / final O2 vol% (uncalibrated columns) | 16.5 / 16.4 | 16.4 / 16.3 | — the legacy values come from these columns |
+| Flow restrictor | 2 | **0** | not recorded |
+| Air display | 3, 5 pot, 0.4 pot | 10, blowoff | matches |
+| Observation | quenched after prolonged burn at 0.4 pot; one-sided flame; "did igniter wire affect top flame?" | blew out at a pot of 6.0 | outcome labels "quenched as flow was reduced" / "blew off at high flow" |
+
+Findings:
+
+1. **Confirmed (High):** both rows have the same column-transcription error as B20. Legacy oxygen comes from the uncalibrated Initial/Final O2 columns while claiming the calibrated column. The calibrated-minus-uncalibrated difference is 0.8 (B16) or 0.9 (B19, B20) vol%. No universal offset applies.
+2. **New (Medium):** B19 ran with flow restrictor 0, while B16 and B20 used 2. Section 1.2 (PDF page 12) states that restrictors change the maximum duct flow (~55 cm/s with none, ~35 cm/s with two). The legacy schema has no field for this, so a B16/B19/B20 "airflow series" would hide a hardware difference.
+3. **New (Medium):** both legacy outcome labels are authored interpretations. The rows record potentiometer settings at quench and blow-out, not velocities, and no pot-to-velocity conversion is reviewed for these rows.
+4. **New (Medium):** B16's observation records an anomaly question about the igniter wire and a one-sided flame, but the legacy record has no quality flag.
+
+**Decision:** B16 and B19 stay quarantined (ledger status `source-cells-checked-pending-review`). They are not in the runtime catalog, and every research API, Ask and gameplay path refuses them; regression tests cover each path. Promotion requires independent human review of these cells and findings, a corrected V2-only record with its own claims/limitations, and an owner-approved datasetVersion change. The other 53 rows stay `quarantined`, with legacy locators marked `verified: false`. The full containment list is `data/quarantine/legacy-ledger.json` (55 rows, every legacy row except B20).

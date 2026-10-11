@@ -82,3 +82,6 @@ export const CatalogSchema = z.strictObject({
 export type Catalog = z.infer<typeof CatalogSchema>;
 export type Experiment = z.infer<typeof ExperimentSchema>;
 export type Citation = z.infer<typeof CitationSchema>;
+export type Source = z.infer<typeof SourceSchema>;
+export type EvidenceLevel = z.infer<typeof EvidenceLevelSchema>;
+export type StatementType = z.infer<typeof StatementTypeSchema>;

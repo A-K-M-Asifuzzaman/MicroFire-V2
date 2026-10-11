@@ -36,8 +36,8 @@ test('API contracts, errors and no-service fallback', async ({ request }) => {
   expect((await request.get('/api/experiments?limit=-1')).status()).toBe(400);
   expect((await request.get('/api/experiments/missing')).status()).toBe(404);
   const ask = await request.post('/api/ask', { data: { question: 'Can this certify a lunar habitat?', targetConditions: {} } });
-  expect(ask.status()).toBe(501);
-  expect((await ask.json()).error.code).toBe('NOT_IMPLEMENTED');
+  expect(ask.status()).toBe(200);
+  expect((await ask.json()).data).toMatchObject({ abstained: true, code: 'unsupported-intent' });
   expect((await request.post('/api/constructor', { data: {} })).status()).toBe(404);
   const record = body.data.items[0];
   const mismatchedPassport = { schemaVersion: 1, purpose: 'educational-research-record', entries: [{
