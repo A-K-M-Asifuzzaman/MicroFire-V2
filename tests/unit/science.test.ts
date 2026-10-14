@@ -63,7 +63,7 @@ describe('search and ranking', () => {
     expect(searchExperiments({ flowDirection: 'concurrent' })).toEqual([]);
   });
   it('ranks reproducibly, explains its formula, and never labels unknown gravity as direct', () => {
-    const request = { question: 'PMMA flame in opposed flow', targetConditions: { material: 'PMMA', oxygenPct: 17.4 }, limit: 5 };
+    const request = { question: catalog.experiments[0]!.claims[0]!.text, targetConditions: { material: 'PMMA', oxygenPct: 17.4 }, limit: 5 };
     const first = rankEvidence(request);
     expect(rankEvidence(request)).toEqual(first);
     expect(first.items[0]).toMatchObject({ experimentId: 'bass2-b20', evidenceLevel: 'direct', matchedFields: ['material', 'oxygenPct'] });

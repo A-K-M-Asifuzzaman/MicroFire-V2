@@ -11,6 +11,8 @@ export function validatePassport(input: unknown, dataset: Catalog = catalog): Pa
   for (const entry of passport.entries) {
     const experiments = entry.experimentIds.map((id) => dataset.experiments.find((e) => e.id === id));
     if (experiments.some((e) => !e)) throw new Error('Unknown passport experiment');
+    if (experiments.some((e) => e!.limitations.some((limitation) => !entry.limitations.includes(limitation))))
+      throw new Error('Passport is missing canonical source limitations');
     const claims = experiments.flatMap((e) => e?.claims ?? []);
     if (entry.claimIds.some((id) => !claims.some((c) => c.id === id))) throw new Error('Unknown passport claim');
     if (claims.some((claim) => entry.claimIds.includes(claim.id) && claim.kind !== entry.observationType))

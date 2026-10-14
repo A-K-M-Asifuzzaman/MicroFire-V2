@@ -1,61 +1,34 @@
-# Typed backend handoff — independent Phase One review
+# Claude M1 backend handoff — Astra corrections, 2026-10-14
 
-Use the final local review SHA supplied in the handoff, not the primary checkout's older Phase Zero HEAD. Branch: `feat/phase-one-backend-review`; worktree `../MicroFire-V2-backend-review`. No push, main merge or deployment is authorized by this review. Read API_CONTRACTS.md and FEATURE_REGISTRY_REVIEW.md. Review changes against `882e3c8`, and all earlier shared schemas against `0bd3f056394ceeaa2891753055a7ab782d3be5c2`.
+Backend verdict: READY for frontend M1 development on feat/astra-defect-fixes, subject to adopting the current contracts below. This does not approve frontend integration, gameplay availability or public release. Base: 1c1af90; exact implementation commit and final branch HEAD are recorded in ASTRA_FIXES_INTEGRATION_REPORT.md and the final handoff. Do not branch from the older origin/main and miss the local corrections. No push, merge or deployment was performed.
 
-## Compatibility
+## Contracts to adopt together
 
-No shared schema, save format, action DTO or HTTP envelope changed in this review. Existing API v1, GameState v2, Passport v1 and dataset `p0-bass-b20-v1` remain. Ask retrievalVersion is now `p1-grounded-template-v2`; ranking weights/tolerances and `p1-conditions-lexical-v1` remain. Source transcriptions, hashes and quarantine ledger are unchanged. Shared-registry explanation changes remain **pending** per the owner: five are accurate as proposed; Ask should say citation-lineage checks, not imply scientific truth verification. Page copy belongs to Claude.
+- API envelope version stays 1 for this pre-release baseline. Rank responses now require support {kind, claimId, citations}; rankingVersion is p1-claim-support-v2. Old strict parsers are incompatible with the additional required fields, including the earlier coverage/Ask changes. Adopt the current @microfire/shared, not copied DTOs.
+- A retrieval score or a matched field is not proof of a measured outcome. Only complete canonical source-claim text establishes support in this conservative deterministic matcher; free-form paraphrases are not semantically verified. Unknown/unrecognized outcomes remain gap even with high relevance. Direct requires an observed research claim, resolvable source citations and exact recorded target conditions, not tolerance-only matches. Derived, interpretation and unsupported support kinds stay distinct. Direct with no target describes the source run only.
+- Ask remains deterministic fixed-template output, without an AI provider. Repeated test IDs are normalized/deduplicated; bounded abstention summaries preserve full catalog/quarantine lookup. Render 200 abstentions as such. Continue handling 400/413/415/429, Retry-After, transport/non-JSON failures and safe 500 errors.
+- Passport schemaVersion stays 1; GameState stays v2. Entry.limitations retains canonical source warnings; entry.learnerNotes holds learner text separately and defaults to [] for older entries. Do not merge these arrays or label learner text verified. Passport validation rejects missing canonical caveats but still does not verify arbitrary prose, applicability or achievements.
+- v1 saves migrate to v2 with setup-proof invalidation; older v2 saves load with default notes. Existing defective/edited passports are not retroactively scientifically approved by loading them. Present canonical dossier warnings independently and flag failed Passport validation rather than silently claiming acceptance.
+- MAX_SAVE is exported by @microfire/game-core: 500,000 serialized UTF-16 characters. Every successful transition produces a schema-valid, structurally saveable state within that limit. A candidate exceeding it returns SAVE_LIMIT_REACHED and the identical prior state. Show the error without replacing state or claiming that the action was saved.
+- PROPOSE_NEXT_TEST keeps its existing input shape; its limitations field is learner-authored. REMOVE_PROPOSAL with an index 0–19 lets the learner explicitly remove a proposal in the lunar mission to recover budget; an absent index returns INVALID_ACTION. No proposal/note is silently dropped for size. After freeing space, retry the refused action or completion.
+- Classifications retain the newest 200 attempts. At capacity, an older superseded attempt is removed while each statement's latest answer is preserved; corrections remain possible before/after reload. The bounded Passport correction history is not a complete event log or a score penalty.
 
-## UI-facing behavioral changes and examples
+Use transition(state, action, catalog, at) in every graphical/keyboard/2D adapter. On failure preserve result.state and render result.message. Parse/load before dispatch; corrupt, unsupported, oversized or mismatched saves are recovery states. Offer readRawSave/download before explicit discardSave confirmation. Storage failures are still possible even when state is within budget; show them honestly and retain the in-memory state.
 
-1. Long unknown test references abstain; never display a B20 answer as an answer about another test.
+## Data and status boundaries
 
-```json
-{"apiVersion":"1","data":{"abstained":true,"code":"no-relevant-evidence","reason":"B999 is not in the validated catalog. Not found here is not the same as never studied.","citations":[],"datasetVersion":"p0-bass-b20-v1","retrievalVersion":"p1-grounded-template-v2"}}
-```
+One source-checked B20 observation remains admitted: calibrated oxygen 17.4 vol%; raw flow sequence, unknown pressure/acceleration/uncertainty and limitations unchanged. All 55 other legacy rows remain quarantined, including B16/B19 source-cells-checked-pending-review. No valid two-record comparison exists; display the compare 404 honestly. No new scientific value, source, model, media or provider was added.
 
-2. A named B20 explanation with `{ "material": "cotton" }` includes an `unknown-or-gap` statement saying no requested target conditions match. `direct-observation` describes B20's recorded run, not evidence that cotton was measured. Display the gap and record limitations alongside observations. Oversized explanations abstain with `unsupported-intent` and a reason asking the visitor to narrow the question; no partial scientific sentence is silently truncated.
+The six approved feature reasons are applied with precise Ask wording, with every readiness field unchanged. Production missions remain UNAVAILABLE. Backend HTTP browser checks are not completed workstation/PIX/frontier/export workflows or playable mission evidence. Claude still owns the stale home/methodology page copy and research interaction implementation.
 
-3. Ranking/gap target previews above 200 characters are labelled truncated **for display only**; full input is still matched. A limiter failure returns ApiErrorSchema JSON 500, with no private connection detail and no research operation executed. HTTP 429 still carries Retry-After; 500 is not automatically retryable.
+## Shared-file and dependency ownership
 
-4. Once the Flame Detective result is recorded, a replacement prediction for that same experiment/revision returns the existing error code:
+The owner authorized these Astra contract corrections and reason changes. Claude must review actual consumer adoption before merging its frontend. No Claude approval or cross-chat acknowledgement is claimed.
 
-```ts
-import { catalog } from '@microfire/science';
-import { transition } from '@microfire/game-core';
-import type { GameAction, GameState } from '@microfire/shared';
+Sol changed no dependency/package/lockfile/config. Claude owns the next Three.js/R3F package and lockfile proposal in its separate branch; Sol must not concurrently edit those files. Review versions and changes, run clean install/audit/check/browser validation before merging the dependency proposal. No paid Meshy jobs or dependency installation was authorized by this handoff.
 
-function dispatch(state: GameState, action: GameAction) {
-  const result = transition(state, action, catalog, new Date().toISOString());
-  // No renderer override of isMissionAvailable: production missions remain gated.
-  if (!result.ok) {
-    // Render result.message and preserve result.state, including prediction history.
-    // INVALID_ACTION: "The result is already recorded for this setup. Keep the original prediction; a new setup requires a new prediction."
-    return result;
-  }
-  return result;
-}
-```
+Create a separate frontend worktree from feat/astra-defect-fixes after verifying its exact SHA. Keep primary MicroFire-V2 and the existing dirty worktrees. Dev ports: Claude 3101, Sol 3102; browser tests use 3217 sequentially. See OWNERSHIP.md and API_CONTRACTS.md. No direct-main push or deployment.
 
-Incoming state must first pass load/parse; invalid incoming state is a recovery boundary, not an action failure. Existing PREREQUISITE_MISSING repair recovery and anchor/orphan save rejection remain tested. Client saves and Passport lineage are not authenticated achievements or scientific certification. Prediction gating is not a blinded study: the dossier/Assembly can already expose the same documented outcome.
+## Evidence
 
-## Coordination
-
-The six-reason review and exact before/after diff are in FEATURE_REGISTRY_REVIEW.md, including the recommended Ask wording and the separate methodology/home page corrections. Shared owner review under OWNERSHIP.md plus the owner's leave-pending instruction must be resolved before applying or committing `packages/shared/src/features.ts`. Do not change `state`, `implemented`, prerequisites, verification metadata, routes or IDs as part of this copy patch. Keep all missions gated. No approval has been inferred.
-
-For the eventual consumers, import these existing contracts from `@microfire/shared`; API_CONTRACTS.md defines their error behavior and examples:
-
-| Surface | Backend operation | Response contract / limitation |
-|---|---|---|
-| Workstation | GET `/api/experiments`, POST `/api/evidence/rank` | ExperimentsResponseSchema, RankResponseSchema; show coverage, reasons and retrieval-only score meaning |
-| Atlas | GET `/api/experiments` with validated filters | ExperimentsResponseSchema; `total` is catalog matches, not all NASA records |
-| Dossier/export | GET `/api/experiments/:id`, GET `/api/export?ids=bass2-b20` | ExperimentResponseSchema, ExportResponseSchema; display limitations and hash/disclaimer; comparisons require another approved record |
-| Frontier | POST `/api/gaps` | GapsResponseSchema; field matches are not answers or worldwide absence |
-| PIX | POST `/api/ask` | AskResponseSchema; branch on `abstained`, then statements/categories or code/reason; lineage is not truth verification |
-| Methodology | Backend evaluation documents, no evaluation endpoint | Read docs/evals/report.md and its small author-labelled/one-record limitations; no independent performance claim |
-
-The follow-up evaluator/report correction follows local backend commit `6a82887be81653255867fc748751e8b84b2479bd`; its local commit SHA is supplied in the handoff response. Do not assume it exists on origin/main. The evaluator's repeatability metric previously compared differently ordered objects using JSON strings; structural comparison now treats key order correctly and fails an evaluation case if repeatability breaks. Corrected repeatability is 30/30; a deliberate non-repeatability probe failed 30/30 and exited 1 as required. No runtime API contract changed.
-
-The owner requested no registry application until Claude's review; preserve Claude's uncommitted features.ts patch in MicroFire-V2-codex. No frontend component, page, CSS, Next config, shared contract or browser-test file was edited by this review. No identifiable Claude Code chat was available to message; these typed examples are the reviewable handoff, not a claim that Claude has approved them.
-
-Claude dev port 3101; Codex 3102; review-only production API probes use 3103. Browser suites share 3217 and must run sequentially after checking it is free. Keep the primary MicroFire-V2 checkout; it owns the worktree Git metadata. New work or integration must follow the latest owner instruction: commit review work locally, **do not push directly to main**. This supersedes OWNERSHIP.md's earlier dated direct-main workflow for this run.
+The integration report contains all five fixes, the six reproduction outcomes, tests and limitations. Existing suite expanded from 80 to 103 tests; browser suite from 12 to 14. Source validation retains one source/experiment and 55 quarantined rows. These establish the backend development baseline, not independent human scientific approval, final accessibility/performance acceptance or release readiness.

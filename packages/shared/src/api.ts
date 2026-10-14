@@ -35,7 +35,14 @@ export const TargetConditionsSchema = z.strictObject({
 export const RankRequestSchema = z.strictObject({ question: TextSchema, targetConditions: TargetConditionsSchema, limit: z.number().int().min(1).max(20).default(5) });
 export const RankedEvidenceSchema = z.strictObject({
   experimentId: IdSchema, evidenceLevel: EvidenceLevelSchema, relevanceScore: z.number().min(0).max(1),
+  support: z.strictObject({ kind: z.enum(['observed', 'derived', 'interpretation', 'unsupported']), claimId: IdSchema.nullable(), citations: z.array(CitationSchema).max(20) }),
   matchedFields: z.array(TextSchema), mismatches: z.array(TextSchema), missingFields: z.array(TextSchema), reasons: z.array(TextSchema).min(1), limitations: z.array(TextSchema).min(1)
+}).superRefine((item, ctx) => {
+  const supported = item.support.kind !== 'unsupported';
+  if (supported !== (item.support.claimId !== null && item.support.citations.length > 0) ||
+    (!supported && (item.evidenceLevel !== 'gap' || item.support.claimId !== null || item.support.citations.length > 0)) ||
+    (item.evidenceLevel === 'direct' && item.support.kind !== 'observed'))
+    ctx.addIssue({ code: 'custom', message: 'Evidence level requires consistent source claim support' });
 });
 export const RankResponseSchema = envelope(z.strictObject({ items: z.array(RankedEvidenceSchema), rankingVersion: IdSchema, datasetVersion: IdSchema, scoreMeaning: z.literal('retrieval-relevance-not-fire-risk'), coverage: CoverageSchema }));
 export const CompareRequestSchema = z.strictObject({ experimentIds: z.array(IdSchema).min(2).max(4) }).refine((r) => new Set(r.experimentIds).size === r.experimentIds.length, 'Choose distinct records');

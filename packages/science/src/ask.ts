@@ -49,11 +49,13 @@ export function answerQuestion(request: { question: string; targetConditions: Ta
   const question = request.question;
   for (const rule of UNSUPPORTED) if (rule.pattern.test(question)) return abstain('unsupported-intent', rule.reason);
 
-  const mentioned = [...question.matchAll(TEST_ID)].map((m) => m[1]!.toLowerCase());
+  const mentioned = [...new Set([...question.matchAll(TEST_ID)].map((m) => m[1]!.toLowerCase()))];
   const unknownTests = mentioned.filter((t) => !dataset.experiments.some((e) => e.testId.toLowerCase() === t));
+  const testSummary = (tests: string[]) => tests.slice(0, 10).map((t) => t.toUpperCase().slice(0, 100) + (t.length > 100 ? '…' : '')).join(', ') +
+    (tests.length > 10 ? ` (and ${tests.length - 10} other distinct references)` : '');
   if (unknownTests.some(isQuarantinedTestId))
-    return abstain('quarantined-record', `${unknownTests.filter(isQuarantinedTestId).map((t) => t.toUpperCase()).join(', ')} is a legacy candidate quarantined pending primary-source review; it is not validated evidence and is not used in answers.`);
-  if (unknownTests.length) return abstain('no-relevant-evidence', `${unknownTests.map((t) => t.toUpperCase()).join(', ')} is not in the validated catalog. Not found here is not the same as never studied.`);
+    return abstain('quarantined-record', `${testSummary(unknownTests.filter(isQuarantinedTestId))} is a legacy candidate quarantined pending primary-source review; it is not validated evidence and is not used in answers.`);
+  if (unknownTests.length) return abstain('no-relevant-evidence', `${testSummary(unknownTests)} is not in the validated catalog. Not found here is not the same as never studied.`);
 
   const terms = contentTokens(question);
   const ranked = rankEvidence({ question, targetConditions: request.targetConditions, limit: 3 }, dataset);

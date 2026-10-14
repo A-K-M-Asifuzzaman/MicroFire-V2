@@ -60,7 +60,7 @@ export function createGameState(datasetVersion: string, mode: SessionMode, at: s
 
 export type TransitionCode = 'INVALID_ACTION' | 'UNAVAILABLE' | 'PREREQUISITE_MISSING' | 'WRONG_MISSION' | 'UNKNOWN_EXPERIMENT' | 'UNKNOWN_CLAIM' |
   'NOT_INSPECTED' | 'NOT_AN_OBSERVATION' | 'WRONG_ANCHOR' | 'ALREADY_INSTALLED' | 'NOT_INSTALLED' | 'HAS_DEPENDENTS' | 'QUALIFICATION_FAILED' |
-  'NOT_QUALIFIED' | 'PREDICTION_REQUIRED' | 'UNSUPPORTED_DECISION' | 'COMPLETION_CRITERIA_UNMET' | 'LIMIT_REACHED' | 'INVARIANT_VIOLATION';
+  'NOT_QUALIFIED' | 'PREDICTION_REQUIRED' | 'UNSUPPORTED_DECISION' | 'COMPLETION_CRITERIA_UNMET' | 'LIMIT_REACHED' | 'SAVE_LIMIT_REACHED' | 'INVARIANT_VIOLATION';
 export type TransitionResult =
   | { ok: true; state: GameState; feedback?: { correct: boolean; hint: string } }
   | { ok: false; state: GameState; code: TransitionCode; message: string; faults?: Fault[] };
@@ -88,13 +88,13 @@ function observedClaims(dataset: Catalog, experimentId: string) {
   return e ? e.claims.filter((c) => c.kind === 'observed' && c.origin === 'research') : [];
 }
 function entryFrom(missionId: MissionId, id: string, dataset: Catalog, experimentId: string, claims: ReturnType<typeof observedClaims>, at: string,
-  extra: Partial<Pick<PassportEntry, 'conclusion' | 'evidenceLevel' | 'corrections' | 'setupRevision' | 'scenario' | 'limitations'>> = {}): PassportEntry {
+  extra: Partial<Pick<PassportEntry, 'conclusion' | 'evidenceLevel' | 'corrections' | 'setupRevision' | 'scenario' | 'learnerNotes'>> = {}): PassportEntry {
   const experiment = dataset.experiments.find((e) => e.id === experimentId)!;
   const citations: Citation[] = [];
   for (const c of claims.flatMap((x) => x.citations)) if (!citations.some((y) => JSON.stringify(y) === JSON.stringify(c))) citations.push(c);
   return {
     id, missionId, experimentIds: [experimentId], claimIds: claims.map((c) => c.id), observationType: 'observed', evidenceLevel: 'direct',
-    conclusion: claims.map((c) => c.text).join(' '), citations, limitations: experiment.limitations.slice(0, 20), corrections: [],
+    conclusion: claims.map((c) => c.text).join(' '), citations, limitations: [...experiment.limitations], learnerNotes: [], corrections: [],
     setupRevision: null, status: 'current', scenario: 'research', createdAt: at, ...extra
   };
 }
@@ -111,6 +111,9 @@ export function transition(state: GameState, input: unknown, dataset: Catalog, a
     // Safety net: a rule gap must surface as a recoverable failure with the old state, never as a thrown error.
     const checked = GameStateSchema.safeParse({ ...next, updatedAt: at });
     if (!checked.success) return fail('INVARIANT_VIOLATION', 'This action would produce an inconsistent game state and was not applied.');
+    if (!setupIsConsistent(checked.data)) return fail('INVARIANT_VIOLATION', 'This action would produce an unsaveable apparatus state and was not applied.');
+    if (JSON.stringify(checked.data).length > MAX_SAVE)
+      return fail('SAVE_LIMIT_REACHED', 'This action exceeds the local save budget and was not applied. Shorten the new text or remove an older proposal before retrying. Your previous progress is unchanged.');
     return { ok: true, state: checked.data, ...(feedback ? { feedback } : {}) };
   };
   const requireMission = (allowed: readonly MissionId[]) => state.activeMission && allowed.includes(state.activeMission) ? null
@@ -188,9 +191,14 @@ export function transition(state: GameState, input: unknown, dataset: Catalog, a
       const wrong = requireMission(['claim-trial']); if (wrong) return wrong;
       const statement = claimTrialStatements.find((s) => s.id === action.claimId);
       if (!statement) return fail('UNKNOWN_CLAIM', 'That statement is not part of this trial.');
-      if (state.classifications.length >= 200) return fail('LIMIT_REACHED', 'Classification attempt limit reached.');
+      let history = state.classifications;
+      if (history.length >= 200) {
+        // Keep each statement's latest answer; discard an older superseded attempt, never the ability to correct.
+        const superseded = history.findIndex((c, i) => history.slice(i + 1).some((later) => later.statementId === c.statementId));
+        history = history.filter((_, i) => i !== Math.max(0, superseded));
+      }
       const correct = statement.expected.kind === action.kind && statement.expected.evidenceLevel === action.evidenceLevel;
-      return done({ ...state, classifications: [...state.classifications, { statementId: statement.id, kind: action.kind, evidenceLevel: action.evidenceLevel, correct, at }] },
+      return done({ ...state, classifications: [...history, { statementId: statement.id, kind: action.kind, evidenceLevel: action.evidenceLevel, correct, at }] },
         { correct, hint: correct ? 'Classification matches the source record.' : statement.hint });
     }
     case 'RECORD_DECISION': {
@@ -202,6 +210,11 @@ export function transition(state: GameState, input: unknown, dataset: Catalog, a
       const wrong = requireMission(['lunar-habitat']); if (wrong) return wrong;
       if (state.proposals.length >= 20) return fail('LIMIT_REACHED', 'Proposal limit reached.');
       return done({ ...state, proposals: [...state.proposals, { question: action.question, limitations: action.limitations, at }] });
+    }
+    case 'REMOVE_PROPOSAL': {
+      const wrong = requireMission(['lunar-habitat']); if (wrong) return wrong;
+      if (action.index >= state.proposals.length) return fail('INVALID_ACTION', 'That proposal does not exist.');
+      return done({ ...state, proposals: state.proposals.filter((_, i) => i !== action.index) });
     }
     case 'COMPLETE_MISSION': {
       if (state.activeMission !== action.missionId) return fail('WRONG_MISSION', 'Start this mission before completing it.');
@@ -238,9 +251,9 @@ export function transition(state: GameState, input: unknown, dataset: Catalog, a
           if (!state.proposals.length) return unmet('Propose a next measurement that would address the gap.');
           const e = dataset.experiments.find((x) => state.inspectedExperimentIds.includes(x.id) && observedClaims(dataset, x.id).length);
           if (!e) return unmet('Inspect a validated record to cite.');
-          const limitations = [...new Set([...state.proposals.flatMap((p) => p.limitations), ...e.limitations])].slice(0, 20);
+          const learnerNotes = [...new Set(state.proposals.flatMap((p) => p.limitations))];
           next = addEntry(state, entryFrom('lunar-habitat', 'lunar-habitat-case-report', dataset, e.id, observedClaims(dataset, e.id), at, {
-            scenario: 'fictional-scenario', evidenceLevel: 'gap', limitations,
+            scenario: 'fictional-scenario', evidenceLevel: 'gap', learnerNotes,
             conclusion: `Fictional scenario. Verdict: insufficient evidence. Proposed next test: ${state.proposals.at(-1)!.question.slice(0, 1000)}`
           }));
           break;
@@ -256,7 +269,7 @@ export function exportPassport(state: GameState): Passport { return PassportSche
 // ---------------- persistence ----------------
 export interface SaveStorage { getItem(key: string): string | null; setItem(key: string, value: string): void; removeItem(key: string): void }
 export const saveKey = (mode: SessionMode) => `microfire-v2:save:v1:${mode}`;
-const MAX_SAVE = 500_000;
+export const MAX_SAVE = 500_000;
 export type LoadResult = { status: 'loaded'; state: GameState; migratedFrom: 1 | null } | { status: 'empty' | 'corrupt' | 'unsupported-version' | 'dataset-mismatch' | 'storage-unavailable' };
 
 /** v1 never supported installing parts, so any v1 parts cannot be trusted: drop them and invalidate setup-dependent proof. */
@@ -287,6 +300,7 @@ export function loadProgress(storage: SaveStorage, mode: SessionMode, datasetVer
   if (state.mode !== mode) return { status: 'corrupt' };
   if (!setupIsConsistent(state)) return { status: 'corrupt' };
   if (state.datasetVersion !== datasetVersion) return { status: 'dataset-mismatch' };
+  if (JSON.stringify(state).length > MAX_SAVE) return { status: 'corrupt' };
   return { status: 'loaded', state, migratedFrom };
 }
 /** Rejects setups the reducer cannot produce: misplaced or orphaned parts, or a qualification the rig does not pass. */
