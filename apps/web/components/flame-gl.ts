@@ -9,25 +9,30 @@ float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
 float fbm(vec2 p){ float v = 0., a = .5; for (int i = 0; i < 4; i++) { v += a * noise(p); p *= 2.; a *= .5; } return v; }
 void main(){
   vec2 uv = gl_FragCoord.xy / res * 2. - 1.;
-  float cy = mix(-.075, -.25, g);
+  float cy = mix(-.05, -.3, g);
   vec2 p = uv - vec2(0., cy);
-  float n = fbm(vec2(uv.x * 2.5, uv.y * 2.5 - t * mix(.15, 1.8, g)));
+  float rise = mix(.25, 2.6, g);
+  float n1 = fbm(vec2(p.x * 3., p.y * 3. - t * rise));
+  float n2 = fbm(vec2(p.x * 7. + 3., p.y * 7. - t * rise * 1.6));
   float above = max(p.y, 0.);
-  p.x += (n - .5) * .36 * g * above;
-  float r = mix(.31, .21, g);
-  vec2 q = vec2(p.x, p.y > 0. ? p.y / mix(1., 3.2, g) : p.y * mix(1., 1.4, g)) / r;
-  q.x *= 1. + g * above * 2.2;
-  float d = length(q) + (n - .5) * mix(.06, .35, g);
-  float shell = exp(-pow((d - .8) * 5., 2.));            // thin reaction zone
-  float fill = smoothstep(1., .55, d);
-  float core = smoothstep(.75, .15, d);
-  vec3 blue = vec3(.32, .58, 1.), orange = vec3(1., .47, .16), yellow = vec3(1., .84, .48);
-  vec3 col = blue * shell * mix(1.05, .5, g) + blue * fill * .16 * (1. - g);          // still air: dim blue shell
-  col += orange * core * .22 * (1. - g);                                                   // faint soot glow
-  col += mix(orange, yellow, core) * g * fill * smoothstep(-.3, .2, p.y + .05) * 1.25;    // buoyant: luminous soot
-  col += blue * fill * .8 * g * smoothstep(.05, -.25, p.y);                                 // blue base at 1 g
-  col += mix(blue, orange, g) * exp(-d * 2.) * .2;                                          // halo
-  col = clamp(col, 0., 1.);
+  p.x += (n1 - .5) * .3 * g * above + (n2 - .5) * .015;
+  float r = mix(.3, .19, g) * (1. + .035 * sin(t * 1.2) * (1. - g));   // slow "breathing" in still air
+  vec2 q = vec2(p.x, p.y > 0. ? p.y / mix(1., 3.4, g) : p.y * mix(1., 1.5, g)) / r;
+  q.x *= 1. + g * above * 2.4;
+  float d = length(q) + (n1 - .5) * mix(.12, .42, g) + (n2 - .5) * .06;
+  float body = exp(-d * d * 2.2);                       // soft volumetric body
+  float shell = exp(-pow((d - .84) * 3.4, 2.));         // reaction zone, soft edged
+  float core = exp(-d * d * 7.);
+  vec3 deep = vec3(.1, .2, .85), blue = vec3(.25, .5, 1.), cyan = vec3(.55, .85, 1.);
+  vec3 orange = vec3(1., .45, .12), yellow = vec3(1., .8, .42), white = vec3(1., .96, .86);
+  // Microgravity: a dim blue sphere with a faint warm heart.
+  vec3 micro = mix(deep, cyan, shell * shell) * shell * .75 + mix(blue, cyan, body) * body * .6 + orange * core * .3;
+  // Earth: buoyant teardrop of glowing soot over a blue base.
+  float lum = smoothstep(-.35, .15, p.y + .05);
+  vec3 earth = mix(orange, yellow, core) * body * lum * 1.55 + white * core * lum * .5
+    + blue * body * smoothstep(0., -.3, p.y) * 1.1 + orange * shell * .2;
+  vec3 col = mix(micro, earth, g) + mix(blue, orange, g) * exp(-d * 1.6) * .13;   // halo
+  col = 1. - exp(-col * 1.7);                            // soft filmic clip, no hard edges
   gl_FragColor = vec4(col, max(col.r, max(col.g, col.b)));  // premultiplied, additive-looking
 }`;
 

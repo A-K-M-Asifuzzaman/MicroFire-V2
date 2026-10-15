@@ -1,6 +1,6 @@
 # M1.5 cinematic experience: report
 
-Owner: Claude (frontend). Branch `feat/p1-ui`. Start: Astra-accepted `e8731c02489af1fc83741bc17eeb51f1fe155e45`. Nothing is merged, pushed or deployed. No paid call was made, and no Meshy credits were spent (see the Meshy section). No backend, contract, registry or data change.
+Owner: Claude (frontend). Branch `feat/p1-ui`. Start: Astra-accepted `e8731c02489af1fc83741bc17eeb51f1fe155e45`. Nothing is merged, pushed or deployed. Meshy spending: **90 credits** across three owner-approved jobs (see the Meshy section). No backend, contract, registry or science-data change; the only `data/` addition is the new `data/asset-rights.json` that the existing media-rights check requires.
 
 ## Architecture and dependencies
 
@@ -140,43 +140,153 @@ Setup: 390×844, 4× CPU, 150 ms RTT, 1.6 Mbps, cold cache, headless Chromium. "
 - **Before (M1, `e8731c0`) and after.** `docs/qa/screenshots/m1.5/before/` and `docs/qa/screenshots/m1.5/after/`, from the same script. Each is captured at 1440, 390 and 320 px for: home viewport and full page, Atlas, dossier, Ask answer and abstention, populated Workstation and Frontier, mobile navigation, loading, error, and not-found.
 - **Test-captured views.** `after/test-*.png`.
 
+## Wow overhaul (owner request "ULTRA VISUAL OVERHAUL", priority: home, PIX, observatory, B20, motion)
+
+Screenshots: `docs/qa/screenshots/m1.5/wow/` (1440, 390 and 320 px).
+
+**Home showpiece.**
+- **Full-screen 3D hero.** The glass header floats over the scene. The hero is the Gravity Lens flame inside the observatory, with a shorter lede and only one honesty label: the lens caption "educational illustration, not NASA footage or data".
+- **PIX as a live gravity coach.** First visit: "Try the gravity controls →", a bouncing "↑ Drag me" tip and a pulsing slider thumb. After the first change PIX narrates the result ("Gravity on! … teardrop", "Back in orbit … quiet blue ball", "In between… teaching blend, not a measurement"). The tip sits below the slider so it never covers the caption.
+- **Earth vs orbit duel.** Animated illustrations: a flickering, swaying teardrop with rising sparks; a breathing blue sphere with inward diffusion arrows. Both are labelled as teaching illustrations.
+- **Other sections.** A "Meet PIX" section (3D PIX inside orbit rings, three promises), a trust strip (1 admitted / 1 source / 55 quarantined), and station cards with icons and an animated conic border.
+- **Tiny phones.** At 380 px and below, the last lede sentence hides so the chamber rises into the first screen.
+
+**3D observatory** (`observatory-scene.ts`, home only, lazy):
+- **Lighting and post.**
+  - Cinematic bloom (UnrealBloomPass); custom shaders write linear colour because OutputPass converts to sRGB.
+  - Energy waves pulse across the floor from the chamber, tinted by gravity.
+  - A light shaft falls into the chamber, and a scan sweep moves over the glass.
+- **Chamber machinery.**
+  - Three gyroscope rings counter-rotate around the chamber.
+  - Embers react to gravity: they drift and hang at 0 g and rise at 1 g.
+  - Ambient dust drifts through the room.
+- **Stations.**
+  - Meshy consoles replace the procedural boxes (procedural fallback kept).
+  - Honest hologram screens float above each console, with live scanlines and blinking LEDs.
+  - Hovering a station raises a hologram ring.
+  - The Meshy PIX floats at its station.
+- **Space backdrop.**
+  - A vivid Earth: saturated oceans with sun glint, a sunset band at the terminator, night-side city lights, and a sun-lit atmosphere. On desktop it rises as a broad limb over the deck horizon.
+  - A procedural gold-foil satellite with solar wings and blinking beacons orbits on a faint trail. It's decorative and not a specific spacecraft.
+  - Two parallax star layers.
+- **Camera.**
+  - A dramatic dolly-in entrance; scrolling pulls the camera up and back.
+  - Labels never cover the headline or the header.
+- **Shake fix.** Hovering a 3D station label highlights the station but no longer pans the camera. Panning had moved the label away from the pointer and looped, which caused the reported shaking. Keyboard and directory focus still pan.
+
+**PIX v2 (Meshy model, `pix-scene.ts` + `pix-stage.tsx`).**
+- **Where.** On the home page and Ask PIX: the hero card and the live panel.
+- **Loading.** The SVG PIX renders first and is the fallback for no-JS, no-WebGL and context loss. Three.js and the model load only once PIX is on screen.
+- **Motion.** State-driven motion: idle float and sway; searching scan ring and fast look-around; cited happy hop with a teal rim light; abstained head tilt with amber light; error shudder with red light. PIX also turns towards the mouse.
+- **Finish fixes from the strict review (no extra credits).**
+  - Textures kept at 2048 px.
+  - Hairline visor seam texels repainted navy.
+  - Generated normal and roughness maps replaced with a uniform glossy finish.
+  - Colour-map mipmaps off, because they bled the white UV gutter into the visor as "scratches".
+  - The camera was reframed so the antenna and body aren't cropped.
+
+**B20 exhibit.** The specimen is now a living exhibit:
+- Layered flickering flame front.
+- A char band that grows with the creeping front.
+- Smoke drifting downstream.
+- Multi-speed airflow streaks and glowing duct walls.
+- A scanline sweep, and a sheen on the verified-oxygen card.
+
+All values and labels are unchanged.
+
+**Motion and cohesion everywhere.**
+- The cream "paper" sheet is now a dark instrument deck with a cyan-to-flame top seam, so the site has one look.
+- **Buttons and panels.** Primary buttons get a shine sweep and glow; panels and exhibits get hover lift.
+- **Research heroes.** A slow aurora drifts behind each research-page hero.
+- **Scroll reveals.** These use CSS scroll-driven animation. Unsupported browsers simply show the content.
+- **Reduced motion.** It stops all of this motion.
+
+**Themed cursor (`cursor-fx.tsx`).**
+- **What it is.** A flame reticle (a real CSS cursor), a lagging ring that turns orange and swells over controls, and a 16-element ember trail (pooled spans with Web Animations, no canvas).
+- **When it runs.** Only for fine pointers with motion allowed.
+- **It never gets in the way.**
+  - Text and form fields keep the text cursor.
+  - The overlay is `pointer-events: none`.
+  - It is `aria-hidden`.
+  - A new e2e test proves selection, typing, keyboard navigation and clicks still work.
+  - A second test confirms it is absent under reduced motion.
+
+**Strict visual review: issues found and fixed.**
+1. Station-hover shake.
+2. Over-bright floor, caused by an sRGB double conversion.
+3. Earth and satellite out of frame on desktop.
+4. Station labels over the headline and nav.
+5. Lens labels unreadable over the floor (now on glass).
+6. PIX visor scratches and cropping.
+7. Bare black hero before WebGL (now a CSS Earth-limb, deck and chamber-glow backdrop).
+8. Coach tip covering the honesty caption.
+9. 320 px first screen without 3D.
+10. Duplicate "educational illustration" text breaking a strict test (the duel now says "teaching illustrations").
+
 ## Asset rights
 
-- **Procedural only.** Every visual is generated in code or is an original SVG (the icon, PIX, exhibits). No third-party or generated media file is served from `apps/web/public`.
-- **Policy.** The security check's media-rights rule applies to `apps/web/public`. It passes with no entries because no media was added there.
-- **Not reused.** Legacy GLBs in MicroFire-Atlas (Poly Haven camera, CC0; NASA camera and glove) were not used: they are not needed for this scene, and that repository is read-only reference material.
+- **Served models.** `apps/web/public/models/pix/*` and `apps/web/public/models/console/*`, with 10 files logged one by one in `data/asset-rights.json`. Each entry records source task IDs, licence (Meshy paid-plan output owned by the account holder; original designs, no logos or insignia), processing and reviewer. The security media-rights check passes across 338 files.
+- **CSP unchanged.** The models are plain glTF with quantised geometry and external WebP textures, all same-origin. A meshopt GLB would have needed `'wasm-unsafe-eval'` and `blob:`, so it was rejected.
+- **PIX concept art.** Drawn in-house (`components/pix-avatar.tsx`, rendered to `tools/meshy/concepts/pix-v2-concept.png`).
 
-## Meshy (spending status: none)
+## Meshy
 
-- **MCP installed (owner request).** The official `@meshy-ai/meshy-mcp-server@0.6.4` (meshy-dev, MIT) is registered at Claude Code **user** scope through `~/.claude/mcp/meshy-mcp.sh`. That launcher reads the key from the macOS Keychain (service `meshy-api-key`) at start-up, so no config file, repo or chat holds it. 0.6.4 is pinned for its double-billing protection (create requests are never resent). Status: it waits for the owner to add the Keychain entry and then restart or reconnect the session. `tools/meshy/meshy.mjs` reads the same Keychain entry.
+- **Setup.**
+  - The key lives in the git-ignored, mode-600 repo-root `.env`, where the owner asked for it. The MCP launcher falls back to it after the Keychain.
+  - The key is never printed, committed or sent to the browser.
+  - `GET /v1/balance` verified **3,100**, so subscription credits are spendable through the API. There were 0 existing tasks of any type.
+- **Spent: 90 of the approved 100 (balance 3,010).**
 
-- **Credits spent: 0. Jobs: 0.**
-- **Why.** `MESHY_API_KEY` is not configured in this environment, so the authenticated balance is unverified. Meshy's pricing page states that API usage draws on a prepaid API balance, so the 3,100 credits shown on the website may not be spendable through the API. Only `GET /openapi/v1/balance` with the owner's key can settle that.
-- **Preparation done, with no spending.**
-  - A local-only tool, `tools/meshy/meshy.mjs`, keeps the key out of the website and is never imported by it. It reads the key from the environment only and never prints it. It offers `balance`, `tasks` (free reuse inspection) and `run <job> --approved-cap N`. `run` refuses without an approved cap, when the estimate exceeds the cap, or when the balance is too low. It makes no retries or purchases, and logs balance before and after to `ledger.jsonl`.
-  - Downloads go to the git-ignored `tools/meshy/incoming/`.
-- **Pilot jobs (`tools/meshy/jobs.json`).**
+  | Job | Credits | Result |
+  |---|---|---|
+  | `pix-v1` | 30 | Rejected: off-brief, menacing humanoid |
+  | `console-v1` | 30 | Used |
+  | `pix-v2` | 30 | Image-to-3D from our concept art; the approved redo. Used |
 
-  | Job | Pipeline | Estimate | Use |
-  |---|---|---|---|
-  | `pix-v1` | text-to-3D preview (meshy-7.1) + PBR refine, 2K textures, about 20k triangles | 30 credits | Original PIX character |
-  | `console-v1` | same pipeline, about 12k triangles, blank screens | 30 credits | Research-station console prop, instanced |
+  Each job ran once, with no retries and no purchases. Details are in `docs/meshy-credit-ledger.md` and `tools/meshy/ledger.jsonl`.
+- **Tool.** `tools/meshy/meshy.mjs` gained image-to-3D jobs (data-URI input) with the same cap, balance and no-retry guards.
+- **Remaining plan.** M1.5 headroom 710, M2 1,300, later missions 700, revisions 300. Every further batch needs explicit approval.
 
-  The pilot total is 60, against a requested cap of 100. Any regeneration needs new approval.
-- **After the pilot.** QA (geometry, silhouette, textures, scale and pivot), meshopt/KTX2 optimisation, a rights entry, then integration in the observatory (PIX and consoles) and on Ask PIX, keeping the procedural geometry as the fallback.
+## Final measurements (this build)
+
+- **Regression.**
+  - `npm run check`: exit 0. That covers lint, types, 103 unit tests, Ask evaluation 30/30, rank 7/7, faithful 13/13, forbidden 0, the security and media-rights checks across 338 files, and the build.
+  - Playwright: **73 passed, 21 skipped by design, 0 failed** (94 tests, both projects).
+  - That includes axe on 13 routes (0 violations), no-WebGL and context loss, offscreen-pause fix A, focus fix C, Retry-After fix D, the soft-404 fix F, the cursor tests, and the lazy-load test.
+  - `npm audit`: 0 vulnerabilities.
+- **Layout.** No horizontal overflow at 320 px on home, B20, Ask, Atlas, Workstation, Frontier or Missions.
+- **Performance.**
+  - Setup: lab, 390×844, 4× CPU, 150 ms RTT, 1.6 Mbps. Previous commit `a5c4c8f` and this build were measured side by side, two runs each, averaged.
+
+    | Route | FCP before | FCP after | JS at load (KB) | CLS |
+    |---|---|---|---|---|
+    | `/` | 884 | 1004 | 147.8 → 150.6 | 0 |
+    | `/atlas` | 824 | 920 | 180.5 → 181.1 | 0 |
+    | B20 | 868 | 940 | 180.1 → 180.7 | 0 |
+    | `/ask` | 754 | 874 | 181.2 → 182.8 | 0 |
+    | `/dashboard` | 748 | 866 | 181.3 → 181.9 | 0 |
+    | `/gaps` | 746 | 902 | 180.2 → 180.8 | 0 |
+    | `/methodology` | 792 | 836 | 142.6 → 143.4 | 0 |
+    | `/missions` | 764 | 848 | 142.6 → 143.4 | 0 |
+
+  - **Cost.** About +100 ms first paint (45–155 ms) from roughly 10 KB more render-blocking CSS and data per route. JavaScript at load is unchanged.
+  - **Deferred downloads.** Home downloads its 3D engine and models after paint (about 475 KB transferred after 4 s). Ask lazy-loads the PIX model and three.js only once PIX is on screen (about 480 KB after 4 s).
+  - **Frame rate.** 60 fps (p95 16.7 ms) for the full observatory on desktop and on mobile at 4× CPU, headless ANGLE. Not measured on real phones.
 
 ## Remaining visual weaknesses
 
-- **Home.** The floating halo ring was removed, the Earth limb toned down, and markers are clamped on screen. The 'DIFFUSION → FLAME' HUD label has low contrast over the pedestal.
-- **Stations.** The procedural consoles are deliberately simple; this is the clearest place where approved Meshy props would add quality.
-- **Long pages.** The dossier is long on phones (by design, every caveat stays visible); section navigation exists only on desktop.
-- **Missions and Flame Lab.** Unchanged in composition apart from the new frame (they are not playable).
+- **First paint.** About +100 ms first paint on every route from the larger global CSS. Fix: split the home-only styles into a route stylesheet. This was deferred to avoid cascade-order risk right before review.
+- **Software rendering.** On machines without GPU acceleration, the 3D hero takes several seconds to appear; the CSS backdrop and the SVG lens carry the first impression until then.
+- **PIX model.** It is a single mesh, so motion is whole-body (no separate head or eye animation). The SVG PIX keeps the expressive eyes and mouth.
+- **Research-page heroes** (Atlas, Workstation, Frontier, Missions) gained depth and motion but no new 3D. Missions stays locked and only moderately exciting.
+- **Lens HUD.** In the microgravity view the lens HUD arcs still compete with the 3D chamber, and the "DIFFUSION → FLAME" label has low contrast over the pedestal.
+- **Satellite.** Simple procedural geometry; a Meshy prop would add detail (future batch, needs approval).
 
 ## Handoffs for Sol
 
-1. **Registry wording.** Reconcile the descriptions (Astra's proposed copy still applies; the home reason is now stale too). No state promotion.
-2. **Asset-rights file.** `data/asset-rights.json` (Sol-owned `data/`) needs a schema and owner for future Meshy GLBs before any is served.
-3. **Ownership note.** `tools/meshy/` is a new frontend asset-tooling directory, flagged for a line in `OWNERSHIP.md` (shared review).
-4. **Earlier items still open.** The large-save validation strategy, an e2e limiter option, and a nonce CSP.
+1. **Registry wording.** Reconcile the descriptions; no state promotion.
+2. **Asset-rights file.** `data/asset-rights.json` now exists (Sol-owned `data/`); please review its schema and adopt it.
+3. **Ownership.** Add an `OWNERSHIP.md` line for `tools/meshy/` and `apps/web/public/models/`.
+4. **Still open.** Large-save validation, an e2e limiter option, and a nonce CSP. The CSP was deliberately left unchanged.
 
-**Verdict: M1.5 (non-paid scope) READY FOR ASTRA REVIEW.** Meshy generation is blocked on the owner: rotate the exposed key, configure it privately, run `balance`, then approve the pilot cap.
+**Verdict: READY FOR ASTRA M1.5 REVIEW.** Stopping here; M2 has not been started.

@@ -1,11 +1,11 @@
 import { AskPix } from '../../components/ask-pix';
 import { feature, PageHero, Sheet, sources } from '../../components/page-kit';
-import { PixAvatar } from '../../components/pix-avatar';
+import { PixStage } from '../../components/pix-stage';
 
 export const metadata = { title: 'Ask PIX' };
 function PixCard() {
   return <figure className="pix-card frame" style={{ margin: 0 }}>
-    <PixAvatar className="pix-avatar-lg" />
+    <PixStage className="pix-stage-lg" />
     <figcaption>
       <p className="eyebrow" style={{ marginBottom: 6 }}>PIX · research companion</p>
       <ul>

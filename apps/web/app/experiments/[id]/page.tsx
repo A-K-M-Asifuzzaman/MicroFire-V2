@@ -41,7 +41,7 @@ export default async function Page({ params }: Props) {
   return <>
     <PageHero crumbs={<><Link href="/atlas">Experiments</Link> / {e.program} / {e.testId}</>} eyebrow={`Experiment dossier · ${e.id}`} title={e.title}
       status={{ feature: feature('/experiments/[id]')! }} visual={<Specimen experiment={e} />}
-      lede={`A  test documented in a NASA summary report. Everything below is traced to its page, and what the report does not record is marked unknown.`} />
+      lede={`A flame-spread test documented in a NASA summary report. Everything below is traced to its page, and what the report does not record is marked unknown.`} />
     <Sheet>
       <div className="dossier">
         <div>

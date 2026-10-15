@@ -36,7 +36,7 @@ test('observatory: 3D scene, six real stations, focus link-up and honest labelli
   const hero = page.getByTestId('observatory');
   await expect(hero).toHaveAttribute('data-scene', /active|static/);
   await expect(page.getByTestId('scene-status')).toContainText('artistic interpretation');
-  await expect(page.getByText('Artistic interpretation · flame and chamber are illustrations')).toBeVisible();
+  await expect(page.getByText('Gravity Lens · educational illustration, not NASA footage or data')).toBeVisible();
   const stations = page.getByRole('navigation', { name: 'Observatory stations' }).getByRole('link');
   await expect(stations).toHaveCount(6);
   const hrefs = await stations.evaluateAll((els) => els.map((e) => e.getAttribute('href')));
@@ -132,18 +132,20 @@ test('fix F: missing records and routes return real 404s; real pages and the API
   expect((await request.get('/experiments/constructor')).headers()['content-type']).toContain('text/html');
 });
 
-test('route-level loading: research pages never download the 3D engine', async ({ page }) => {
+test('route-level loading: research pages never download the 3D engine; only home and the PIX companion do', async ({ page }) => {
   const scripts: string[] = [];
   page.on('response', (r) => { if (r.url().endsWith('.js')) scripts.push(r.url()); });
-  const threeIn = async (path: string) => {
+  const threeIn = async (path: string, reveal?: string) => {
     scripts.length = 0;
     await page.goto(path, { waitUntil: 'networkidle' });
+    if (reveal) await page.locator(reveal).first().evaluate((el) => el.scrollIntoView({ block: 'center' }));
     await page.waitForTimeout(1200);
     const bodies = await Promise.all(scripts.map((u) => page.request.get(u).then((r) => r.text())));
     return bodies.some((b) => b.includes('WebGLRenderer'));
   };
-  for (const path of ['/atlas', '/experiments/bass2-b20', '/ask', '/dashboard', '/gaps', '/methodology']) expect(await threeIn(path), path).toBe(false);
+  for (const path of ['/atlas', '/experiments/bass2-b20', '/dashboard', '/gaps', '/methodology']) expect(await threeIn(path), path).toBe(false);
   expect(await threeIn('/')).toBe(true);
+  expect(await threeIn('/ask', '.pix-stage')).toBe(true); // the 3D PIX companion loads once the SVG PIX is on screen
 });
 
 test('B20 exhibit: apparatus annotations separate sourced hardware, recorded conditions and unknowns', async ({ page }, info) => {
@@ -229,4 +231,34 @@ test('fix E: no automated axe violations (WCAG 2.x A/AA) on core routes', async 
   }
   if (Object.keys(results).length) console.log(info.project.name, JSON.stringify(results, null, 1));
   expect(results).toEqual({});
+});
+
+test('themed cursor never gets in the way: selection, inputs, keyboard and clicks still work', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'mouse cursor only');
+  await page.goto('/ask');
+  await page.mouse.move(300, 300); await page.mouse.move(320, 310);
+  await expect(page.locator('html')).toHaveAttribute('data-cursor', 'fx');
+  expect(await page.locator('.cursor-fx').evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none');
+  // Text keeps a text cursor and can be selected.
+  const lede = page.locator('.page-hero .lede');
+  expect(await lede.evaluate((el) => getComputedStyle(el).cursor)).toBe('text');
+  await lede.click({ clickCount: 3 });
+  expect((await page.evaluate(() => getSelection()?.toString() ?? '')).length).toBeGreaterThan(20);
+  // Inputs keep their native cursor and accept typing.
+  const box = page.locator('#pix-q');
+  expect(await box.evaluate((el) => getComputedStyle(el).cursor)).toBe('text');
+  await box.click(); await box.fill('Does the cursor block typing?');
+  await expect(box).toHaveValue('Does the cursor block typing?');
+  // Keyboard navigation is untouched and links still click through the overlay.
+  await page.keyboard.press('Shift+Tab');
+  await page.getByRole('link', { name: 'Methodology' }).first().click();
+  await expect(page).toHaveURL(/\/methodology$/);
+});
+
+test('reduced motion and touch never get the cursor effect', async ({ browser }) => {
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  const p = await ctx.newPage();
+  await p.goto('/'); await p.mouse.move(200, 200);
+  await expect(p.locator('html')).not.toHaveAttribute('data-cursor', 'fx');
+  await ctx.close();
 });

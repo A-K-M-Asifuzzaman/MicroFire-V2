@@ -1,0 +1,105 @@
+{
+  "note": "Rights ledger for media served from apps/web/public. Checked by scripts/security-check.mjs. Credentials and expiring download URLs are never recorded here.",
+  "assets": [
+    {
+      "path": "apps/web/public/models/pix/baseColor_1.webp",
+      "title": "PIX research companion (3D)",
+      "source": "Meshy Image-to-3D (meshy-7.1), task 01a1407b-50db-7411-9c10-08321b53c9cc, 2026-10-15, from MicroFire's own concept art tools/meshy/concepts/pix-v2-concept.png (drawn from apps/web/components/pix-avatar.tsx)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 2048 px; hairline seam texels inside the visor repainted navy (6.3 MB GLB → 865 KB across 5 files, 20.4k triangles). Runtime uses a uniform glossy finish instead of the generated normal/roughness maps",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "PIX research companion (3D) — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/pix/metallicRoughness_1.webp",
+      "title": "PIX research companion (3D)",
+      "source": "Meshy Image-to-3D (meshy-7.1), task 01a1407b-50db-7411-9c10-08321b53c9cc, 2026-10-15, from MicroFire's own concept art tools/meshy/concepts/pix-v2-concept.png (drawn from apps/web/components/pix-avatar.tsx)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 2048 px; hairline seam texels inside the visor repainted navy (6.3 MB GLB → 865 KB across 5 files, 20.4k triangles). Runtime uses a uniform glossy finish instead of the generated normal/roughness maps",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "PIX research companion (3D) — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/pix/normal_1.webp",
+      "title": "PIX research companion (3D)",
+      "source": "Meshy Image-to-3D (meshy-7.1), task 01a1407b-50db-7411-9c10-08321b53c9cc, 2026-10-15, from MicroFire's own concept art tools/meshy/concepts/pix-v2-concept.png (drawn from apps/web/components/pix-avatar.tsx)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 2048 px; hairline seam texels inside the visor repainted navy (6.3 MB GLB → 865 KB across 5 files, 20.4k triangles). Runtime uses a uniform glossy finish instead of the generated normal/roughness maps",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "PIX research companion (3D) — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/pix/pix.bin",
+      "title": "PIX research companion (3D)",
+      "source": "Meshy Image-to-3D (meshy-7.1), task 01a1407b-50db-7411-9c10-08321b53c9cc, 2026-10-15, from MicroFire's own concept art tools/meshy/concepts/pix-v2-concept.png (drawn from apps/web/components/pix-avatar.tsx)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 2048 px; hairline seam texels inside the visor repainted navy (6.3 MB GLB → 865 KB across 5 files, 20.4k triangles). Runtime uses a uniform glossy finish instead of the generated normal/roughness maps",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "PIX research companion (3D) — pix.bin"
+    },
+    {
+      "path": "apps/web/public/models/pix/pix.gltf",
+      "title": "PIX research companion (3D)",
+      "source": "Meshy Image-to-3D (meshy-7.1), task 01a1407b-50db-7411-9c10-08321b53c9cc, 2026-10-15, from MicroFire's own concept art tools/meshy/concepts/pix-v2-concept.png (drawn from apps/web/components/pix-avatar.tsx)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 2048 px; hairline seam texels inside the visor repainted navy (6.3 MB GLB → 865 KB across 5 files, 20.4k triangles). Runtime uses a uniform glossy finish instead of the generated normal/roughness maps",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "PIX research companion (3D) — pix.gltf"
+    },
+    {
+      "path": "apps/web/public/models/console/baseColor_1.webp",
+      "title": "Research workstation console (3D prop)",
+      "source": "Meshy Text-to-3D (meshy-7.1 preview + PBR refine), preview task 01a14078-0a6a-7494-9551-bea0a80d981a, refine task 01a14079-4494-7009-9baf-6e9d42c672bc, 2026-10-15; prompt in tools/meshy/jobs.json (console-v1)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; generic prop, no logos or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 1024 px (7.0 MB GLB → 563 KB across 5 files, 10.9k triangles). Screen left blank; MicroFire draws its own honest screen content.",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "Research workstation console (3D prop) — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/console/console.bin",
+      "title": "Research workstation console (3D prop)",
+      "source": "Meshy Text-to-3D (meshy-7.1 preview + PBR refine), preview task 01a14078-0a6a-7494-9551-bea0a80d981a, refine task 01a14079-4494-7009-9baf-6e9d42c672bc, 2026-10-15; prompt in tools/meshy/jobs.json (console-v1)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; generic prop, no logos or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 1024 px (7.0 MB GLB → 563 KB across 5 files, 10.9k triangles). Screen left blank; MicroFire draws its own honest screen content.",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "Research workstation console (3D prop) — console.bin"
+    },
+    {
+      "path": "apps/web/public/models/console/console.gltf",
+      "title": "Research workstation console (3D prop)",
+      "source": "Meshy Text-to-3D (meshy-7.1 preview + PBR refine), preview task 01a14078-0a6a-7494-9551-bea0a80d981a, refine task 01a14079-4494-7009-9baf-6e9d42c672bc, 2026-10-15; prompt in tools/meshy/jobs.json (console-v1)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; generic prop, no logos or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 1024 px (7.0 MB GLB → 563 KB across 5 files, 10.9k triangles). Screen left blank; MicroFire draws its own honest screen content.",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "Research workstation console (3D prop) — console.gltf"
+    },
+    {
+      "path": "apps/web/public/models/console/metallicRoughness_1.webp",
+      "title": "Research workstation console (3D prop)",
+      "source": "Meshy Text-to-3D (meshy-7.1 preview + PBR refine), preview task 01a14078-0a6a-7494-9551-bea0a80d981a, refine task 01a14079-4494-7009-9baf-6e9d42c672bc, 2026-10-15; prompt in tools/meshy/jobs.json (console-v1)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; generic prop, no logos or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 1024 px (7.0 MB GLB → 563 KB across 5 files, 10.9k triangles). Screen left blank; MicroFire draws its own honest screen content.",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "Research workstation console (3D prop) — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/console/normal_1.webp",
+      "title": "Research workstation console (3D prop)",
+      "source": "Meshy Text-to-3D (meshy-7.1 preview + PBR refine), preview task 01a14078-0a6a-7494-9551-bea0a80d981a, refine task 01a14079-4494-7009-9baf-6e9d42c672bc, 2026-10-15; prompt in tools/meshy/jobs.json (console-v1)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; generic prop, no logos or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures; same-origin, CSP-compatible, 1024 px (7.0 MB GLB → 563 KB across 5 files, 10.9k triangles). Screen left blank; MicroFire draws its own honest screen content.",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-15; owner approved the generation batch",
+      "approved": true,
+      "part": "Research workstation console (3D prop) — normal_1.webp"
+    }
+  ]
+}

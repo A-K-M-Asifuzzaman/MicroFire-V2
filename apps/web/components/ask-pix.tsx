@@ -3,7 +3,8 @@ import { useRef, useState, type FormEvent } from 'react';
 import { AskResponseSchema, type TargetConditions } from '@microfire/shared';
 import { callApi, Failure, useLatestRequest, type ApiFailure } from './client-api';
 import { CitationList, Kind, Limitations, type SourceRef } from './evidence-ui';
-import { PixAvatar, type PixState } from './pix-avatar';
+import type { PixState } from './pix-avatar';
+import { PixStage } from './pix-stage';
 
 type AskData = ReturnType<typeof AskResponseSchema.parse>['data'];
 /** The submitted request is frozen: its echo, response, failure and retry all refer to this exact snapshot. */
@@ -61,7 +62,7 @@ export function AskPix({ sources }: { sources: SourceRef[] }) {
   return <div className="pix-console">
     <div>
       <div className="pix-panel" data-testid="pix-panel">
-        <PixAvatar state={pixState} />
+        <PixStage state={pixState} />
         <div><strong>PIX</strong><p>Deterministic evidence guide · fixed templates over the admitted catalog · no AI model</p>
           <p className="pix-status" aria-hidden="true">{pixStatus[pixState]}</p></div>
       </div>

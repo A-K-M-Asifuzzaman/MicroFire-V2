@@ -2,16 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import type { FlameRenderer } from './flame-gl';
 
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-const f = (n: number) => n.toFixed(1);
-
-/** Illustrative outline: a near-sphere at 0 g stretching to a buoyant teardrop at 1 g. Shape is art direction, not computed. */
-function flamePath(g: number, scale = 1, lift = 0) {
-  const cx = 200, r = lerp(62, 42, g) * scale;
-  const mid = lerp(215, 245, g) - lift, tip = lerp(215 - 62 * scale, 70 + (1 - scale) * 120, g) - lift, base = lerp(215 + 62 * scale, 285 - (1 - scale) * 30, g) - lift;
-  const k = lerp(0.55, 0.08, g), up = (mid - tip) * 0.38, down = (base - mid) * 0.55;
-  return `M${cx} ${f(tip)} C${f(cx + r * k)} ${f(tip + up * 0.2)} ${f(cx + r)} ${f(mid - up)} ${f(cx + r)} ${f(mid)} C${f(cx + r)} ${f(mid + down)} ${f(cx + r * 0.55)} ${f(base)} ${cx} ${f(base)} C${f(cx - r * 0.55)} ${f(base)} ${f(cx - r)} ${f(mid + down)} ${f(cx - r)} ${f(mid)} C${f(cx - r)} ${f(mid - up)} ${f(cx - r * k)} ${f(tip + up * 0.2)} ${cx} ${f(tip)}Z`;
-}
+import { flamePath, lerp } from './flame-shape';
 
 const explanations = {
   earth: { title: 'Earth illustration (1 g)', text: 'Hot combustion gases are lighter than the surrounding air, so buoyancy lifts them. The rising flow draws fresh air in from below and stretches the flame into a tall teardrop; its bright yellow light comes from glowing soot.' },
@@ -92,7 +83,7 @@ export function GravityLens({ record, onGravityChange }: { record: LensRecord; o
           <path d={flamePath(g)} fill={`url(#${id}-env)`} />
           <path d={flamePath(g, 0.72, lerp(4, 18, g))} fill={`url(#${id}-core)`} opacity={lerp(0.16, 0.95, g)} />
         </g>
-        <g stroke="#73bbd9" strokeWidth="2" markerEnd={`url(#${id}-arrow)`} fill="none">
+        <g className="lens-arrows" stroke="#73bbd9" strokeWidth="2" markerEnd={`url(#${id}-arrow)`} fill="none">
           <g opacity={buoyant * 0.9}><path d="M120 300 C110 230 118 160 132 100" /><path d="M280 300 C290 230 282 160 268 100" /></g>
           <g opacity={diffusive * 0.8}><path d="M70 215 H118" /><path d="M330 215 H282" /><path d="M200 70 V128" /><path d="M110 125 L148 160" /><path d="M290 125 L252 160" /></g>
         </g>
@@ -102,7 +93,7 @@ export function GravityLens({ record, onGravityChange }: { record: LensRecord; o
         </text>
       </svg>
     </div>
-    <figcaption id={`${id}-cap`} className="lens-caption">Gravity Lens · educational illustration · not a simulation, footage or measurement</figcaption>
+    <figcaption id={`${id}-cap`} className="lens-caption">Gravity Lens · educational illustration, not NASA footage or data</figcaption>
     <div className="lens-controls">
       <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
         <legend className="sr-only">Gravity setting for the illustration</legend>

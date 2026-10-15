@@ -40,9 +40,9 @@ async function call(method, route, body) {
 }
 const balance = async () => { const b = await call('GET', '/v1/balance'); return { balance: b.balance, monthly: b.monthly_credits, permanent: b.permanent_credits }; };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-async function poll(id, label) {
+async function poll(id, label, route = '/v2/text-to-3d') {
   for (let i = 0; i < 90; i++) { // ≤ 15 minutes
-    const t = await call('GET', `/v2/text-to-3d/${id}`);
+    const t = await call('GET', `${route}/${id}`);
     if (t.status === 'SUCCEEDED') return t;
     if (t.status === 'FAILED' || t.status === 'CANCELED') throw new Error(`${label} ${t.status}: ${t.task_error?.message ?? 'no detail'}`);
     process.stdout.write(`\r${label}: ${t.status} ${t.progress ?? 0}%   `);
@@ -74,10 +74,17 @@ try {
     const before = await balance();
     if (before.balance < job.estimateCredits) throw new Error(`Refusing: balance ${before.balance} is below the estimate ${job.estimateCredits}. No purchase is attempted.`);
     console.log(`Balance before: ${before.balance}. Running ${job.id} (estimate ${job.estimateCredits}, cap ${cap}).`);
-    const preview = await call('POST', '/v2/text-to-3d', { mode: 'preview', ...job.preview });
-    const previewTask = await poll(preview.result, 'preview');
-    let finalTask = previewTask;
-    if (job.refine) { const refine = await call('POST', '/v2/text-to-3d', { mode: 'refine', preview_task_id: preview.result, ...job.refine }); finalTask = await poll(refine.result, 'refine'); }
+    let preview, finalTask;
+    if (job.image) { // image-to-3D from a local concept image, sent as a data URI
+      const png = await readFile(path.join(here, job.image.file));
+      const { file: _file, ...params } = job.image;
+      preview = await call('POST', '/v1/image-to-3d', { image_url: `data:image/png;base64,${png.toString('base64')}`, ...params });
+      finalTask = await poll(preview.result, 'image-to-3d', '/v1/image-to-3d');
+    } else {
+      preview = await call('POST', '/v2/text-to-3d', { mode: 'preview', ...job.preview });
+      finalTask = await poll(preview.result, 'preview');
+      if (job.refine) { const refine = await call('POST', '/v2/text-to-3d', { mode: 'refine', preview_task_id: preview.result, ...job.refine }); finalTask = await poll(refine.result, 'refine'); }
+    }
     const dir = path.join(here, 'incoming', job.id); await mkdir(dir, { recursive: true });
     if (finalTask.model_urls?.glb) await download(finalTask.model_urls.glb, path.join(dir, `${job.id}.glb`));
     if (finalTask.thumbnail_url) await download(finalTask.thumbnail_url, path.join(dir, `${job.id}-thumb.png`));

@@ -22,6 +22,25 @@
       }
     },
     {
+      "id": "pix-v2",
+      "batch": "M1.5 pilot (approved redo after pix-v1 failed QA)",
+      "purpose": "PIX companion from MicroFire's own concept art (tools/meshy/concepts/pix-v2-concept.png, drawn in-house from components/pix-avatar.tsx).",
+      "estimateCredits": 30,
+      "image": {
+        "file": "concepts/pix-v2-concept.png",
+        "ai_model": "meshy-7.1",
+        "topology": "triangle",
+        "should_remesh": true,
+        "target_polycount": 20000,
+        "should_texture": true,
+        "enable_pbr": true,
+        "texture_resolution": "2k",
+        "texture_prompt": "glossy ivory white plastic shell, dark navy glass visor with glowing cyan eyes and smile, navy side pods with small orange lights, orange flame-shaped light on antenna tip, clean premium product finish",
+        "target_formats": ["glb"],
+        "moderation": true
+      }
+    },
+    {
       "id": "console-v1",
       "batch": "M1.5 pilot",
       "purpose": "Modular research workstation prop for the observatory stations (instanced up to 5×). Screens stay blank so MicroFire renders its own honest display content.",

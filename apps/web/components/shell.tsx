@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
+import { CursorFx } from './cursor-fx';
 
 const sections = [
   { label: 'Discover', href: '/', match: ['/', '/roadmap', '/challenge', '/impact', '/assets'] },
@@ -50,8 +51,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const surface = inSection(path, observatory) ? 'observatory' : 'paper';
   const current = sections.find((s) => inSection(path, s.match));
   const links = sections.map((s) => <Link key={s.href} className="nav-link" href={s.href} aria-current={s === current ? 'page' : undefined}>{s.label}</Link>);
-  return <div className="surface" data-surface={surface}>
+  return <div className="surface" data-surface={surface} data-home={path === '/' ? 'true' : undefined}>
     <a className="skip" href="#main">Skip to content</a>
+    <CursorFx />
     <header className="site-header">
       <div className="wrap">
         <Link className="brand" href="/" aria-label="MicroFire, the Living Science Observatory — home">

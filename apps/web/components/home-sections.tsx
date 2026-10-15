@@ -1,0 +1,86 @@
+// Home page story sections below the observatory. Server-rendered; all motion is CSS (and stops under reduced motion).
+import Link from 'next/link';
+import { flamePath } from './flame-shape';
+import { PixStage } from './pix-stage';
+
+/** Earth vs microgravity, side by side. Shapes are the same illustrative outlines as the Gravity Lens. */
+export function GravityDuel({ recordHref }: { recordHref: string }) {
+  const sparks = [[150, 0], [210, 0.6], [178, 1.2], [232, 1.8], [196, 2.4]] as const;
+  return <section className="duel" aria-labelledby="duel-title">
+    <div className="wrap">
+      <header className="duel-head" data-reveal>
+        <p className="eyebrow">Same fuel · different universe</p>
+        <h2 id="duel-title">On Earth, fire climbs. <em>In orbit, it floats.</em></h2>
+        <p className="lede">Gravity decides the shape of every flame you have ever seen. Take it away and the rules change: no rising hot air, no flickering tip, just a slow blue sphere that has to wait for oxygen to drift in.</p>
+      </header>
+      <div className="duel-stage">
+        <figure className="duel-card duel-earth" data-reveal>
+          <svg viewBox="0 0 400 400" role="img" aria-label="Illustration: on Earth a flame stretches into a tall yellow teardrop as hot gas rises.">
+            <defs>
+              <radialGradient id="duel-e-core" cx="50%" cy="68%" r="62%"><stop offset="0" stopColor="#fff6dc" /><stop offset=".45" stopColor="#ffc06a" /><stop offset="1" stopColor="#ff6a1a" stopOpacity=".1" /></radialGradient>
+              <radialGradient id="duel-e-glow"><stop offset="0" stopColor="#ff8738" stopOpacity=".55" /><stop offset="1" stopColor="#ff8738" stopOpacity="0" /></radialGradient>
+            </defs>
+            <circle cx="200" cy="215" r="170" fill="url(#duel-e-glow)" className="duel-pulse" />
+            <g className="duel-flicker"><path d={flamePath(1)} fill="url(#duel-e-core)" /><path d={flamePath(1, 0.55, 22)} fill="#4f8dff" opacity=".55" transform="translate(0 40) scale(1 .45)" style={{ transformOrigin: '200px 285px' }} /></g>
+            {sparks.map(([x, d]) => <circle key={x} className="duel-spark" cx={x} cy="250" r="2.6" fill="#ffc06a" style={{ animationDelay: `${d}s` }} />)}
+            <g stroke="#ffb06a" strokeWidth="2" fill="none" opacity=".7" className="duel-rise"><path d="M110 330 C100 250 112 170 128 100" /><path d="M290 330 C300 250 288 170 272 100" /></g>
+            <rect x="186" y="280" width="28" height="6" rx="2" fill="#c9d4dd" />
+          </svg>
+          <figcaption><b>1 g · Earth</b><span>Hot gas is lighter, so it rises and drags the flame into a tall, bright teardrop.</span></figcaption>
+        </figure>
+        <div className="duel-vs" aria-hidden="true"><span>1 g</span><i /><b>vs</b><i /><span>0 g</span></div>
+        <figure className="duel-card duel-micro" data-reveal>
+          <svg viewBox="0 0 400 400" role="img" aria-label="Illustration: in microgravity a flame becomes a dim, rounded blue sphere fed by slow diffusion.">
+            <defs>
+              <radialGradient id="duel-m-env" cx="50%" cy="55%" r="58%"><stop offset="0" stopColor="#2a5fbf" stopOpacity=".15" /><stop offset=".7" stopColor="#5d9bf5" stopOpacity=".55" /><stop offset=".9" stopColor="#bfe2ff" /><stop offset="1" stopColor="#2a5fbf" stopOpacity="0" /></radialGradient>
+              <radialGradient id="duel-m-glow"><stop offset="0" stopColor="#5d9bf5" stopOpacity=".5" /><stop offset="1" stopColor="#5d9bf5" stopOpacity="0" /></radialGradient>
+            </defs>
+            <circle cx="200" cy="215" r="170" fill="url(#duel-m-glow)" className="duel-pulse" />
+            <g className="duel-breathe"><path d={flamePath(0)} fill="url(#duel-m-env)" /><circle cx="200" cy="222" r="16" fill="#ff9a4a" opacity=".35" /></g>
+            <g stroke="#9fd8ef" strokeWidth="2" fill="none" className="duel-diffuse">
+              <path d="M40 215H120" /><path d="M360 215H280" /><path d="M200 50V130" /><path d="M200 380V300" /><path d="M85 100L140 155" /><path d="M315 100L260 155" /><path d="M85 330L140 275" /><path d="M315 330L260 275" />
+            </g>
+            <rect x="186" y="236" width="28" height="6" rx="2" fill="#c9d4dd" />
+          </svg>
+          <figcaption><b>~0 g · Orbit</b><span>Nothing rises. Oxygen creeps in from every side, so the flame turns round, dim and blue.</span></figcaption>
+        </figure>
+      </div>
+      <p className="duel-note" data-reveal>Both drawings are teaching illustrations, not NASA footage or simulations. For a real space-flame record, see <Link href={recordHref}>the B20 exhibit</Link>.</p>
+    </div>
+  </section>;
+}
+
+export function PixIntro() {
+  return <section className="pix-intro" aria-labelledby="pix-intro-title">
+    <div className="wrap pix-intro-grid">
+      <div className="pix-orbit" data-reveal aria-hidden="true">
+        <i className="orbit o1" /><i className="orbit o2" /><i className="orbit o3" />
+        <PixStage className="pix-stage-hero" />
+      </div>
+      <div data-reveal>
+        <p className="eyebrow">Your evidence companion</p>
+        <h2 id="pix-intro-title">Meet PIX. <em>It shows its sources.</em></h2>
+        <p className="lede">PIX is a small, curious research robot. Ask it about fire in space and it answers only from admitted NASA records, with the exact page each fact came from. When the evidence runs out, PIX says so.</p>
+        <ul className="pix-promises">
+          <li><b>Cites every fact</b><span>Page-level NASA citations</span></li>
+          <li><b>Admits gaps</b><span>“Not established” is a real answer</span></li>
+          <li><b>Never guesses</b><span>No AI model invents the answer</span></li>
+        </ul>
+        <div className="actions"><Link className="btn btn-primary" href="/ask">Ask PIX a question <span aria-hidden="true">→</span></Link></div>
+      </div>
+    </div>
+  </section>;
+}
+
+export function TrustStrip({ admitted, sources, quarantined }: { admitted: number; sources: number; quarantined: number }) {
+  return <section className="trust-strip" aria-label="What the observatory holds today">
+    <div className="wrap">
+      <dl data-reveal>
+        <div><dt>Admitted experiment</dt><dd>{admitted}</dd></div>
+        <div><dt>NASA source</dt><dd>{sources}</dd></div>
+        <div><dt>Legacy records in quarantine</dt><dd>{quarantined}</dd></div>
+      </dl>
+      <p data-reveal>Everything you can open here is traced to a NASA page. Records that have not been checked stay locked away, never shown as evidence. <Link href="/methodology">How we check</Link></p>
+    </div>
+  </section>;
+}

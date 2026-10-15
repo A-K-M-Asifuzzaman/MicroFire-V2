@@ -30,16 +30,25 @@ export function Specimen({ experiment: e }: { experiment: Experiment }) {
         <radialGradient id="spc-flame" cx="70%" cy="50%" r="70%"><stop offset="0" stopColor="#fff1d6" /><stop offset=".45" stopColor="#ffb057" /><stop offset="1" stopColor="#ff7a2a" stopOpacity="0" /></radialGradient>
         <marker id="spc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10z" fill="#73bbd9" /></marker>
       </defs>
+      <path d="M10 20H510M10 230H510" stroke="#73bbd9" strokeOpacity=".35" strokeWidth="1.5" className="duct-glow" />
+      <g stroke="#73bbd9" strokeWidth="1" fill="none" opacity=".35">
+        {[44, 96, 154, 206].map((y, i) => <path key={y} className="flow-streak" d={`M10 ${y} H510`} style={{ animationDuration: `${1.6 + i * 0.35}s` }} />)}
+      </g>
       <g stroke="#73bbd9" strokeWidth="2" fill="none" markerEnd="url(#spc-arrow)" opacity=".85">
         <path className="flow-dash" d="M20 70 H150" /><path className="flow-dash" d="M20 125 H150" /><path className="flow-dash" d="M20 180 H150" />
       </g>
       <text x="20" y="52" fill="#a9b8c6" fontFamily="ui-monospace, monospace" fontSize="11" letterSpacing="1">AIRFLOW {e.conditions.flowDirection.status === 'known' ? `· ${String(e.conditions.flowDirection.value).toUpperCase()}` : ''}</text>
       <rect x="170" y="118" width="320" height="14" rx="3" fill="#c9d4dd" />
-      <rect x="300" y="118" width="190" height="14" rx="3" fill="url(#spc-burnt)" />
+      <rect className="char" x="300" y="118" width="190" height="14" rx="3" fill="url(#spc-burnt)" />
+      <g className="smoke" fill="#8a96a3">
+        {[0, 1.2, 2.4, 3.6].map((d) => <circle key={d} cx="330" cy="112" r="7" style={{ animationDelay: `${d}s` }} />)}
+      </g>
       <g className="flame-front">
+        <ellipse cx="306" cy="125" rx="46" ry="40" fill="url(#spc-flame)" opacity=".45" className="flame-halo" />
         <ellipse cx="306" cy="125" rx="34" ry="30" fill="url(#spc-flame)" />
-        <path d="M300 125c14-8 26-24 22-44-8 14-16 22-26 26z" fill="#ffb057" opacity=".85" />
-        <path d="M300 125c14 8 26 24 22 44-8-14-16-22-26-26z" fill="#ff8738" opacity=".6" />
+        <path className="lick lick-a" d="M300 125c14-8 26-24 22-44-8 14-16 22-26 26z" fill="#ffb057" opacity=".85" />
+        <path className="lick lick-b" d="M300 125c14 8 26 24 22 44-8-14-16-22-26-26z" fill="#ff8738" opacity=".6" />
+        <ellipse cx="298" cy="125" rx="6" ry="16" fill="#6fa6ff" opacity=".7" />
       </g>
       <text x="170" y="160" fill="#a9b8c6" fontFamily="ui-monospace, monospace" fontSize="11">{material ?? 'SAMPLE'} FILM{geometry ? ` · ${geometry}` : ''}{thickness ? ` · ${thickness}` : ''}</text>
       <text x="300" y="66" textAnchor="middle" fill="#ffd2a6" fontFamily="ui-monospace, monospace" fontSize="11">← FLAME FRONT SPREADS UPSTREAM</text>
