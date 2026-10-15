@@ -1,0 +1,61 @@
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+const sections = [
+  { label: 'Discover', href: '/', match: ['/', '/roadmap', '/challenge', '/impact', '/assets'] },
+  { label: 'Evidence', href: '/dashboard', match: ['/dashboard', '/ask', '/gaps', '/compare', '/sources', '/methodology'] },
+  { label: 'Experiments', href: '/atlas', match: ['/atlas', '/experiments'] },
+  { label: 'Flame Lab', href: '/lab', match: ['/lab'] },
+  { label: 'Missions', href: '/missions', match: ['/missions', '/passport'] }
+] as const;
+const evidenceTools = [
+  ['/dashboard', 'Workstation'], ['/ask', 'Ask PIX'], ['/gaps', 'Frontier'], ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology']
+] as const;
+const observatory = ['/', '/lab', '/missions'];
+
+const inSection = (path: string, prefixes: readonly string[]) => prefixes.some((p) => p === '/' ? path === '/' : path === p || path.startsWith(`${p}/`));
+
+export function BrandMark() {
+  return <svg className="brand-mark" viewBox="0 0 28 28" aria-hidden="true">
+    <circle cx="14" cy="14" r="12.5" fill="none" stroke="var(--cyan)" strokeWidth="1.5" />
+    <path d="M14 6c3.6 4 5.4 7 5.4 9.6a5.4 5.4 0 0 1-10.8 0C8.6 13 10.4 10 14 6z" fill="var(--flame)" />
+    <circle cx="14" cy="16" r="2.2" fill="#fff5e8" />
+  </svg>;
+}
+
+export function Shell({ children }: { children: React.ReactNode }) {
+  const path = usePathname() ?? '/';
+  const surface = inSection(path, observatory) ? 'observatory' : 'paper';
+  const current = sections.find((s) => inSection(path, s.match));
+  const links = sections.map((s) => <Link key={s.href} className="nav-link" href={s.href} aria-current={s === current ? 'page' : undefined}>{s.label}</Link>);
+  return <div className="surface" data-surface={surface}>
+    <a className="skip" href="#main">Skip to content</a>
+    <header className="site-header">
+      <div className="wrap">
+        <Link className="brand" href="/" aria-label="MicroFire, the Living Science Observatory — home">
+          <BrandMark /><span className="brand-text" aria-hidden="true"><b>MICROFIRE</b><small>The Living Science Observatory</small></span>
+        </Link>
+        <nav className="primary-nav" aria-label="Main">{links}</nav>
+        <Link className="btn btn-primary btn-sm header-cta" href="/ask">Ask PIX <span aria-hidden="true">↗</span></Link>
+        {/* Keyed by path so client navigation closes the menu. Works without JavaScript. */}
+        <details className="mobile-nav" key={path}>
+          <summary>Menu <span aria-hidden="true">☰</span></summary>
+          <nav aria-label="Main">{links}<Link className="nav-link" href="/ask">Ask PIX</Link></nav>
+        </details>
+      </div>
+    </header>
+    {current?.label === 'Evidence' && <nav className="subnav" aria-label="Evidence tools">
+      <div className="wrap">{evidenceTools.map(([href, label]) => <Link key={href} className="nav-link" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}</div>
+    </nav>}
+    <main id="main" tabIndex={-1}>{children}</main>
+    <footer className="site-footer">
+      <div className="wrap">
+        <p>Independent educational research project. No NASA endorsement and no operational fire-safety certification. Pre-release: public release is blocked.</p>
+        <nav aria-label="Project">
+          <Link href="/sources">Sources &amp; rights</Link><Link href="/methodology">Methodology</Link><Link href="/roadmap">Progress</Link>
+        </nav>
+      </div>
+    </footer>
+  </div>;
+}
