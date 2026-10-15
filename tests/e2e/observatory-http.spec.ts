@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { test, expect, type Page, type Route } from '@playwright/test';
 import { ExperimentResponseSchema, type Experiment } from '@microfire/shared';
 import { createGameState, saveKey } from '@microfire/game-core';
@@ -238,5 +239,99 @@ test.describe('real HTTP: populated research views at mobile widths (F6)', () =>
     expect(await noOverflow(page), `populated /ask @${width}`).toBe(true);
     await shot(page, `ask-populated-${width}`);
     await context.close();
+  });
+});
+
+test.describe('real HTTP: Passport with unknown and inherited-name references (Astra final review)', () => {
+  test.describe.configure({ mode: 'serial' });
+  test.use({ baseURL: 'http://127.0.0.1:3234' });
+  disposableGroup(3234);
+
+  /** Seeds a passport whose entry references `ids`, reloads, and returns the exact raw save written to storage. */
+  async function seedReferences(page: Page, ids: string[]) {
+    await page.goto('/passport');
+    await passportFixture(page, (entry) => { entry.experimentIds = ids; });
+    const raw = await page.evaluate((key) => localStorage.getItem(key)!, saveKey('normal'));
+    await page.reload();
+    return raw;
+  }
+  async function expectRawDownload(page: Page, raw: string) {
+    const download = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download the raw save' }).click();
+    const file = await download;
+    expect(await readFile((await file.path())!, 'utf8')).toBe(raw); // byte-for-byte the stored save
+    expect(await page.evaluate((key) => localStorage.getItem(key), saveKey('normal'))).toBe(raw); // storage untouched
+  }
+  const trackErrors = (page: Page) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    // A real 400 from the validator is logged by the browser as a failed resource; that is expected, not a crash.
+    page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push(m.text()); });
+    return errors;
+  };
+
+  for (const id of ['constructor', 'prototype', 'bass2-b999']) test(`schema-valid unknown reference "${id}" is rejected, inspectable and recoverable (${id === 'constructor' ? 3 : 1} POSTs)`, async ({ page }) => {
+    const errors = trackErrors(page);
+    const raw = await seedReferences(page, [id]);
+    await expect(page.getByTestId('passport-invalid')).toContainText('Scientific validation failed');
+    await expect(page.getByTestId('unknown-references')).toContainText(id);
+    await expect(page.getByTestId('canonical-limitations')).toHaveCount(0); // nothing borrowed from B20 or an inherited property
+    await expect(page.getByTestId('passport-valid')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Evidence could not be loaded' })).toHaveCount(0);
+    await expect(page.getByTestId('passport-entry-unrenderable')).toHaveCount(0);
+    if (id === 'constructor') {
+      for (let i = 0; i < 2; i++) { // repeated retries after a real 400 keep the interface working
+        await page.getByRole('button', { name: 'Check again' }).click();
+        await expect(page.getByTestId('passport-invalid')).toContainText('Scientific validation failed');
+      }
+      await page.screenshot({ path: 'docs/qa/screenshots/m1/passport-unknown-reference-desktop.png', fullPage: true });
+    }
+    await expectRawDownload(page, raw);
+    expect(errors).toEqual([]);
+  });
+
+  for (const id of ['__proto__', 'toString', 'hasOwnProperty']) test(`schema-invalid reference "${id}" is malformed stored data with recovery intact (0 POSTs)`, async ({ page }) => {
+    const errors = trackErrors(page);
+    const raw = await seedReferences(page, [id]);
+    await expect(page.getByTestId('passport-recovery')).toContainText('has not been changed or deleted');
+    await expect(page.getByTestId('passport-loaded')).toHaveCount(0);
+    await expectRawDownload(page, raw);
+    expect(errors).toEqual([]);
+  });
+
+  test('mixed valid and unknown references: B20 canon only from the catalog, unknown stays unverified (1 POST)', async ({ page }) => {
+    const errors = trackErrors(page);
+    const raw = await seedReferences(page, ['bass2-b20', 'constructor']);
+    await expect(page.getByTestId('passport-invalid')).toBeVisible();
+    await expect(page.getByTestId('unknown-references')).toContainText('constructor');
+    const e = ExperimentResponseSchema.parse(await (await page.request.get('/api/experiments/bass2-b20')).json()).data;
+    const canonical = page.getByTestId('canonical-limitations');
+    for (const limitation of e.limitations) await expect(canonical.getByText(limitation, { exact: true })).toBeVisible();
+    await expect(canonical.locator('li')).toHaveCount(e.limitations.length);
+    await expectRawDownload(page, raw);
+    expect(errors).toEqual([]);
+  });
+
+  test('valid B20 reference still validates with catalog caveats (1 POST)', async ({ page }) => {
+    const errors = trackErrors(page);
+    const raw = await seedReferences(page, ['bass2-b20']);
+    await expect(page.getByTestId('passport-valid')).toBeVisible();
+    await expect(page.getByTestId('unknown-references')).toHaveCount(0);
+    await expect(page.getByTestId('canonical-limitations')).toBeVisible();
+    await expectRawDownload(page, raw);
+    expect(errors).toEqual([]);
+  });
+
+  test('other research routes treat inherited names as unknown, never as records (0 POSTs)', async ({ page }) => {
+    for (const id of ['constructor', 'prototype', 'toString', '__proto__', 'hasOwnProperty']) {
+      // Soft 404 (status 200 while streaming) is pre-existing route behaviour; the safety property is: no record is rendered.
+      for (const path of [`/experiments/${id}`, `/${id}`]) {
+        await page.goto(path);
+        await expect(page.getByRole('heading', { name: 'Record or route not found' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Documented observation' })).toHaveCount(0);
+      }
+    }
+    await page.goto('/atlas?q=constructor');
+    await expect(page.getByText('No admitted record matches.')).toBeVisible();
   });
 });

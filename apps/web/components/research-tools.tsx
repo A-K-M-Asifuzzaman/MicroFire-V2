@@ -223,7 +223,7 @@ export function Workstation({ sources, claims, coverage }: { sources: SourceRef[
             </ul></div>
             <div><p className="step">02 · Observation</p>
               <p><Kind kind={item.support.kind} /> <span className="meta">evidence level: {item.evidenceLevel}</span></p>
-              {item.support.claimId ? <p>{claims[item.support.claimId] ?? item.support.claimId}</p>
+              {item.support.claimId ? <p>{Object.hasOwn(claims, item.support.claimId) ? claims[item.support.claimId] : item.support.claimId}</p>
                 : <p className="meta">No exact cited observation supports this question. A high relevance score does not show the outcome was measured.</p>}
               {item.support.citations.length > 0 && <CitationList citations={item.support.citations} sources={sources} />}
             </div>

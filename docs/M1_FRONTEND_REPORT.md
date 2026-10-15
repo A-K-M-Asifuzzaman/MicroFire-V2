@@ -110,3 +110,39 @@ These run once, in the desktop project; mobile widths are set explicitly. F4 and
 - **Not run:** axe, a screen-reader pass, Safari, Firefox, real devices, INP, GPU profiling.
 - **Bundle.** The catch-all route still bundles every island.
 - **Focus after mobile navigation.** Focus lands on `body` after mobile-menu navigation; a focus handoff is not yet implemented.
+
+## Final M1 Passport recovery fix (Astra final verification)
+
+**Root cause.** `passport-preview.tsx` looked up untrusted saved IDs in plain-object dictionaries (`trusted.experiments[id]`). The shared `IdSchema` allows `constructor` and `prototype`, which a plain object resolves through `Object.prototype`. So an inherited function was treated as a catalog record, and reading its `.limitations` threw. The route error boundary then replaced the page ("Evidence could not be loaded") and removed raw-save recovery. The save itself was never changed, and the backend correctly returned 400.
+
+**Fix (frontend only).**
+- Trusted catalog data is indexed as `Map`s built from own properties (`Object.entries`). All Passport membership checks, canonical caveats, claims and the untrusted-text count use `.get` / `.has`.
+- Unknown references are listed as "Unverified references not in the admitted catalog", and no source content is shown for them.
+- A per-entry error boundary keeps the validation notice and the raw-save download usable even if an entry ever fails to render.
+- The rejected state has a "Check again" control.
+- `Object.hasOwn` guards were added to the Workstation claim lookup and to `kindLabels`.
+- No API, schema, registry or backend change.
+
+**Regression group** (`observatory-http.spec.ts`, disposable server on port 3234, real HTTP), 9 cases:
+- **`constructor`, `prototype`, `bass2-b999`:** real 400 shows "Scientific validation failed"; the unknown ID is visible; no canonical caveats are borrowed; no crash or console error. For `constructor`, "Check again" is clicked twice, still with no crash.
+- **`__proto__`, `toString`, `hasOwnProperty`:** these fail the shared `IdSchema`, so they are treated as malformed stored data, with the recovery state shown.
+- **Mixed `bass2-b20` + `constructor`:** rejected; exactly the four B20 caveats come from the catalog; `constructor` stays unverified.
+- **Valid B20:** still validates, with catalog caveats.
+- **Other routes:** `/experiments/<name>` and `/<name>` for all five names render "Record or route not found" with no record content, and Atlas search returns its empty state.
+
+In every Passport case, the downloaded raw save equals the stored string byte-for-byte, and storage is unchanged.
+
+**Astra's specs on this build:**
+- The original eight (unchanged apart from output path): 8/8.
+- Astra's added probes: 7/8, including Astra's own `constructor` and `bass2-b19` regressions. The one failure is the initial-offscreen lens drawing, which Astra classified as an M1.5 performance item; it is intentionally untouched here.
+- Astra's crash-confirmation script now fails at its first assertion, because the "Evidence could not be loaded" page no longer appears.
+
+**Open, not M1 blockers:**
+- Unknown routes return HTTP 200 (a soft 404) while rendering the not-found page. This is pre-existing streaming behaviour; no record is rendered.
+- Initial-offscreen lens animation (M1.5).
+- Registry reconciliation.
+- Retry-After countdown.
+- Mobile navigation focus.
+- Per-route code splitting.
+- The large-save validation size strategy (Sol).
+- Not run: axe, screen readers, Safari, Firefox, real devices. HawkScan was not tested.

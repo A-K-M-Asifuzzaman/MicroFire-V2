@@ -17,7 +17,7 @@ export const kindLabels: Record<string, string> = {
   recorded: 'Recorded', series: 'Series value'
 };
 export function Kind({ kind }: { kind: string }) {
-  return <span className="kind" data-kind={kind}>{kindLabels[kind] ?? kind}</span>;
+  return <span className="kind" data-kind={kind}>{Object.hasOwn(kindLabels, kind) ? kindLabels[kind] : kind}</span>;
 }
 
 export function CitationChip({ citation, sources }: { citation: Citation; sources: readonly SourceRef[] }) {
