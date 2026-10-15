@@ -10,6 +10,11 @@ export type ApparatusItem = {
   citation: Citation | null; condition?: string;
 };
 const basisText = { sourced: 'Described in the source', recorded: 'Recorded for this run', unknown: 'Not recorded' };
+const basisWhy = {
+  sourced: 'Hardware described in the report\'s apparatus section. Its position in this drawing is schematic, not a NASA drawing.',
+  recorded: 'A run condition recorded for this test, with the exact table cell it comes from.',
+  unknown: 'Not recorded in this source. No value is shown or estimated.'
+};
 
 // Schematic positions only. The duct outline uses the sourced 7.6 × 17 cm side proportion; nothing inside is to scale.
 const spots: Record<string, [number, number]> = {
@@ -23,9 +28,9 @@ export function Apparatus({ items, sources }: { items: ApparatusItem[]; sources:
   const current = items.find((i) => i.id === active);
   const select = (id: string) => {
     setActive(id);
-    // Tie the drawing to the evidence: highlight the matching row in the conditions table.
+    // Tie the drawing to the evidence: highlight the matching table row and readout (brief pulse via CSS).
     const condition = items.find((i) => i.id === id)?.condition;
-    document.querySelectorAll('tr[data-cond]').forEach((row) => row.setAttribute('data-highlight', String(row.getAttribute('data-cond') === condition)));
+    document.querySelectorAll('[data-cond]').forEach((el) => el.setAttribute('data-highlight', String(el.getAttribute('data-cond') === condition)));
   };
   const is = (id: string) => (active === id ? 'true' : 'false');
   return <div className="apparatus">
@@ -84,18 +89,24 @@ export function Apparatus({ items, sources }: { items: ApparatusItem[]; sources:
       </svg>
       <figcaption>Schematic · only the duct&apos;s 7.6 × 17 cm side proportion is sourced (Section 1.2, PDF p. 12). Part placement is illustrative, not a NASA drawing.</figcaption>
     </figure>
-    <div className="apparatus-panel">
-      <ol className="part-list" aria-label="Apparatus parts and run conditions">
-        {items.map((item) => <li key={item.id}><button type="button" aria-pressed={active === item.id} onClick={() => select(item.id)}>
-          <span className="num" aria-hidden="true">{item.n}</span><span>{item.label}</span><span className="basis" data-basis={item.basis}>{item.basis}</span>
-        </button></li>)}
-      </ol>
-      {current && <div className="part-detail" aria-live="polite" data-testid="apparatus-detail">
+    <div className="apparatus-inspector">
+      {current && <div className="part-detail" aria-live="polite" data-testid="apparatus-detail" data-basis={current.basis}>
+        <p className="eyebrow" style={{ marginBottom: 6 }}>Selected · {current.n}</p>
         <h3>{current.label}</h3>
         <p><span className="basis" data-basis={current.basis}>{basisText[current.basis]}</span></p>
+        <p className="why">{basisWhy[current.basis]}</p>
         <p>{current.note}</p>
-        {current.citation && <CitationChip citation={current.citation} sources={sources} />}
+        {current.citation ? <CitationChip citation={current.citation} sources={sources} /> : <p className="meta">No source citation: this source does not record it.</p>}
+        {current.condition && <p className="meta" style={{ marginTop: 10 }}><a href={`#cond-${current.condition}`}>Show in the conditions table ↓</a></p>}
       </div>}
+      <ol className="part-list" aria-label="Apparatus parts and run conditions">
+        {([['Hardware', items.filter((i) => !i.condition)], ['Run conditions', items.filter((i) => i.condition)]] as const).map(([group, list]) => <li key={group} className="part-group">
+          <p className="part-group-label">{group}</p>
+          <ul>{list.map((item) => <li key={item.id}><button type="button" aria-pressed={active === item.id} onClick={() => select(item.id)}>
+            <span className="num" aria-hidden="true">{item.n}</span><span>{item.label}</span><span className="basis" data-basis={item.basis}>{item.basis}</span>
+          </button></li>)}</ul>
+        </li>)}
+      </ol>
     </div>
   </div>;
 }

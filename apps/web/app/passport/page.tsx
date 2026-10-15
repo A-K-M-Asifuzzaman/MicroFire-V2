@@ -10,14 +10,17 @@ const trustedCatalog = {
 };
 export default function Page() {
   return <>
-    <PageHero eyebrow="Evidence Passport · preview" title="A field notebook of what you actually established." status={{ feature: feature('/passport')! }}
-      lede="Each entry will record a mission, the experiment and claim it rests on, its evidence level, your conclusion, your corrections and the source's own limitations. It is an educational record, never a certificate." />
+    <PageHero compact eyebrow="Evidence Passport · preview" title="Your evidence notebook" status={{ feature: feature('/passport')! }}
+      lede="An educational record of what you established, never a certificate." />
     <Sheet>
-      <div className="boundaries" style={{ marginBottom: 28 }}>
-        <div><h3>Kept by the source</h3><p className="meta">Canonical limitations are always shown from the admitted catalog, never from the saved file, so saved text can never pose as NASA evidence.</p></div>
-        <div><h3>Written by you</h3><p className="meta">Conclusions and notes are yours, shown separately and never labelled verified.</p></div>
-      </div>
       <PassportPreview datasetVersion={catalog.datasetVersion} sources={sources} trusted={trustedCatalog} />
+      <details className="disclose" style={{ marginTop: 24 }}>
+        <summary>Who wrote what in an entry</summary>
+        <div className="boundaries" style={{ marginTop: 12 }}>
+          <div><h3>Kept by the source</h3><p className="meta">Canonical limitations are always shown from the admitted catalog, never from the saved file, so saved text can never pose as NASA evidence.</p></div>
+          <div><h3>Written by you</h3><p className="meta">Conclusions and notes are yours, shown separately and never labelled verified.</p></div>
+        </div>
+      </details>
     </Sheet>
   </>;
 }

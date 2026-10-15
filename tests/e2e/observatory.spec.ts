@@ -206,7 +206,7 @@ test('workstation, frontier and comparison keep support, gaps and refusals expli
 
   await page.goto('/gaps');
   await page.getByRole('button', { name: 'Load example' }).click();
-  const pressure = page.getByRole('row', { name: /pressureKpa/ });
+  const pressure = page.getByRole('row', { name: /Pressure/ });
   await expect(pressure.getByRole('cell', { name: /Not recorded/ })).toBeVisible();
   await expect(page.getByText('Not found in our validated catalog is not the same as never studied globally.')).toBeVisible();
   await shot(page, 'frontier', info.project.name);

@@ -80,7 +80,7 @@ export function MissionsPage() {
   const missions = missionDefinitions.map((m, i) => ({ ...m, n: i + 1, feature: feature(`/missions/${m.id}`)! }));
   return <div className="wrap page">
     <header className="page-head reveal">
-      <p className="eyebrow">The orbital investigation / mission map</p>
+      <p className="eyebrow">Mission map · preview, none playable yet</p>
       <h1>Five places. One scientific mystery.</h1>
       <p className="lede">An interactive research station is being built. Every decision will leave an evidence trail in your Passport.</p>
     </header>
@@ -151,10 +151,10 @@ export function LabPage() {
     <header className="page-head reveal">
       <p className="eyebrow">Virtual laboratory / illustrative view</p>
       <h1>Change a condition. Check a record.</h1>
-      <p className="lede">The Flame Lab will pair an illustrative instrument with links to the real records behind it, keeping footage, static evidence and illustration clearly apart.</p>
+      <p className="lede">Illustration available on Discover; the Lab workspace is in development. It will pair an illustrative instrument with links to the real records behind it, keeping footage, static evidence and illustration clearly apart.</p>
     </header>
     <StatusBlock f={f} />
-    <div className="actions"><button className="btn btn-quiet" disabled>{featureLabels[f.state]}</button><Link className="btn btn-primary" href="/">Try the Gravity Lens illustration</Link></div>
+    <div className="actions"><Link className="btn btn-primary" href="/#gravity-lens">Open the Gravity Lens illustration</Link><button className="btn btn-quiet" disabled>Lab workspace · {featureLabels[f.state]}</button></div>
   </div>;
 }
 

@@ -9,13 +9,13 @@ export function GravityDuel({ recordHref }: { recordHref: string }) {
   return <section className="duel" aria-labelledby="duel-title">
     <div className="wrap">
       <header className="duel-head" data-reveal>
-        <p className="eyebrow">Same fuel · different universe</p>
-        <h2 id="duel-title">On Earth, fire climbs. <em>In orbit, it floats.</em></h2>
-        <p className="lede">Gravity decides the shape of every flame you have ever seen. Take it away and the rules change: no rising hot air, no flickering tip, just a slow blue sphere that has to wait for oxygen to drift in.</p>
+        <p className="eyebrow">Two teaching views · still-air illustration</p>
+        <h2 id="duel-title">On Earth, hot gas rises. <em>In still microgravity air, it can&apos;t.</em></h2>
+        <p className="lede">Without buoyancy-driven flow, a flame in still air can become rounder and bluer. These drawings leave out forced airflow, and real microgravity flames vary with fuel, flow and soot. The B20 test you can inspect used opposed airflow.</p>
       </header>
       <div className="duel-stage">
         <figure className="duel-card duel-earth" data-reveal>
-          <svg viewBox="0 0 400 400" role="img" aria-label="Illustration: on Earth a flame stretches into a tall yellow teardrop as hot gas rises.">
+          <svg viewBox="0 0 400 400" role="img" aria-label="Teaching illustration: in still air on Earth, buoyancy lifts hot gas and can stretch a candle-like flame into a tall yellow teardrop.">
             <defs>
               <radialGradient id="duel-e-core" cx="50%" cy="68%" r="62%"><stop offset="0" stopColor="#fff6dc" /><stop offset=".45" stopColor="#ffc06a" /><stop offset="1" stopColor="#ff6a1a" stopOpacity=".1" /></radialGradient>
               <radialGradient id="duel-e-glow"><stop offset="0" stopColor="#ff8738" stopOpacity=".55" /><stop offset="1" stopColor="#ff8738" stopOpacity="0" /></radialGradient>
@@ -26,11 +26,11 @@ export function GravityDuel({ recordHref }: { recordHref: string }) {
             <g stroke="#ffb06a" strokeWidth="2" fill="none" opacity=".7" className="duel-rise"><path d="M110 330 C100 250 112 170 128 100" /><path d="M290 330 C300 250 288 170 272 100" /></g>
             <rect x="186" y="280" width="28" height="6" rx="2" fill="#c9d4dd" />
           </svg>
-          <figcaption><b>1 g · Earth</b><span>Hot gas is lighter, so it rises and drags the flame into a tall, bright teardrop.</span></figcaption>
+          <figcaption><b>1 g · Earth, still air</b><span>Hot gas is lighter, so buoyancy lifts it and can stretch the flame into a tall, bright teardrop.</span></figcaption>
         </figure>
         <div className="duel-vs" aria-hidden="true"><span>1 g</span><i /><b>vs</b><i /><span>0 g</span></div>
         <figure className="duel-card duel-micro" data-reveal>
-          <svg viewBox="0 0 400 400" role="img" aria-label="Illustration: in microgravity a flame becomes a dim, rounded blue sphere fed by slow diffusion.">
+          <svg viewBox="0 0 400 400" role="img" aria-label="Teaching illustration: in still air with almost no buoyancy, a flame can become rounder, dimmer and bluer, fed by slow diffusion.">
             <defs>
               <radialGradient id="duel-m-env" cx="50%" cy="55%" r="58%"><stop offset="0" stopColor="#2a5fbf" stopOpacity=".15" /><stop offset=".7" stopColor="#5d9bf5" stopOpacity=".55" /><stop offset=".9" stopColor="#bfe2ff" /><stop offset="1" stopColor="#2a5fbf" stopOpacity="0" /></radialGradient>
               <radialGradient id="duel-m-glow"><stop offset="0" stopColor="#5d9bf5" stopOpacity=".5" /><stop offset="1" stopColor="#5d9bf5" stopOpacity="0" /></radialGradient>
@@ -42,10 +42,10 @@ export function GravityDuel({ recordHref }: { recordHref: string }) {
             </g>
             <rect x="186" y="236" width="28" height="6" rx="2" fill="#c9d4dd" />
           </svg>
-          <figcaption><b>~0 g · Orbit</b><span>Nothing rises. Oxygen creeps in from every side, so the flame turns round, dim and blue.</span></figcaption>
+          <figcaption><b>~0 g · still air, no fan</b><span>With almost no buoyancy, oxygen arrives mainly by slow diffusion, so the flame can become rounder, dimmer and bluer.</span></figcaption>
         </figure>
       </div>
-      <p className="duel-note" data-reveal>Both drawings are teaching illustrations, not NASA footage or simulations. For a real space-flame record, see <Link href={recordHref}>the B20 exhibit</Link>.</p>
+      <p className="duel-note" data-reveal>Both drawings are teaching illustrations of still air, not NASA footage or simulations. For a real recorded test with opposed airflow, see <Link href={recordHref}>the B20 exhibit</Link>.</p>
     </div>
   </section>;
 }

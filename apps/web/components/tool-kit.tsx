@@ -2,6 +2,13 @@
 import type { TargetConditions } from '@microfire/shared';
 import type { ApiFailure } from './client-api';
 
+/** Presentation-only field labels and units for API field keys (the API's classifications are shown unchanged). */
+export const fieldLabels: Record<string, [string, string]> = {
+  gravity: ['Gravity', ''], material: ['Material', ''], geometry: ['Sample geometry', ''], flowDirection: ['Flow direction', ''],
+  oxygenPct: ['Oxygen', 'vol%'], pressureKpa: ['Pressure', 'kPa'], flowCmS: ['Airflow', 'cm/s'], thicknessMm: ['Film thickness', 'mm']
+};
+export const fieldLabel = (field: string) => fieldLabels[field]?.[0] ?? field;
+export const withUnit = (field: string, v: unknown) => `${String(v)}${fieldLabels[field]?.[1] ? ` ${fieldLabels[field]![1]}` : ''}`;
 export type Pending<T> = { status: 'idle' } | { status: 'loading' } | { status: 'done'; data: T } | { status: 'failed'; failure: ApiFailure };
 const num = (v: FormDataEntryValue | null) => (typeof v === 'string' && v.trim() !== '' && Number.isFinite(Number(v)) ? Number(v) : undefined);
 const text = (v: FormDataEntryValue | null) => (typeof v === 'string' && v.trim() ? v.trim() : undefined);

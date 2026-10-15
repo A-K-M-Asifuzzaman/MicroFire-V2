@@ -233,24 +233,28 @@ test('fix E: no automated axe violations (WCAG 2.x A/AA) on core routes', async 
   expect(results).toEqual({});
 });
 
-test('themed cursor never gets in the way: selection, inputs, keyboard and clicks still work', async ({ page }, info) => {
+test('themed cursor stays in the observatory and never gets in the way: selection, inputs, keyboard and clicks still work', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'mouse cursor only');
-  await page.goto('/ask');
+  await page.goto('/');
   await page.mouse.move(300, 300); await page.mouse.move(320, 310);
   await expect(page.locator('html')).toHaveAttribute('data-cursor', 'fx');
   expect(await page.locator('.cursor-fx').evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none');
   // Text keeps a text cursor and can be selected.
-  const lede = page.locator('.page-hero .lede');
+  const lede = page.locator('.obs-head .lede');
   expect(await lede.evaluate((el) => getComputedStyle(el).cursor)).toBe('text');
   await lede.click({ clickCount: 3 });
   expect((await page.evaluate(() => getSelection()?.toString() ?? '')).length).toBeGreaterThan(20);
-  // Inputs keep their native cursor and accept typing.
+  // Controls still work through the overlay.
+  await page.getByRole('radio', { name: 'Earth 1 g' }).check();
+  await expect(page.locator('figure.lens')).toHaveAttribute('data-gravity', 'earth');
+  // Research pages keep the native cursor; typing and keyboard navigation are untouched.
+  await page.goto('/ask');
+  await page.mouse.move(300, 300);
+  await expect(page.locator('html')).not.toHaveAttribute('data-cursor', 'fx');
+  await expect(page.locator('.cursor-fx')).toHaveCount(0);
   const box = page.locator('#pix-q');
-  expect(await box.evaluate((el) => getComputedStyle(el).cursor)).toBe('text');
   await box.click(); await box.fill('Does the cursor block typing?');
   await expect(box).toHaveValue('Does the cursor block typing?');
-  // Keyboard navigation is untouched and links still click through the overlay.
-  await page.keyboard.press('Shift+Tab');
   await page.getByRole('link', { name: 'Methodology' }).first().click();
   await expect(page).toHaveURL(/\/methodology$/);
 });

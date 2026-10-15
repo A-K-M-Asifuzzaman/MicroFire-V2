@@ -25,7 +25,7 @@ void main(){
   float core = exp(-d * d * 7.);
   vec3 deep = vec3(.1, .2, .85), blue = vec3(.25, .5, 1.), cyan = vec3(.55, .85, 1.);
   vec3 orange = vec3(1., .45, .12), yellow = vec3(1., .8, .42), white = vec3(1., .96, .86);
-  // Microgravity: a dim blue sphere with a faint warm heart.
+  // Still-air microgravity (no forced flow): a dim, rounded blue flame with a faint warm heart.
   vec3 micro = mix(deep, cyan, shell * shell) * shell * .75 + mix(blue, cyan, body) * body * .6 + orange * core * .3;
   // Earth: buoyant teardrop of glowing soot over a blue base.
   float lum = smoothstep(-.35, .15, p.y + .05);

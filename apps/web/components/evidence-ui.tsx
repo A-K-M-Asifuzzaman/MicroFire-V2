@@ -50,10 +50,16 @@ export function CoverageNote({ coverage }: { coverage: Coverage }) {
   </div>;
 }
 
-/** Honest release status from the shared registry. `built` marks an M1 interface that exists but awaits review. */
+/**
+ * Honest release status from the shared registry; the state badge is never changed here. `built` marks an interface
+ * that exists on this page: its registry reason may still say the UI is pending (a Sol-owned update is proposed), so
+ * that note is shown labelled as the registry's, beneath what is actually true of this screen.
+ */
 export function StatusLine({ feature, built = false }: { feature: Feature; built?: boolean }) {
   return <div className="status-line">
     <span className="badge" data-state={feature.state}>{featureLabels[feature.state]}</span>
-    <p>{built && feature.state === 'coming_soon' ? 'Interface built for review; not released. ' : ''}{feature.reason}</p>
+    {built ? <div className="status-text"><p>Interface implemented for review; release acceptance pending.</p>
+      <details className="registry-note"><summary>Registry note</summary><p>{feature.reason} <em>(registry wording update proposed for review)</em></p></details></div>
+      : <p>{feature.reason}</p>}
   </div>;
 }

@@ -90,7 +90,7 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
   // because OutputPass converts the whole frame to sRGB. ----
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), o.mobile ? 0.5 : 0.55, 0.32, 0.9);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), o.mobile ? 0.36 : 0.4, 0.3, 0.92);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
 
@@ -104,7 +104,6 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
   const metal = new THREE.MeshStandardMaterial({ color: '#1d2a38', metalness: 0.85, roughness: 0.3 });
   const trim = new THREE.MeshStandardMaterial({ color: '#33475b', metalness: 0.75, roughness: 0.4 });
   const cyanLine = new THREE.MeshStandardMaterial({ color: '#000000', emissive: '#73bbd9', emissiveIntensity: 2.2 });
-  const orangeLine = new THREE.MeshStandardMaterial({ color: '#000000', emissive: '#ff8738', emissiveIntensity: 2.6 });
 
   // ---- space: two star layers (parallax), planet limb ----
   const starLayer = (n: number, r0: number, size: number) => {
@@ -218,12 +217,15 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
     rod.position.set(Math.cos(a) * 1.16, 0, Math.sin(a) * 1.16); chamber.add(rod);
   }
   const pedestal = new THREE.Mesh(new THREE.CylinderGeometry(1.45, 1.85, 0.7, 72), metal); pedestal.position.y = -1.75; chamber.add(pedestal);
-  const pedLine = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.028, 8, 96), orangeLine); pedLine.rotation.x = Math.PI / 2; pedLine.position.y = -1.48; chamber.add(pedLine);
+  const pedLine = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.02, 8, 96), new THREE.MeshStandardMaterial({ color: '#000000', emissive: '#ff8738', emissiveIntensity: 0.9 })); pedLine.rotation.x = Math.PI / 2; pedLine.position.y = -1.48; chamber.add(pedLine);
   // Gyroscope rings: slow machinery motion around the chamber.
   const gyros: THREE.Mesh[] = [];
-  [[1.85, cyanLine, 0.9, 0], [2.05, trim, 0.3, 1.1], [2.25, orangeLine, -0.5, 2.2]].forEach(([r, mat, tilt, phase]) => {
-    const m = new THREE.Mesh(new THREE.TorusGeometry(r as number, mat === trim ? 0.035 : 0.012, 8, 160), mat as THREE.Material);
-    m.rotation.set(Math.PI / 2 + (tilt as number), 0, phase as number); m.userData = { tilt, phase }; chamber.add(m); gyros.push(m);
+  // Kept to the chamber's base and crown so no ring crosses the flame silhouette; dimmer than the flame.
+  const gyroLine = new THREE.MeshStandardMaterial({ color: '#000000', emissive: '#73bbd9', emissiveIntensity: 0.8 });
+  const gyroWarm = new THREE.MeshStandardMaterial({ color: '#000000', emissive: '#ff8738', emissiveIntensity: 0.9 });
+  [[1.75, gyroLine, 0.06, 0, -1.05], [1.95, trim, -0.05, 1.1, 1.08], [2.15, gyroWarm, 0.04, 2.2, -1.2]].forEach(([r, mat, tilt, phase, y]) => {
+    const m = new THREE.Mesh(new THREE.TorusGeometry(r as number, mat === trim ? 0.03 : 0.012, 8, 160), mat as THREE.Material);
+    m.position.y = y as number; m.rotation.set(Math.PI / 2 + (tilt as number), 0, phase as number); m.userData = { tilt, phase }; chamber.add(m); gyros.push(m);
   });
   // Light shaft from the ceiling into the chamber.
   const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 2.4, 8, 48, 1, true), new THREE.ShaderMaterial({
@@ -322,7 +324,7 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
   // ---- camera rig: orbit about the chamber so it stays aligned with the HTML flame stage ----
   const rig = { yaw: -1.6, pitch: 0.75, dist: 9, tYaw: o.mobile ? 0 : 0.38, tPitch: o.mobile ? 0.24 : 0.2, px: 0, py: 0, drag: 0, scroll: 0 };
   let width = 1, height = 1, g = o.gravity, shownG = g, motion = o.motion, focus: number | null = null, pan = false, frame = 0, lost = false, t0 = performance.now(), last = t0;
-  const entranceStart = performance.now(), entranceMs = o.motion ? 3400 : 0;
+  const entranceStart = performance.now(), entranceMs = o.motion ? 700 : 0; // one short settle, never a forced flight
   if (!o.motion) { rig.yaw = rig.tYaw; rig.pitch = rig.tPitch; }
 
   const layout = () => {
@@ -346,9 +348,9 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
     const k = entranceMs ? ease((now - entranceStart) / entranceMs) : 1;
     const targetYaw = rig.tYaw + rig.px + rig.drag + (focus !== null && pan ? angles[focus]! * 0.32 : 0) + (motion ? Math.sin(t * 0.06) * 0.04 : 0);
     const targetPitch = rig.tPitch + rig.py + rig.scroll * 0.35;
-    if (k < 1) { rig.yaw = THREE.MathUtils.lerp(-1.6, targetYaw, k); rig.pitch = THREE.MathUtils.lerp(0.75, targetPitch, k); }
+    if (k < 1) { rig.yaw = THREE.MathUtils.lerp(targetYaw - 0.25, targetYaw, k); rig.pitch = THREE.MathUtils.lerp(targetPitch + 0.08, targetPitch, k); }
     else { rig.yaw += (targetYaw - rig.yaw) * (motion ? 0.06 : 1); rig.pitch += (targetPitch - rig.pitch) * (motion ? 0.06 : 1); }
-    const dist = rig.dist * (1 + (1 - k) * 0.9 + rig.scroll * 0.25);
+    const dist = rig.dist * (1 + (1 - k) * 0.12 + rig.scroll * 0.25);
     camera.position.set(Math.sin(rig.yaw) * Math.cos(rig.pitch) * dist, Math.sin(rig.pitch) * dist, Math.cos(rig.yaw) * Math.cos(rig.pitch) * dist);
     camera.lookAt(0, 0, 0);
     shownG += (g - shownG) * (motion ? 0.1 : 1); shared.g.value = shownG;
@@ -356,7 +358,7 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
     flameLight.color.copy(BLUE).lerp(ORANGE, shownG); flameLight.intensity = (14 + 26 * shownG) * flicker;
     glow.material.color.copy(BLUE).lerp(ORANGE, shownG); glow.scale.set(1.9 - shownG * 0.5, 1.9 + shownG * 1.1, 1); glow.position.y = shownG * 0.25;
     glow.material.opacity = (0.45 + 0.2 * shownG) * flicker;
-    gyros.forEach((m, i) => { const u = m.userData as { tilt: number; phase: number }; m.rotation.z = u.phase + (motion ? t * (0.12 + i * 0.07) * (i % 2 ? -1 : 1) : 0); m.rotation.x = Math.PI / 2 + u.tilt + (motion ? Math.sin(t * 0.3 + i) * 0.08 : 0); });
+    gyros.forEach((m, i) => { const u = m.userData as { tilt: number; phase: number }; m.rotation.z = u.phase + (motion ? t * (0.12 + i * 0.07) * (i % 2 ? -1 : 1) : 0); m.rotation.x = Math.PI / 2 + u.tilt + (motion ? Math.sin(t * 0.3 + i) * 0.02 : 0); });
     if (motion) {
       // Embers: buoyancy lifts them at 1 g; in still air they wander and hang.
       for (let i = 0; i < EMBERS; i++) {

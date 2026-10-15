@@ -19,10 +19,12 @@ export const locatorText = (e: Experiment) => {
 };
 
 /** Cinematic page opening on the observatory surface; the reading surface (`Sheet`) follows it. */
-export function PageHero({ eyebrow, title, lede, crumbs, status, visual }: {
+export function PageHero({ eyebrow, title, lede, crumbs, status, visual, compact = false }: {
   eyebrow: string; title: string; lede?: string; crumbs?: React.ReactNode; status?: { feature: Feature; built?: boolean }; visual?: React.ReactNode;
+  /** Research density: a short title row so the tool itself starts in the first viewport. */
+  compact?: boolean;
 }) {
-  return <header className="page-hero">
+  return <header className={`page-hero${compact ? ' compact' : ''}`}>
     <div className={`wrap${visual ? '' : ' solo'}`}>
       <div className="reveal">
         {crumbs && <nav aria-label="Breadcrumb" className="crumbs">{crumbs}</nav>}

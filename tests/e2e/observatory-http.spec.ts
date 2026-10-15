@@ -128,10 +128,10 @@ test.describe('real HTTP: Ask, research tools and Passport trust', () => {
     await expect(page.getByRole('meter', { name: /Retrieval relevance .* not evidence strength/ })).toBeVisible();
     await page.getByRole('button', { name: /recorded B20 observation/ }).click();
     await expect(page.getByText('evidence level: direct')).toBeVisible();
-    await expect(page.getByTestId('ws-request')).toContainText('oxygenPct 17.4');
+    await expect(page.getByTestId('ws-request')).toContainText('Oxygen 17.4 vol%'); // human labels, presentation only
     await page.goto('/gaps');
     await page.getByRole('button', { name: 'Load example' }).click();
-    await expect(page.getByRole('row', { name: /pressureKpa/ }).getByText('Not recorded')).toBeVisible();
+    await expect(page.getByRole('row', { name: /Pressure/ }).getByText('Not recorded', { exact: true })).toBeVisible();
     await page.goto('/compare');
     await page.getByRole('button', { name: /Request comparison/ }).click();
     await expect(page.getByText('Comparison refused by the evidence service.')).toBeVisible();
@@ -224,7 +224,7 @@ test.describe('real HTTP: populated research views at mobile widths (F6)', () =>
     if (await region.evaluate((el) => el.scrollWidth > el.clientWidth)) // keyboard reaches every column inside the local region
       await expect.poll(() => region.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
     expect(await noOverflow(page), `scrolled /gaps @${width}`).toBe(true);
-    await expect(page.getByRole('row', { name: /pressureKpa/ }).getByText('Not recorded')).toBeAttached();
+    await expect(page.getByRole('row', { name: /Pressure/ }).getByText('Not recorded', { exact: true })).toBeAttached();
     await shot(page, `frontier-populated-${width}`);
 
     await page.goto('/dashboard');

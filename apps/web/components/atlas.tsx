@@ -15,18 +15,23 @@ export function RecordCard({ experiment, sources }: { experiment: Experiment; so
   const claim = experiment.claims[0];
   const pressure = known(experiment, 'pressureKpa');
   return <article className="exhibit" data-testid="atlas-exhibit">
-    <div className="exhibit-visual" aria-hidden="true"><div style={{ width: '100%', maxWidth: 360 }}><FilmGlyph /></div></div>
+    <div className="exhibit-visual" aria-hidden="true"><div style={{ width: '100%', maxWidth: 420 }}><FilmGlyph /></div></div>
     <div className="exhibit-body">
       <p className="eyebrow" style={{ margin: 0, color: 'var(--accent-text)' }}>{experiment.program} · test {experiment.testId} · admitted exhibit</p>
       <h2><Link href={`/experiments/${experiment.id}`}>{experiment.title}</Link></h2>
+      <div className="exhibit-actions">
+        <Link className="btn btn-primary" href={`/experiments/${experiment.id}`}>Inspect {experiment.testId} <span aria-hidden="true">→</span></Link>
+      </div>
       {claim && <p style={{ margin: 0 }}><Kind kind={claim.kind} /> {claim.text}</p>}
       <dl className="readouts">
-        <div><dt>Material</dt><dd>{known(experiment, 'material')}</dd></div>
         <div><dt>Calibrated O₂</dt><dd>{known(experiment, 'oxygenPct')}</dd></div>
+        <div><dt>Material</dt><dd>{known(experiment, 'material')}</dd></div>
         <div><dt>Initial airflow</dt><dd>{known(experiment, 'flowCmS')}</dd></div>
-        <div><dt>Pressure</dt><dd data-unknown={pressure === 'Unknown' ? '' : undefined}>{pressure}</dd></div>
+        <div><dt>Pressure</dt><dd data-unknown={pressure === 'Unknown' ? '' : undefined}>{pressure === 'Unknown' ? 'Not recorded' : pressure}</dd></div>
       </dl>
-      <p className="meta" style={{ margin: 0 }}>Source: {sources.find((s) => experiment.sourceIds.includes(s.id))?.title ?? experiment.sourceIds[0]} · open the dossier for page-level citations →</p>
+      <div>
+        <p className="meta" style={{ margin: 0 }}>Source: {sources.find((s) => experiment.sourceIds.includes(s.id))?.title ?? experiment.sourceIds[0]}. Page-level citations are in the dossier.</p>
+      </div>
     </div>
   </article>;
 }
@@ -57,25 +62,27 @@ export function Atlas({ initial, query, facets, sources }: {
   const facet = (name: keyof typeof facets, label: string) => <div className="field">
     <label htmlFor={`atlas-${name}`}>{label}</label>
     <select id={`atlas-${name}`} name={name} defaultValue={query[name] ?? ''}>
-      <option value="">Any {label.toLowerCase()}</option>
+      <option value="">Any</option>
       {facets[name].map((v) => <option key={v} value={v}>{v}</option>)}
     </select>
-    <small>{facets[name].length} value{facets[name].length === 1 ? '' : 's'} in the admitted corpus</small>
   </div>;
   const data = state.status === 'done' ? state.data : null;
-  return <div className="split">
-    <form className="panel" role="search" aria-label="Search experiments" action="/atlas" method="get" onSubmit={submit}>
-      <p className="eyebrow">Filter by</p>
-      <div className="field">
-        <label htmlFor="atlas-q">Search terms</label>
-        <input id="atlas-q" name="q" type="search" defaultValue={query.q} maxLength={200} placeholder="e.g. PMMA opposed" />
-        <small>All terms must match an admitted record.</small>
+  return <div className="atlas-main">
+    <form className="atlas-search" role="search" aria-label="Search experiments" action="/atlas" method="get" onSubmit={submit}>
+      <div className="search-row">
+        <div className="field">
+          <label htmlFor="atlas-q">Search terms</label>
+          <input id="atlas-q" name="q" type="search" defaultValue={query.q} maxLength={200} placeholder="e.g. PMMA opposed" aria-describedby="atlas-q-hint" />
+        </div>
+        <button className="btn btn-primary" type="submit" disabled={state.status === 'loading'}>Search</button>
+        <a className="btn btn-quiet" href="/atlas">Reset</a>
       </div>
-      {facet('program', 'Program')}{facet('material', 'Material')}{facet('flowDirection', 'Flow direction')}
-      <div className="actions">
-        <button className="btn btn-primary btn-sm" type="submit" disabled={state.status === 'loading'}>Search</button>
-        <a className="btn btn-quiet btn-sm" href="/atlas">Reset</a>
-      </div>
+      <small id="atlas-q-hint">All terms must match an admitted record.</small>
+      {/* While the catalog holds one record the facets are optional, so they sit in one compact row under the search. */}
+      <fieldset className="filter-row">
+        <legend>Filter this catalog <span>· one value each while one record is admitted</span></legend>
+        {facet('program', 'Program')}{facet('material', 'Material')}{facet('flowDirection', 'Flow direction')}
+      </fieldset>
     </form>
     <section aria-labelledby="atlas-results" aria-busy={state.status === 'loading'}>
       <h2 id="atlas-results" className="sr-only">Results</h2>
@@ -87,8 +94,8 @@ export function Atlas({ initial, query, facets, sources }: {
       {state.status === 'loading' && <div className="loading-bar" aria-hidden="true" />}
       {data && (data.items.length
         ? data.items.map((e) => <RecordCard key={e.id} experiment={e} sources={sources} />)
-        : <div className="notice" data-tone="info"><p><strong>No admitted record matches.</strong> Only one experiment is admitted today. Quarantined legacy candidates (for example other BASS-II runs) are never returned as results, and absence here does not mean a condition was never studied.</p><p><a href="/atlas">Clear the filters</a></p></div>)}
-      <div style={{ marginTop: 24 }}><CoverageNote coverage={(data ?? initial).coverage} /></div>
+        : <div className="notice" data-tone="info"><p><strong>No admitted record matches.</strong> Only one experiment is admitted today. Quarantined legacy candidates (for example other BASS-II runs) are never returned as results, and absence here does not mean a condition was never studied.</p><p><a className="btn btn-primary btn-sm" href="/atlas">Reset and show B20</a></p></div>)}
+      <div style={{ marginTop: 20 }}><CoverageNote coverage={(data ?? initial).coverage} /></div>
     </section>
   </div>;
 }

@@ -14,7 +14,10 @@ const sections = [
 const evidenceTools = [
   ['/dashboard', 'Workstation'], ['/ask', 'Ask PIX'], ['/gaps', 'Frontier'], ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology']
 ] as const;
+const missionTools = [['/missions', 'Mission map'], ['/passport', 'Evidence Passport']] as const;
 const observatory = ['/', '/lab', '/missions'];
+/** Unfinished destinations say so before arrival (state straight from the shared registry). */
+
 
 const inSection = (path: string, prefixes: readonly string[]) => prefixes.some((p) => p === '/' ? path === '/' : path === p || path.startsWith(`${p}/`));
 
@@ -26,7 +29,8 @@ export function BrandMark() {
   </svg>;
 }
 
-export function Shell({ children }: { children: React.ReactNode }) {
+/** `tags` (computed on the server from the shared registry) marks destinations with no working tool yet. */
+export function Shell({ children, tags = {} }: { children: React.ReactNode; tags?: Record<string, string> }) {
   const path = usePathname() ?? '/';
   // After client-side navigation (including from the mobile menu), move focus to the new page's main heading
   // so keyboard and screen-reader users land on the destination instead of on <body>.
@@ -50,10 +54,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
   }, [path]);
   const surface = inSection(path, observatory) ? 'observatory' : 'paper';
   const current = sections.find((s) => inSection(path, s.match));
-  const links = sections.map((s) => <Link key={s.href} className="nav-link" href={s.href} aria-current={s === current ? 'page' : undefined}>{s.label}</Link>);
+  const links = sections.map((s) => { const tag = tags[s.href]; return <Link key={s.href} className="nav-link" href={s.href} aria-current={s === current ? 'page' : undefined}>
+    {s.label}{tag && <span className="nav-tag">{tag}</span>}</Link>; });
   return <div className="surface" data-surface={surface} data-home={path === '/' ? 'true' : undefined}>
     <a className="skip" href="#main">Skip to content</a>
-    <CursorFx />
+    <CursorFx enabled={path === '/'} />
     <header className="site-header">
       <div className="wrap">
         <Link className="brand" href="/" aria-label="MicroFire, the Living Science Observatory — home">
@@ -64,12 +69,20 @@ export function Shell({ children }: { children: React.ReactNode }) {
         {/* Keyed by path so client navigation closes the menu. Works without JavaScript. */}
         <details className="mobile-nav" key={path}>
           <summary>Menu <span aria-hidden="true">☰</span></summary>
-          <nav aria-label="Main">{links}<Link className="nav-link" href="/ask">Ask PIX</Link></nav>
+          <nav aria-label="Main">{links}
+            <p className="menu-group">Evidence tools</p>
+            {evidenceTools.map(([href, label]) => <Link key={href} className="nav-link sub" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}
+            <p className="menu-group">Your record</p>
+            <Link className="nav-link sub" href="/passport" aria-current={path === '/passport' ? 'page' : undefined}>Passport</Link>
+          </nav>
         </details>
       </div>
     </header>
     {current?.label === 'Evidence' && <nav className="subnav" aria-label="Evidence tools">
       <div className="wrap">{evidenceTools.map(([href, label]) => <Link key={href} className="nav-link" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}</div>
+    </nav>}
+    {current?.label === 'Missions' && <nav className="subnav" aria-label="Mission tools">
+      <div className="wrap">{missionTools.map(([href, label]) => <Link key={href} className="nav-link" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}</div>
     </nav>}
     <main id="main" tabIndex={-1}>{children}</main>
     <footer className="site-footer">

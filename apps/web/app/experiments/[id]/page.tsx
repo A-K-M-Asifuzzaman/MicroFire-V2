@@ -40,8 +40,8 @@ export default async function Page({ params }: Props) {
   const lineage = e.claims.map((c) => ({ claim: c, verdict: verifyCitations({ subject: { type: 'claim', claimId: c.id }, citations: c.citations }).verdict }));
   return <>
     <PageHero crumbs={<><Link href="/atlas">Experiments</Link> / {e.program} / {e.testId}</>} eyebrow={`Experiment dossier · ${e.id}`} title={e.title}
-      status={{ feature: feature('/experiments/[id]')! }} visual={<Specimen experiment={e} />}
-      lede={`A flame-spread test documented in a NASA summary report. Everything below is traced to its page, and what the report does not record is marked unknown.`} />
+      status={{ feature: feature('/experiments/[id]')!, built: true }} visual={<Specimen experiment={e} />}
+      lede="A flame-spread test from a NASA summary report. Every value links to its page; what the report does not record is marked unknown." compact />
     <Sheet>
       <div className="dossier">
         <div>
@@ -69,7 +69,7 @@ export default async function Page({ params }: Props) {
             <h2 id="cond">Conditions and missing values</h2>
             <div className="table-scroll" role="region" aria-label="Conditions table (scrolls horizontally on narrow screens)" tabIndex={0}><table className="conditions">
               <thead><tr><th scope="col">Condition</th><th scope="col">Value</th><th scope="col">Status</th><th scope="col">Source note</th></tr></thead>
-              <tbody>{Object.entries(e.conditions).map(([name, c]) => <tr key={name} data-cond={name}>
+              <tbody>{Object.entries(e.conditions).map(([name, c]) => <tr key={name} id={`cond-${name}`} data-cond={name}>
                 <th scope="row">{conditionLabels[name] ?? name}</th>
                 {c.status === 'known'
                   ? <><td className="v">{c.value}{'unit' in c ? ` ${c.unit}` : ''}</td><td><Kind kind={c.basis === 'derived' ? 'derived' : 'recorded'} /></td>

@@ -7,12 +7,13 @@ const INTERACTIVE = 'a, button, summary, label, select, input[type="range"], inp
  * Observatory cursor: a flame reticle (CSS cursor, so the real pointer stays), a lagging ring that swells over
  * controls, and a short ember trail. Mouse/trackpad only; nothing runs for touch or under reduced motion.
  */
-export function CursorFx() {
+export function CursorFx({ enabled }: { enabled: boolean }) {
   const ring = useRef<HTMLDivElement>(null);
   const embers = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const fine = matchMedia('(pointer: fine)'), reduce = matchMedia('(prefers-reduced-motion: reduce)');
-    if (!fine.matches || reduce.matches || !ring.current || !embers.current) return;
+    // Observatory only: research and reading pages keep the native cursor.
+    if (!enabled || !fine.matches || reduce.matches || !ring.current || !embers.current) return;
     const root = document.documentElement, r = ring.current, pool = Array.from(embers.current.children) as HTMLElement[];
     root.dataset.cursor = 'fx';
     let x = -100, y = -100, rx = -100, ry = -100, raf = 0, next = 0, last = 0;
@@ -45,7 +46,8 @@ export function CursorFx() {
       window.removeEventListener('pointermove', move); document.removeEventListener('pointerleave', leave);
       window.removeEventListener('pointerdown', down); window.removeEventListener('pointerup', up);
     };
-  }, []);
+  }, [enabled]);
+  if (!enabled) return null;
   return <div className="cursor-fx" aria-hidden="true">
     <div ref={ring} className="cursor-ring" />
     <div ref={embers}>{Array.from({ length: 16 }, (_, i) => <span key={i} className="ember" data-c={i % 3} />)}</div>

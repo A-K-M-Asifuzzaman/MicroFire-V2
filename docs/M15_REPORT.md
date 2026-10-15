@@ -289,4 +289,115 @@ All values and labels are unchanged.
 3. **Ownership.** Add an `OWNERSHIP.md` line for `tools/meshy/` and `apps/web/public/models/`.
 4. **Still open.** Large-save validation, an e2e limiter option, and a nonce CSP. The CSP was deliberately left unchanged.
 
-**Verdict: READY FOR ASTRA M1.5 REVIEW.** Stopping here; M2 has not been started.
+Verdict at `7ca790a`: READY FOR ASTRA M1.5 REVIEW. Astra then returned **CHANGES REQUIRED**; see the correction pass below.
+
+## Correction pass after Astra's M1.5 review (start `7ca790a`)
+
+Scope: Astra's minimum milestone from `COMPLETE_UI_UX_AUDIT.md`.
+- S1–S3.
+- Compact research headers.
+- Mobile hero controls.
+- Adjacent B20 feedback.
+- Readable Frontier fields.
+- Targeted polish for the six POLISH areas.
+
+There was no redesign, no new 3D or Meshy job (spend unchanged at 90 credits, balance 3,010), no shared-package, API, registry-state or science-data change, and no M2 work.
+
+Screenshots: `docs/qa/screenshots/m1.5/corrections/` (85 captures).
+- Widths: 1440×900, 768×1024, 390×844 and 320×640.
+- States: home micro / Earth / intermediate, plus no-WebGL and reduced motion; Atlas and Atlas empty; B20 entry, oxygen, pressure and duct; Workstation entry, supported and unsupported; Frontier entry and example; Ask idle, cited and abstained; Passport; Missions; Lab; mobile menu.
+
+Astra's evidence ("before") is in its audit's `screenshots/` folder.
+
+### Scientific wording (release-blocking S1/S2) and availability (S3)
+- **S1, universal orbital-flame story.**
+  - The home lede, comparison section, captions, accessible names, PIX coach and lens labels are now scoped to still air without forced flow.
+  - The comparison is labelled "Two teaching views · still-air illustration" and states that real microgravity flames vary and that B20 used opposed airflow.
+  - The lens toggle and title say "still air"; the explanation keeps "Without a fan".
+- **S2, absence claims.**
+  - "See what nobody has measured yet" → "See what this catalog does and does not document".
+  - "The admitted record never measured it" → "No value is documented for this field in the admitted record".
+  - "never recorded" → "does not record".
+  - Frontier shows "No value documented" next to the API's unchanged "Not recorded" status.
+  - Backend text needed no change.
+- **S3, availability copy.**
+  - Built interfaces say "Interface implemented for review; release acceptance pending". The stale registry reason is kept under a labelled "Registry note".
+  - The station directory says "research tools and mission previews".
+  - Navigation tags Flame Lab "Soon" and Missions "Preview" from registry states.
+  - Exact registry wording and state proposals are in `docs/SOL_HANDOFF_M15_CORRECTIONS.md`.
+  - All registry states are unchanged; a test asserts them.
+
+### Six significant-redesign areas
+| Area | Problem (Astra) | Change | Desktop / mobile outcome |
+|---|---|---|---|
+| Atlas | Library intro and a three-filter form hid the only record | Compact title row; one search row; facets as one compact row ("Filter this catalog"); B20 exhibit first, 60/40, with "Inspect B20" under its title; quarantine in a side rail; empty state has a prominent "Reset and show B20" | "Inspect B20" bottom at y≈708 (1440×900) and ≈740 (390×844), previously ≈1051 and ≈1266 |
+| Evidence Workstation | Hero, form and repeated chains before the answer; raw keys | Compact header; composer rail (question → Trace → examples → optional conditions, folded on phones); result led by "Supported by this exact observation" or "Outcome not established", then human-labelled condition matches, the quoted claim and citation, canonical limitations, and the relevance meter with its caveat; compact chain rail linked to sections; legend in a disclosure | Question field at y≈505 (was ≈695 desktop, ≈986 mobile) |
+| Research Frontier | Legend dominated; four-box matrix; raw keys; clipped columns | "Coverage in this catalog"; rows Condition / You asked / Documented / Status / Source note, e.g. Oxygen `21 vol%` → `17.4 vol%` Conditions differ, Pressure `70 kPa` → "No value documented" Not recorded; status patterns plus labels; one card per condition on phones (ARIA table roles retained); matrix optional; key in a disclosure | No horizontal hunting at 320 px; first control at y≈500–590 |
+| Ask PIX | Duplicate PIX; input at y≈936 / ≈1,508; test-harness suggestions | One companion beside the composer with a persistent "Fixed-template catalog guide · no AI model" caption; 40/60 composer and response; the exact supported prompts grouped as "What was observed?", "What is not known?" and "Where PIX stops" | Input at y≈649 (1440) and **≈595 (390×844)**; one `.pix-stage` |
+| Mission Hub | Dead-end roadmap | Accurate label "Mission map · preview, none playable yet"; tagged "Preview" in navigation; Passport reachable via a Mission tools sub-navigation. Spatial redesign deferred to M2, as Astra advised | Honest preview; no fake progress |
+| Flame Lab | Title and disabled button | "Illustration available on Discover; the Lab workspace is in development" with a primary link to `/#gravity-lens` (the lens anchor); tagged "Soon" | Direct handoff to the working illustration |
+
+**Deviation from the audit.** Astra suggested two visible example chips plus an expansion, and a collapsed filter drawer. Both would hide controls that Astra's own independent M1 checks and the existing suite drive directly. The chosen layouts (grouped visible prompts; one compact filter row) meet the same acceptance targets: input at or above 600, B20 action in the first viewport.
+
+### Six polish areas
+- **Homepage.**
+  - Phone order is title → scoped line → chamber (≈270 px) → gravity toggle → B20 action. The toggle sits at y≈620 on 390×844 (was ≈895) and y≈556 at 320 px.
+  - The Atlas action became a text link; the perpetual CTA glow was removed.
+  - "Pause flicker & scene motion" is now one motion control for both the lens and the observatory.
+- **3D observatory.**
+  - Gyroscope rings moved to the base and crown, so none crosses the flame silhouette, and they were dimmed.
+  - Bloom reduced (0.55 → 0.4), and the pedestal ring dimmed.
+  - The 3.4 s entrance flight became a 0.7 s settle.
+  - Labels avoid the headline, header and chamber and never stack; focusing one dims the others.
+  - The station strip on phones has a "swipe for all six" cue.
+- **Gravity Lens.**
+  - The dock now holds the toggle and slider, an inline first-use hint (the overlapping animated chip was removed), a short scoped explanation, and an "About this illustration" disclosure for renderer status and the record link, with pause beside it.
+  - The "educational illustration, not NASA footage or data" caption stays outside the artwork on an opaque chip.
+- **B20 dossier.**
+  - Compact hero.
+  - Desktop: apparatus two-thirds (sticky) beside a one-third inspector. Mobile: diagram → selected detail → grouped "Hardware" / "Run conditions" selectors.
+  - Each selection explains why it matters and shows its basis (sourced, schematic placement / recorded / not recorded).
+  - Selecting a condition highlights its readout and its table row with a brief outline pulse, and offers "Show in the conditions table" plus its PDF page. Oxygen shows **17.4 vol%** and page 112; pressure says "Not recorded in this source. No value is shown or estimated" with no citation.
+  - Hotspots enlarge on selection.
+  - The perpetual flame-spread creep, char growth, scanline and sheen were removed.
+- **Passport.** "Your evidence notebook" with the state shown first; the empty state offers "Inspect B20 meanwhile"; ruled lines are confined to the margin; the authority note is in a disclosure.
+- **Navigation, loading and transitions.**
+  - Preview and Soon tags; the mobile menu exposes all research tools and Passport; edge fade on the scrollable sub-navigation.
+  - The decorative cursor is home-only (research pages keep the native cursor).
+  - Scroll-reveal is limited to home story sections, never on limitations, controls, errors or reading panels.
+  - Research heroes have static lighting (aurora removed).
+
+### Verification
+- **Project check.** `npm run check`: exit 0, covering lint, types, 103 unit tests, Ask 30/30, rank 7/7, faithful 13/13, forbidden 0, security and media-rights (339 files), and the build.
+- **Browser suite.** Playwright: **90 passed, 22 declared skips, 0 failed** (was 73 / 21).
+  - 17 new passing cases come from `tests/e2e/m15-corrections.spec.ts`: S1/S2 wording scan, S3 states, first-viewport targets, B20 field-to-source including the keyboard path, Frontier rows, the Workstation verdict, Ask's single companion, navigation honesty, and stable reading surfaces.
+  - axe: 0 violations on the existing 13 routes in both projects.
+- **Astra's independent M1 checks, run unchanged:** original 8/8, gate 4/4, extra 7/8. The single failure's precondition (lens below y=600 at 390×600) contradicts the M1.5 mobile-hero requirement. The protected behaviour (no offscreen draws) still passes in our fix-A test; see `docs/SOL_HANDOFF_M15_CORRECTIONS.md` §6.
+- **Dependencies.** `npm audit`: 0 vulnerabilities.
+- **Layout.** No document overflow at 1440, 768, 390 or 320 px on any captured route; no console errors in any capture.
+- **Performance.**
+  - Setup: lab, 390×844, 4× CPU, 150 ms RTT, 1.6 Mbps. Baseline `7ca790a` and this build were measured side by side, two runs each, averaged.
+
+    | Route | FCP before → after (ms) | JS at load (KB) | CLS |
+    |---|---|---|---|
+    | `/` | 934 → 974 | 150.5 → 151.0 | 0 |
+    | `/atlas` | 840 → 850 | 181.3 → 181.4 | 0 |
+    | B20 | 854 → 864 | 180.9 → 181.1 | 0 |
+    | `/ask` | 804 → 856 | 183.0 → 183.0 | 0 |
+    | `/dashboard` | 810 → 800 | 182.1 → 182.5 | 0 |
+    | `/gaps` | 790 → 820 | 181.0 → 181.6 | 0 |
+    | `/methodology` | 800 → 810 | 143.3 → 143.6 | 0 |
+    | `/missions` | 784 → 828 | 143.3 → 143.6 | 0 |
+
+  - Load-time JavaScript is unchanged within 1 KB. First paint is within run-to-run noise (−10 to +52 ms).
+  - One regression was caught and fixed before commit: importing the registry into the client shell cost 33 KB on every route, so the tags are now computed on the server.
+  - These are headless lab measurements, not physical-device results.
+
+### Remaining weaknesses and blockers
+- **Mission Hub and Flame Lab** remain honest previews. Their spatial or instrument redesign belongs with M2 mechanics.
+- **Home on phones.** The B20 action sits below the first 844 px screen (after the toggle, slider and explanation). The toggle meets the y≤700 target.
+- **PIX.** Motion is whole-body (single mesh); the expressive face is in the SVG states.
+- **Not yet performed:** physical-device GPU and thermal checks, a screen-reader pass, 200% zoom, and Safari/Firefox parity.
+- **Shared review needed:** registry reasons and states (Sol), S1/S2 semantic review (Sol), the asset-rights schema and ownership lines, and Astra's offscreen-check precondition.
+
+**Verdict: READY FOR ASTRA M1.5 RE-REVIEW.** Stopping here. No M2, no push, no deploy, no Meshy spend.

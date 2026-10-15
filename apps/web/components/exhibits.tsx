@@ -55,28 +55,17 @@ export function Specimen({ experiment: e }: { experiment: Experiment }) {
       <text x="20" y="232" fill="#6f8293" fontFamily="ui-monospace, monospace" fontSize="10" letterSpacing="1">SCHEMATIC · NOT TO SCALE · NOT FOOTAGE</text>
     </svg>
     <dl className="readouts" style={{ color: 'var(--frost)' }}>
-      <div style={{ background: 'rgb(4 7 12 / .6)' }}><dt>Calibrated O₂</dt><dd>{o2 ?? 'Not recorded'}</dd></div>
-      <div style={{ background: 'rgb(4 7 12 / .6)' }}><dt>Initial airflow</dt><dd>{flow ?? 'Not recorded'}</dd></div>
-      <div style={{ background: 'rgb(4 7 12 / .6)' }}><dt>Pressure</dt><dd data-unknown={e.conditions.pressureKpa.status === 'unknown' ? '' : undefined}>{known(e, 'pressureKpa') ?? 'Not recorded'}</dd></div>
+      <div data-cond="oxygenPct" style={{ background: 'rgb(4 7 12 / .6)' }}><dt>Calibrated O₂</dt><dd>{o2 ?? 'Not recorded'}</dd></div>
+      <div data-cond="flowCmS" style={{ background: 'rgb(4 7 12 / .6)' }}><dt>Initial airflow</dt><dd>{flow ?? 'Not recorded'}</dd></div>
+      <div data-cond="pressureKpa" style={{ background: 'rgb(4 7 12 / .6)' }}><dt>Pressure</dt><dd data-unknown={e.conditions.pressureKpa.status === 'unknown' ? '' : undefined}>{known(e, 'pressureKpa') ?? 'Not recorded'}</dd></div>
     </dl>
   </figure>;
-}
-
-export function HeroChain() {
-  return <ol className="hero-chain" aria-label="How an answer is traced">
-    <li><span><b>Question</b>what you want to know</span></li>
-    <li><span><b>Conditions</b>matched, different or never recorded</span></li>
-    <li><span><b>Evidence</b>an admitted record, if any</span></li>
-    <li><span><b>Support</b>only an exact cited claim counts</span></li>
-    <li><span><b>Limitations</b>where confidence ends</span></li>
-    <li><span><b>Source</b>the NASA page you can open</span></li>
-  </ol>;
 }
 
 export const coverageStatuses = [
   ['covered', 'Covered', 'An admitted record matches within retrieval tolerance. Not the same as answered.'],
   ['conditions-differ', 'Conditions differ', 'Recorded, but at a different value than you asked about.'],
-  ['not-recorded', 'Not recorded', 'The admitted record never measured it.'],
+  ['not-recorded', 'Not recorded', 'No value is documented for this field in the admitted record.'],
   ['not-in-catalog', 'Not in catalog', 'No admitted record carries this condition at all.']
 ] as const;
 export function FrontierKey() {

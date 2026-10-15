@@ -5,14 +5,15 @@ import type { FlameRenderer } from './flame-gl';
 import { flamePath, lerp } from './flame-shape';
 
 const explanations = {
-  earth: { title: 'Earth illustration (1 g)', text: 'Hot combustion gases are lighter than the surrounding air, so buoyancy lifts them. The rising flow draws fresh air in from below and stretches the flame into a tall teardrop; its bright yellow light comes from glowing soot.' },
-  partial: { title: 'Partial gravity (illustrative blend)', text: 'This intermediate shape is interpolated between the two illustrations for teaching. It is not computed and does not represent any measured environment.' },
-  micro: { title: 'Microgravity illustration', text: 'With almost no buoyancy, hot gases do not rise away. Without a fan, oxygen reaches the flame mainly by slow diffusion, so a still-air flame tends to be rounder, dimmer and bluer.' }
+  earth: { title: 'Earth illustration (1 g)', text: 'Buoyancy lifts hot gas, drawing fresh air in from below and stretching a still-air flame into a tall teardrop that glows yellow from soot.' },
+  partial: { title: 'Partial gravity (illustrative blend)', text: 'An interpolated teaching blend between the two illustrations. It is not computed and does not represent any measured environment.' },
+  micro: { title: 'Still-air microgravity illustration', text: 'Without a fan and with almost no buoyancy, oxygen arrives mainly by slow diffusion, so a still-air flame tends to be rounder, dimmer and bluer.' }
 };
 
 export type LensRecord = { href: string; title: string; flowDirection: string | null; initialFlow: string | null; locator: string };
 
-export function GravityLens({ record, onGravityChange }: { record: LensRecord; onGravityChange?: (g: number) => void }) {
+/** `onMotionChange` lets a host scene follow the same pause control (one motion switch for the whole view). */
+export function GravityLens({ record, onGravityChange, onMotionChange }: { record: LensRecord; onGravityChange?: (g: number) => void; onMotionChange?: (on: boolean) => void }) {
   const [g, setG] = useState(0);
   const [renderer, setRenderer] = useState<'svg' | 'webgl' | 'unavailable' | 'lost'>('svg');
   const [animated, setAnimated] = useState(false);
@@ -60,6 +61,7 @@ export function GravityLens({ record, onGravityChange }: { record: LensRecord; o
   }, []);
   useEffect(() => { gl.current?.draw(g); onGravityChange?.(g); }, [g, onGravityChange]);
   useEffect(() => { gl.current?.setAnimated(motion); }, [motion]);
+  useEffect(() => { onMotionChange?.(animated); }, [animated, onMotionChange]);
 
   const buoyant = g, diffusive = 1 - g;
   return <figure ref={figure} className="lens" data-renderer={renderer === 'webgl' ? 'webgl' : 'svg'} data-gravity={mode} aria-labelledby={`${id}-cap`} style={{ margin: 0 }}>
@@ -98,7 +100,7 @@ export function GravityLens({ record, onGravityChange }: { record: LensRecord; o
       <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
         <legend className="sr-only">Gravity setting for the illustration</legend>
         <div className="segmented">
-          {([['micro', 'Microgravity', 0], ['earth', 'Earth 1 g', 1]] as const).map(([value, label, target]) => (
+          {([['micro', 'Microgravity, still air', 0], ['earth', 'Earth 1 g', 1]] as const).map(([value, label, target]) => (
             <label key={value}><input type="radio" name={`${id}-g`} value={value} checked={mode === value} onChange={() => setG(target)} /><span>{label}</span></label>
           ))}
         </div>
@@ -109,18 +111,23 @@ export function GravityLens({ record, onGravityChange }: { record: LensRecord; o
           aria-label="Illustrative gravity, percent of Earth gravity" aria-valuetext={`${Math.round(g * 100)} percent of Earth gravity, illustrative`} />
         <span aria-hidden="true">1 g</span>
       </div>
+      <p className="lens-hint">Drag the slider or pick a gravity setting to change the flame.</p>
       <div className="lens-explain" aria-live="polite">
         <h2>{explanations[mode].title}</h2>
         <p>{explanations[mode].text}</p>
       </div>
-      <div className="lens-tools">
-        <span data-testid="lens-renderer">{renderer === 'webgl' ? 'Rendered with WebGL' : renderer === 'unavailable' ? 'WebGL unavailable · static illustration shown' : renderer === 'lost' ? 'WebGL interrupted · static illustration shown' : 'Static illustration'}</span>
-        {renderer === 'webgl' && <button type="button" className="btn btn-quiet btn-sm" aria-pressed={animated} onClick={() => setAnimated((a) => !a)}>{animated ? 'Pause flicker' : 'Play flicker'}</button>}
+      <div className="lens-foot">
+        <details className="lens-about">
+          <summary>About this illustration</summary>
+          <p data-testid="lens-renderer">{renderer === 'webgl' ? 'Rendered with WebGL' : renderer === 'unavailable' ? 'WebGL unavailable · static illustration shown' : renderer === 'lost' ? 'WebGL interrupted · static illustration shown' : 'Static illustration'}</p>
+          <p className="meta" style={{ margin: 0 }}>
+            General physics explanation of still air, not drawn from the admitted record. For real evidence, <a href={record.href}>{record.title}</a> recorded{' '}
+            {record.flowDirection ?? 'unspecified'} airflow{record.initialFlow ? ` with an initial air display entry of ${record.initialFlow}` : ''} ({record.locator}).
+          </p>
+        </details>
+        {renderer === 'webgl' && <button type="button" className="btn btn-quiet btn-sm" aria-pressed={animated} onClick={() => setAnimated((a) => !a)}>
+          {animated ? 'Pause flicker' : 'Play flicker'}{onMotionChange ? ' & scene motion' : ''}</button>}
       </div>
-      <p className="meta" style={{ margin: 0 }}>
-        General physics explanation, not drawn from the admitted record. For real evidence, <a href={record.href}>{record.title}</a> recorded{' '}
-        {record.flowDirection ?? 'unspecified'} airflow{record.initialFlow ? ` with an initial air display entry of ${record.initialFlow}` : ''} ({record.locator}).
-      </p>
     </div>
   </figure>;
 }

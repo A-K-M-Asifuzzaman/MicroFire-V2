@@ -19,6 +19,8 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
   const markers = useRef<(HTMLAnchorElement | null)[]>([]);
   const api = useRef<ObservatoryApi | null>(null);
   const gravity = useRef(0);
+  const userMotion = useRef(true); // the visitor's pause switch (shared with the lens flicker)
+  const syncMotion = useRef<() => void>(() => undefined);
   const [scene, setScene] = useState<SceneState>('loading');
   const [focus, setFocus] = useState<number | null>(null);
   const pan = useRef(true);
@@ -26,6 +28,7 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
   const [g, setG] = useState(0);
   const [touched, setTouched] = useState(false);
 
+  const onMotionChange = useCallback((on: boolean) => { userMotion.current = on; syncMotion.current(); }, []);
   const onGravityChange = useCallback((next: number) => { gravity.current = next; api.current?.setGravity(next); setG(next); if (next !== 0) setTouched(true); }, []);
 
   useEffect(() => {
@@ -34,8 +37,9 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
     const query = matchMedia('(prefers-reduced-motion: reduce)');
     const mobileQuery = matchMedia('(max-width: 900px)');
     let visible = false, cancelled = false;
-    const motion = () => !query.matches && visible && !document.hidden;
+    const motion = () => !query.matches && visible && !document.hidden && userMotion.current;
     const sync = () => { api.current?.setMotion(motion()); setScene((s) => (s === 'active' || s === 'static' ? (query.matches ? 'static' : 'active') : s)); };
+    syncMotion.current = sync;
     const io = new IntersectionObserver(([e]) => { visible = !!e?.isIntersecting; sync(); });
     io.observe(root);
     const onResize = () => api.current?.resize();
@@ -50,12 +54,20 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
       // Labels never sit on top of the headline column.
       const copy = root.querySelector('.obs-head')?.getBoundingClientRect(), base = root.getBoundingClientRect();
       const copyRight = copy ? copy.right - base.left + 24 : 0, copyBottom = copy ? copy.bottom - base.top + 140 : 0;
+      // Labels stay off the headline, the header and the chamber, and never stack on each other.
+      const st = root.querySelector('.lens-stage')?.getBoundingClientRect();
+      const chamber = st ? { l: st.left - base.left + st.width * 0.15, r: st.right - base.left - st.width * 0.15, t: st.top - base.top, b: st.bottom - base.top } : null;
+      const placed: { x: number; y: number }[] = [];
       anchors.forEach((a, i) => {
         const el = markers.current[i];
         if (!el) return;
         const x = Math.min(Math.max(a.x, 70), root.clientWidth - 70); // keep chips fully on screen
         el.style.transform = `translate(${x.toFixed(1)}px, ${(a.y - 6).toFixed(1)}px) translate(-50%, -100%)`;
-        el.dataset.on = String(show && a.visible && !(a.x < copyRight && a.y < copyBottom) && a.y > 96);
+        const overChamber = !!chamber && x > chamber.l && x < chamber.r && a.y > chamber.t && a.y < chamber.b;
+        const crowded = placed.some((p) => Math.abs(p.x - x) < 112 && Math.abs(p.y - a.y) < 34);
+        const on = show && a.visible && !(a.x < copyRight && a.y < copyBottom) && a.y > 96 && !overChamber && !crowded;
+        if (on) placed.push({ x, y: a.y });
+        el.dataset.on = String(on);
       });
     };
     // Deferred so the static first frame (text + SVG lens) paints before any 3D code downloads.
@@ -89,12 +101,12 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
       <div className="obs-backdrop" aria-hidden="true" />
       <div className="wrap obs-grid">
         {children}
-        <div className="obs-stage"><GravityLens record={record} onGravityChange={onGravityChange} /></div>
+        <div className="obs-stage" id="gravity-lens"><GravityLens record={record} onGravityChange={onGravityChange} onMotionChange={onMotionChange} /></div>
         <div className="pix-greeter" data-touched={touched}>
           <PixAvatar state={!touched ? 'idle' : g > 0.15 && g < 0.85 ? 'searching' : 'cited'} />
           <p>{!touched ? <><b>Hi, I&apos;m PIX!</b> Try the gravity controls <span className="coach-arrow" aria-hidden="true">→</span> and watch the flame change shape.</>
-            : g >= 0.85 ? <><b>Gravity on!</b> Hot gas rises, so the flame stretches into a tall teardrop.</>
-              : g <= 0.15 ? <><b>Back in orbit.</b> Nothing rises, so the flame curls into a quiet blue ball.</>
+            : g >= 0.85 ? <><b>Gravity on!</b> Buoyancy lifts hot gas, so this still-air flame stretches upward.</>
+              : g <= 0.15 ? <><b>Still-air microgravity.</b> With almost no buoyancy, this illustrated flame can turn rounder and bluer.</>
                 : <><b>In between…</b> This blend is for teaching, not a measurement.</>}
             {' '}<Link href="/ask">Ask me more</Link></p>
         </div>
@@ -109,7 +121,7 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
     </section>
     <nav className="stations" aria-label="Observatory stations">
       <div className="wrap">
-        <p className="eyebrow">Six stations · each opens a working research tool</p>
+        <p className="eyebrow">Six stations · research tools and mission previews <span className="swipe-cue" aria-hidden="true">· swipe for all six →</span></p>
         <ol>{stations.map((s, i) => <li key={s.href}>
           <Link className="station-link" href={s.href} data-focus={focus === i}
             onFocus={() => { pan.current = true; setFocus(i); }} onBlur={() => setFocus(null)} onMouseEnter={() => { pan.current = true; setFocus(i); }} onMouseLeave={() => setFocus(null)}>

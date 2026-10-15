@@ -16,16 +16,21 @@ export default async function Page({ searchParams }: Props) {
   const cov = coverage();
   const pending = quarantineLedger.records.filter((r) => r.status === 'source-cells-checked-pending-review').map((r) => r.testId);
   return <>
-    <PageHero eyebrow="The experiment index" title="A library of real flames." status={{ feature: feature('/atlas')! }} visual={<CorpusStrip coverage={cov} />}
-      lede="Every admitted record is a full exhibit: its source page, its recorded conditions and the limits of what it shows. One record is admitted today; the rest wait in quarantine." />
+    <PageHero compact eyebrow="Experiment Atlas" title="A library of real flames." status={{ feature: feature('/atlas')!, built: true }}
+      lede={`${cov.validatedExperiments} admitted, source-checked record. ${cov.quarantinedCandidates} legacy candidates stay excluded until checked.`} />
     <Sheet>
-      <Atlas initial={{ items, total: items.length, coverage: cov }} query={query} sources={sources}
-        facets={{ program: facet((e) => e.program), material: facet((e) => value(e, 'material')), flowDirection: facet((e) => value(e, 'flowDirection')) }} />
-      <details className="excluded panel">
-        <summary>Why only one record? The {cov.quarantinedCandidates} excluded legacy candidates</summary>
-        <p>Legacy rows from an earlier dataset are held back until their table cells are checked against the original NASA pages. They are never searchable, answerable, comparable or exportable here.</p>
-        <p className="meta">{pending.length > 0 && <>Source cells checked, awaiting independent review: {pending.join(', ')}. </>}The remaining {cov.quarantinedCandidates - pending.length} rows are quarantined. See <a href="/sources">Sources &amp; provenance</a>.</p>
-      </details>
+      <div className="atlas-layout">
+        <Atlas initial={{ items, total: items.length, coverage: cov }} query={query} sources={sources}
+          facets={{ program: facet((e) => e.program), material: facet((e) => value(e, 'material')), flowDirection: facet((e) => value(e, 'flowDirection')) }} />
+        <aside className="atlas-rail" aria-label="Catalog coverage">
+          <CorpusStrip coverage={cov} />
+          <details className="excluded panel">
+            <summary>Why only one record? The {cov.quarantinedCandidates} excluded legacy candidates</summary>
+            <p>Legacy rows from an earlier dataset are held back until their table cells are checked against the original NASA pages. They are never searchable, answerable, comparable or exportable here.</p>
+            <p className="meta">{pending.length > 0 && <>Source cells checked, awaiting independent review: {pending.join(', ')}. </>}The remaining {cov.quarantinedCandidates - pending.length} rows are quarantined. See <a href="/sources">Sources &amp; provenance</a>.</p>
+          </details>
+        </aside>
+      </div>
     </Sheet>
   </>;
 }

@@ -18,10 +18,15 @@ const abstentionTitles: Record<string, string> = {
   'citation-verification-failed': 'Citations could not be verified'
 };
 const categoryOrder = ['direct-observation', 'supported-derivation', 'scientific-interpretation', 'analogous-or-mechanistic', 'unknown-or-gap'];
-const suggestions = ['What does B20 establish about airflow?', 'What is the flame temperature in B20?', 'What happened in B19?', 'Can this certify a lunar habitat?'];
+// The exact prompts the deterministic guide supports today, grouped by what each one shows in plain words.
+const suggestions: [string, string[]][] = [
+  ['What was observed?', ['What does B20 establish about airflow?']],
+  ['What is not known?', ['What is the flame temperature in B20?']],
+  ['Where PIX stops', ['What happened in B19?', 'Can this certify a lunar habitat?']]
+];
 const pixStatus: Record<PixState, string> = {
-  idle: 'Ready · answers only from cited catalog statements', searching: 'Checking the admitted catalog…', cited: 'Found cited statements',
-  abstained: 'Withholding an answer · the evidence cannot support one', error: 'Could not reach the evidence service'
+  idle: 'Ready', searching: 'Checking the admitted catalog…', cited: 'Found cited statements',
+  abstained: 'Withholding an answer', error: 'Could not reach the evidence service'
 };
 const echo = (q: string) => (q.length > 280 ? `${q.slice(0, 280)}… (${q.length} characters)` : q);
 const describeConditions = (t: TargetConditions) => {
@@ -63,7 +68,7 @@ export function AskPix({ sources }: { sources: SourceRef[] }) {
     <div>
       <div className="pix-panel" data-testid="pix-panel">
         <PixStage state={pixState} />
-        <div><strong>PIX</strong><p>Deterministic evidence guide · fixed templates over the admitted catalog · no AI model</p>
+        <div><strong>PIX</strong><p>Fixed-template catalog guide · no AI model</p>
           <p className="pix-status" aria-hidden="true">{pixStatus[pixState]}</p></div>
       </div>
       <form ref={form} onSubmit={submit} aria-label="Ask PIX">
@@ -81,12 +86,17 @@ export function AskPix({ sources }: { sources: SourceRef[] }) {
         </details>
         <button className="btn btn-primary" type="submit">{state.status === 'loading' ? 'Ask again (replaces the pending question)' : 'Ask PIX'}</button>
       </form>
-      <p className="meta" style={{ marginTop: 18, marginBottom: 0 }}>Questions that show each behaviour (sent with any target conditions above):</p>
-      <ul className="suggest">{suggestions.map((q) => <li key={q}><button type="button" onClick={() => suggest(q)}>{q}</button></li>)}</ul>
+      <div className="examples">
+        <p className="meta">Try a question <span>(uses any target conditions you added)</span></p>
+        <ul className="example-groups">{suggestions.map(([label, qs]) => <li key={label}>
+          <span className="example-tag">{label}</span>
+          <div className="suggest">{qs.map((q) => <button key={q} type="button" onClick={() => suggest(q)}>{q}</button>)}</div>
+        </li>)}</ul>
+      </div>
     </div>
     <section aria-labelledby="pix-answer-title" aria-live="polite" aria-busy={state.status === 'loading'}>
       <h2 id="pix-answer-title" className="sr-only">PIX response</h2>
-      {state.status === 'idle' && <div className="panel"><p className="eyebrow">How PIX answers</p>
+      {state.status === 'idle' && <div className="panel answer-placeholder"><p className="eyebrow">Your answer appears here</p>
         <p>Each statement is labelled as a direct observation, supported derivation, interpretation, analogy or gap, and carries its source page. If the catalog cannot support an answer, PIX says so and explains why. That is a correct result, not a failure.</p></div>}
       {state.status !== 'idle' && <dl className="facts request-echo" data-testid="pix-request">
         <div><dt>{state.status === 'loading' ? 'Checking' : 'You asked'}</dt><dd>“{echo(state.request.question)}”</dd></div>

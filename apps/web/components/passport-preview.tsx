@@ -130,8 +130,9 @@ export function PassportPreview({ datasetVersion, sources, trusted }: { datasetV
 
   if (!load) return <p role="status" className="meta">Checking this device for a saved investigation…</p>;
   if (load.status === 'empty') return <div className="notebook" data-testid="passport-empty">
-    <p className="eyebrow">No entries yet</p>
-    <p>Nothing is saved on this device. Passport entries are earned by completing missions, and no mission is playable yet. This page will never invent an entry.</p>
+    <p className="eyebrow">Empty notebook</p>
+    <p>Nothing is saved on this device. Entries are earned by completing missions, and no mission is playable yet. This page will never invent an entry.</p>
+    <p style={{ margin: 0 }}><a className="btn btn-primary btn-sm" href="/experiments/bass2-b20">Inspect B20 meanwhile</a></p>
   </div>;
   if (load.status !== 'loaded') return <div className="notice" data-tone="error" role="alert" data-testid="passport-recovery">
     <p><strong>Saved investigation needs review.</strong> {recovery[load.status]} It has not been changed or deleted.</p>
