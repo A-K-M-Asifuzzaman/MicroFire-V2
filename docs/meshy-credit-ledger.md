@@ -10,3 +10,9 @@ Generation jobs: 0. Credits spent: 0. Balance: NOT CHECKED. No key read, balance
 - Pilot proposed, awaiting approval: `pix-v1` (30), `console-v1` (30). Estimate 60, requested cap 100. Planning ceilings: M1.5 800, M2 1,300, M3 700, revisions 300.
 - Tool: `tools/meshy/meshy.mjs` (local only). Per-job balance before/after goes to `tools/meshy/ledger.jsonl`.
 - Meshy MCP registered at user scope (Keychain launcher). Keychain entry not yet created by the owner, so the server cannot connect and no balance has been read.
+
+## M1.5 activation attempt (2026-10-15)
+- Owner authorised Meshy use and set the reserves below. Connection check: Keychain service `meshy-api-key` is **absent** (any account), `MESHY_API_KEY` unset, no env file holds it, and the MCP server shows "Failed to connect". No API call was made. Jobs: **0**. Credits spent: **0**.
+- Existing Meshy assets: not listable without the key. Locally there are no Meshy GLBs; the legacy repos' models are NASA / Poly Haven CC0, not Meshy.
+- Pricing (docs.meshy.ai/en/api/pricing, read 2026-10-15): "The Meshy API uses a prepaid credit system… Purchase API credits from your subscription settings." The page doesn't say whether website credits are spendable through the API, so only `GET /v1/balance` can settle it.
+- Planning split of the owner-reported 3,100: M1.5 ≤800 (pilot cap 100 first), M2 1,300, later missions 700, revisions 300. If the verified API balance is lower, every tier scales down proportionally before any job runs.
