@@ -14,6 +14,8 @@ import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
+// Repo-root .env (git-ignored, chmod 600) if present; real env vars win.
+try { process.loadEnvFile(path.join(here, '../../.env')); } catch { /* no .env */ }
 const API = 'https://api.meshy.ai/openapi';
 // Env first; otherwise the macOS Keychain entry shared with the Meshy MCP launcher (service "meshy-api-key").
 const fromKeychain = () => {
