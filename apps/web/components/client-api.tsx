@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef } from 'react';
 import { ApiErrorSchema } from '@microfire/shared';
 
 type Envelope<D> = { safeParse(input: unknown): { success: true; data: { data: D } } | { success: false } };
@@ -8,12 +9,12 @@ export type ApiResult<D> = { ok: true; data: D } | ApiFailure;
  * Calls the v1 API and validates the envelope against the current shared contract.
  * Anything that does not parse is reported as a failure, never rendered as evidence.
  */
-export async function callApi<D>(path: string, schema: Envelope<D>, body?: unknown): Promise<ApiResult<D>> {
+export async function callApi<D>(path: string, schema: Envelope<D>, body?: unknown, signal?: AbortSignal): Promise<ApiResult<D>> {
   let response: Response;
   try {
     response = await fetch(path, body === undefined
-      ? { headers: { accept: 'application/json' } }
-      : { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify(body) });
+      ? { headers: { accept: 'application/json' }, signal: signal ?? null }
+      : { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify(body), signal: signal ?? null });
   } catch {
     return { ok: false, status: 0, message: 'The evidence service could not be reached. Check the connection, then retry.', retryAfter: null };
   }
@@ -36,4 +37,20 @@ export function Failure({ failure, onRetry }: { failure: ApiFailure; onRetry?: (
       {failure.retryAfter ? ` Retry in about ${failure.retryAfter} s.` : ''}</p>
     {onRetry && failure.status !== 400 && <button className="btn btn-quiet btn-sm" type="button" onClick={onRetry}>Retry</button>}
   </div>;
+}
+
+/**
+ * Latest-request-wins guard for research tools. Each begin() aborts the previous request and returns an identity check;
+ * a response is applied only while it is still the newest request, even if an older fetch completes anyway.
+ * Unmount aborts the active request.
+ */
+export function useLatestRequest() {
+  const current = useRef<AbortController | null>(null);
+  useEffect(() => () => current.current?.abort(), []);
+  return useCallback(() => {
+    current.current?.abort();
+    const controller = new AbortController();
+    current.current = controller;
+    return { signal: controller.signal, isCurrent: () => current.current === controller && !controller.signal.aborted };
+  }, []);
 }

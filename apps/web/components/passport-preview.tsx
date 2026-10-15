@@ -1,11 +1,16 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { PassportValidationResponseSchema, type PassportEntry } from '@microfire/shared';
+import { PassportValidationResponseSchema, type Citation, type PassportEntry } from '@microfire/shared';
 import { exportPassport, loadProgress, readRawSave, type LoadResult } from '@microfire/game-core';
-import { callApi } from './client-api';
+import { callApi, useLatestRequest, type ApiFailure } from './client-api';
 import { CitationList, Kind, Limitations, type SourceRef } from './evidence-ui';
 
-type Check = { status: 'checking' } | { status: 'valid' } | { status: 'invalid'; message: string };
+/** Catalog data rendered by the server. The only source of anything shown as canonical. */
+export type TrustedCatalog = {
+  experiments: Record<string, { title: string; limitations: string[] }>;
+  claims: Record<string, { experimentId: string; text: string; kind: string; citations: Citation[] }>;
+};
+type Check = { status: 'not-validated' } | { status: 'checking' } | { status: 'validated' } | { status: 'rejected'; message: string } | { status: 'unavailable'; failure: ApiFailure };
 const recovery: Record<string, string> = {
   corrupt: 'The saved investigation on this device could not be read safely.',
   'unsupported-version': 'The saved investigation uses a format this version does not support.',
@@ -13,10 +18,64 @@ const recovery: Record<string, string> = {
   'storage-unavailable': 'This browser blocks local storage, so no saved investigation can be read.'
 };
 
-/** Read-only preview: surfaces a restored save and its scientific check. Full save/recovery UI belongs to the gameplay milestone. */
-export function PassportPreview({ datasetVersion, sources }: { datasetVersion: string; sources: SourceRef[] }) {
+function ValidationNotice({ check, untrustedCount, onRetry }: { check: Check; untrustedCount: number; onRetry: () => void }) {
+  const extra = untrustedCount ? ` ${untrustedCount} saved statement${untrustedCount === 1 ? ' is' : 's are'} not part of the source record and ${untrustedCount === 1 ? 'is' : 'are'} shown below as unverified learner text.` : '';
+  switch (check.status) {
+    case 'not-validated': case 'checking':
+      return <div className="notice" role="status" data-testid="passport-pending"><p><strong>Not yet validated.</strong> Loading this save only proves its structure; source lineage is being checked separately.</p></div>;
+    case 'validated':
+      return <div className="notice" data-tone="info" data-testid="passport-valid"><p><strong>Validated: source lineage only.</strong> Entry structure and citations match the catalog. This does not verify conclusions, notes or any text outside the source record, and it is not a certificate.{extra}</p></div>;
+    case 'rejected':
+      return <div className="notice" data-tone="error" role="alert" data-testid="passport-invalid"><p><strong>Scientific validation failed.</strong> The evidence service rejected this passport: {check.message} Entries are shown for inspection only, not as evidence.{extra}</p></div>;
+    case 'unavailable':
+      return <div className="notice" role="alert" data-testid="passport-unvalidated">
+        <p><strong>Could not validate.</strong> The check did not run, so this passport is neither accepted nor rejected. {check.failure.status === 413 ? 'The saved passport is larger than the validation service accepts. ' : ''}{check.failure.message}{check.failure.retryAfter ? ` Retry in about ${check.failure.retryAfter} s.` : ''}</p>
+        <button className="btn btn-quiet btn-sm" type="button" onClick={onRetry}>Retry validation</button>
+      </div>;
+  }
+}
+
+function EntryView({ entry, trusted, sources }: { entry: PassportEntry; trusted: TrustedCatalog; sources: SourceRef[] }) {
+  const known = entry.experimentIds.filter((id) => trusted.experiments[id]);
+  const unknown = entry.experimentIds.filter((id) => !trusted.experiments[id]);
+  const canonical = [...new Set(known.flatMap((id) => trusted.experiments[id]!.limitations))];
+  const claims = entry.claimIds.flatMap((id) => (trusted.claims[id] && known.includes(trusted.claims[id].experimentId) ? [{ id, ...trusted.claims[id] }] : []));
+  const unknownClaims = entry.claimIds.filter((id) => !claims.some((c) => c.id === id));
+  const untrusted = entry.limitations.filter((l) => !canonical.includes(l));
+  const missing = canonical.filter((l) => !entry.limitations.includes(l));
+  return <article className="notebook stack" data-testid="passport-entry">
+    <p className="eyebrow">{entry.missionId} · {entry.status}{entry.scenario === 'fictional-scenario' ? ' · fictional scenario' : ''}</p>
+    <section className="trust-section" aria-label="Source record from the catalog">
+      <h3>Source record · from the admitted catalog</h3>
+      {known.map((id) => <p key={id}><a href={`/experiments/${id}`}>{trusted.experiments[id]!.title}</a></p>)}
+      {claims.map((c) => <div key={c.id} className="stack"><p><Kind kind={c.kind} /> {c.text}</p><CitationList citations={c.citations} sources={sources} /></div>)}
+      {(unknown.length > 0 || unknownClaims.length > 0) && <p className="meta">Not in the admitted catalog: {[...unknown, ...unknownClaims].join(', ')}. Nothing is shown for these references.</p>}
+      {canonical.length > 0 && <div data-testid="canonical-limitations"><Limitations items={canonical} title="Source limitations (canonical, from the catalog)" /></div>}
+      {missing.length > 0 && <p className="meta" data-testid="missing-caveats">This save omits {missing.length} of these canonical caveat{missing.length === 1 ? '' : 's'}; they are shown above from the catalog.</p>}
+    </section>
+    <section className="trust-section untrusted" aria-label="Learner-authored content" data-testid="untrusted-content">
+      <h3>Learner-authored · not verified, not NASA evidence</h3>
+      <p><span className="stamp" style={{ color: 'var(--ink-muted)' }}>{entry.observationType}</span> <span className="meta">Saved classification · evidence level {entry.evidenceLevel}</span></p>
+      <p><strong>Saved conclusion:</strong> {entry.conclusion}</p>
+      {untrusted.length > 0 && <div data-testid="untrusted-limitations"><p className="meta" style={{ marginBottom: 4 }}>Saved text that is not in the source record:</p><ul>{untrusted.map((l) => <li key={l}>{l}</li>)}</ul></div>}
+      {entry.learnerNotes.length > 0 && <div><p className="meta" style={{ marginBottom: 4 }}>Your notes · not verified</p><ul>{entry.learnerNotes.map((n, i) => <li key={i}>{n}</li>)}</ul></div>}
+    </section>
+  </article>;
+}
+
+/** Read-only preview: surfaces a restored save and its separate lineage check. Full save/recovery UI belongs to the gameplay milestone. */
+export function PassportPreview({ datasetVersion, sources, trusted }: { datasetVersion: string; sources: SourceRef[]; trusted: TrustedCatalog }) {
   const [load, setLoad] = useState<LoadResult | null>(null);
-  const [check, setCheck] = useState<Check | null>(null);
+  const [check, setCheck] = useState<Check>({ status: 'not-validated' });
+  const begin = useLatestRequest();
+  const validate = async (state: Extract<LoadResult, { status: 'loaded' }>['state']) => {
+    const r = begin();
+    setCheck({ status: 'checking' });
+    const result = await callApi('/api/passport/validate', PassportValidationResponseSchema, exportPassport(state), r.signal);
+    if (!r.isCurrent()) return;
+    // Only an explicit 400 from the validator is a scientific rejection; transport, budget, size and contract failures mean "not checked".
+    setCheck(result.ok ? { status: 'validated' } : result.status === 400 ? { status: 'rejected', message: result.message } : { status: 'unavailable', failure: result });
+  };
   // Storage is read after hydration (deferred), so server and first client render agree.
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -24,13 +83,10 @@ export function PassportPreview({ datasetVersion, sources }: { datasetVersion: s
       try { storage = window.localStorage; } catch { setLoad({ status: 'storage-unavailable' }); return; }
       const result = loadProgress(storage, 'normal', datasetVersion);
       setLoad(result);
-      if (result.status !== 'loaded' || !result.state.passport.entries.length) return;
-      // Loading proves structure only. Scientific lineage is checked separately and never assumed.
-      setCheck({ status: 'checking' });
-      void callApi('/api/passport/validate', PassportValidationResponseSchema, exportPassport(result.state)).then((r) =>
-        setCheck(r.ok ? { status: 'valid' } : { status: 'invalid', message: r.message }));
+      if (result.status === 'loaded' && result.state.passport.entries.length) void validate(result.state);
     }, 0);
     return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- validate is stable in behaviour; run once per dataset
   }, [datasetVersion]);
 
   const download = () => {
@@ -53,22 +109,14 @@ export function PassportPreview({ datasetVersion, sources }: { datasetVersion: s
     {load.status !== 'storage-unavailable' && <button className="btn btn-quiet btn-sm" type="button" onClick={download}>Download the raw save</button>}
   </div>;
 
-  const entries = load.state.passport.entries;
+  const state = load.state;
+  const entries = state.passport.entries;
+  const untrustedCount = entries.reduce((n, e) => n + e.limitations.filter((l) => !e.experimentIds.some((id) => trusted.experiments[id]?.limitations.includes(l))).length, 0);
   return <div className="stack" data-testid="passport-loaded">
     {load.migratedFrom === 1 && <div className="notice" data-tone="info"><p>This save was migrated from format 1. Setup-dependent proof was invalidated and must be re-earned.</p></div>}
     {!entries.length && <div className="notebook"><p>The save loaded, but it holds no passport entries yet.</p></div>}
-    {check?.status === 'checking' && <p role="status" className="meta">Checking source lineage for {entries.length} entr{entries.length === 1 ? 'y' : 'ies'}…</p>}
-    {check?.status === 'invalid' && <div className="notice" data-tone="error" role="alert" data-testid="passport-invalid">
-      <p><strong>Scientific record check failed.</strong> The save loaded, but its passport does not match the catalog: {check.message} The entries below are shown for inspection only and are not accepted as evidence.</p>
-    </div>}
-    {check?.status === 'valid' && <div className="notice" data-tone="info" data-testid="passport-valid"><p><strong>Source lineage checked.</strong> Structure and citations match the catalog. This checks lineage only; it does not certify conclusions or competence.</p></div>}
-    {entries.map((entry: PassportEntry) => <article key={entry.id} className="notebook stack">
-      <p className="eyebrow">{entry.missionId} · {entry.status}{entry.scenario === 'fictional-scenario' ? ' · fictional scenario' : ''}</p>
-      <p><span className="stamp" style={{ color: 'var(--teal-ink)' }}>{entry.observationType}</span> <Kind kind={entry.observationType} /> · evidence level {entry.evidenceLevel}</p>
-      <p><strong>Learner conclusion:</strong> {entry.conclusion}</p>
-      <CitationList citations={entry.citations} sources={sources} />
-      <Limitations items={entry.limitations} title="Source limitations (canonical)" />
-      {entry.learnerNotes.length > 0 && <div><h3 className="eyebrow">Your notes · not verified</h3><ul>{entry.learnerNotes.map((n, i) => <li key={i}>{n}</li>)}</ul></div>}
-    </article>)}
+    {entries.length > 0 && <ValidationNotice check={check} untrustedCount={untrustedCount} onRetry={() => void validate(state)} />}
+    {entries.map((entry) => <EntryView key={entry.id} entry={entry} trusted={trusted} sources={sources} />)}
+    <p className="meta">Raw save recovery: <button className="btn btn-quiet btn-sm" type="button" onClick={download}>Download the raw save</button></p>
   </div>;
 }

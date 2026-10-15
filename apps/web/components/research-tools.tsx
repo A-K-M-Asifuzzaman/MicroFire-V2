@@ -5,7 +5,7 @@ import {
   CompareResponseSchema, ExperimentsResponseSchema, ExportResponseSchema, GapsResponseSchema, RankResponseSchema,
   type Coverage, type Experiment, type TargetConditions
 } from '@microfire/shared';
-import { callApi, Failure, type ApiFailure } from './client-api';
+import { callApi, Failure, useLatestRequest, type ApiFailure } from './client-api';
 import { CitationList, CoverageNote, Kind, Limitations, type SourceRef } from './evidence-ui';
 
 type Pending<T> = { status: 'idle' } | { status: 'loading' } | { status: 'done'; data: T } | { status: 'failed'; failure: ApiFailure };
@@ -71,10 +71,13 @@ export function Atlas({ initial, query, facets, sources }: {
 }) {
   const [state, setState] = useState<Pending<{ items: Experiment[]; total: number; coverage: Coverage }>>({ status: 'done', data: initial });
   const [last, setLast] = useState<URLSearchParams | null>(null);
+  const begin = useLatestRequest();
   const run = async (params: URLSearchParams) => {
+    const r = begin();
     setLast(params);
     setState({ status: 'loading' });
-    const result = await callApi(`/api/experiments?${params}`, ExperimentsResponseSchema);
+    const result = await callApi(`/api/experiments?${params}`, ExperimentsResponseSchema, undefined, r.signal);
+    if (!r.isCurrent()) return;
     setState(result.ok ? { status: 'done', data: result.data } : { status: 'failed', failure: result });
     if (result.ok) history.replaceState(null, '', params.size ? `/atlas?${params}` : '/atlas');
   };
@@ -126,9 +129,12 @@ export function Atlas({ initial, query, facets, sources }: {
 // ---------- JSON export ----------
 export function ExportButton({ id }: { id: string }) {
   const [state, setState] = useState<Pending<string>>({ status: 'idle' });
+  const begin = useLatestRequest();
   const run = async () => {
+    const r = begin();
     setState({ status: 'loading' });
-    const result = await callApi(`/api/export?ids=${encodeURIComponent(id)}`, ExportResponseSchema);
+    const result = await callApi(`/api/export?ids=${encodeURIComponent(id)}`, ExportResponseSchema, undefined, r.signal);
+    if (!r.isCurrent()) return;
     if (!result.ok) return setState({ status: 'failed', failure: result });
     const url = URL.createObjectURL(new Blob([JSON.stringify(result.data, null, 2)], { type: 'application/json' }));
     const a = Object.assign(document.createElement('a'), { href: url, download: `microfire-${id}-evidence.json` });
@@ -153,9 +159,16 @@ type RankData = ReturnType<typeof RankResponseSchema.parse>['data'];
 export function Workstation({ sources, claims, coverage }: { sources: SourceRef[]; claims: Record<string, string>; coverage: Coverage }) {
   const [state, setState] = useState<Pending<RankData>>({ status: 'idle' });
   const [preset, setPreset] = useState<{ question: string; values: Record<string, string> } | null>(null);
+  // The submitted snapshot travels with its result, so the chain shown always names the question that produced it.
+  const [request, setRequest] = useState<Readonly<{ question: string; targetConditions: TargetConditions }> | null>(null);
+  const begin = useLatestRequest();
   const run = async (question: string, targetConditions: TargetConditions) => {
+    const r = begin();
+    const snapshot = Object.freeze({ question, targetConditions: Object.freeze({ ...targetConditions }) });
+    setRequest(snapshot);
     setState({ status: 'loading' });
-    const result = await callApi('/api/evidence/rank', RankResponseSchema, { question, targetConditions, limit: 5 });
+    const result = await callApi('/api/evidence/rank', RankResponseSchema, { ...snapshot, limit: 5 }, r.signal);
+    if (!r.isCurrent()) return;
     setState(result.ok ? { status: 'done', data: result.data } : { status: 'failed', failure: result });
   };
   const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -176,7 +189,7 @@ export function Workstation({ sources, claims, coverage }: { sources: SourceRef[
         <textarea id="ws-question" name="question" required maxLength={4000} defaultValue={preset?.question} key={preset?.question ?? ''} placeholder="What does airflow change?" />
       </div>
       <ConditionFields prefix="ws" values={preset?.values} />
-      <button className="btn btn-primary" type="submit" disabled={state.status === 'loading'} style={{ width: '100%' }}>{state.status === 'loading' ? 'Tracing evidence…' : 'Trace the evidence'}</button>
+      <button className="btn btn-primary" type="submit" style={{ width: '100%' }}>{state.status === 'loading' ? 'Trace again (replaces pending)' : 'Trace the evidence'}</button>
       <p className="meta" style={{ marginTop: 14 }}>Try an example:</p>
       <ul className="suggest">{examples.map((ex) => <li key={ex.label}><button type="button" onClick={() => { setPreset(ex); void run(ex.question, Object.fromEntries(Object.entries(ex.values).map(([k, v]) => [k, k === 'material' ? v : Number(v)]))); }}>{ex.label}</button></li>)}</ul>
     </form>
@@ -187,15 +200,19 @@ export function Workstation({ sources, claims, coverage }: { sources: SourceRef[
         <div><p className="step">02 · Observation</p><h3>What was recorded</h3><p className="meta">Only a cited source claim can support an outcome. A matching field is not proof.</p></div>
         <div><p className="step">03 · Limits</p><h3>Where confidence ends</h3><p className="meta">Every answer carries the record&apos;s canonical limitations.</p></div>
       </div>}
+      {state.status !== 'idle' && request && <dl className="facts request-echo" data-testid="ws-request">
+        <div><dt>{state.status === 'loading' ? 'Tracing' : 'Question'}</dt><dd>“{request.question.length > 280 ? `${request.question.slice(0, 280)}…` : request.question}”</dd></div>
+        <div><dt>Target conditions</dt><dd>{Object.entries(request.targetConditions).map(([k, v]) => `${k} ${v}`).join(' · ') || 'none'}</dd></div>
+      </dl>}
       {state.status === 'loading' && <div className="loading-bar" aria-hidden="true" />}
-      {state.status === 'failed' && <Failure failure={state.failure} />}
+      {state.status === 'failed' && <Failure failure={state.failure} onRetry={request ? () => void run(request.question, request.targetConditions) : undefined} />}
       {state.status === 'done' && <div className="stack">
         <p className="meta">Ranking {state.data.rankingVersion} · scores are retrieval relevance, not fire risk, safety or scientific confidence.</p>
         {state.data.items.length === 0 && <div className="notice" data-tone="info"><p>No admitted record matched. Absence from this catalog is not evidence that a condition was never studied.</p></div>}
         {state.data.items.map((item) => <article key={item.experimentId} className="stack">
           <div className="results-meta" style={{ alignItems: 'center' }}>
             <h3 style={{ margin: 0 }}><Link href={`/experiments/${item.experimentId}`}>{item.experimentId}</Link></h3>
-            <span className="score">Retrieval relevance <meter min={0} max={1} value={item.relevanceScore}>{item.relevanceScore}</meter> {item.relevanceScore.toFixed(2)}</span>
+            <span className="score"><span aria-hidden="true">Retrieval relevance</span> <meter min={0} max={1} value={item.relevanceScore} aria-label={`Retrieval relevance ${item.relevanceScore.toFixed(2)} of 1, a word-and-condition match score, not evidence strength`}>{item.relevanceScore}</meter> <span aria-hidden="true">{item.relevanceScore.toFixed(2)}</span></span>
           </div>
           <div className="loom">
             <div><p className="step">01 · Conditions</p><ul>
@@ -233,10 +250,15 @@ const gapColumns = [['covered', 'Covered'], ['conditions-differ', 'Conditions di
 export function Frontier({ coverage }: { coverage: Coverage }) {
   const [state, setState] = useState<Pending<GapsData>>({ status: 'idle' });
   const [example, setExample] = useState<Record<string, string> | undefined>();
+  const [last, setLast] = useState<TargetConditions | null>(null);
+  const begin = useLatestRequest();
   const run = async (targetConditions: TargetConditions) => {
+    const r = begin();
     if (!Object.keys(targetConditions).length) return setState({ status: 'failed', failure: { ok: false, status: 400, message: 'Name at least one target condition.', retryAfter: null } });
+    setLast(targetConditions);
     setState({ status: 'loading' });
-    const result = await callApi('/api/gaps', GapsResponseSchema, { targetConditions });
+    const result = await callApi('/api/gaps', GapsResponseSchema, { targetConditions }, r.signal);
+    if (!r.isCurrent()) return;
     setState(result.ok ? { status: 'done', data: result.data } : { status: 'failed', failure: result });
   };
   return <div className="split">
@@ -244,7 +266,7 @@ export function Frontier({ coverage }: { coverage: Coverage }) {
       <p className="eyebrow">Target conditions</p>
       <ConditionFields prefix="gap" values={example} />
       <div className="actions">
-        <button className="btn btn-primary btn-sm" type="submit" disabled={state.status === 'loading'}>Map coverage</button>
+        <button className="btn btn-primary btn-sm" type="submit">Map coverage</button>
         <button className="btn btn-quiet btn-sm" type="button" onClick={() => { const v = { material: 'PMMA', gravity: 'microgravity', oxygenPct: '21', pressureKpa: '70' }; setExample(v); void run({ material: 'PMMA', gravity: 'microgravity', oxygenPct: 21, pressureKpa: 70 }); }}>Load example</button>
       </div>
     </form>
@@ -252,9 +274,10 @@ export function Frontier({ coverage }: { coverage: Coverage }) {
       <h2 id="gap-results" className="sr-only">Coverage matrix</h2>
       {state.status === 'idle' && <div className="notice" data-tone="info"><p>Name the conditions you care about. Each one is checked against the admitted record: covered within retrieval tolerance, recorded at a different value, not recorded, or absent from the catalog.</p></div>}
       {state.status === 'loading' && <div className="loading-bar" aria-hidden="true" />}
-      {state.status === 'failed' && <Failure failure={state.failure} />}
+      {state.status === 'failed' && <Failure failure={state.failure} onRetry={last ? () => void run(last) : undefined} />}
       {state.status === 'done' && <div className="stack">
-        <div style={{ overflowX: 'auto' }}><table className="matrix">
+        {/* Local, keyboard-focusable scroll region: the matrix may scroll; the page never does. */}
+        <div className="table-scroll" role="region" aria-label="Coverage matrix (scrolls horizontally on narrow screens)" tabIndex={0}><table className="matrix">
           <caption className="sr-only">Coverage of each target condition in the admitted catalog</caption>
           <thead><tr><th scope="col">Condition</th>{gapColumns.map(([k, l]) => <th key={k} scope="col">{l}</th>)}</tr></thead>
           <tbody>{state.data.fields.map((f) => <tr key={f.field}>
@@ -275,9 +298,12 @@ export function Frontier({ coverage }: { coverage: Coverage }) {
 export function CompareProbe({ admittedId }: { admittedId: string }) {
   const [state, setState] = useState<Pending<string>>({ status: 'idle' });
   const [other, setOther] = useState('bass2-b19');
+  const begin = useLatestRequest();
   const run = async () => {
+    const r = begin();
     setState({ status: 'loading' });
-    const result = await callApi('/api/evidence/compare', CompareResponseSchema, { experimentIds: [admittedId, other] });
+    const result = await callApi('/api/evidence/compare', CompareResponseSchema, { experimentIds: [admittedId, other] }, r.signal);
+    if (!r.isCurrent()) return;
     // A successful comparison is impossible with one admitted record; render it plainly if the corpus ever grows.
     setState(result.ok ? { status: 'done', data: `Comparability: ${result.data.comparability}. ${result.data.limitations.join(' ')}` } : { status: 'failed', failure: result });
   };

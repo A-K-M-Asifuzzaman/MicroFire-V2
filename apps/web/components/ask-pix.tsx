@@ -1,11 +1,13 @@
 'use client';
 import { useRef, useState, type FormEvent } from 'react';
 import { AskResponseSchema, type TargetConditions } from '@microfire/shared';
-import { callApi, Failure, type ApiFailure } from './client-api';
+import { callApi, Failure, useLatestRequest, type ApiFailure } from './client-api';
 import { CitationList, Kind, Limitations, type SourceRef } from './evidence-ui';
 
 type AskData = ReturnType<typeof AskResponseSchema.parse>['data'];
-type State = { status: 'idle' } | { status: 'loading'; question: string } | { status: 'done'; question: string; data: AskData } | { status: 'failed'; question: string; failure: ApiFailure };
+/** The submitted request is frozen: its echo, response, failure and retry all refer to this exact snapshot. */
+type AskRequest = Readonly<{ question: string; targetConditions: Readonly<TargetConditions> }>;
+type State = { status: 'idle' } | { status: 'loading'; request: AskRequest } | { status: 'done'; request: AskRequest; data: AskData } | { status: 'failed'; request: AskRequest; failure: ApiFailure };
 
 const abstentionTitles: Record<string, string> = {
   'unsupported-intent': 'Outside what this evidence can support',
@@ -16,6 +18,10 @@ const abstentionTitles: Record<string, string> = {
 const categoryOrder = ['direct-observation', 'supported-derivation', 'scientific-interpretation', 'analogous-or-mechanistic', 'unknown-or-gap'];
 const suggestions = ['What does B20 establish about airflow?', 'What is the flame temperature in B20?', 'What happened in B19?', 'Can this certify a lunar habitat?'];
 const echo = (q: string) => (q.length > 280 ? `${q.slice(0, 280)}… (${q.length} characters)` : q);
+const describeConditions = (t: TargetConditions) => {
+  const parts = [t.material && `material ${t.material}`, t.oxygenPct !== undefined && `oxygen ${t.oxygenPct} vol%`].filter(Boolean);
+  return parts.length ? parts.join(' · ') : 'none';
+};
 
 export function PixMark() {
   return <svg viewBox="0 0 56 56" aria-hidden="true">
@@ -29,25 +35,35 @@ export function PixMark() {
 
 export function AskPix({ sources }: { sources: SourceRef[] }) {
   const [state, setState] = useState<State>({ status: 'idle' });
+  const form = useRef<HTMLFormElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
-  const ask = async (question: string, targetConditions: TargetConditions = {}) => {
-    setState({ status: 'loading', question });
-    const result = await callApi('/api/ask', AskResponseSchema, { question, targetConditions });
-    setState(result.ok ? { status: 'done', question, data: result.data } : { status: 'failed', question, failure: result });
+  const begin = useLatestRequest();
+
+  const ask = async (request: AskRequest) => {
+    const r = begin();
+    setState({ status: 'loading', request });
+    const result = await callApi('/api/ask', AskResponseSchema, request, r.signal);
+    if (!r.isCurrent()) return; // superseded or unmounted: never let an older response replace a newer one
+    setState(result.ok ? { status: 'done', request, data: result.data } : { status: 'failed', request, failure: result });
   };
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const question = String(form.get('question') ?? '').trim();
+    const data = new FormData(event.currentTarget);
+    const question = String(data.get('question') ?? '').trim();
     if (!question) return input.current?.focus();
-    const material = String(form.get('material') ?? '').trim();
-    const oxygen = String(form.get('oxygenPct') ?? '').trim();
-    void ask(question, { ...(material ? { material } : {}), ...(oxygen && Number.isFinite(Number(oxygen)) ? { oxygenPct: Number(oxygen) } : {}) });
+    const material = String(data.get('material') ?? '').trim();
+    const oxygen = String(data.get('oxygenPct') ?? '').trim();
+    void ask(Object.freeze({ question, targetConditions: Object.freeze({
+      ...(material ? { material } : {}), ...(oxygen && Number.isFinite(Number(oxygen)) ? { oxygenPct: Number(oxygen) } : {})
+    }) }));
   };
+  // Suggestions submit through the form, so they carry the visible target conditions rather than silently dropping them.
+  const suggest = (q: string) => { if (input.current) input.current.value = q; form.current?.requestSubmit(); };
+
   return <div className="pix-console">
     <div>
       <div className="pix-id"><PixMark /><div><strong>PIX</strong><p>Deterministic evidence guide · fixed templates over the admitted catalog · no AI model</p></div></div>
-      <form onSubmit={submit} aria-label="Ask PIX">
+      <form ref={form} onSubmit={submit} aria-label="Ask PIX">
         <div className="field">
           <label htmlFor="pix-q">Your research question</label>
           <textarea ref={input} id="pix-q" name="question" required maxLength={4000} placeholder="What does B20 establish about airflow?" />
@@ -60,18 +76,21 @@ export function AskPix({ sources }: { sources: SourceRef[] }) {
             <div className="field"><label htmlFor="pix-o2">Oxygen (vol%)</label><input id="pix-o2" name="oxygenPct" type="number" min={0} max={100} step="any" /></div>
           </div>
         </details>
-        <button className="btn btn-primary" type="submit" disabled={state.status === 'loading'}>{state.status === 'loading' ? 'Checking the evidence…' : 'Ask PIX'}</button>
+        <button className="btn btn-primary" type="submit">{state.status === 'loading' ? 'Ask again (replaces the pending question)' : 'Ask PIX'}</button>
       </form>
-      <p className="meta" style={{ marginTop: 18, marginBottom: 0 }}>Questions that show each behaviour:</p>
-      <ul className="suggest">{suggestions.map((q) => <li key={q}><button type="button" onClick={() => { if (input.current) input.current.value = q; void ask(q); }}>{q}</button></li>)}</ul>
+      <p className="meta" style={{ marginTop: 18, marginBottom: 0 }}>Questions that show each behaviour (sent with any target conditions above):</p>
+      <ul className="suggest">{suggestions.map((q) => <li key={q}><button type="button" onClick={() => suggest(q)}>{q}</button></li>)}</ul>
     </div>
     <section aria-labelledby="pix-answer-title" aria-live="polite" aria-busy={state.status === 'loading'}>
       <h2 id="pix-answer-title" className="sr-only">PIX response</h2>
       {state.status === 'idle' && <div className="panel"><p className="eyebrow">How PIX answers</p>
         <p>Each statement is labelled as a direct observation, supported derivation, interpretation, analogy or gap, and carries its source page. If the catalog cannot support an answer, PIX says so and explains why. That is a correct result, not a failure.</p></div>}
-      {state.status !== 'idle' && <p className="meta" style={{ overflowWrap: 'anywhere' }}>You asked: “{echo(state.question)}”</p>}
+      {state.status !== 'idle' && <dl className="facts request-echo" data-testid="pix-request">
+        <div><dt>{state.status === 'loading' ? 'Checking' : 'You asked'}</dt><dd>“{echo(state.request.question)}”</dd></div>
+        <div><dt>Target conditions</dt><dd data-testid="pix-request-conditions">{describeConditions(state.request.targetConditions)}</dd></div>
+      </dl>}
       {state.status === 'loading' && <div className="loading-bar" aria-hidden="true" />}
-      {state.status === 'failed' && <Failure failure={state.failure} onRetry={() => void ask(state.question)} />}
+      {state.status === 'failed' && <Failure failure={state.failure} onRetry={() => void ask(state.request)} />}
       {state.status === 'done' && (state.data.abstained
         ? <div className="panel answer" data-abstained="" data-testid="pix-abstention">
           <p className="eyebrow" style={{ color: 'var(--amber-ink)' }}>PIX withheld an answer · {state.data.code}</p>

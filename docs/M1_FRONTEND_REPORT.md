@@ -73,3 +73,40 @@ New spec `tests/e2e/observatory.spec.ts` covers:
 ## Anatomy skill
 
 Not used in M1. It will be evaluated for M2 BASS-II cutaway diagrams, alongside procedural geometry (the only sourced dimension is the 7.6 × 7.6 × 17 cm duct).
+
+## M1 corrections after Astra's review (F1–F6)
+
+Astra's verdict on `e59004c` was **changes required**. All six defect families are fixed on `feat/p1-ui`. No backend, contract, registry, dependency or config change was needed: as Astra noted, canonical caveats can be rendered from the trusted catalog without changing the API.
+
+| ID | Before | After |
+|---|---|---|
+| F1 Passport trust (P1) | Saved `limitations` text was rendered under "Source limitations (canonical)", even after a passing lineage check | Canonical caveats, claims and citations come only from catalog data passed by the server. Saved conclusion, classification, notes and any limitation text that is not in the source record appear in a separate "Learner-authored · not verified, not NASA evidence" section. Caveats a save omits are still shown, with a note. Four states: Not yet validated, Validated (source lineage only; extra saved statements are counted), Scientific validation failed (400 only), Could not validate (transport, 429, 413 or contract failure, with Retry). Raw-save download is always available. |
+| F2 Ask retry (P1) | Retry resent the question only, with `targetConditions: {}` | The submitted request is an immutable snapshot (question plus conditions). Retry resends exactly that object, so edits to the draft form never leak into it. Each response shows "You asked … · Target conditions …". Suggestions submit through the form, so they carry the visible conditions. |
+| F3 stale responses (P1) | A delayed older answer replaced a newer abstention | `useLatestRequest()` aborts the previous request and ignores any response or error whose request is no longer the newest. Applied to Ask, Atlas, export, Workstation, Frontier, Compare and Passport validation. The active request is aborted on unmount. |
+| F4 WebGL loss (P2) | After context loss the flame vanished and `data-renderer` stayed `webgl` | A `webglcontextlost` handler stops the loop and shows the SVG flame ("WebGL interrupted · static illustration shown"), and the controls keep working. On `webglcontextrestored`, resources are rebuilt with the current gravity and motion state. Listeners are removed on stop, so no loop is duplicated. |
+| F5 reduced motion (P2) | Only the initial preference was read | Listens for `prefers-reduced-motion` changes: turning it on stops the flicker, turning it off resumes it. The animation also pauses while offscreen or in a hidden tab. Listeners are cleaned up on unmount. |
+| F6 Frontier overflow (P2) | The populated matrix made the document 405 px wide at 390 and 320 px | The matrix sits in a positioned, labelled, keyboard-focusable scroll region with a sticky condition column, and long notes wrap. The dossier table uses the same region. No `overflow-x: hidden` was added to the page. |
+| Extra | The relevance meter read only "1" | The meter's accessible name reads "Retrieval relevance N of 1, a word-and-condition match score, not evidence strength". |
+
+**Real-HTTP regressions.** `tests/e2e/observatory-http.spec.ts` runs three serial groups. Each starts its own disposable production server (`tests/e2e/disposable-server.ts`, ports 3231–3233; it refuses busy ports), so every group gets a fresh, unmodified 30-POST window:
+
+1. **Port 3231, 18 POSTs.** Ask supported, unsupported, repeated-B16, repeated-B999, repeated-B20 and cotton. The F2 abort-then-retry with exact payload equality, plus suggestions carrying the conditions. The F3 delayed real answer against a newer real abstention, plus a stale error. Workstation (gap, then direct), Frontier and compare refusal. F1 with both of Astra's fixtures, transport failure followed by a real retry, and corrupt-save recovery.
+2. **Port 3232.** The real production limit: 30 accepted, then Ask shows the 429 "Request budget reached" state with no answer, and Passport shows "Could not validate" rather than "failed".
+3. **Port 3233.** Populated Frontier, Workstation and Ask at 390 and 320 px, with no document overflow and keyboard scrolling of the matrix.
+
+These run once, in the desktop project; mobile widths are set explicitly. F4 and F5 are covered in `observatory.spec.ts`, which loses and then restores the context, and toggles reduced motion off, on and off again.
+
+**Results on the correction build:**
+- `npm run check` passes: 103 unit tests, data validation, eval (Ask 30/30, rank 7/7), security scan and build.
+- `npm run test:e2e`: 40 passed, 10 skipped. The skips are the 8 disposable-server tests in the mobile project and 2 project-specific M1 cases.
+- Astra's own spec, unmodified except for its screenshot path, passes 8/8, including all six defect reproductions.
+- `npm audit` reports 0 vulnerabilities.
+- HawkScan: not tested (no `HAWK_API_KEY`).
+
+**Still open:**
+- **Registry copy reconciliation.** This needs shared Sol/Claude review. Astra proposed exact reasons; nothing was applied.
+- **Retry timing.** Retry is not disabled until `Retry-After` elapses.
+- **Validation size.** A large valid save could exceed the 32 KiB validation body; the UI shows "Could not validate" (413) without losing the save. The size-budget strategy is Sol's (M2).
+- **Not run:** axe, a screen-reader pass, Safari, Firefox, real devices, INP, GPU profiling.
+- **Bundle.** The catch-all route still bundles every island.
+- **Focus after mobile navigation.** Focus lands on `body` after mobile-menu navigation; a focus handoff is not yet implemented.

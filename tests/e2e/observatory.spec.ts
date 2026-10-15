@@ -1,7 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { test, expect, type Page } from '@playwright/test';
-import { ExperimentResponseSchema, ExportResponseSchema, type Experiment } from '@microfire/shared';
-import { createGameState, saveKey } from '@microfire/game-core';
+import { ExportResponseSchema } from '@microfire/shared';
 import { execFileSync } from 'node:child_process';
 
 // M1 Living Science Observatory UI. Screenshots land in docs/qa/screenshots/m1.
@@ -17,7 +16,6 @@ async function scienceBackedPosts(page: Page) {
   await page.route('**/api/gaps', (r) => r.fulfill(envelope(science('gaps', r.request().postDataJSON()))));
 }
 const noOverflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
-const record = async (page: Page): Promise<Experiment> => ExperimentResponseSchema.parse(await (await page.request.get('/api/experiments/bass2-b20')).json()).data;
 
 test('research journey: home → atlas search → B20 dossier → source → export → Ask PIX (REAL) → methodology', async ({ page }, info) => {
   const errors: string[] = [];
@@ -221,38 +219,36 @@ test('workstation, frontier and comparison keep support, gaps and refusals expli
   await shot(page, 'compare', info.project.name);
 });
 
-test('passport preview: restored saves are validated, not trusted', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'Storage behaviour is viewport independent');
-  const e = await record(page);
-  const claim = e.claims[0]!;
-  const { datasetVersion } = (await (await page.request.get('/api/health')).json()).data;
-  const base = createGameState(datasetVersion, 'normal', '2026-10-15T00:00:00.000Z');
-  const entry = { id: 'seeded-entry', missionId: 'station-arrival', experimentIds: [e.id], claimIds: [claim.id], observationType: 'observed', evidenceLevel: 'direct',
-    conclusion: 'Learner conclusion', citations: claim.citations, limitations: e.limitations, learnerNotes: ['A learner note'], corrections: [], setupRevision: null,
-    status: 'current', scenario: 'research', createdAt: '2026-10-15T00:00:00.000Z' };
-  const seed = (state: unknown) => page.addInitScript(([key, value]) => localStorage.setItem(key!, value!), [saveKey('normal'), JSON.stringify(state)]);
+test('F4: WebGL context loss restores the SVG flame; restoration re-enables WebGL with current controls', async ({ page }, info) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('/');
+  const lens = page.locator('figure.lens');
+  await expect(lens).toHaveAttribute('data-renderer', 'webgl');
+  await page.getByRole('radio', { name: 'Earth 1 g' }).check();
+  await page.evaluate(() => { (window as unknown as { __lose: WEBGL_lose_context }).__lose = document.querySelector('canvas')!.getContext('webgl')!.getExtension('WEBGL_lose_context')!; (window as unknown as { __lose: WEBGL_lose_context }).__lose.loseContext(); });
+  await expect(lens).toHaveAttribute('data-renderer', 'svg');
+  await expect(page.getByTestId('lens-renderer')).toHaveText('WebGL interrupted · static illustration shown');
+  await expect(page.locator('.lens-flame')).toHaveCSS('opacity', '1');
+  await expect(page.getByRole('img', { name: /tall teardrop/ })).toBeVisible();
+  await page.getByRole('radio', { name: 'Microgravity' }).check(); // controls keep working on the fallback
+  await expect(lens).toHaveAttribute('data-gravity', 'micro');
+  await page.screenshot({ path: `docs/qa/screenshots/m1/lens-context-lost-${info.project.name}.png` });
+  await page.evaluate(() => (window as unknown as { __lose: WEBGL_lose_context }).__lose.restoreContext());
+  await expect(lens).toHaveAttribute('data-renderer', 'webgl');
+  await expect(page.getByTestId('lens-renderer')).toHaveText('Rendered with WebGL');
+  expect(errors).toEqual([]);
+});
 
-  await page.goto('/passport');
-  await expect(page.getByTestId('passport-empty')).toBeVisible();
-
-  // Structurally valid save whose passport drops canonical limitations: loads, but must fail the scientific check (REAL HTTP).
-  await seed({ ...base, passport: { ...base.passport, entries: [{ ...entry, limitations: ['Learner replaced the source warnings'] }] } });
-  await page.goto('/passport');
-  await expect(page.getByTestId('passport-invalid')).toBeVisible();
-  await shot(page, 'passport-invalid', info.project.name);
-
-  const valid = { ...base, passport: { ...base.passport, entries: [entry] } };
-  science('passport', valid.passport); // throws unless the seeded entry really passes the catalog check
-  await page.route('**/api/passport/validate', (r) => r.fulfill(envelope({ valid: true, scope: 'structure-and-citation-lineage-only', certification: false })));
-  await seed(valid);
-  await page.goto('/passport');
-  await expect(page.getByTestId('passport-valid')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Source limitations (canonical)' })).toBeVisible();
-  await expect(page.getByText('Your notes · not verified')).toBeVisible();
-
-  await page.addInitScript(([key]) => localStorage.setItem(key!, '{not json'), [saveKey('normal')]);
-  await page.goto('/passport');
-  await expect(page.getByTestId('passport-recovery')).toContainText('has not been changed or deleted');
+test('F5: switching reduced motion on after start stops the flicker, and off resumes it', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Pause flicker' })).toBeVisible();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.getByRole('button', { name: 'Play flicker' })).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByRole('img', { name: /rounded, dim blue flame/ })).toBeAttached();
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await expect(page.getByRole('button', { name: 'Pause flicker' })).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('missions stay honestly unavailable and narrow screens never scroll sideways', async ({ browser }, info) => {

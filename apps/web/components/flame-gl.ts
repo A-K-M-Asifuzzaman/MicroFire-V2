@@ -33,48 +33,82 @@ void main(){
 
 export type FlameRenderer = { draw(g: number): void; setAnimated(on: boolean): void; stop(): void };
 
-/** Returns null when WebGL is unavailable; the caller keeps the SVG illustration. */
-export function startFlame(canvas: HTMLCanvasElement, initialG: number, animated: boolean): FlameRenderer | null {
+export type FlameEvents = { onLost(): void; onRestored(): void };
+
+/**
+ * Returns null when WebGL is unavailable; the caller keeps the SVG illustration.
+ * On context loss the loop stops at once and onLost fires so the caller can show the SVG again;
+ * if the browser restores the context, GPU resources are rebuilt and onRestored fires.
+ */
+export function startFlame(canvas: HTMLCanvasElement, initialG: number, animated: boolean, events: FlameEvents): FlameRenderer | null {
   const gl = canvas.getContext('webgl', { premultipliedAlpha: true, antialias: false });
   if (!gl) return null;
-  const shader = (type: number, src: string) => { const s = gl.createShader(type)!; gl.shaderSource(s, src); gl.compileShader(s); return s; };
-  const prog = gl.createProgram()!;
-  gl.attachShader(prog, shader(gl.VERTEX_SHADER, VERT));
-  gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FRAG));
-  gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
-  gl.useProgram(prog);
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(prog, 'p');
-  gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const u = { res: gl.getUniformLocation(prog, 'res'), t: gl.getUniformLocation(prog, 't'), g: gl.getUniformLocation(prog, 'g') };
+  type Uniforms = { res: WebGLUniformLocation | null; t: WebGLUniformLocation | null; g: WebGLUniformLocation | null };
+  const setup = (): Uniforms | null => {
+    const shader = (type: number, src: string) => { const s = gl.createShader(type)!; gl.shaderSource(s, src); gl.compileShader(s); return s; };
+    const prog = gl.createProgram();
+    if (!prog) return null;
+    gl.attachShader(prog, shader(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'p');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    return { res: gl.getUniformLocation(prog, 'res'), t: gl.getUniformLocation(prog, 't'), g: gl.getUniformLocation(prog, 'g') };
+  };
+  let u = setup();
+  if (!u) return null;
 
-  let g = initialG, shownG = initialG, frame = 0, running = animated;
+  let g = initialG, shownG = initialG, frame = 0, running = animated, lost = false;
   const t0 = performance.now();
-  const render = () => {
+  const render = (uniforms: Uniforms) => {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
     gl.viewport(0, 0, w, h);
-    gl.uniform2f(u.res, w, h);
-    gl.uniform1f(u.t, running ? (performance.now() - t0) / 1000 : 0);
-    gl.uniform1f(u.g, shownG);
+    gl.uniform2f(uniforms.res, w, h);
+    gl.uniform1f(uniforms.t, running ? (performance.now() - t0) / 1000 : 0);
+    gl.uniform1f(uniforms.g, shownG);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
   const loop = () => {
+    frame = 0;
+    if (lost || !u) return;
     shownG += (g - shownG) * 0.12; // ease toward the chosen gravity so the morph is visible
-    render();
-    frame = running || Math.abs(g - shownG) > 0.002 ? requestAnimationFrame(loop) : 0;
+    render(u);
+    if (running || Math.abs(g - shownG) > 0.002) frame = requestAnimationFrame(loop);
   };
-  const kick = () => { if (!frame) frame = requestAnimationFrame(loop); };
+  const kick = () => { if (!frame && !lost) frame = requestAnimationFrame(loop); };
+  const onLost = (e: Event) => {
+    e.preventDefault(); // allow the browser to restore the context later
+    lost = true; u = null;
+    cancelAnimationFrame(frame); frame = 0;
+    events.onLost();
+  };
+  const onRestored = () => {
+    u = setup();
+    if (!u) return; // stays on the SVG fallback
+    lost = false; shownG = g;
+    events.onRestored();
+    kick();
+  };
+  canvas.addEventListener('webglcontextlost', onLost);
+  canvas.addEventListener('webglcontextrestored', onRestored);
   kick();
   return {
     draw(next) { g = next; if (!running) shownG = next; kick(); },
     setAnimated(on) { running = on; kick(); },
-    stop() { cancelAnimationFrame(frame); frame = 0; gl.getExtension('WEBGL_lose_context')?.loseContext(); }
+    stop() {
+      canvas.removeEventListener('webglcontextlost', onLost);
+      canvas.removeEventListener('webglcontextrestored', onRestored);
+      cancelAnimationFrame(frame); frame = 0; lost = true;
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+    }
   };
 }

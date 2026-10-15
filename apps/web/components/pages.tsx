@@ -102,7 +102,7 @@ function Dossier({ experiment: e }: { experiment: Experiment }) {
         </section>}
         <section aria-labelledby="cond">
           <h2 id="cond">Conditions and missing values</h2>
-          <div style={{ overflowX: 'auto' }}><table className="conditions">
+          <div className="table-scroll" role="region" aria-label="Conditions table (scrolls horizontally on narrow screens)" tabIndex={0}><table className="conditions">
             <thead><tr><th scope="col">Condition</th><th scope="col">Value</th><th scope="col">Status</th><th scope="col">Source note</th></tr></thead>
             <tbody>{Object.entries(e.conditions).map(([name, c]) => <tr key={name}>
               <th scope="row">{conditionLabels[name] ?? name}</th>
@@ -259,15 +259,20 @@ function MethodologyPage() {
     </div>
   </div>;
 }
+// Canonical text comes only from the catalog, never from a saved passport.
+const trustedCatalog = {
+  experiments: Object.fromEntries(catalog.experiments.map((e) => [e.id, { title: e.title, limitations: e.limitations }])),
+  claims: Object.fromEntries(catalog.experiments.flatMap((e) => e.claims.map((c) => [c.id, { experimentId: e.id, text: c.text, kind: c.kind, citations: c.citations }])))
+};
 function PassportPage() {
   return <div className="wrap page">
     <Head eyebrow="Evidence Passport · preview" title="A field notebook of what you actually established." lede="Each entry will record a mission, the experiment and claim it rests on, its evidence level, your conclusion, your corrections and the source's own limitations. It is an educational record, never a certificate." />
     <StatusLine feature={feature('/passport')!} />
     <div className="boundaries" style={{ marginBottom: 28 }}>
-      <div><h3>Kept by the source</h3><p className="meta">Canonical limitations are copied from the record in full and can never be edited or crowded out by your notes.</p></div>
+      <div><h3>Kept by the source</h3><p className="meta">Canonical limitations are always shown from the admitted catalog, never from the saved file, so saved text can never pose as NASA evidence.</p></div>
       <div><h3>Written by you</h3><p className="meta">Conclusions and notes are yours, shown separately and never labelled verified.</p></div>
     </div>
-    <PassportPreview datasetVersion={catalog.datasetVersion} sources={sources} />
+    <PassportPreview datasetVersion={catalog.datasetVersion} sources={sources} trusted={trustedCatalog} />
   </div>;
 }
 

@@ -333,3 +333,15 @@ input[type="range"] { accent-color: var(--flame); min-height: 44px; padding: 0; 
   .dossier { grid-template-columns: 1fr; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .8em; }
 }
+
+/* ---------- M1 corrections ---------- */
+/* Positioned so visually hidden cell text stays inside the scroll box instead of widening the document. */
+.table-scroll { position: relative; overflow-x: auto; max-width: 100%; }
+.matrix-note li, .request-echo dd { overflow-wrap: anywhere; }
+.request-echo { margin: 0 0 14px; }
+.trust-section + .trust-section { margin-top: 16px; }
+.trust-section h3 { font-family: var(--mono); font-size: var(--step--1); letter-spacing: .06em; text-transform: uppercase; margin-bottom: .4em; }
+.untrusted { border-left: 3px dashed var(--muted); padding: 4px 0 4px 18px; }
+.untrusted h3 { color: var(--muted); }
+.validation-state { display: inline-flex; align-items: center; gap: 8px; }
+.matrix th:first-child { position: sticky; left: 0; z-index: 1; background: var(--bg); } /* condition names stay visible while the matrix scrolls */

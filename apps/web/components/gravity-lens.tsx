@@ -23,32 +23,53 @@ export type LensRecord = { href: string; title: string; flowDirection: string | 
 
 export function GravityLens({ record }: { record: LensRecord }) {
   const [g, setG] = useState(0);
-  const [renderer, setRenderer] = useState<'svg' | 'webgl' | 'unavailable'>('svg');
+  const [renderer, setRenderer] = useState<'svg' | 'webgl' | 'unavailable' | 'lost'>('svg');
   const [animated, setAnimated] = useState(false);
+  const [visible, setVisible] = useState(true);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const figure = useRef<HTMLElement>(null);
   const gl = useRef<FlameRenderer | null>(null);
+  const current = useRef({ g: 0, motion: false });
   const id = useId();
   const mode = g >= 0.85 ? 'earth' : g <= 0.15 ? 'micro' : 'partial';
+  const motion = animated && visible;
+  useEffect(() => { current.current = { g, motion }; }, [g, motion]);
 
-  // Defer WebGL until after first paint; reduced-motion users get a still frame that follows the controls.
+  // Defer WebGL until after first paint. Follows live reduced-motion changes; context loss falls back to the SVG.
   useEffect(() => {
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const query = matchMedia('(prefers-reduced-motion: reduce)');
+    const onPreference = () => setAnimated(!query.matches);
+    query.addEventListener('change', onPreference);
     let cancelled = false;
     const handle = setTimeout(() => {
-      setAnimated(!reduced);
+      onPreference();
       import('./flame-gl').then(({ startFlame }) => {
         if (cancelled || !canvas.current) return;
-        gl.current = startFlame(canvas.current, 0, !reduced);
+        gl.current = startFlame(canvas.current, current.current.g, !query.matches, {
+          onLost: () => setRenderer('lost'),
+          onRestored: () => { gl.current?.draw(current.current.g); gl.current?.setAnimated(current.current.motion); setRenderer('webgl'); }
+        });
         setRenderer(gl.current ? 'webgl' : 'unavailable');
       }).catch(() => setRenderer('unavailable'));
     }, 120);
-    return () => { cancelled = true; clearTimeout(handle); gl.current?.stop(); gl.current = null; };
+    return () => { cancelled = true; clearTimeout(handle); query.removeEventListener('change', onPreference); gl.current?.stop(); gl.current = null; };
+  }, []);
+  // No continuous rendering while the lens is offscreen or the tab is hidden.
+  useEffect(() => {
+    const el = figure.current;
+    const update = (inView: boolean) => setVisible(inView && !document.hidden);
+    let inView = true;
+    const io = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(([e]) => { inView = !!e?.isIntersecting; update(inView); });
+    if (el) io?.observe(el);
+    const onVisibility = () => update(inView);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => { io?.disconnect(); document.removeEventListener('visibilitychange', onVisibility); };
   }, []);
   useEffect(() => { gl.current?.draw(g); }, [g]);
-  useEffect(() => { gl.current?.setAnimated(animated); }, [animated]);
+  useEffect(() => { gl.current?.setAnimated(motion); }, [motion]);
 
   const buoyant = g, diffusive = 1 - g;
-  return <figure className="lens" data-renderer={renderer === 'webgl' ? 'webgl' : 'svg'} data-gravity={mode} aria-labelledby={`${id}-cap`} style={{ margin: 0 }}>
+  return <figure ref={figure} className="lens" data-renderer={renderer === 'webgl' ? 'webgl' : 'svg'} data-gravity={mode} aria-labelledby={`${id}-cap`} style={{ margin: 0 }}>
     <div className="lens-stage">
       <canvas ref={canvas} aria-hidden="true" />
       <svg viewBox="0 0 400 400" role="img" aria-label={`${explanations[mode].title}: ${mode === 'earth' ? 'a tall teardrop flame' : mode === 'micro' ? 'a rounded, dim blue flame' : 'an intermediate flame shape'}.`}>
@@ -100,7 +121,7 @@ export function GravityLens({ record }: { record: LensRecord }) {
         <p>{explanations[mode].text}</p>
       </div>
       <div className="lens-tools">
-        <span data-testid="lens-renderer">{renderer === 'webgl' ? 'Rendered with WebGL' : renderer === 'unavailable' ? 'WebGL unavailable · static illustration shown' : 'Static illustration'}</span>
+        <span data-testid="lens-renderer">{renderer === 'webgl' ? 'Rendered with WebGL' : renderer === 'unavailable' ? 'WebGL unavailable · static illustration shown' : renderer === 'lost' ? 'WebGL interrupted · static illustration shown' : 'Static illustration'}</span>
         {renderer === 'webgl' && <button type="button" className="btn btn-quiet btn-sm" aria-pressed={animated} onClick={() => setAnimated((a) => !a)}>{animated ? 'Pause flicker' : 'Play flicker'}</button>}
       </div>
       <p className="meta" style={{ margin: 0 }}>
