@@ -42,7 +42,8 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
       anchors.forEach((a, i) => {
         const el = markers.current[i];
         if (!el) return;
-        el.style.transform = `translate(${a.x.toFixed(1)}px, ${(a.y - 6).toFixed(1)}px) translate(-50%, -100%)`;
+        const x = Math.min(Math.max(a.x, 70), root.clientWidth - 70); // keep chips fully on screen
+        el.style.transform = `translate(${x.toFixed(1)}px, ${(a.y - 6).toFixed(1)}px) translate(-50%, -100%)`;
         el.dataset.on = String(show && a.visible);
       });
     };

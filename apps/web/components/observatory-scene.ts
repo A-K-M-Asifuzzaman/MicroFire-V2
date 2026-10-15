@@ -95,9 +95,9 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
       float h(vec3 p){ return fract(sin(dot(p, vec3(12.9898,78.233,37.719))) * 43758.5453); }
       float n3(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y),mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y),f.z); }
       void main(){ float l = clamp(dot(vN, sun), 0., 1.); float land = smoothstep(.55,.62, n3(vW*4.)*.6 + n3(vW*9.)*.4);
-        float cloud = smoothstep(.6,.8, n3(vW*7. + 3.)); vec3 ocean = mix(vec3(.02,.07,.16), vec3(.06,.22,.42), l);
+        float cloud = smoothstep(.6,.8, n3(vW*7. + 3.)); vec3 ocean = mix(vec3(.015,.05,.11), vec3(.05,.17,.32), l);
         vec3 col = mix(ocean, vec3(.16,.22,.17)*(.3+l), land*.7); col = mix(col, vec3(.85,.9,1.)*(.25+l), cloud*.55);
-        float rim = pow(1. - max(dot(vN, vV), 0.), 2.6); col += vec3(.35,.65,1.) * rim * (.25 + l);
+        float rim = pow(1. - max(dot(vN, vV), 0.), 2.6); col += vec3(.3,.55,.9) * rim * (.15 + .6 * l);
         gl_FragColor = vec4(col, 1.); }`
   });
   const planet = new THREE.Mesh(new THREE.SphereGeometry(30, 96, 64), planetMat);
@@ -105,7 +105,7 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
   const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(31.6, 64, 48), new THREE.ShaderMaterial({
     fog: false, transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false,
     vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vec4 w = modelMatrix * vec4(position,1.); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix * viewMatrix * w; }',
-    fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float r = pow(max(dot(vN, vV), 0.), 3.); gl_FragColor = vec4(vec3(.3,.6,1.) * r * 1.4, r); }'
+    fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float r = pow(max(dot(vN, vV), 0.), 3.); gl_FragColor = vec4(vec3(.28,.52,.9) * r * .85, r * .8); }'
   }));
   atmosphere.position.copy(planet.position); scene.add(atmosphere);
 
@@ -148,7 +148,6 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
   }
   const pedestal = new THREE.Mesh(new THREE.CylinderGeometry(1.45, 1.85, 0.7, 72), metal); pedestal.position.y = -1.75; chamber.add(pedestal);
   const pedLine = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.028, 8, 96), orangeLine); pedLine.rotation.x = Math.PI / 2; pedLine.position.y = -1.48; chamber.add(pedLine);
-  const halo = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.02, 8, 96), cyanLine); halo.rotation.x = Math.PI / 2; halo.position.y = 1.75; chamber.add(halo);
   const glowTex = glowTexture();
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: ORANGE.clone(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.55 }));
   chamber.add(glow);

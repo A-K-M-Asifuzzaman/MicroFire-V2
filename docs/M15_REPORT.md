@@ -148,6 +148,8 @@ Setup: 390×844, 4× CPU, 150 ms RTT, 1.6 Mbps, cold cache, headless Chromium. "
 
 ## Meshy (spending status: none)
 
+- **MCP installed (owner request).** The official `@meshy-ai/meshy-mcp-server@0.6.4` (meshy-dev, MIT) is registered at Claude Code **user** scope through `~/.claude/mcp/meshy-mcp.sh`. That launcher reads the key from the macOS Keychain (service `meshy-api-key`) at start-up, so no config file, repo or chat holds it. 0.6.4 is pinned for its double-billing protection (create requests are never resent). Status: it waits for the owner to add the Keychain entry and then restart or reconnect the session. `tools/meshy/meshy.mjs` reads the same Keychain entry.
+
 - **Credits spent: 0. Jobs: 0.**
 - **Why.** `MESHY_API_KEY` is not configured in this environment, so the authenticated balance is unverified. Meshy's pricing page states that API usage draws on a prepaid API balance, so the 3,100 credits shown on the website may not be spendable through the API. Only `GET /openapi/v1/balance` with the owner's key can settle that.
 - **Preparation done, with no spending.**
@@ -165,7 +167,7 @@ Setup: 390×844, 4× CPU, 150 ms RTT, 1.6 Mbps, cold cache, headless Chromium. "
 
 ## Remaining visual weaknesses
 
-- **Home.** The chamber halo ring reads slightly as floating. The Earth-limb colour is saturated. Station markers can sit near the chamber top at some desktop widths.
+- **Home.** The floating halo ring was removed, the Earth limb toned down, and markers are clamped on screen. The 'DIFFUSION → FLAME' HUD label has low contrast over the pedestal.
 - **Stations.** The procedural consoles are deliberately simple; this is the clearest place where approved Meshy props would add quality.
 - **Long pages.** The dossier is long on phones (by design, every caveat stays visible); section navigation exists only on desktop.
 - **Missions and Flame Lab.** Unchanged in composition apart from the new frame (they are not playable).

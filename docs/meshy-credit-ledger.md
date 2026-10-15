@@ -9,3 +9,4 @@ Generation jobs: 0. Credits spent: 0. Balance: NOT CHECKED. No key read, balance
 - Meshy pricing says API jobs draw on a prepaid API balance. `GET /openapi/v1/balance` with the owner's key must confirm the spendable pool before any job runs.
 - Pilot proposed, awaiting approval: `pix-v1` (30), `console-v1` (30). Estimate 60, requested cap 100. Planning ceilings: M1.5 800, M2 1,300, M3 700, revisions 300.
 - Tool: `tools/meshy/meshy.mjs` (local only). Per-job balance before/after goes to `tools/meshy/ledger.jsonl`.
+- Meshy MCP registered at user scope (Keychain launcher). Keychain entry not yet created by the owner, so the server cannot connect and no balance has been read.

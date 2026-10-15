@@ -11,11 +11,18 @@ import { mkdir, readFile, writeFile, appendFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { execFileSync } from 'node:child_process';
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 const API = 'https://api.meshy.ai/openapi';
-const key = process.env.MESHY_API_KEY;
+// Env first; otherwise the macOS Keychain entry shared with the Meshy MCP launcher (service "meshy-api-key").
+const fromKeychain = () => {
+  try { return execFileSync('/usr/bin/security', ['find-generic-password', '-a', process.env.USER ?? '', '-s', 'meshy-api-key', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); }
+  catch { return undefined; }
+};
+const key = process.env.MESHY_API_KEY || (process.platform === 'darwin' ? fromKeychain() : undefined);
 if (!key || !/^msy_[A-Za-z0-9_-]{8,}$/.test(key)) {
-  console.error('MESHY_API_KEY is not set (or malformed). Put it in a git-ignored .env.local yourself and run with --env-file=.env.local. Never paste it into chat.');
+  console.error('No Meshy key found. Store it privately in Terminal: security add-generic-password -a "$USER" -s meshy-api-key -U -w   (or use a git-ignored .env.local). Never paste it into chat.');
   process.exit(2);
 }
 async function call(method, route, body) {
