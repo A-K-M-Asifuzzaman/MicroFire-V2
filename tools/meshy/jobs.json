@@ -1,0 +1,45 @@
+{
+  "note": "Planned Meshy jobs. Nothing here runs without `run <id> --approved-cap N` after explicit owner approval. Estimates from https://docs.meshy.ai/en/api/pricing (2026-10-15): text-to-3D preview meshy-7.1 = 20, refine 2K/4K = 10.",
+  "jobs": [
+    {
+      "id": "pix-v1",
+      "batch": "M1.5 pilot",
+      "purpose": "PIX research companion: hero portrait on Ask PIX and the PIX station in the home observatory (replacing the procedural placeholder).",
+      "estimateCredits": 30,
+      "preview": {
+        "prompt": "Original compact floating research robot companion for a microgravity combustion science observatory. Rounded hard-surface capsule head with a wide dark glass visor showing two soft cyan optical sensors, a short antenna topped by a small amber flame-shaped light, slim floating torso with a thin hover ring underneath, no legs, two tiny folded manipulator fins. Premium stylized semi-realistic hard-surface design, navy and charcoal shell panels, subtle ivory seams, restrained amber accent lights, scientific cyan details. Clean readable silhouette, centered, single object, no base, no floor, no text, no logos, no insignia.",
+        "ai_model": "meshy-7.1",
+        "model_type": "standard",
+        "topology": "triangle",
+        "should_remesh": true,
+        "target_polycount": 20000,
+        "moderation": true
+      },
+      "refine": {
+        "enable_pbr": true,
+        "texture_resolution": "2k",
+        "texture_prompt": "navy and charcoal painted metal shell with fine panel seams, satin ivory trim, dark glossy glass visor, emissive cyan sensor eyes, small amber light on the antenna tip, subtle realistic wear, physically based materials"
+      }
+    },
+    {
+      "id": "console-v1",
+      "batch": "M1.5 pilot",
+      "purpose": "Modular research workstation prop for the observatory stations (instanced up to 5×). Screens stay blank so MicroFire renders its own honest display content.",
+      "estimateCredits": 30,
+      "preview": {
+        "prompt": "Modular science workstation console for a futuristic space station laboratory: compact angled desk unit with one large tilted blank display panel, small side instrument modules, cable channels and rounded edges. Hard-surface semi-realistic design, charcoal and navy metal, thin cyan edge light strips, small amber status lights. The display screen is blank and dark with no text, numbers or graphs. Single object, no floor, no logos, no text.",
+        "ai_model": "meshy-7.1",
+        "model_type": "standard",
+        "topology": "triangle",
+        "should_remesh": true,
+        "target_polycount": 12000,
+        "moderation": true
+      },
+      "refine": {
+        "enable_pbr": true,
+        "texture_resolution": "2k",
+        "texture_prompt": "charcoal and navy brushed metal, satin black blank glass screen, thin glowing cyan edge strips, tiny amber status lights, clean industrial space-lab finish, physically based materials"
+      }
+    }
+  ]
+}

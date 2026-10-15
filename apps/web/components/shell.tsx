@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
 const sections = [
   { label: 'Discover', href: '/', match: ['/', '/roadmap', '/challenge', '/impact', '/assets'] },
@@ -26,6 +27,26 @@ export function BrandMark() {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname() ?? '/';
+  // After client-side navigation (including from the mobile menu), move focus to the new page's main heading
+  // so keyboard and screen-reader users land on the destination instead of on <body>.
+  const lastHeading = useRef<Element | null>(null);
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) { first.current = false; lastHeading.current = document.querySelector('main h1'); return; }
+    // The new route may commit a frame or two after the path changes; wait for its own heading, not the old one.
+    let frames = 0, raf = 0;
+    const attempt = () => {
+      const h1 = document.querySelector<HTMLElement>('main h1');
+      if ((!h1 || h1 === lastHeading.current) && frames++ < 60) { raf = requestAnimationFrame(attempt); return; }
+      const target = h1 ?? document.getElementById('main');
+      if (!target) return;
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+      lastHeading.current = h1;
+    };
+    raf = requestAnimationFrame(attempt);
+    return () => cancelAnimationFrame(raf);
+  }, [path]);
   const surface = inSection(path, observatory) ? 'observatory' : 'paper';
   const current = sections.find((s) => inSection(path, s.match));
   const links = sections.map((s) => <Link key={s.href} className="nav-link" href={s.href} aria-current={s === current ? 'page' : undefined}>{s.label}</Link>);

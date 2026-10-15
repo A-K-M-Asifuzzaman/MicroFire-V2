@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiErrorSchema } from '@microfire/shared';
 
 type Envelope<D> = { safeParse(input: unknown): { success: true; data: { data: D } } | { success: false } };
@@ -32,10 +32,21 @@ export async function callApi<D>(path: string, schema: Envelope<D>, body?: unkno
 }
 
 export function Failure({ failure, onRetry }: { failure: ApiFailure; onRetry?: (() => void) | undefined }) {
+  // Honour the server's Retry-After: the Retry control stays disabled, with a visible countdown, until the delay passes.
+  const [wait, setWait] = useState(failure.retryAfter ?? 0);
+  useEffect(() => {
+    if (!failure.retryAfter) return;
+    const until = Date.now() + failure.retryAfter * 1000;
+    const timer = setInterval(() => { const left = Math.max(0, Math.ceil((until - Date.now()) / 1000)); setWait(left); if (!left) clearInterval(timer); }, 250);
+    return () => clearInterval(timer);
+  }, [failure]);
   return <div className="notice" data-tone="error" role="alert">
     <p><strong>{failure.status === 429 ? 'Request budget reached.' : failure.status === 400 ? 'This request was not accepted.' : 'Evidence unavailable.'}</strong> {failure.message}
       {failure.retryAfter ? ` Retry in about ${failure.retryAfter} s.` : ''}</p>
-    {onRetry && failure.status !== 400 && <button className="btn btn-quiet btn-sm" type="button" onClick={onRetry}>Retry</button>}
+    {onRetry && failure.status !== 400 && <div className="actions" style={{ alignItems: 'center' }}>
+      <button className="btn btn-quiet btn-sm" type="button" onClick={onRetry} disabled={wait > 0} data-testid="retry">{wait > 0 ? `Retry available in ${wait} s` : 'Retry'}</button>
+      {wait > 0 && <span className="cooldown" aria-live="off">The service asked us to wait before trying again.</span>}
+    </div>}
   </div>;
 }
 

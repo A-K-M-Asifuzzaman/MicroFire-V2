@@ -21,11 +21,12 @@ const explanations = {
 
 export type LensRecord = { href: string; title: string; flowDirection: string | null; initialFlow: string | null; locator: string };
 
-export function GravityLens({ record }: { record: LensRecord }) {
+export function GravityLens({ record, onGravityChange }: { record: LensRecord; onGravityChange?: (g: number) => void }) {
   const [g, setG] = useState(0);
   const [renderer, setRenderer] = useState<'svg' | 'webgl' | 'unavailable' | 'lost'>('svg');
   const [animated, setAnimated] = useState(false);
-  const [visible, setVisible] = useState(true);
+  // Not visible until the observer says so: an offscreen lens must never start continuous rendering.
+  const [visible, setVisible] = useState(() => typeof IntersectionObserver === 'undefined');
   const canvas = useRef<HTMLCanvasElement>(null);
   const figure = useRef<HTMLElement>(null);
   const gl = useRef<FlameRenderer | null>(null);
@@ -45,10 +46,11 @@ export function GravityLens({ record }: { record: LensRecord }) {
       onPreference();
       import('./flame-gl').then(({ startFlame }) => {
         if (cancelled || !canvas.current) return;
-        gl.current = startFlame(canvas.current, current.current.g, !query.matches, {
+        gl.current = startFlame(canvas.current, current.current.g, false, {
           onLost: () => setRenderer('lost'),
           onRestored: () => { gl.current?.draw(current.current.g); gl.current?.setAnimated(current.current.motion); setRenderer('webgl'); }
         });
+        gl.current?.setAnimated(current.current.motion); // sync with the effective (visibility × preference) state now
         setRenderer(gl.current ? 'webgl' : 'unavailable');
       }).catch(() => setRenderer('unavailable'));
     }, 120);
@@ -60,12 +62,12 @@ export function GravityLens({ record }: { record: LensRecord }) {
     const update = (inView: boolean) => setVisible(inView && !document.hidden);
     let inView = true;
     const io = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(([e]) => { inView = !!e?.isIntersecting; update(inView); });
-    if (el) io?.observe(el);
+    if (el && io) io.observe(el);
     const onVisibility = () => update(inView);
     document.addEventListener('visibilitychange', onVisibility);
     return () => { io?.disconnect(); document.removeEventListener('visibilitychange', onVisibility); };
   }, []);
-  useEffect(() => { gl.current?.draw(g); }, [g]);
+  useEffect(() => { gl.current?.draw(g); onGravityChange?.(g); }, [g, onGravityChange]);
   useEffect(() => { gl.current?.setAnimated(motion); }, [motion]);
 
   const buoyant = g, diffusive = 1 - g;
@@ -79,7 +81,7 @@ export function GravityLens({ record }: { record: LensRecord }) {
           <radialGradient id={`${id}-glow`}><stop offset="0" stopColor="#ff8738" stopOpacity=".35" /><stop offset="1" stopColor="#ff8738" stopOpacity="0" /></radialGradient>
           <marker id={`${id}-arrow`} viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#73bbd9" /></marker>
         </defs>
-        <g fill="none" stroke="#73bbd9">
+        <g className="lens-hud" fill="none" stroke="#73bbd9">
           <circle cx="200" cy="200" r="190" strokeOpacity=".14" />
           <circle cx="200" cy="200" r="160" strokeOpacity=".22" strokeDasharray="2 6" />
           <circle cx="200" cy="200" r="128" strokeWidth="6" strokeOpacity=".5" strokeDasharray="300 504" strokeLinecap="round" transform="rotate(-128 200 200)" />

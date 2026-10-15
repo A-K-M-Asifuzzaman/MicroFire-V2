@@ -3,6 +3,7 @@ import { useRef, useState, type FormEvent } from 'react';
 import { AskResponseSchema, type TargetConditions } from '@microfire/shared';
 import { callApi, Failure, useLatestRequest, type ApiFailure } from './client-api';
 import { CitationList, Kind, Limitations, type SourceRef } from './evidence-ui';
+import { PixAvatar, type PixState } from './pix-avatar';
 
 type AskData = ReturnType<typeof AskResponseSchema.parse>['data'];
 /** The submitted request is frozen: its echo, response, failure and retry all refer to this exact snapshot. */
@@ -17,21 +18,15 @@ const abstentionTitles: Record<string, string> = {
 };
 const categoryOrder = ['direct-observation', 'supported-derivation', 'scientific-interpretation', 'analogous-or-mechanistic', 'unknown-or-gap'];
 const suggestions = ['What does B20 establish about airflow?', 'What is the flame temperature in B20?', 'What happened in B19?', 'Can this certify a lunar habitat?'];
+const pixStatus: Record<PixState, string> = {
+  idle: 'Ready · answers only from cited catalog statements', searching: 'Checking the admitted catalog…', cited: 'Found cited statements',
+  abstained: 'Withholding an answer · the evidence cannot support one', error: 'Could not reach the evidence service'
+};
 const echo = (q: string) => (q.length > 280 ? `${q.slice(0, 280)}… (${q.length} characters)` : q);
 const describeConditions = (t: TargetConditions) => {
   const parts = [t.material && `material ${t.material}`, t.oxygenPct !== undefined && `oxygen ${t.oxygenPct} vol%`].filter(Boolean);
   return parts.length ? parts.join(' · ') : 'none';
 };
-
-export function PixMark() {
-  return <svg viewBox="0 0 56 56" aria-hidden="true">
-    <line x1="28" y1="4" x2="28" y2="12" stroke="#73bbd9" strokeWidth="2" /><circle cx="28" cy="4" r="3" fill="#ff8738" />
-    <rect x="8" y="12" width="40" height="32" rx="12" fill="#182431" stroke="#73bbd9" strokeWidth="2" />
-    <rect x="14" y="20" width="28" height="14" rx="7" fill="#0b111a" />
-    <circle cx="22" cy="27" r="3" fill="#9fe3e3" /><circle cx="34" cy="27" r="3" fill="#9fe3e3" />
-    <path d="M20 50h16" stroke="#73bbd9" strokeWidth="2" strokeLinecap="round" />
-  </svg>;
-}
 
 export function AskPix({ sources }: { sources: SourceRef[] }) {
   const [state, setState] = useState<State>({ status: 'idle' });
@@ -57,12 +52,19 @@ export function AskPix({ sources }: { sources: SourceRef[] }) {
       ...(material ? { material } : {}), ...(oxygen && Number.isFinite(Number(oxygen)) ? { oxygenPct: Number(oxygen) } : {})
     }) }));
   };
+  // Interface state only: what PIX is doing with the deterministic API, not a reasoning ability.
+  const pixState: PixState = state.status === 'loading' ? 'searching' : state.status === 'failed' ? 'error'
+    : state.status === 'done' ? (state.data.abstained ? 'abstained' : 'cited') : 'idle';
   // Suggestions submit through the form, so they carry the visible target conditions rather than silently dropping them.
   const suggest = (q: string) => { if (input.current) input.current.value = q; form.current?.requestSubmit(); };
 
   return <div className="pix-console">
     <div>
-      <div className="pix-id"><PixMark /><div><strong>PIX</strong><p>Deterministic evidence guide · fixed templates over the admitted catalog · no AI model</p></div></div>
+      <div className="pix-panel" data-testid="pix-panel">
+        <PixAvatar state={pixState} />
+        <div><strong>PIX</strong><p>Deterministic evidence guide · fixed templates over the admitted catalog · no AI model</p>
+          <p className="pix-status" aria-hidden="true">{pixStatus[pixState]}</p></div>
+      </div>
       <form ref={form} onSubmit={submit} aria-label="Ask PIX">
         <div className="field">
           <label htmlFor="pix-q">Your research question</label>
@@ -93,7 +95,7 @@ export function AskPix({ sources }: { sources: SourceRef[] }) {
       {state.status === 'failed' && <Failure failure={state.failure} onRetry={() => void ask(state.request)} />}
       {state.status === 'done' && (state.data.abstained
         ? <div className="panel answer" data-abstained="" data-testid="pix-abstention">
-          <p className="eyebrow" style={{ color: 'var(--amber-ink)' }}>PIX withheld an answer · {state.data.code}</p>
+          <p className="eyebrow" style={{ color: 'var(--k-gap)' }}>PIX withheld an answer · {state.data.code}</p>
           <h3>{abstentionTitles[state.data.code]}</h3>
           <p style={{ overflowWrap: 'anywhere' }}>{state.data.reason}</p>
           {state.data.citations.length > 0 && <CitationList citations={state.data.citations} sources={sources} />}

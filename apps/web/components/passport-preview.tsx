@@ -11,8 +11,9 @@ export type TrustedCatalog = {
   claims: Record<string, { experimentId: string; text: string; kind: string; citations: Citation[] }>;
 };
 /**
- * Own-key lookups only. Saved IDs are untrusted and the schema permits names such as `constructor` or `toString`,
- * which a plain object would "find" through its prototype. Object.entries copies own properties into a Map.
+ * Own-key lookups only. Saved IDs are untrusted; the ID schema permits names such as `constructor`, which a plain
+ * object resolves through Object.prototype. Object.entries copies only own properties into a Map, so any ID that is
+ * not a real catalog key (constructor, prototype, bass2-b999, ...) is simply unknown.
  */
 type TrustedIndex = { experiments: Map<string, TrustedCatalog['experiments'][string]>; claims: Map<string, TrustedCatalog['claims'][string]> };
 const indexCatalog = (t: TrustedCatalog): TrustedIndex => ({ experiments: new Map(Object.entries(t.experiments)), claims: new Map(Object.entries(t.claims)) });

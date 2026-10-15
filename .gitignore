@@ -14,3 +14,6 @@ test-results/
 .tripo/
 .cache/
 *.tsbuildinfo
+
+# Meshy downloads stay local until QA + rights approval
+tools/meshy/incoming/
