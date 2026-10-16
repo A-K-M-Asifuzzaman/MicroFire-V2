@@ -1,0 +1,40 @@
+# Reproducible planning probe (not gameplay implementation)
+
+This assertion script exercises **existing** game-core transitions and projects the proposed metadata/checkpoint serialization. It does not implement the coordinator, authentication, server API or preview persistence and must not be presented as their test. It lives as a code block in documentation so this commit remains docs-only.
+
+To reproduce with the project Node24/dependencies: extract the `ts` block into a temporary `.ts` file, make that temporary directory resolve this worktree’s node_modules (for example a temporary node_modules symlink), then run `node --import tsx /absolute/path/to/probe.ts` from the planning worktree. It writes size-results.json under `/private/tmp/microfire-m2-plan-evidence`; create that directory first. No secret, external service, preview process or billed call is needed. The public deterministic MAC key measures serialization only.
+
+The typed wire contract is independently checked by extracting the TypeScript block in03 and appending the four complete JSON examples as literals with `satisfies` StartResponse / ActionRequest / ActionResponse / HttpFailure. Expected compile failures cover client isMissionAvailable and mode normal. Future runtime Zod/auth checks remain required.
+
+```ts
+import assert from 'node:assert/strict';
+import {writeFileSync} from 'node:fs';
+import {createHmac} from 'node:crypto';
+import {createGameState, transition, partDefinitions, diagnose, saveProgress, loadProgress, saveKey, exportPassport} from '@microfire/game-core';
+import {catalog, catalogSha256, validatePassport} from '@microfire/science';
+import {GameStateSchema, MissionIdSchema} from '@microfire/shared';
+const at='2026-10-16T05:30:00.000Z';const options={isMissionAvailable:(id:string)=>['station-arrival','bass-assembly'].includes(id)};
+const data=new Map<string,string>();const storage={getItem:(k:string)=>data.get(k)??null,setItem:(k:string,v:string)=>{data.set(k,v);},removeItem:(k:string)=>{data.delete(k);}};
+let state=createGameState(catalog.datasetVersion,'demo',at);let roundTrips=0;const metrics:any={};
+for(const mode of ['normal','demo'] as const)for(const missionId of MissionIdSchema.options)assert.equal(transition(createGameState(catalog.datasetVersion,mode,at),{type:'START_MISSION',missionId},catalog,at).ok,false);
+function step(action:any){const result=transition(state,action,catalog,at,options);assert.equal(result.ok,true,JSON.stringify(result));state=result.state;assert.equal(saveProgress(storage,state).ok,true);const restored=loadProgress(storage,'demo',catalog.datasetVersion);assert.equal(restored.status,'loaded');if(restored.status==='loaded')assert.deepEqual(restored.state,state);roundTrips++;}
+step({type:'START_MISSION',missionId:'station-arrival'});step({type:'INSPECT_EVIDENCE',experimentId:'bass2-b20'});step({type:'COLLECT_EVIDENCE',experimentId:'bass2-b20',claimId:'bass2-b20-burned-entire-sample'});step({type:'COMPLETE_MISSION',missionId:'station-arrival'});step({type:'START_MISSION',missionId:'bass-assembly'});
+const install=(id:string,orientation='correct')=>({type:'INSTALL_PART',partId:id,anchorId:partDefinitions.find(p=>p.id===id)!.anchorId,orientation});
+for(const p of partDefinitions)step(install(p.id));
+const prior=state;const wrong=transition(state,{type:'INSTALL_PART',partId:'fan',anchorId:'wrong-anchor',orientation:'correct'},catalog,at,options);assert.equal(wrong.ok,false);assert.equal(wrong.state,prior);
+const healthy=transition(state,{type:'QUALIFY_INSTRUMENT'},catalog,at,options);assert.equal(healthy.ok,true);const observed=transition(healthy.state,{type:'OBSERVE_DOCUMENTED_RESULT',experimentId:'bass2-b20'},catalog,at,options);assert.equal(observed.ok,true);const completed=transition(observed.state,{type:'COMPLETE_MISSION',missionId:'bass-assembly'},catalog,at,options);assert.equal(completed.ok,true);metrics.existingCoreCanCompleteWithoutRequiredFault=true;
+step({type:'REMOVE_PART',partId:'fan'});step(install('fan','reversed'));assert.equal(diagnose(state.setup.installedParts).qualified,false);assert.equal(transition(state,{type:'QUALIFY_INSTRUMENT'},catalog,at,options).ok,false);
+step({type:'REMOVE_PART',partId:'fan'});step(install('fan'));step({type:'QUALIFY_INSTRUMENT'});step({type:'OBSERVE_DOCUMENTED_RESULT',experimentId:'bass2-b20'});
+const baselinePassportBytes=Buffer.byteLength(JSON.stringify(exportPassport(state)));
+const projected=structuredClone(state);const entry=projected.passport.entries.find(e=>e.missionId==='bass-assembly')!;entry.learnerNotes=Array.from({length:4},(_,i)=>String(i)+'界'.repeat(499));entry.corrections=[{previous:'[Training simulation] fan reversed at revision 12.',revised:'[Training simulation] fan reinstalled correctly at revision 14; training check passed at revision 14.',reason:'Authored training fault and repair, not a documented NASA incident or a validation of a combustion outcome.',at}];
+state=GameStateSchema.parse(projected);validatePassport(state.passport);step({type:'COMPLETE_MISSION',missionId:'bass-assembly'});
+const faultCodes=['MISSING','WRONG_ANCHOR','MISSING_PREREQUISITE','REVERSED'];const training={scenarioVersion:'bass-b20-training-v1',fault:{id:'training-fan-reversed-v1',origin:'authored-training',introducedAt:at,introducedRevision:12},diagnosticRevision:12,diagnosis:{at,faultyRevision:12},repair:{removedAtRevision:13,reinstalledAtRevision:14,at},diagnosisCounts:partDefinitions.flatMap(p=>faultCodes.map(faultCode=>({partId:p.id,faultCode,count:Number.MAX_SAFE_INTEGER}))),firstWrongDiagnosis:{partId:'flow-straightener',faultCode:'MISSING_PREREQUISITE',at},lastWrongDiagnosis:{partId:'flow-straightener',faultCode:'MISSING_PREREQUISITE',at}};
+const payload={checkpointVersion:1,previewId:'bass-b20-training-v1',sessionId:'11111111-1111-4111-8111-111111111111',revision:Number.MAX_SAFE_INTEGER,catalogSha256,rulesVersion:'m2-training-r1',origin:'http://127.0.0.1:3102',state,training};
+const raw=JSON.stringify(payload);const bytes=Buffer.byteLength(raw);const mac=createHmac('sha256',Buffer.alloc(32,7)).update('microfire-m2-checkpoint-v1\0').update(raw).digest('base64url');const checkpoint=Buffer.from(raw).toString('base64url')+'.'+mac;const resume=JSON.stringify({checkpoint,commandId:'22222222-2222-4222-8222-222222222222'});
+assert(bytes<=20480);assert(Buffer.byteLength(resume)<=32768);assert(Buffer.byteLength(JSON.stringify(state.passport))<=32768);assert.equal(data.has(saveKey('normal')),false);
+const theoreticalMaxToken=Buffer.alloc(20480).toString('base64url')+'.'+Buffer.alloc(32).toString('base64url');assert.equal(theoreticalMaxToken.length,27351);assert(Buffer.byteLength(JSON.stringify({checkpoint:theoreticalMaxToken,commandId:'22222222-2222-4222-8222-222222222222'}))<32768);
+const failed=transition(state,{type:'INSPECT_EVIDENCE',experimentId:'bass2-b19'},catalog,at,options);assert.equal(failed.ok,false);assert.equal(failed.state,state);
+Object.assign(metrics,{defaultGateDenials:10,coreActionSaveRoundTrips:roundTrips,completedMissions:state.completedMissions,setupRevision:state.setup.revision,passportEntries:state.passport.entries.length,baselinePassportBytes,projectedPassportBytes:Buffer.byteLength(JSON.stringify(state.passport)),projectedCheckpointBytes:bytes,projectedTokenBytes:checkpoint.length,projectedResumeRequestBytes:Buffer.byteLength(resume),diagnosisSummaryCells:40,maximumEncodedTokenBytes:theoreticalMaxToken.length,canonicalLimitationsPreserved:catalog.experiments[0]!.limitations.every(l=>state.passport.entries.every(e=>e.limitations.includes(l))),normalSaveUntouched:true,noteLengths:entry.learnerNotes.map(n=>({utf16:n.length,jsonUtf8:Buffer.byteLength(JSON.stringify(n))})),scope:'existing core replay plus proposed serialization projection; not an implemented training/auth/storage test'});
+writeFileSync('/private/tmp/microfire-m2-plan-evidence/size-results.json',JSON.stringify(metrics,null,2));console.log(JSON.stringify(metrics,null,2));
+
+```

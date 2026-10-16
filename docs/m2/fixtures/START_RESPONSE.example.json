@@ -1,0 +1,77 @@
+{
+  "apiVersion": "1",
+  "data": {
+    "state": {
+      "datasetVersion": "p0-bass-b20-v1",
+      "mode": "demo",
+      "guidance": "guided",
+      "activeMission": "station-arrival",
+      "completedMissions": [],
+      "inspectedExperimentIds": [],
+      "passport": {
+        "schemaVersion": 1,
+        "purpose": "educational-research-record",
+        "entries": []
+      },
+      "updatedAt": "2026-10-16T05:30:00.000Z",
+      "schemaVersion": 2,
+      "setup": {
+        "revision": 0,
+        "installedParts": [],
+        "qualifiedRevision": null
+      },
+      "predictions": [],
+      "classifications": [],
+      "decision": null,
+      "proposals": []
+    },
+    "training": {
+      "scenarioVersion": "bass-b20-training-v1",
+      "fault": null,
+      "diagnosticRevision": null,
+      "diagnosis": null,
+      "repair": null,
+      "diagnosisCounts": [],
+      "firstWrongDiagnosis": null,
+      "lastWrongDiagnosis": null
+    },
+    "previewId": "bass-b20-training-v1",
+    "sessionId": "11111111-1111-4111-8111-111111111111",
+    "revision": 0,
+    "checkpoint": "eyJjaGVja3BvaW50VmVyc2lvbiI6MSwicHJldmlld0lkIjoiYmFzcy1iMjAtdHJhaW5pbmctdjEiLCJzZXNzaW9uSWQiOiIxMTExMTExMS0xMTExLTQxMTEtODExMS0xMTExMTExMTExMTEiLCJyZXZpc2lvbiI6MCwiY2F0YWxvZ1NoYTI1NiI6IjFmOWQ0ODgzNzkxZGE3M2UyNTZhZjA5ZWIzOTk0ODA1YjUzYzNhMzk0ZWZmM2RiMGYwZDA2NmZjNTU4Nzc5ZGMiLCJydWxlc1ZlcnNpb24iOiJtMi10cmFpbmluZy1yMSIsIm9yaWdpbiI6Imh0dHA6Ly8xMjcuMC4wLjE6MzEwMiIsInN0YXRlIjp7ImRhdGFzZXRWZXJzaW9uIjoicDAtYmFzcy1iMjAtdjEiLCJtb2RlIjoiZGVtbyIsImd1aWRhbmNlIjoiZ3VpZGVkIiwiYWN0aXZlTWlzc2lvbiI6InN0YXRpb24tYXJyaXZhbCIsImNvbXBsZXRlZE1pc3Npb25zIjpbXSwiaW5zcGVjdGVkRXhwZXJpbWVudElkcyI6W10sInBhc3Nwb3J0Ijp7InNjaGVtYVZlcnNpb24iOjEsInB1cnBvc2UiOiJlZHVjYXRpb25hbC1yZXNlYXJjaC1yZWNvcmQiLCJlbnRyaWVzIjpbXX0sInVwZGF0ZWRBdCI6IjIwMjYtMTAtMTZUMDU6MzA6MDAuMDAwWiIsInNjaGVtYVZlcnNpb24iOjIsInNldHVwIjp7InJldmlzaW9uIjowLCJpbnN0YWxsZWRQYXJ0cyI6W10sInF1YWxpZmllZFJldmlzaW9uIjpudWxsfSwicHJlZGljdGlvbnMiOltdLCJjbGFzc2lmaWNhdGlvbnMiOltdLCJkZWNpc2lvbiI6bnVsbCwicHJvcG9zYWxzIjpbXX0sInRyYWluaW5nIjp7InNjZW5hcmlvVmVyc2lvbiI6ImJhc3MtYjIwLXRyYWluaW5nLXYxIiwiZmF1bHQiOm51bGwsImRpYWdub3N0aWNSZXZpc2lvbiI6bnVsbCwiZGlhZ25vc2lzIjpudWxsLCJyZXBhaXIiOm51bGwsImRpYWdub3Npc0NvdW50cyI6W10sImZpcnN0V3JvbmdEaWFnbm9zaXMiOm51bGwsImxhc3RXcm9uZ0RpYWdub3NpcyI6bnVsbH19.NsHnwTig-HzFKDAgr0Vv9a8olcm4HyBivHU5cCMcvSU",
+    "progress": {
+      "step": "source-orientation",
+      "completedChecks": 0,
+      "totalChecks": 5,
+      "allowedMissions": [
+        "station-arrival",
+        "bass-assembly"
+      ],
+      "allowedActionTypes": [
+        "GAME"
+      ],
+      "allowedCoreActionTypes": [
+        "INSPECT_EVIDENCE",
+        "COLLECT_EVIDENCE",
+        "COMPLETE_MISSION"
+      ],
+      "diagnosisReady": false,
+      "repairReady": false,
+      "qualificationReady": false,
+      "nextInstruction": "Open the B20 source and collect its recorded observation."
+    },
+    "evidenceReview": {
+      "status": "empty",
+      "scope": "structure-and-citation-lineage-only",
+      "certification": false,
+      "catalogSha256": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+      "entries": []
+    },
+    "access": {
+      "scope": "local-gameplay-preview",
+      "expiresAt": "2026-10-16T06:30:00.000Z",
+      "publicAvailabilityChanged": false,
+      "scientificApproval": false
+    }
+  }
+}
