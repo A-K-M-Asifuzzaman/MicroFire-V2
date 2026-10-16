@@ -30,3 +30,23 @@ Owner approved the pilot (pix-v1 + console-v1, hard cap 100) and then one PIX re
 - **Pilot total: 90 of the approved 100.** No purchases. Remaining planning split: M1.5 headroom 710 (needs a new approval per batch), M2 1,300, later missions 700, revisions 300.
 - Optimisation: glTF-Transform 4.2.1 (quantised geometry, external WebP textures at 1024 px). PIX is 6.3 MB → 865 KB (textures kept at 2048 px, because 1024 px bled UV-seam lines across the visor) and the console is 7.0 MB → 563 KB (1024 px). Models load same-origin as plain glTF, so the site CSP is unchanged (no WASM decoder, no `blob:` textures).
 - Rights: `data/asset-rights.json` (one entry per served file). Meshy paid-plan output is owned by the account holder; designs are original, with no logos or insignia.
+
+## M2 premium asset batch 1 (2026-10-16/17)
+Owner authorised up to 600 new credits for M2: 300 first, then a quality review before the second 300. The tool refuses any job whose estimate would take the live balance below the floor (2,710 for the first 300; 2,410 overall). Every job ran once, with no retries. Raw entries are in `tools/meshy/ledger.jsonl`.
+
+| Job | Mode | Credits | Balance after | QA | Used |
+|---|---|---|---|---|---|
+| astronaut-v1 | Text-to-3D meshy-7.1, A-pose, PBR 2K | 30 | 2,980 | Pass: original suit, no insignia; mostly white (less navy/orange than prompted) | Via rig + animation |
+| training-bench-v1 | Text-to-3D meshy-7.1, PBR 2K | 30 | 2,950 | Pass: clean workstation; work surface measured at 42% of height | Yes: bench under the apparatus |
+| lab-viewport-v1 | Text-to-3D meshy-7.1, PBR 2K | 30 | 2,920 | **Rejected**: reads as an armour plate; the porthole is a solid dome, so no Earth backdrop is possible | No (kept in git-ignored `incoming/`) |
+| lab-wall-v1 | Text-to-3D meshy-7.1, PBR 2K | 30 | 2,890 | Pass | Yes: three back-wall modules (one fetch) |
+| storage-cabinet-v1 | Text-to-3D meshy-7.1, PBR 2K | 30 | 2,860 | Pass (plain) | Yes: desktop only |
+| tool-cart-v1 | Text-to-3D meshy-7.1, PBR 2K | 30 | 2,830 | Pass | Yes: desktop only |
+| astronaut-v1:rig | Rigging, 1.75 m | 5 | 2,825 | Pass | Yes |
+| astronaut-v1:animate | 4 library actions × 3 (Idle, Wave One Hand, Breathe and Look Around, Victory Fist Pump) | 12 | **2,813** | Pass: one file holds mesh, skeleton and all four clips | Yes: idle loop; look on fault; wave on correct diagnosis and repair; cheer on qualification |
+
+- **Batch total: 197** (6 × 30 + 5 + 12). First allowance remaining: 103. Overall M2 allowance remaining: 403. No purchases.
+- **Optimisation:** glTF-Transform 4.2.1, quantised geometry, external WebP textures (1024 px bench and astronaut; 512 px props, lightly simplified). 47 MB of GLBs → 3.1 MB served. CSP is unchanged.
+- **Payload:** desktop bay 2.99 MB across 28 files (PIX included). Mobile (≤760 px or coarse pointer) skips the side props and two walls: 2.44 MB, 18 files. Loaded only after the learner opens the 3D bench.
+- **Grounding:** decoration only. The apparatus, mounts, faults and qualification remain procedural and server-decided. Meshy geometry never decides an outcome.
+- **Rights:** `data/asset-rights.json` entries carry a `coordination` field because Sol owns the ledger migration and must confirm them.

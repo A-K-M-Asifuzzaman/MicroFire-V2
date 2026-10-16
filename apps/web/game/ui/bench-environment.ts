@@ -5,14 +5,20 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-type Placement = { url: string; height: number; position: [number, number, number]; rotationY?: number; detail: 'full' | 'lite' };
+/** `tint` darkens a model's base colour (0–1) so it sits back from the apparatus. */
+type Placement = { url: string; height: number; position: [number, number, number]; rotationY?: number; tint?: number; detail: 'full' | 'lite' };
 export type EnvReaction = 'idle' | 'wave' | 'look' | 'cheer';
 
 /** Floor (y) of the bay: the bench top sits just under the apparatus base plate. */
 export const BENCH_TOP = -0.68, BENCH_HEIGHT = 9, FLOOR = BENCH_TOP - BENCH_HEIGHT;
 
 const loader = new GLTFLoader();
-const load = (url: string) => loader.loadAsync(url).catch(() => null);
+const cache = new Map<string, ReturnType<typeof loader.loadAsync>>();
+/** One fetch per model; repeats are clones sharing geometry and textures. */
+const load = async (url: string) => {
+  if (!cache.has(url)) cache.set(url, loader.loadAsync(url));
+  return cache.get(url)!.then((g) => ({ ...g, scene: g.scene.clone() }), () => null);
+};
 
 /** Scale a model uniformly to a target height (scene units) and stand it on y = 0 of its own group. */
 function fit(obj: THREE.Object3D, height: number) {
@@ -25,13 +31,22 @@ function fit(obj: THREE.Object3D, height: number) {
   return obj;
 }
 
+/** `clips` maps each reaction to an animation name inside the astronaut file. */
 export function addEnvironment(scene: THREE.Scene, opts: { manifest: Placement[]; astronaut: { url: string; clips: Record<EnvReaction, string> } | null; lite: boolean; onReady: () => void }) {
   const root = new THREE.Group(); root.name = 'environment'; scene.add(root);
   // Bay floor + soft pools of light so the props sit in a believable room even before models arrive.
   const floor = new THREE.Mesh(new THREE.CircleGeometry(60, 64), new THREE.MeshStandardMaterial({ color: '#0b1520', metalness: 0.4, roughness: 0.55 }));
   floor.rotation.x = -Math.PI / 2; floor.position.y = FLOOR; root.add(floor);
-  const fill = new THREE.SpotLight('#cfe6ff', 600, 90, 0.6, 0.6, 1.4); fill.position.set(6, 30, 18); fill.target.position.set(0, FLOOR, 0); root.add(fill, fill.target);
+  const fill = new THREE.SpotLight('#cfe6ff', 260, 90, 0.6, 0.6, 1.4); fill.position.set(6, 30, 18); fill.target.position.set(0, FLOOR, 0); root.add(fill, fill.target);
   const bay = new THREE.PointLight('#73bbd9', 120, 60, 1.6); bay.position.set(-14, 8, -10); root.add(bay);
+
+  // Soft contact shadow under each model (no shadow maps): grounds props that would otherwise float.
+  const blob = (() => { const cv = document.createElement('canvas'); cv.width = cv.height = 128; const x = cv.getContext('2d')!; const g = x.createRadialGradient(64, 64, 8, 64, 64, 64); g.addColorStop(0, 'rgba(0,0,0,.7)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(cv); })();
+  const ground = (holder: THREE.Group, model: THREE.Object3D) => {
+    const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
+    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(size.x * 1.4, size.z * 1.4), new THREE.MeshBasicMaterial({ map: blob, transparent: true, depthWrite: false }));
+    shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.03; holder.add(shadow);
+  };
 
   let mixer: THREE.AnimationMixer | null = null;
   const actions = new Map<EnvReaction, THREE.AnimationAction>();
@@ -42,25 +57,29 @@ export function addEnvironment(scene: THREE.Scene, opts: { manifest: Placement[]
     const gltf = await load(p.url);
     if (!gltf || disposed) return;
     const holder = new THREE.Group();
-    holder.add(fit(gltf.scene, p.height));
+    holder.add(fit(gltf.scene, p.height)); ground(holder, gltf.scene);
     holder.position.set(...p.position); holder.rotation.y = p.rotationY ?? 0;
-    holder.traverse((o) => { if (o instanceof THREE.Mesh) { o.castShadow = false; o.receiveShadow = false; } });
+    holder.traverse((o) => {
+      if (!(o instanceof THREE.Mesh) || p.tint === undefined) return;
+      const m = (o.material as THREE.MeshStandardMaterial).clone();
+      m.color.multiplyScalar(p.tint); m.envMapIntensity = p.tint; // reflections too, or glass panels still glare
+      o.material = m;
+    });
     root.add(holder);
     opts.onReady();
   };
   const loadAstronaut = async () => {
     if (!opts.astronaut) return;
-    const base = await load(opts.astronaut.url);
+    const base = await loader.loadAsync(opts.astronaut.url).catch(() => null); // uncached: clone() would unbind the skeleton
     if (!base || disposed) return;
     const holder = new THREE.Group();
-    holder.add(fit(base.scene, 17.5));
-    holder.position.set(-13.5, FLOOR, 4); holder.rotation.y = 0.75;
+    holder.add(fit(base.scene, 17.5)); ground(holder, base.scene);
+    holder.position.set(-22, FLOOR, -3); holder.rotation.y = 1.15; // beside the bench, facing it
     root.add(holder);
     mixer = new THREE.AnimationMixer(base.scene);
-    for (const [kind, url] of Object.entries(opts.astronaut.clips) as [EnvReaction, string][]) {
-      const g = await load(url);
-      const clip = g?.animations[0];
-      if (clip && !disposed) actions.set(kind, mixer.clipAction(clip));
+    for (const [kind, name] of Object.entries(opts.astronaut.clips) as [EnvReaction, string][]) {
+      const clip = THREE.AnimationClip.findByName(base.animations, name);
+      if (clip) actions.set(kind, mixer.clipAction(clip));
     }
     const idle = actions.get('idle');
     if (idle) { idle.play(); current = idle; }

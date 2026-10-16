@@ -174,7 +174,10 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
 
   // Optional artistic environment, loaded after the bench is interactive. Establishing shot, then dolly in.
   const env = environment ? addEnvironment(scene, { ...environment, onReady: () => kick() }) : null;
-  if (env) grid.visible = false;
+  if (env) { // dark work mat under the apparatus so it reads against the pale desk
+    const mat = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 3.8), new THREE.MeshStandardMaterial({ color: '#0b1420', roughness: 0.85, metalness: 0.1 }));
+    mat.rotation.x = -Math.PI / 2; mat.position.y = -hy - 0.285; scene.add(mat);
+  }
   const m = mats();
   const groups = new Map<string, THREE.Group>();
   const placed = new Map<string, { target: THREE.Vector3; yaw: number; drop: number }>();
