@@ -308,3 +308,5 @@ export function discardSave(storage: SaveStorage, mode: SessionMode, confirmatio
   if (confirmation !== 'discard-save-after-export') return { ok: false };
   try { storage.removeItem(saveKey(mode)); return { ok: true }; } catch { return { ok: false }; }
 }
+
+export * from './training';
