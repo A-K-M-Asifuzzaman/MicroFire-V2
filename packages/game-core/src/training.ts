@@ -2,7 +2,7 @@ import {
   CatalogSchema,TrainingCaseSchema,TrainingActionSchema,canonicalJson,partDefinitions,findingCopy,placementMessage,refusalCopy,learningDefinitions,
   type Catalog,type Citation,type Training,type TrainingAction,type TrainingCase,type TrainingTransitionResult,type DiagnosticResult,type PassportPresentation,type Progress,type CorePreviewAction
 } from '@microfire/shared';
-import fixture from '../../../data/fixtures/catalog.json';
+import fixture from '../../../data/fixtures/catalog.json' with { type:'json' };
 import {createGameState,transition,diagnose,loadProgress,saveKey} from './index';
 
 // The admitted fixture is the same immutable catalog used by science; the launcher also verifies its byte hash.
@@ -35,6 +35,7 @@ export function validateTrainingCase(input:unknown,dataset:Catalog):TrainingCase
   if(t.diagnosis&&!t.repair&&!t.pendingRepair&&!s.setup.installedParts.some(p=>p.partId==='fan'&&p.orientation==='reversed'))throw Error('Missing repair provenance');
   const wrong=t.diagnosisCounts.some(c=>!(c.partId==='fan'&&c.faultCode==='REVERSED'));
   if(wrong!==!!t.firstWrongDiagnosis)throw Error('Missing wrong-choice history');
+  if(t.fault&&station&&station.createdAt>t.fault.introducedAt)throw Error('Training fault predates source collection');
   if(assembly&&(!station||station.createdAt>assembly.createdAt))throw Error('Invalid source chronology');
   return c;
 }
@@ -100,7 +101,7 @@ export function transitionTraining(current:TrainingCase,input:TrainingAction,dat
   if(a.type==='REMOVE_PART'&&a.partId==='fan'&&t.fault&&!t.diagnosis)return fail('DIAGNOSIS_REQUIRED','Run the Training check and identify the authored fan fault before removing it.');
   if(a.type==='QUALIFY_INSTRUMENT'&&!repairEarned(current))return fail('REPAIR_REQUIRED','Diagnose and repair the authored fan fault before qualifying the training apparatus.');
   if(a.type==='OBSERVE_DOCUMENTED_RESULT'&&!repairEarned(current))return fail('REPAIR_REQUIRED','The authored fault must be diagnosed and repaired before the B20 source result is reviewed.');
-  if((a.type==='INSTALL_PART'||a.type==='REMOVE_PART')&&s.setup.revision>Number.MAX_SAFE_INTEGER-32)return fail('CHECKPOINT_LIMIT_REACHED','Optional apparatus edits must preserve room to complete and recover this case.');
+  if((a.type==='INSTALL_PART'||a.type==='REMOVE_PART')&&s.setup.revision>=Number.MAX_SAFE_INTEGER)return fail('CHECKPOINT_LIMIT_REACHED','The apparatus revision cannot advance safely. Preserve the last checkpoint.');
   const result=transition(s,a,dataset,at,options);
   if(!result.ok)return {ok:false,current,code:result.code,message:'partId' in a?placementMessage(result.code,a.partId):refusalCopy[result.code],...(result.faults?{faults:result.faults.map(f=>({partId:f.partId,code:f.code,message:findingCopy(f.partId,f.code).interpretation,repair:findingCopy(f.partId,f.code).repair}))}:{})};
   c.state=result.state;

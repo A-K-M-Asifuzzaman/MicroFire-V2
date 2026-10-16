@@ -23,8 +23,9 @@ export function previewConfig(env:NodeJS.ProcessEnv):PreviewConfig|null {
   return {origin,host:url.host,port:url.port,realmId,keyId,accessToken,signingKey};
 }
 export function localPreviewRequest(request:Request,c:PreviewConfig):boolean {
-  const url=new URL(request.url),h=request.headers,origin=h.get('origin');
-  if(url.origin!==c.origin||h.get('host')!==c.host||h.has('forwarded')||h.get('sec-fetch-site')==='cross-site')return false;
+  // Next synthesizes a localhost Request.url; exact wire Host and Origin remain the authority.
+  const h=request.headers,origin=h.get('origin');
+  if(h.get('host')!==c.host||h.has('forwarded')||h.get('sec-fetch-site')==='cross-site')return false;
   if(request.method==='POST'?origin!==c.origin:origin!==null&&origin!==c.origin)return false;
   for(const [name,value] of [['x-forwarded-host',c.host],['x-forwarded-proto','http'],['x-forwarded-port',c.port]])if(h.has(name!)&&h.get(name!)!==value)return false;
   const forwarded=h.get('x-forwarded-for');if(forwarded!==null&&!['127.0.0.1','::1','::ffff:127.0.0.1'].includes(forwarded))return false;

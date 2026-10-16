@@ -17,6 +17,7 @@ it('fails closed without every local setting, on hosted environments, reused/pub
 });
 it('requires exact Host/Origin, rejects forwarded/cross-site metadata and permits exact Next loopback forwarding',()=>{
   const c=previewConfig(testPreviewEnv())!;expect(localPreviewRequest(request(),c)).toBe(true);
+  const internal=new Request('http://localhost:3247/api/game/preview/action',{method:'POST',headers:{host:c.host,origin:c.origin}});expect(localPreviewRequest(internal,c)).toBe(true);
   for(const headers of [{host:'example.com'},{origin:'null'},{origin:'https://evil.test'},{forwarded:'for=127.0.0.1'},{'sec-fetch-site':'cross-site'},{'x-forwarded-for':'127.0.0.1, 1.2.3.4'},{'x-forwarded-proto':'https'}])expect(localPreviewRequest(request(undefined,headers),c)).toBe(false);
   expect(localPreviewRequest(request(undefined,{'x-forwarded-for':'127.0.0.1','x-forwarded-port':'3247','x-forwarded-proto':'http','x-forwarded-host':c.host}),c)).toBe(true);
   const noOrigin=new Request(request());noOrigin.headers.delete('origin');expect(localPreviewRequest(noOrigin,c)).toBe(false);

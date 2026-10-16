@@ -159,5 +159,6 @@ export function createPostHandler(now: () => number = Date.now, limiter: RateLim
     }
   };
 }
-export const readApiLimited = createGetHandler();
-export const writeApi = createPostHandler();
+export const apiLimiter = createMemoryLimiter(LIMITS);
+export const readApiLimited = createGetHandler(apiLimiter);
+export const writeApi = createPostHandler(Date.now, apiLimiter);

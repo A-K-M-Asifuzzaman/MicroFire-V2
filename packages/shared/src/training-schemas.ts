@@ -43,6 +43,7 @@ export const TrainingCaseSchema = z.strictObject({state:GameStateSchema,training
   fail(s.predictions.length===0&&s.classifications.length===0&&s.proposals.length===0&&s.decision===null,'Later mission state');
   fail(s.inspectedExperimentIds.every(id=>id==='bass2-b20'),'Unknown inspected experiment');
   fail(Number.isSafeInteger(r)&&Number.isSafeInteger(s.setup.qualifiedRevision??0),'Unsafe setup revision');
+  fail(r>=s.setup.installedParts.length&&(r-s.setup.installedParts.length)%2===0,'Unreachable edit count');
   const stateTime=Date.parse(s.updatedAt);
   for(const p of s.setup.installedParts){const d=partDefinitions.find(d=>d.id===p.partId)!;fail(p.anchorId===d.anchorId&&d.requires.every(id=>s.setup.installedParts.some(p=>p.partId===id)),'Unreachable apparatus');}
   const countKeys=t.diagnosisCounts.map(c=>c.partId+':'+c.faultCode);
@@ -52,11 +53,11 @@ export const TrainingCaseSchema = z.strictObject({state:GameStateSchema,training
   for(const c of [t.firstWrongDiagnosis,t.lastWrongDiagnosis]) if(c) {
     fail(!(c.partId==='fan'&&c.faultCode==='REVERSED'),'Correct choice labeled wrong');
     fail(t.diagnosisCounts.some(n=>n.partId===c.partId&&n.faultCode===c.faultCode),'Uncounted wrong choice');
-    fail(Date.parse(c.at)<=stateTime,'Future wrong diagnosis');
+    fail(Date.parse(c.at)<=stateTime&&(!t.fault||t.fault.introducedAt<=c.at)&&(!t.diagnosis||c.at<=t.diagnosis.at),'Future or pre-fault wrong diagnosis');
   }
   if(t.firstWrongDiagnosis&&t.lastWrongDiagnosis)fail(t.firstWrongDiagnosis.at<=t.lastWrongDiagnosis.at,'Wrong diagnosis chronology');
   if(!t.fault)fail(!t.diagnosis&&!t.pendingRepair&&!t.repair&&t.diagnosisCounts.length===0&&!t.firstWrongDiagnosis&&!t.lastWrongDiagnosis,'Metadata before authored fault');
-  if(t.fault)fail(t.fault.introducedRevision>=12&&t.fault.introducedRevision<=r&&Date.parse(t.fault.introducedAt)<=stateTime,'Future or impossible introduction');
+  if(t.fault)fail(t.fault.introducedRevision>=12&&t.fault.introducedRevision%2===0&&t.fault.introducedRevision<=r&&Date.parse(t.fault.introducedAt)<=stateTime,'Future or impossible introduction');
   if(t.diagnosticRevision!==null)fail(t.diagnosticRevision<=r,'Future diagnostic');
   if(t.diagnosis){
     fail(t.fault&&t.fault.introducedRevision<=t.diagnosis.faultyRevision&&t.diagnosis.faultyRevision<=r&&t.diagnosticRevision!==null&&t.diagnosticRevision>=t.diagnosis.faultyRevision,'Future or orphan diagnosis');
@@ -89,7 +90,7 @@ export const TrainingActionSchema=z.discriminatedUnion('type',[
   z.strictObject({type:z.literal('SUBMIT_DIAGNOSIS'),partId:PartIdSchema,faultCode:FaultCodeSchema}),
   z.strictObject({type:z.literal('ADD_LEARNER_NOTE'),text:LearnerNoteSchema})
 ]);
-const finding=z.strictObject({id:z.string().max(80),partId:PartIdSchema,partLabel:z.string().min(1).max(100),anchorId:z.string().min(1).max(100),anchorLabel:z.string().min(1).max(100),faultCode:FaultCodeSchema,
+const finding=z.strictObject({id:z.templateLiteral([PartIdSchema,':',FaultCodeSchema]),partId:PartIdSchema,partLabel:z.string().min(1).max(100),anchorId:z.string().min(1).max(100),anchorLabel:z.string().min(1).max(100),faultCode:FaultCodeSchema,
   symptom:z.strictObject({category:z.literal('authored-training-observation'),text:z.string().min(1).max(240)}),
   interpretation:z.strictObject({category:z.literal('educational-model-inference'),text:z.string().min(1).max(500)}),
   repair:z.strictObject({text:z.string().min(1).max(500)}),purpose:z.strictObject({category:z.literal('source-supported-apparatus-description'),text:z.string().min(1).max(500),citations:z.array(CitationSchema).min(1).max(2)})
@@ -108,6 +109,12 @@ export const LastCommandSchema=z.strictObject({endpoint:z.enum(['start','action'
 export const CheckpointPayloadSchema=TrainingCaseSchema.safeExtend({checkpointVersion:z.literal(1),previewId:PreviewIdSchema,sessionId:PreviewUuidSchema,revision:SafeCounterSchema,catalogSha256:CommandIdSchema,rulesVersion:z.literal('m2-training-r3'),origin:z.string().min(1).max(64).regex(/^http:\/\/127\.0\.0\.1:\d{1,5}$/),realmId:PreviewUuidSchema,keyId:z.string().regex(/^[a-z0-9_-]{1,32}$/),issuedAt:PreviewTimeSchema,expiresAt:z.null(),lastCommand:LastCommandSchema}).superRefine((p,ctx)=>{
   if(p.lastCommand.endpoint==='start'?p.revision!==0||p.lastCommand.expectedRevision!==null:p.revision===0||p.lastCommand.expectedRevision!==p.revision-1)ctx.addIssue({code:'custom',message:'Receipt revision mismatch'});
   const counts=p.training.diagnosisCounts.reduce((n,c)=>n+BigInt(c.count),0n);
+  const s=p.state,t=p.training;
+  const assembly=s.activeMission==='bass-assembly'||s.setup.revision>0||s.completedMissions.includes('bass-assembly');
+  const source=s.passport.entries.some(e=>e.missionId==='station-arrival');
+  const observed=s.passport.entries.some(e=>e.missionId==='bass-assembly');
+  const minimum=assembly?BigInt(s.setup.revision)+4n-(t.fault?2n:0n)+(t.diagnosticRevision!==null?1n:0n)+counts+(s.setup.qualifiedRevision!==null?1n:0n)+(observed?1n:0n)+(s.completedMissions.includes('bass-assembly')?1n:0n):BigInt((s.inspectedExperimentIds.length?1:0)+(source?1:0)+(s.completedMissions.includes('station-arrival')?1:0));
+  if(minimum>BigInt(p.revision)||(p.revision===0&&(s.activeMission!=='station-arrival'||s.inspectedExperimentIds.length||s.passport.entries.length)))ctx.addIssue({code:'custom',message:'Impossible session revision'});
   if(counts>BigInt(p.revision)||Date.parse(p.state.updatedAt)>Date.parse(p.issuedAt))ctx.addIssue({code:'custom',message:'Impossible checkpoint chronology'});
 });
 export const CheckpointTokenSchema=z.string().max(27351).regex(/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]{43}$/);

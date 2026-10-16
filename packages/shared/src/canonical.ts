@@ -74,6 +74,7 @@ export function parsePreviewJson(text: string): unknown {
 }
 
 export async function requestIdentity(endpoint: 'start'|'action'|'resume', request: object): Promise<string> {
+  canonicalJson(request);
   const { commandId: _ignored, ...intent } = request as Record<string, unknown>;
   void _ignored;
   const bytes = new TextEncoder().encode(canonicalJson({ endpoint, request: intent }));

@@ -25,6 +25,11 @@ describe('M2 frozen shared contracts and identities',()=>{
     for(const x of [undefined,NaN,Infinity,1.5,9007199254740992,1n,new Date(),new Map(),()=>0,Symbol(),{'a':undefined},'\ud800',{'\ud800':'key'},cycle,Array(1),accessor])expect(()=>canonicalJson(x)).toThrow();
     expect(canonicalJson({s:'e\u0301'})).not.toBe(canonicalJson({s:'é'}));
   });
+  it('rejects nonplain or accessor request wrappers before spreading their fields',async()=>{
+    let invoked=false;const request={get action(){invoked=true;return {type:'RUN_DIAGNOSTIC'};}};
+    await expect(requestIdentity('action',request)).rejects.toThrow();expect(invoked).toBe(false);
+    await expect(requestIdentity('action',new Date())).rejects.toThrow();
+  });
   it('rejects duplicate JSON members including escape-equivalent and nested keys',()=>{
     for(const s of ['{"a":1,"a":2}','{"a":1,"\\u0061":2}','{"v":{"x":1,"x":2}}','[1,]','{"a":1,}','{}[]','{"a":01}'])expect(()=>parsePreviewJson(s)).toThrow();
     const value=parsePreviewJson('{"__proto__":{"polluted":true},"a":[true,null,"a\\tb"]}');
