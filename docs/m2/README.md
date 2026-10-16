@@ -1,10 +1,10 @@
-# M2 gameplay contract plan — final consumer candidate 3
+# M2 gameplay contract plan — final consumer candidate 3 — receipt correction
 
-Status: **READY FOR ASTRA FINAL M2 CONTRACT REVIEW**. The owner supplied Claude’s C1–C4 substance acceptance and final R1–R5 request; independent final approval is pending. Documentation only; no gameplay implementation, preview activation, state promotion, deployment or paid generation is authorized by this package. Independent contract approval is required before coordinated implementation.
+Status: **READY FOR ASTRA FINAL M2 CONTRACT RECHECK**. The owner supplied Claude’s C1–C4 substance acceptance and final R1–R5 request; independent final approval is pending. Documentation only; no gameplay implementation, preview activation, state promotion, deployment or paid generation is authorized by this package. Independent contract approval is required before coordinated implementation.
 
 ## Baseline and recovered workspace
 
-Exact approved M1.5 ancestor: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Exact previous correction commit / parent: **030e1e9283d0887a0d5464fd668e3fa5e675bbc3**. Planning branch: **codex/m2-contract-plan**. Dedicated worktree: **MicroFire-V2-m2-plan**, beside the other checkouts under `/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3`.
+Exact approved M1.5 ancestor: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Exact previous correction commit / parent: **35fe3fdd6dafc57b2df43a74e7c66ae6455cdc0e**. Planning branch: **codex/m2-contract-plan**. Dedicated worktree: **MicroFire-V2-m2-plan**, beside the other checkouts under `/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3`.
 
 | Checkout | Branch | HEAD inspected | Pending work |
 |---|---|---|---|
@@ -13,7 +13,7 @@ Exact approved M1.5 ancestor: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Exac
 | MicroFire-V2-backend-review | feat/phase-one-backend-review | 1c1af90e41390a6dcb3e3cb87fefa0f9472f6542 | Untracked docs/EXISTING_WORK_RECOVERY_AUDIT_2026-10-14.md; preserved |
 | MicroFire-V2-astra-fixes | feat/astra-defect-fixes | f1afdcacde6dfc94317d8575d67f342e9bb2c03e | Inspected read-only |
 | MicroFire-V2-claude | feat/p1-ui | 322f2c25417ffd333094117a46c0bc9282d4972c | Clean; untouched |
-| MicroFire-V2-m2-plan | codex/m2-contract-plan | 030e1e9283d0887a0d5464fd668e3fa5e675bbc3 before this correction commit | This package only |
+| MicroFire-V2-m2-plan | codex/m2-contract-plan | 35fe3fdd6dafc57b2df43a74e7c66ae6455cdc0e before this receipt correction | This package only |
 
 All share the sole origin `https://github.com/A-K-M-Asifuzzaman/MicroFire-V2.git`. No fetch or reference-repository change was needed. The graph is `e8731c0 … 7ca790a → b6d15a4 → 322f2c2`. The planning branch was explicitly created from **b6d15a4**, excluding the `.gitignore`/`.vercelignore` deployment commit. Do not merge, cherry-pick or silently base work on 322f2c2. Commit hashes in the final delivery identify the documentation commit; `git rev-parse HEAD` here identifies it locally.
 
@@ -37,7 +37,7 @@ Prior planning-source evidence (not downloaded again during these corrections): 
 | [06_REGISTRY_AND_OWNERSHIP.md](06_REGISTRY_AND_OWNERSHIP.md) | Exact nine-row reconciliation, six pending edits, asset/tooling/schema/package-lock ownership and shared-file coordination |
 | [07_VERIFICATION_AND_REVIEW.md](07_VERIFICATION_AND_REVIEW.md) | Actual checks, source/size evidence, unresolved risks and independent approval checklist |
 | [08_BASELINE_PROBE.md](08_BASELINE_PROBE.md) | Reproducible existing-core/serialization probe, documentation only |
-| [fixtures/README.md](fixtures/README.md), planning types/label table/proof runner and32 typed JSON examples | Complete corrected wire examples, negative mutations and bounded contract proof oracles; no runtime exports |
+| [fixtures/README.md](fixtures/README.md), planning types/label table/proof runner and33 typed JSON examples | Complete corrected wire examples, negative mutations and bounded contract proof oracles; no runtime exports |
 | [09_CLAUDE_CONSUMER_HANDOFF.md](09_CLAUDE_CONSUMER_HANDOFF.md) | Focused diagnostic/repair/auth/retry/save/conflict/accessibility consumer review and explicit coding gates |
 
 These are proposals to freeze, not newly implemented API endpoints. Existing docs/API_CONTRACTS.md remains authoritative for current runtime behavior. New contracts below must be implemented jointly and tested before callers use them.
@@ -97,10 +97,11 @@ Only documentation, contract proofs and example data; no application exports:
 - `docs/m2/fixtures/LOCAL_WRITE_FAILED_RESULT.example.json`
 - `docs/m2/fixtures/MEASUREMENTS.json`
 - `docs/m2/fixtures/NOTE_INVALID_RESPONSE.example.json`
+- `docs/m2/fixtures/OBSERVATION_REQUEST.example.json`
 - `docs/m2/fixtures/PASSPORT_REVIEW_RESPONSE.example.json`
 - `docs/m2/fixtures/PENDING_REPAIR_A.example.json`
 - `docs/m2/fixtures/PENDING_REPAIR_B.example.json`
-- `docs/m2/fixtures/QUALIFICATION_FAILED_RESPONSE.example.json`
+- `docs/m2/fixtures/QUALIFICATION_REPAIR_REQUIRED_RESPONSE.example.json`
 - `docs/m2/fixtures/RATE_LIMITED_RESPONSE.example.json`
 - `docs/m2/fixtures/README.md`
 - `docs/m2/fixtures/RESUME_AFTER_RESTART_REQUEST.example.json`
@@ -120,3 +121,8 @@ Only documentation, contract proofs and example data; no application exports:
 - `docs/m2/fixtures/contract-types.ts`
 - `docs/m2/fixtures/equipment-copy.ts`
 - `docs/m2/fixtures/verify-contracts.ts`
+- `docs/m2/fixtures/verify-receipts.ts`
+
+## Receipt correction after Astra final review
+
+Astra reviewed35fe3fd and found one incorrect observation receipt plus an early qualification example that bypassed the proposed repair guard. The narrow correction supplies every fixture receipt explicitly, adds OBSERVATION_REQUEST, replaces the early refusal with QUALIFICATION_REPAIR_REQUIRED_RESPONSE, and adds independent literal-request/HMAC/core-state tests in verify-receipts.ts. Rig metadata is cloned before fault introduction so earlier source/duct examples cannot inherit future receipts. Current results and red/green evidence are in07. R1–R5, C1–C4, science, ownership and browser gates are unchanged; final approval remains pending.

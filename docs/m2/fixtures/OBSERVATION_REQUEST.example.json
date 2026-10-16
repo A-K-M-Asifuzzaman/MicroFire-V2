@@ -1,0 +1,13 @@
+{
+  "runtimeId": "33333333-3333-4333-8333-333333333333",
+  "sessionId": "11111111-1111-4111-8111-111111111111",
+  "expectedRevision": 21,
+  "action": {
+    "type": "GAME",
+    "action": {
+      "type": "OBSERVE_DOCUMENTED_RESULT",
+      "experimentId": "bass2-b20"
+    }
+  },
+  "commandId": "a0a190413768284c7b63632204e414d69aa0dbf42a4a93ac26a3263b3555117e"
+}

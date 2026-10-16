@@ -45,7 +45,7 @@ source=core(source,{type:'START_MISSION',missionId:'station-arrival'});
 const fresh=structuredClone(source);
 for(const action of [{type:'INSPECT_EVIDENCE',experimentId:'bass2-b20'},{type:'COLLECT_EVIDENCE',experimentId:'bass2-b20',claimId:'bass2-b20-burned-entire-sample'},{type:'COMPLETE_MISSION',missionId:'station-arrival'},{type:'START_MISSION',missionId:'bass-assembly'}] as GameAction[])source=core(source,action);
 const duct=core(source,install('flow-duct'));
-let rig=source;for(const p of partDefinitions)rig=core(rig,install(p.id));
+let rig=structuredClone(source);for(const p of partDefinitions)rig=core(rig,install(p.id));
 rig=core(core(rig,remove('fan')),install('fan','reversed'));
 rig.training.fault={id:'training-fan-reversed-v1',origin:'authored-training',introducedAt:at,introducedRevision:12};
 const unchecked=structuredClone(rig);
@@ -92,14 +92,14 @@ function diagnostic(c:TrainingCase):DiagnosticResult {
   })};
 }
 const startRequest:StartRequest=identified('start',{runtimeId,sessionId,previewId:'bass-b20-training-v1' as const,mode:'demo' as const});
-function payload(c:TrainingCase,revision:number,commandId?:string,endpoint:'start'|'action'=revision===0?'start':'action'):CheckpointPayload {
-  let action:TrainingAction={type:'RUN_DIAGNOSTIC'};
-  if(c.state.completedMissions.includes('bass-assembly'))action={type:'GAME',action:{type:'COMPLETE_MISSION',missionId:'bass-assembly'}};
-  else if(c.training.pendingRepair)action={type:'GAME',action:c.training.pendingRepair.removedAtRevision===c.state.setup.revision?remove('fan'):install('exit-plate')};
-  else if(c.training.lastWrongDiagnosis&&!c.training.diagnosis)action={type:'SUBMIT_DIAGNOSIS',partId:c.training.lastWrongDiagnosis.partId,faultCode:c.training.lastWrongDiagnosis.faultCode};
-  else if(c.training.diagnosticRevision===null)action={type:'GAME',action:install(c.state.setup.revision===1?'flow-duct':'exit-plate')};
-  const resolvedCommand=commandId??(endpoint==='start'?startRequest.commandId:identified('action',{runtimeId,sessionId,expectedRevision:revision-1,action}).commandId);
-  return {...c,checkpointVersion:1,previewId:'bass-b20-training-v1',sessionId,revision,catalogSha256,rulesVersion:'m2-training-r3',origin,realmId,keyId,issuedAt:at,expiresAt:null,lastCommand:{endpoint,commandId:resolvedCommand,expectedRevision:endpoint==='start'?null:revision-1}};
+// A receipt is supplied by the accepted request, never guessed from its resulting state.
+const actionId=(expectedRevision:number,action:TrainingAction)=>identified('action',{runtimeId,sessionId,expectedRevision,action}).commandId;
+const ductCommand=actionId(4,{type:'GAME',action:install('flow-duct')});
+const injectedCommand=actionId(13,{type:'GAME',action:install('exit-plate')});
+const pendingACommand=actionId(18,{type:'GAME',action:install('exit-plate')});
+const pendingBCommand=actionId(18,{type:'GAME',action:remove('fan')});
+function payload(c:TrainingCase,revision:number,commandId:string,endpoint:'start'|'action'=revision===0?'start':'action'):CheckpointPayload {
+  return {...c,checkpointVersion:1,previewId:'bass-b20-training-v1',sessionId,revision,catalogSha256,rulesVersion:'m2-training-r3',origin,realmId,keyId,issuedAt:at,expiresAt:null,lastCommand:{endpoint,commandId,expectedRevision:endpoint==='start'?null:revision-1}};
 }
 function token(p:CheckpointPayload,key=exampleKey) {
   const raw=Buffer.from(canonical(p));return raw.toString('base64url')+'.'+createHmac('sha256',key).update('microfire-m2-checkpoint-v1\0').update(raw).digest('base64url');
@@ -153,7 +153,7 @@ function checks(c:TrainingCase):LearningCheck[] {
   return learningDefinitions.map((d,i)=>({...d,done:done[i]!}));
 }
 function budget(p:CheckpointPayload):CheckpointBudget {const payloadBytes=bytes(p);return {payloadBytes,limitBytes:20480,remainingBytes:20480-payloadBytes,warningAtBytes:16384,optionalUpdatesRequireFinalizationCheck:true};}
-function snapshot(c:TrainingCase,revision:number,step:Snapshot['progress']['step'],commandId?:string):Snapshot {
+function snapshot(c:TrainingCase,revision:number,step:Snapshot['progress']['step'],commandId:string):Snapshot {
   c=structuredClone(c);const p=payload(c,revision,commandId),named=checks(c);
   const allowedCore:Snapshot['progress']['allowedCoreActionTypes']=step==='source-orientation'?(c.state.completedMissions.includes('station-arrival')?['START_MISSION']:['INSPECT_EVIDENCE','COLLECT_EVIDENCE','COMPLETE_MISSION']):step==='passport-review'?['COMPLETE_MISSION']:step==='complete'?[]:step==='b20-inspection-required'?['OBSERVE_DOCUMENTED_RESULT','INSTALL_PART','REMOVE_PART']:step==='qualification-required'?['QUALIFY_INSTRUMENT','INSTALL_PART','REMOVE_PART']:['INSTALL_PART','REMOVE_PART'];
   return {...c,previewId:p.previewId,runtimeId,sessionId,revision,checkpoint:token(p),checkpointBudget:budget(p),passportPresentation:passportPresentation(c),diagnostic:diagnostic(c),
@@ -161,6 +161,8 @@ function snapshot(c:TrainingCase,revision:number,step:Snapshot['progress']['step
     evidenceReview:{status:c.state.passport.entries.length?'lineage-verified':'empty',scope:'structure-and-citation-lineage-only',certification:false,catalogSha256,entries:c.state.passport.entries.map(e=>({entryId:e.id,status:'lineage-verified',issues:[]}))},access:{scope:'local-gameplay-preview',expiresAt:expires,publicAvailabilityChanged:false,scientificApproval:false}};
 }
 function checkSnapshot(s:Snapshot) {
+  assert(!s.training.fault||s.training.fault.introducedRevision<=s.state.setup.revision);
+  assert(s.training.diagnosticRevision===null||s.training.diagnosticRevision<=s.state.setup.revision);
   assert('diagnostic' in s);const p=verify(s.checkpoint);assert.deepEqual(p.state,s.state);assert.deepEqual(p.training,s.training);assert.equal(p.revision,s.revision);assert.deepEqual(s.checkpointBudget,budget(p));assert.deepEqual(s.passportPresentation,passportPresentation(s));assert.deepEqual(s.progress.checks,checks(s));assert.equal(s.progress.completedChecks,s.progress.checks.filter(c=>c.done).length);
   const d=s.diagnostic;assert.deepEqual(d,diagnostic(s));
   if(d.status==='current'){
@@ -171,19 +173,19 @@ function checkSnapshot(s:Snapshot) {
 }
 const wrongRequest:ActionRequest=identified('action',{runtimeId,sessionId,expectedRevision:5,action:{type:'GAME' as const,action:{type:'INSTALL_PART' as const,partId:'fan' as const,anchorId:'duct-exit',orientation:'correct' as const}}});
 const refusal=transition(duct.state,wrongRequest.action.type==='GAME'?wrongRequest.action.action:null,catalog,at,options);assert(!refusal.ok);
-const wrongResponse:ActionResponse={apiVersion:'1',data:{ok:false,code:refusal.code,message:placementMessage(refusal.code,'fan'),snapshot:snapshot(duct,5,'assembly')}};
+const wrongResponse:ActionResponse={apiVersion:'1',data:{ok:false,code:refusal.code,message:placementMessage(refusal.code,'fan'),snapshot:snapshot(duct,5,'assembly',ductCommand)}};
 const diagnosticRequest:ActionRequest=identified('action',{runtimeId,sessionId,expectedRevision:14,action:{type:'RUN_DIAGNOSTIC' as const}});
 const ds=snapshot(checked,15,'diagnosis-required',diagnosticRequest.commandId);assert(ds.diagnostic.status==='current');
 const diagnosticSuccess:DiagnosticSuccess={apiVersion:'1',data:{ok:true,snapshot:{...ds,diagnostic:ds.diagnostic}}};
-const diagnosticError:ActionResponse={apiVersion:'1',data:{ok:false,code:'DIAGNOSTIC_STALE',message:'Run a current Training check before submitting a diagnosis.',snapshot:snapshot(unchecked,14,'diagnostic-required')}};
+const diagnosticError:ActionResponse={apiVersion:'1',data:{ok:false,code:'DIAGNOSTIC_STALE',message:'Run a current Training check before submitting a diagnosis.',snapshot:snapshot(unchecked,14,'diagnostic-required',injectedCommand)}};
 const wrongChoice=structuredClone(checked);wrongChoice.training.diagnosisCounts=[{partId:'radiometer',faultCode:'MISSING',count:1}];wrongChoice.training.firstWrongDiagnosis=wrongChoice.training.lastWrongDiagnosis={partId:'radiometer',faultCode:'MISSING',at};
-const examples:Record<string,unknown>={START_REQUEST:startRequest,START_RESPONSE:{apiVersion:'1',data:snapshot(fresh,0,'source-orientation')} satisfies StartResponse,
+const examples:Record<string,unknown>={START_REQUEST:startRequest,START_RESPONSE:{apiVersion:'1',data:snapshot(fresh,0,'source-orientation',startRequest.commandId)} satisfies StartResponse,
   WRONG_ANCHOR_REQUEST:wrongRequest,WRONG_ANCHOR_RESPONSE:wrongResponse,
   UNAUTHORIZED_RESPONSE:{apiVersion:'1',error:{code:'PREVIEW_UNAUTHORIZED',message:'Authorize this local preview before reading, changing or resuming a case.',retryable:false}},
   DIAGNOSTIC_REQUEST:diagnosticRequest,DIAGNOSTIC_SUCCESS:diagnosticSuccess,DIAGNOSTIC_ERROR:diagnosticError,
-  STALE_DIAGNOSTIC_RESPONSE:{apiVersion:'1',data:{ok:true,snapshot:snapshot(a,19,'repair-required')}},
-  WRONG_DIAGNOSIS_RESPONSE:{apiVersion:'1',data:{ok:true,feedback:{correct:false,hint:'The training orientation check identifies the fan; inspect its direction marker.'},snapshot:snapshot(wrongChoice,16,'diagnosis-required')}},
-  PENDING_REPAIR_A:{apiVersion:'1',data:snapshot(a,19,'repair-required')},PENDING_REPAIR_B:{apiVersion:'1',data:snapshot(b,19,'repair-required')},
+  STALE_DIAGNOSTIC_RESPONSE:{apiVersion:'1',data:{ok:true,snapshot:snapshot(a,19,'repair-required',pendingACommand)}},
+  WRONG_DIAGNOSIS_RESPONSE:{apiVersion:'1',data:{ok:true,feedback:{correct:false,hint:'The training orientation check identifies the fan; inspect its direction marker.'},snapshot:snapshot(wrongChoice,16,'diagnosis-required',actionId(15,{type:'SUBMIT_DIAGNOSIS',partId:'radiometer',faultCode:'MISSING'}))}},
+  PENDING_REPAIR_A:{apiVersion:'1',data:snapshot(a,19,'repair-required',pendingACommand)},PENDING_REPAIR_B:{apiVersion:'1',data:snapshot(b,19,'repair-required',pendingBCommand)},
   CAPABILITY_RESPONSE:{apiVersion:'1',data:{enabled:true,authorization:'operator-token-required',previewId:'bass-b20-training-v1',runtimeId,grant:{status:'required'}}},
   AUTHORIZE_RESPONSE:{apiVersion:'1',data:{authorized:true,expiresAt:expires,runtimeId}},REVOKE_RESPONSE:{apiVersion:'1',data:{authorized:false}}};
 const resumeRequest:ResumeRequest=identified('resume',{runtimeId,checkpoint:(examples.PENDING_REPAIR_A as StartResponse).data.checkpoint});examples.RESUME_REQUEST=resumeRequest;examples.RESUME_RESPONSE=examples.PENDING_REPAIR_A;
@@ -230,7 +232,7 @@ proof('11 absent/expired/revoked/restarted grants deny',()=>{
   const allowed=(grant:string,now:number)=>{const g=grants.get(grant);return !!g&&g.runtime===runtime&&now<g.expires;};
   assert(!allowed('public-proof-grant',0));grants.set('public-proof-grant',{runtime,expires:3600});assert(allowed('public-proof-grant',3599));assert(!allowed('public-proof-grant',3600));grants.delete('public-proof-grant');assert(!allowed('public-proof-grant',1));grants.set('public-proof-grant',{runtime,expires:3600});runtime=realmId;assert(!allowed('public-proof-grant',1));
 });
-proof('12 key rotation, MAC tamper and scope fields',()=>{const t=token(payload(a,19));verify(t);assert.throws(()=>verify(t,Buffer.alloc(32,8)));assert.throws(()=>verify(t.slice(0,-1)+(t.endsWith('a')?'b':'a')));for(const field of ['realmId','origin','rulesVersion']){const p=payload(a,19) as any;p[field]='different';assert.notEqual(token(p),t);}assert.equal(verify(t).expiresAt,null);});
+proof('12 key rotation, MAC tamper and scope fields',()=>{const t=token(payload(a,19,pendingACommand));verify(t);assert.throws(()=>verify(t,Buffer.alloc(32,8)));assert.throws(()=>verify(t.slice(0,-1)+(t.endsWith('a')?'b':'a')));for(const field of ['realmId','origin','rulesVersion']){const p=payload(a,19,pendingACommand) as any;p[field]='different';assert.notEqual(token(p),t);}assert.equal(verify(t).expiresAt,null);});
 proof('13 request intent key ordering and different payload detection',()=>{assert(identity('action',wrongRequest));assert(identity('start',startRequest));assert(identity('resume',resumeRequest));assert.equal(digest({b:2,a:1}),digest({a:1,b:2}));assert(!identity('action',{...wrongRequest,expectedRevision:6}));assert(!identity('start',{...startRequest,mode:'normal'}));});
 proof('14 start retry cannot allocate a second same-runtime case',()=>{
   const issued=new Map<string,{digest:string;live:boolean}>();let allocations=0;
@@ -260,14 +262,17 @@ proof('18 1000 mistakes bounded, correct choice stays available',()=>{const c=st
 
 const qualifiedCase=core(repairedA,{type:'QUALIFY_INSTRUMENT'});
 // Research entries are generated by the actual existing reducer action, never edited with correction strings.
-const passportCase=core(qualifiedCase,{type:'OBSERVE_DOCUMENTED_RESULT',experimentId:'bass2-b20'});
+const observationRequest:ActionRequest=identified('action',{runtimeId,sessionId,expectedRevision:21,action:{type:'GAME' as const,action:{type:'OBSERVE_DOCUMENTED_RESULT' as const,experimentId:'bass2-b20'}}});
+assert(observationRequest.action.type==='GAME');
+const passportCase=core(qualifiedCase,observationRequest.action.action);
 const completedCase=core(passportCase,{type:'COMPLETE_MISSION',missionId:'bass-assembly'});
-examples.FAULT_INJECTED_RESPONSE={apiVersion:'1',data:{ok:true,snapshot:snapshot(unchecked,14,'diagnostic-required')}};
-examples.PASSPORT_REVIEW_RESPONSE={apiVersion:'1',data:{ok:true,snapshot:snapshot(passportCase,22,'passport-review')}};
-examples.COMPLETE_RESPONSE={apiVersion:'1',data:{ok:true,snapshot:snapshot(completedCase,23,'complete')}};
+examples.FAULT_INJECTED_RESPONSE={apiVersion:'1',data:{ok:true,snapshot:snapshot(unchecked,14,'diagnostic-required',injectedCommand)}};
+examples.PASSPORT_REVIEW_RESPONSE={apiVersion:'1',data:{ok:true,snapshot:snapshot(passportCase,22,'passport-review',observationRequest.commandId)}};
+examples.COMPLETE_RESPONSE={apiVersion:'1',data:{ok:true,snapshot:snapshot(completedCase,23,'complete',actionId(22,{type:'GAME',action:{type:'COMPLETE_MISSION',missionId:'bass-assembly'}}))}};
 examples.DIAGNOSIS_REQUEST=identified('action',{runtimeId,sessionId,expectedRevision:15,action:{type:'SUBMIT_DIAGNOSIS',partId:'fan',faultCode:'REVERSED'}});
-const failed=transition(unchecked.state,{type:'QUALIFY_INSTRUMENT'},catalog,at,options);assert(!failed.ok);
-examples.QUALIFICATION_FAILED_RESPONSE={apiVersion:'1',data:{ok:false,code:'QUALIFICATION_FAILED',message:refusalCopy.QUALIFICATION_FAILED,faults:failed.faults?.map(f=>({...f,message:findingCopy(f.partId,f.code).interpretation,repair:findingCopy(f.partId,f.code).repair})),snapshot:snapshot(unchecked,14,'diagnostic-required')}};
+examples.OBSERVATION_REQUEST=observationRequest;
+// Missing mandatory repair is the coordinator's first qualification guard; do not expose the raw core result.
+examples.QUALIFICATION_REPAIR_REQUIRED_RESPONSE={apiVersion:'1',data:{ok:false,code:'REPAIR_REQUIRED',message:'Diagnose and repair the authored fan fault before qualifying the training apparatus.',snapshot:snapshot(unchecked,14,'diagnostic-required',injectedCommand)}} satisfies ActionResponse;
 examples.LOCAL_LOCK_BUSY_RESULT={ok:false,code:'LOCAL_LOCK_BUSY',savedOnDevice:false} satisfies LocalSaveResult;
 examples.LOCAL_WRITE_FAILED_RESULT={ok:false,code:'LOCAL_WRITE_FAILED',cause:'read-back-mismatch',writeOutcome:'unknown',savedOnDevice:false} satisfies LocalSaveResult;
 examples.NOTE_INVALID_RESPONSE={apiVersion:'1',error:{code:'INVALID_REQUEST',noteIssue:'outer-whitespace',message:'Remove spaces or line breaks at the beginning and end. Your submitted text is still in the editor.',retryable:false}} satisfies HttpFailure;
@@ -325,12 +330,12 @@ proof('25 R5 guided source reading without invented claims',()=>{
   assert(refusalCopy.UNKNOWN_CLAIM.includes('not an admitted source observation'));
 });
 proof('26 N1-N8 and response/request limit separation',()=>{
-  const completeResponse=bytes(examples.COMPLETE_RESPONSE);assert(completeResponse<65536);assert(bytes({apiVersion:'1',data:{ok:true,snapshot:snapshot(complete,27,'complete')}})<65536);
+  const completeResponse=bytes(examples.COMPLETE_RESPONSE);assert(completeResponse<65536);assert(bytes({apiVersion:'1',data:{ok:true,snapshot:snapshot(complete,27,'complete',actionId(26,{type:'GAME',action:{type:'COMPLETE_MISSION',missionId:'bass-assembly'}}))}})<65536);
   for(const n of [65535,65536,65537]){const padded='x'.repeat(n);assert.equal(Buffer.byteLength(padded)<=65536,n!==65537);}assert(32.785*1000>32768);assert(32785<65536);
   const vectors=[{input:{b:2,a:1},canonical:'{"a":1,"b":2}'},{input:{text:'界',missing:null},canonical:'{"missing":null,"text":"界"}'},{input:{text:'e\u0301'},canonical:'{"text":"é"}'}];for(const v of vectors)assert.equal(canonical(v.input),v.canonical);
 },'model/arithmetic/spec gates; no new browser cross-process tests');
-const measuredDiagnosticCase=structuredClone(source);measuredDiagnosticCase.training.diagnosticRevision=0;const diagnosticResponseBytes=bytes({apiVersion:'1',data:{ok:true,snapshot:snapshot(measuredDiagnosticCase,5,'assembly')}});
-const measurements={diagnosticResponseBytes,scope:'planning serialization only; no M2 runtime implemented',canonicalCheckpointBytes:bytes(representative),signedTokenBytes:token(representative).length,resumeBodyBytes:bytes(maxResume),largestPendingHistoryBytes:Math.max(bytes(payload(a,19)),bytes(payload(b,19))),maxTokenBytes:mathematicalToken.length,maxResumeBodyBytes:bytes(boundaryResume),localSlotAtMaxTokenBytes:bytes({storageVersion:1,epoch,generation:Number.MAX_SAFE_INTEGER,head:{sessionId,revision:Number.MAX_SAFE_INTEGER,checkpoint:mathematicalToken}}),legalNoteBytes:1502,legacyInvalidSurrogateNoteBytes:2048,sourcePassportBytes:bytes(complete.state.passport),idempotencyReceiptBytes:bytes(representative.lastCommand),addedEnvelopeBytes:bytes(representative)-bytes({state:representative.state,training:representative.training}),fixtureCount:Object.keys(examples).length};
+const measuredDiagnosticCase=structuredClone(source);measuredDiagnosticCase.training.diagnosticRevision=0;const diagnosticResponseBytes=bytes({apiVersion:'1',data:{ok:true,snapshot:snapshot(measuredDiagnosticCase,5,'assembly',actionId(4,{type:'RUN_DIAGNOSTIC'}))}});
+const measurements={diagnosticResponseBytes,scope:'planning serialization only; no M2 runtime implemented',canonicalCheckpointBytes:bytes(representative),signedTokenBytes:token(representative).length,resumeBodyBytes:bytes(maxResume),largestPendingHistoryBytes:Math.max(bytes(payload(a,19,pendingACommand)),bytes(payload(b,19,pendingBCommand))),maxTokenBytes:mathematicalToken.length,maxResumeBodyBytes:bytes(boundaryResume),localSlotAtMaxTokenBytes:bytes({storageVersion:1,epoch,generation:Number.MAX_SAFE_INTEGER,head:{sessionId,revision:Number.MAX_SAFE_INTEGER,checkpoint:mathematicalToken}}),legalNoteBytes:1502,legacyInvalidSurrogateNoteBytes:2048,sourcePassportBytes:bytes(complete.state.passport),idempotencyReceiptBytes:bytes(representative.lastCommand),addedEnvelopeBytes:bytes(representative)-bytes({state:representative.state,training:representative.training}),fixtureCount:Object.keys(examples).length};
 assert(measurements.localSlotAtMaxTokenBytes<=28000);assert(measurements.maxResumeBodyBytes<=32768);
 const maxSnapshot=snapshot(complete,Number.MAX_SAFE_INTEGER,'complete','f'.repeat(64));maxSnapshot.checkpoint=token(representative);maxSnapshot.checkpointBudget=budget(representative);checkSnapshot(maxSnapshot);
 const measurementsWithResponse={...measurements,ordinaryCompleteResponseBytes:bytes(examples.COMPLETE_RESPONSE),fullCompleteResponseBytes:bytes({apiVersion:'1',data:{ok:true,snapshot:maxSnapshot}})};assert(measurementsWithResponse.fullCompleteResponseBytes<65536);assert(diagnosticResponseBytes<65536);
@@ -354,7 +359,7 @@ console.log(JSON.stringify({proofs:results.length,results,measurements:measureme
 const typeOutput=process.argv.indexOf('--emit-types');
 if(typeOutput>=0){
   const output=process.argv[typeOutput+1];assert(output,'--emit-types requires an output path');
-  const fixtureTypes:Record<string,string>={START_REQUEST:'StartRequest',START_RESPONSE:'StartResponse',UNAUTHORIZED_RESPONSE:'HttpFailure',WRONG_ANCHOR_REQUEST:'ActionRequest',WRONG_ANCHOR_RESPONSE:'ActionResponse',DIAGNOSTIC_REQUEST:'ActionRequest',DIAGNOSTIC_SUCCESS:'DiagnosticSuccess',DIAGNOSTIC_ERROR:'ActionResponse',STALE_DIAGNOSTIC_RESPONSE:'ActionResponse',WRONG_DIAGNOSIS_RESPONSE:'ActionResponse',PENDING_REPAIR_A:'StartResponse',PENDING_REPAIR_B:'StartResponse',CAPABILITY_RESPONSE:'CapabilityResponse',AUTHORIZE_RESPONSE:'AuthorizeResponse',REVOKE_RESPONSE:'RevokeResponse',RESUME_REQUEST:'ResumeRequest',RESUME_RESPONSE:'ResumeResponse',FAULT_INJECTED_RESPONSE:'ActionResponse',PASSPORT_REVIEW_RESPONSE:'ActionResponse',COMPLETE_RESPONSE:'ActionResponse',DIAGNOSIS_REQUEST:'ActionRequest',QUALIFICATION_FAILED_RESPONSE:'ActionResponse',LOCAL_LOCK_BUSY_RESULT:'LocalSaveResult',LOCAL_WRITE_FAILED_RESULT:'LocalSaveResult',NOTE_INVALID_RESPONSE:'HttpFailure',REVISION_CONFLICT_RESPONSE:'HttpFailure',RUNTIME_CHANGED_RESPONSE:'HttpFailure',COMMAND_REUSED_RESPONSE:'HttpFailure',RATE_LIMITED_RESPONSE:'HttpFailure',CHECKPOINT_KEY_FAILURE_RESPONSE:'HttpFailure',RESUME_AFTER_RESTART_REQUEST:'ResumeRequest',RESUME_AFTER_RESTART_RESPONSE:'ResumeResponse'};
+  const fixtureTypes:Record<string,string>={START_REQUEST:'StartRequest',START_RESPONSE:'StartResponse',UNAUTHORIZED_RESPONSE:'HttpFailure',WRONG_ANCHOR_REQUEST:'ActionRequest',WRONG_ANCHOR_RESPONSE:'ActionResponse',DIAGNOSTIC_REQUEST:'ActionRequest',DIAGNOSTIC_SUCCESS:'DiagnosticSuccess',DIAGNOSTIC_ERROR:'ActionResponse',STALE_DIAGNOSTIC_RESPONSE:'ActionResponse',WRONG_DIAGNOSIS_RESPONSE:'ActionResponse',PENDING_REPAIR_A:'StartResponse',PENDING_REPAIR_B:'StartResponse',CAPABILITY_RESPONSE:'CapabilityResponse',AUTHORIZE_RESPONSE:'AuthorizeResponse',REVOKE_RESPONSE:'RevokeResponse',RESUME_REQUEST:'ResumeRequest',RESUME_RESPONSE:'ResumeResponse',FAULT_INJECTED_RESPONSE:'ActionResponse',PASSPORT_REVIEW_RESPONSE:'ActionResponse',COMPLETE_RESPONSE:'ActionResponse',DIAGNOSIS_REQUEST:'ActionRequest',QUALIFICATION_REPAIR_REQUIRED_RESPONSE:'ActionResponse',OBSERVATION_REQUEST:'ActionRequest',LOCAL_LOCK_BUSY_RESULT:'LocalSaveResult',LOCAL_WRITE_FAILED_RESULT:'LocalSaveResult',NOTE_INVALID_RESPONSE:'HttpFailure',REVISION_CONFLICT_RESPONSE:'HttpFailure',RUNTIME_CHANGED_RESPONSE:'HttpFailure',COMMAND_REUSED_RESPONSE:'HttpFailure',RATE_LIMITED_RESPONSE:'HttpFailure',CHECKPOINT_KEY_FAILURE_RESPONSE:'HttpFailure',RESUME_AFTER_RESTART_REQUEST:'ResumeRequest',RESUME_AFTER_RESTART_RESPONSE:'ResumeResponse'};
   let text='import type * as C from '+JSON.stringify(path.join(dir,'contract-types'))+';\n';
   for(const [name,type] of Object.entries(fixtureTypes))text+='const '+name+' = '+readFileSync(path.join(dir,name+'.example.json'),'utf8').trim()+' satisfies C.'+type+';\n';
   text+='// @ts-expect-error a current diagnostic requires findings\nconst absent: C.DiagnosticSuccess = {apiVersion:"1",data:{ok:true,snapshot:{...DIAGNOSTIC_SUCCESS.data.snapshot,diagnostic:{status:"current",checkedSetupRevision:12,currentSetupRevision:12,qualified:false}}}};\n';

@@ -1,6 +1,6 @@
-# Candidate3 final consumer verification
+# Candidate3 receipt-correction verification
 
-**READY FOR ASTRA FINAL M2 CONTRACT REVIEW.** Previous commit: **030e1e9283d0887a0d5464fd668e3fa5e675bbc3**; accepted M1.5 ancestor **b6d15a47ec25f57350896f1dc63dc59192f57b00**. New correction SHA is supplied in the delivery and by `git rev-parse HEAD`. Branch codex/m2-contract-plan;322f2c2 remains excluded. The owner supplied Claude’s C1–C4 substance acceptance and R1–R5 requirements; this candidate does not claim Astra final approval or runtime implementation.
+**READY FOR ASTRA FINAL M2 CONTRACT RECHECK.** Previous commit: **35fe3fdd6dafc57b2df43a74e7c66ae6455cdc0e**; accepted M1.5 ancestor **b6d15a47ec25f57350896f1dc63dc59192f57b00**. New correction SHA is supplied in the delivery and by `git rev-parse HEAD`. Branch codex/m2-contract-plan;322f2c2 remains excluded. The owner supplied Claude’s C1–C4 substance acceptance and R1–R5 requirements; this candidate does not claim Astra final approval or runtime implementation.
 
 ## R1–R5 changes and evidence
 
@@ -14,7 +14,7 @@
 
 Detailed decisions/conditions: [10_FINAL_CONSUMER_CORRECTIONS.md](10_FINAL_CONSUMER_CORRECTIONS.md). Exact frontend handoff: [09](09_CLAUDE_CONSUMER_HANDOFF.md). All M2 types/fields remain PROPOSED until the backend exists. C1–C4 pending-repair/locking/authentication/retry architecture remains; candidate3 changes labels/provenance/checks/consumer errors and bumps rulesVersion to m2-training-r3, preserving GameState v2/Passport v1 and raw recovery.
 
-## Fresh commands and actual results
+## Historical candidate3 commands and results (before this receipt correction)
 
 Executed in the exact planning worktree using existing dependencies and Node24 at `/Users/asifzaman/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin` on PATH. No dependency installation/lockfile edit. Logs/type harness: `/private/tmp/m2-final-consumer/`.
 
@@ -43,7 +43,7 @@ Actual current projection sizes are committed in [MEASUREMENTS.json](fixtures/ME
 | Last-command receipt / wrapper beyond TrainingCase | **136 /583** |
 | Ordinary COMPLETE_RESPONSE (no learner notes) | **12,366** |
 | Full complete ActionResponse stress projection including notes, named checks, three-section Passport and token/state | **39,965** |
-| Full ten-finding diagnostic response | **15,798** |
+| Full ten-finding diagnostic response, with isolated pre-fault metadata | **15,280** |
 | Mathematical maximum token from20,480-byte payload | **27,351** |
 | Resume request with maximum token | **27,498** |
 | LocalSlot with maximum token/epoch/generation | **27,552**, below28,000 cap |
@@ -67,3 +67,44 @@ Astra must approve the exact new candidate SHA before implementation. No remaini
 B20 alone,17.4 vol% calibrated oxygen;55 other records quarantined; B16/B19 unresolved; source apparatus functions versus schematic geometry; no simulation-to-direct promotion; source limitations separate from unassessed notes; deterministic ranking/Ask/abstention unchanged. Original lineage validation/raw-save recovery remain, with new scenario provenance checks separate. Human scientific approval remains distinct. Nine registry proposals and the six pending edits are preserved; no Available change. Production reducers/shared exports/data/API/frontend/assets/config/lockfile are untouched; reference repositories read-only.
 
 Not run: new M2 runtime API/E2E, browser locking in any engine, build/lint/audit, native accessibility/device/network-memory profiling, live balance or paid generation. No push, merge, deployment, mission unlock, preview activation, Meshy job or scientific promotion occurred.
+
+## Final receipt correction — current verification
+
+Astra's exact independent review is `/Users/asifzaman/.codex/visualizations/2026/10/14/01a13b66-4da0-7bc2-a7ec-1e54cfa974fd/astra-m2-final-contract-review/FINAL_M2_CONTRACT_REVIEW.md`. Its unchanged evidence script reproduced10 pass/1 fail before the correction. The independently literal-driven new verifier also failed on the old observation digest before regeneration, so its expected identity is not taken from a fixture receipt.
+
+Root cause: payload() guessed RUN_DIAGNOSTIC from a final-state fallback, even when OBSERVE_DOCUMENTED_RESULT produced the evidence. It now requires an explicit accepted commandId; all snapshot callers pass their known last commit. OBSERVATION_REQUEST defines the real revision21 intent; PASSPORT_REVIEW_RESPONSE revision22 records **a0a190413768284c7b63632204e414d69aa0dbf42a4a93ac26a3263b3555117e**. Its token is deterministically regenerated and the state/scientific projection is unchanged. Completion remains revision23 with its own completion identity. Refusals/resume preserve accepted receipts.
+
+The early qualification example is renamed QUALIFICATION_REPAIR_REQUIRED_RESPONSE and now returns200 domain REPAIR_REQUIRED before physical qualification, preserving revision14/current token/progress. The outdated core QUALIFICATION_FAILED illustration is removed. That code remains valid after required diagnosis/repair when another apparatus fault exists. Mandatory repair semantics are not weakened.
+
+Explicit identity propagation also exposed a shared-reference fixture bug: later fault/diagnosis mutations leaked into source/duct training metadata. Clone the rig before injection. WRONG_ANCHOR_RESPONSE now has a real pre-fault revision1 setup, no future diagnosis, not-run diagnostic and the accepted duct-install receipt at session5. This is necessary state/receipt consistency, not a runtime change. The corrected diagnostic projection is15,280 bytes; all other bounds remain unchanged. No unrelated example or source text is changed.
+
+Current evidence directory: `/private/tmp/m2-receipt-correction/`. Exact commands/results follow. All33 wire/local-result examples remain proposed. The existing26 planning groups and new6 independent conformance groups have separate scopes; neither proves an unimplemented coordinator or browser adapter.
+
+
+| Current command / check | Actual result |
+|---|---|
+| `node --import tsx /Users/asifzaman/.codex/visualizations/2026/10/14/01a13b66-4da0-7bc2-a7ec-1e54cfa974fd/astra-m2-final-contract-review/evidence/independent-checks.ts` | Before:10 pass/1 fail, exit1. After:11 pass/0 fail, exit0. Script unchanged; fixed observation digest no longer equals diagnostic digest; all byte projections retained |
+| `node --import tsx docs/m2/fixtures/verify-receipts.ts` | Red against old fixture:wrong commandId, exit1. Final:6 groups pass, exit0; literal request/digest/HMAC/state, correctly signed wrong receipt rejection, subsequent completion, qualification guard/refusal invariants, pending repair/legitimate physical failure and resume identity |
+| `node --import tsx docs/m2/fixtures/verify-contracts.ts --emit-types /private/tmp/m2-receipt-correction/typed-examples.ts` | All26 existing groups and committed-fixture drift checks pass, exit0; two distinct removal histories and30 legal permutations retained |
+| `node node_modules/typescript/bin/tsc --noEmit --strict --noUncheckedIndexedAccess --exactOptionalPropertyTypes --skipLibCheck --moduleResolution bundler --module ESNext --target ES2022 --resolveJsonModule --esModuleInterop docs/m2/fixtures/contract-types.ts docs/m2/fixtures/equipment-copy.ts docs/m2/fixtures/verify-contracts.ts docs/m2/fixtures/verify-receipts.ts /private/tmp/m2-receipt-correction/typed-examples.ts` | Pass, exit0; all33 wire/local-result literals plus both verifier files and proposed types |
+| `npm test` | 103 passed,5 files,3.80s, exit0 |
+| `npm run validate:data` | 1 source,1 admitted B20 experiment,55 quarantined rows; local fixture hash matches, exit0; no remote source recheck |
+| JSON/manifest/local links/fences, Git scope/whitespace, ancestry, other worktrees and protected contracts | Pass:52 manifest files/35 JSON/33 examples; docs/m2-only; five other HEAD/status pairs/pending registry hash unchanged; R1 copy/R2–R5 types/canonical vectors/nine registry proposals unchanged;322f2c2 excluded |
+
+Future shared canonicalJson, idempotency/authentication, raw recovery, three browser-engine consistency gates, scientific approval and implementation ordering remain as accepted in substance. The new fixed-input test oracle does not replace the future shared serializer. No runtime endpoints/coordinator/browser persistence exist yet. Approval of this exact new correction commit remains Astra's task; this delivery is **READY FOR ASTRA FINAL M2 CONTRACT RECHECK**.
+
+
+Exact correction paths (all under docs/m2):
+
+- 03_PREVIEW_AND_FRONTEND_CONTRACT.md
+- 07_VERIFICATION_AND_REVIEW.md
+- 09_CLAUDE_CONSUMER_HANDOFF.md
+- README.md
+- fixtures/MEASUREMENTS.json
+- fixtures/OBSERVATION_REQUEST.example.json (new)
+- fixtures/PASSPORT_REVIEW_RESPONSE.example.json
+- fixtures/QUALIFICATION_FAILED_RESPONSE.example.json → fixtures/QUALIFICATION_REPAIR_REQUIRED_RESPONSE.example.json (renamed/corrected)
+- fixtures/README.md
+- fixtures/WRONG_ANCHOR_RESPONSE.example.json
+- fixtures/verify-contracts.ts
+- fixtures/verify-receipts.ts (new)

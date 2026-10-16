@@ -1,5 +1,5 @@
 {
-  "diagnosticResponseBytes": 15798,
+  "diagnosticResponseBytes": 15280,
   "scope": "planning serialization only; no M2 runtime implemented",
   "canonicalCheckpointBytes": 13415,
   "signedTokenBytes": 17931,
@@ -13,7 +13,7 @@
   "sourcePassportBytes": 7915,
   "idempotencyReceiptBytes": 136,
   "addedEnvelopeBytes": 583,
-  "fixtureCount": 32,
+  "fixtureCount": 33,
   "ordinaryCompleteResponseBytes": 12366,
   "fullCompleteResponseBytes": 39965
 }
