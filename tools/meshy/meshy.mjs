@@ -5,8 +5,12 @@
 // Commands:
 //   balance                         read-only credit balance (free)
 //   tasks                           read-only list of existing text-to-3D tasks for reuse (free)
-//   run <jobId> --approved-cap <N>  ONE planned job from jobs.json; refuses if its estimate exceeds the owner-approved cap
-// No retries, no purchases, bounded polling. Results go to tools/meshy/incoming/ (git-ignored) and ledger.jsonl.
+//   run <jobId> --approved-cap <N> --floor <B>      ONE planned job from jobs.json; refuses if its estimate exceeds the cap
+//   rig <jobId> --approved-cap <N> --floor <B>      auto-rig a downloaded humanoid job (5 credits)
+//   animate <jobId> <id,id,…> --approved-cap <N> --floor <B>   preset actions on its rig (3 credits each)
+//   library [search]                                read-only animation library lookup (free)
+// --floor is the owner's spending ceiling as a balance: a paid command refuses if its estimate would take the live
+// balance below it. No retries, no purchases, bounded polling. Results go to tools/meshy/incoming/ (git-ignored) and ledger.jsonl.
 import { mkdir, readFile, writeFile, appendFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -57,22 +61,63 @@ async function download(url, file) {
 }
 
 const [cmd, jobId, ...rest] = process.argv.slice(2);
+const flag = (name) => { const i = rest.indexOf(name); return i >= 0 ? Number(rest[i + 1]) : NaN; };
+/** Owner cap per command + balance floor for the whole authorization; checked against the LIVE balance first. */
+async function guard(estimate) {
+  const cap = flag('--approved-cap'), floor = flag('--floor');
+  if (!Number.isFinite(cap) || cap <= 0) throw new Error('Refusing: pass --approved-cap <credits> exactly as approved by the owner.');
+  if (!Number.isFinite(floor) || floor < 0) throw new Error('Refusing: pass --floor <balance> (live balance minus the owner-authorized allowance).');
+  if (estimate > cap) throw new Error(`Refusing: estimate ${estimate} exceeds approved cap ${cap}.`);
+  const before = await balance();
+  if (before.balance - estimate < floor) throw new Error(`Refusing: balance ${before.balance} − estimate ${estimate} would go below the authorized floor ${floor}. Nothing was spent.`);
+  return { cap, floor, before };
+}
+const ledgerFor = async (id) => (await readFile(path.join(here, 'ledger.jsonl'), 'utf8')).trim().split('\n').map((l) => JSON.parse(l)).filter((e) => e.job === id).at(-1);
+async function record(entry, before) {
+  const after = await balance();
+  const full = { at: new Date().toISOString(), ...entry, balanceBefore: before.balance, balanceAfter: after.balance, spent: before.balance - after.balance, status: 'downloaded-pending-qa' };
+  await appendFile(path.join(here, 'ledger.jsonl'), `${JSON.stringify(full)}\n`);
+  console.log(`\nDone. Spent ${full.spent} credits; balance after: ${after.balance}.`);
+}
 try {
   if (cmd === 'balance') console.log(JSON.stringify(await balance()));
   else if (cmd === 'tasks') {
     const list = await call('GET', '/v2/text-to-3d?page_size=50&sort_by=-created_at');
     for (const t of list) console.log([t.id, t.status, new Date(t.created_at).toISOString().slice(0, 10), t.mode ?? '', (t.prompt ?? '').slice(0, 70)].join('  '));
     if (!list.length) console.log('No existing text-to-3D tasks.');
+  } else if (cmd === 'library') {
+    const q = jobId ? `&search=${encodeURIComponent(jobId)}` : '';
+    const list = await call('GET', `/v1/animations/library?page_size=100${q}`);
+    for (const a of (Array.isArray(list) ? list : list.result ?? list.data ?? [])) console.log([a.action_id, a.name, a.category, a.sub_category].join('  '));
+  } else if (cmd === 'rig') {
+    const src = await ledgerFor(jobId);
+    if (!src) throw new Error(`No downloaded job ${jobId} in the ledger.`);
+    const { cap, before } = await guard(5);
+    console.log(`Balance before: ${before.balance}. Rigging ${jobId} (estimate 5, cap ${cap}).`);
+    const task = await call('POST', '/v1/rigging', { input_task_id: src.finalTask, height_meters: 1.75 });
+    const done = await poll(task.result, 'rigging', '/v1/rigging');
+    const dir = path.join(here, 'incoming', jobId); await mkdir(dir, { recursive: true });
+    const r = done.result ?? {};
+    if (r.rigged_character_glb_url) await download(r.rigged_character_glb_url, path.join(dir, `${jobId}-rigged.glb`));
+    for (const k of ['walking', 'running']) { const u = r.basic_animations?.[`${k}_glb_url`]; if (u) await download(u, path.join(dir, `${jobId}-${k}.glb`)); }
+    await record({ job: `${jobId}:rig`, rigTask: task.result, sourceTask: src.finalTask, estimate: 5, approvedCap: cap }, before);
+  } else if (cmd === 'animate') {
+    const ids = String(rest[0] ?? '').split(',').map(Number).filter((n) => Number.isInteger(n) && n >= 0);
+    if (!ids.length || ids.length > 10) throw new Error('Pass 1–10 comma-separated action ids (see `library`).');
+    const rig = await ledgerFor(`${jobId}:rig`);
+    if (!rig) throw new Error(`No rig for ${jobId} in the ledger.`);
+    const { cap, before } = await guard(3 * ids.length);
+    console.log(`Balance before: ${before.balance}. Animating ${jobId} with [${ids}] (estimate ${3 * ids.length}, cap ${cap}).`);
+    const task = await call('POST', '/v1/animations', { rig_task_id: rig.rigTask, action_ids: ids });
+    const done = await poll(task.result, 'animation', '/v1/animations');
+    const dir = path.join(here, 'incoming', jobId); await mkdir(dir, { recursive: true });
+    if (done.result?.animation_glb_url) await download(done.result.animation_glb_url, path.join(dir, `${jobId}-anim-${ids.join('-')}.glb`));
+    await record({ job: `${jobId}:animate:${ids.join(',')}`, animationTask: task.result, rigTask: rig.rigTask, estimate: 3 * ids.length, approvedCap: cap }, before);
   } else if (cmd === 'run') {
-    const capIndex = rest.indexOf('--approved-cap');
-    const cap = capIndex >= 0 ? Number(rest[capIndex + 1]) : NaN;
     const jobs = JSON.parse(await readFile(path.join(here, 'jobs.json'), 'utf8'));
     const job = jobs.jobs.find((j) => j.id === jobId);
     if (!job) throw new Error(`Unknown job ${jobId}`);
-    if (!Number.isFinite(cap) || cap <= 0) throw new Error('Refusing: pass --approved-cap <credits> exactly as approved by the owner.');
-    if (job.estimateCredits > cap) throw new Error(`Refusing: estimate ${job.estimateCredits} exceeds approved cap ${cap}.`);
-    const before = await balance();
-    if (before.balance < job.estimateCredits) throw new Error(`Refusing: balance ${before.balance} is below the estimate ${job.estimateCredits}. No purchase is attempted.`);
+    const { cap, before } = await guard(job.estimateCredits);
     console.log(`Balance before: ${before.balance}. Running ${job.id} (estimate ${job.estimateCredits}, cap ${cap}).`);
     let preview, finalTask;
     if (job.image) { // image-to-3D from a local concept image, sent as a data URI
@@ -93,7 +138,7 @@ try {
     await appendFile(path.join(here, 'ledger.jsonl'), `${JSON.stringify(entry)}\n`);
     console.log(`\nDone. Spent ${entry.spent} credits; balance after: ${after.balance}. Files in tools/meshy/incoming/${job.id}/ (QA before any use).`);
   } else {
-    console.log('Usage: balance | tasks | run <jobId> --approved-cap <credits>');
+    console.log('Usage: balance | tasks | library [search] | run <jobId> | rig <jobId> | animate <jobId> <ids>  (paid commands need --approved-cap N --floor B)');
   }
 } catch (error) {
   console.error(String(error instanceof Error ? error.message : error));

@@ -4,9 +4,12 @@ import type { PartId, Snapshot } from '../contract';
 import { isBusy } from '../controller';
 import { allowsCore, install, journeyStage, rig } from '../view-model';
 import type { BenchApi, BenchState } from './bench-scene';
+import { LAB_ENVIRONMENT } from './lab-assets';
 import { anchorLabel, useGame } from './context';
 
 /** 3D view of the same confirmed state as the schematic; drops and clicks become the same intents as in 2D. */
+const qualifiedNow = (s: Snapshot) => s.state.setup.qualifiedRevision !== null && s.state.setup.qualifiedRevision === s.state.setup.revision;
+
 export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultMoment: number | null; onUnavailable: () => void }) {
   const { c, s: st, data, selection, select } = useGame();
   const host = useRef<HTMLDivElement>(null);
@@ -30,7 +33,7 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
       qualified: s.state.setup.qualifiedRevision !== null && s.state.setup.qualifiedRevision === s.state.setup.revision,
       selectedPart: selection.partId, selectedAnchor: selection.anchorId, orientation: selection.orientation,
       choosing: !!sel && !sel.installed, pendingTarget: pending,
-      focus: ['fault', 'investigation', 'diagnosis', 'repair'].includes(stage) ? 'fan' : 'overview'
+      focus: ['fault', 'investigation', 'diagnosis', 'repair'].includes(stage) ? 'fan' : ['qualification', 'observation'].includes(stage) && qualifiedNow(s) ? 'wide' : 'overview'
     };
   };
 
@@ -58,7 +61,7 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
         },
         onHover: setTip,
         onLost: () => { if (!cancelled) onUnavailable(); }
-      }, motion());
+      }, motion(), LAB_ENVIRONMENT && { ...LAB_ENVIRONMENT, lite: matchMedia('(max-width: 760px), (pointer: coarse)').matches });
       if (cancelled) { a?.stop(); return; }
       if (!a) { onUnavailable(); return; }
       api.current = a; setReady(true);
@@ -78,7 +81,16 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
   }, []);
 
   useEffect(() => { if (ready) api.current?.update(benchState()); });
-  useEffect(() => { if (ready && faultMoment !== null) api.current?.faultMoment(); }, [faultMoment, ready]);
+  useEffect(() => { if (ready && faultMoment !== null) { api.current?.faultMoment(); api.current?.react('look'); } }, [faultMoment, ready]);
+  // The astronaut reacts to confirmed outcomes only (presentation; never an outcome of its own).
+  const ev = st.event;
+  useEffect(() => {
+    if (!ready || ev?.kind !== 'accepted') return;
+    const a = ev.action;
+    if (a?.type === 'SUBMIT_DIAGNOSIS' && ev.feedback?.correct !== false) api.current?.react('wave');
+    if (a?.type === 'GAME' && a.action.type === 'QUALIFY_INSTRUMENT') api.current?.react('cheer');
+    if (a?.type === 'GAME' && a.action.type === 'INSTALL_PART' && ev.after.training.repair && !ev.before?.training.repair) api.current?.react('wave');
+  }, [ev, ready]);
 
   return <div className="m2-bench" ref={host} data-ready={ready}>
     {!ready && <div className="m2-bench-loading">Preparing the 3D bench…</div>}

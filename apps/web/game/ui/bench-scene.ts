@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import type { PartSpec } from '../contract';
+import { addEnvironment, type EnvReaction } from './bench-environment';
 
 export type BenchState = {
   installed: Record<string, { anchorId: string; orientation: 'correct' | 'reversed' }>;
@@ -17,7 +18,7 @@ export type BenchState = {
   choosing: boolean;
   /** Mount of an install request awaiting the server. */
   pendingTarget: string | null;
-  focus: 'overview' | 'fan';
+  focus: 'overview' | 'fan' | 'wide';
 };
 export type BenchCallbacks = {
   onSelectPart(partId: string): void;
@@ -26,7 +27,9 @@ export type BenchCallbacks = {
   onHover(h: { x: number; y: number; text: string } | null): void;
   onLost(): void;
 };
-export type BenchApi = { update(s: BenchState): void; faultMoment(): void; resize(): void; setMotion(on: boolean): void; stop(): void };
+export type BenchApi = { update(s: BenchState): void; faultMoment(): void; react(kind: EnvReaction): void; resize(): void; setMotion(on: boolean): void; stop(): void };
+/** Artistic environment (Meshy). Absent → the bench renders exactly as before. */
+export type BenchEnvironment = Parameters<typeof addEnvironment>[1] | null;
 
 const L = 1.7, H = 0.76, hx = L / 2, hy = H / 2;
 export const ANCHORS3D: Record<string, [number, number, number]> = {
@@ -144,7 +147,7 @@ function buildPart(id: string, m: Mats): THREE.Group {
   return g;
 }
 
-export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, parts: readonly PartSpec[], cb: BenchCallbacks, motionOn: boolean): Promise<BenchApi | null> {
+export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, parts: readonly PartSpec[], cb: BenchCallbacks, motionOn: boolean, environment: Omit<NonNullable<BenchEnvironment>, 'onReady'> | null = null): Promise<BenchApi | null> {
   let renderer: THREE.WebGLRenderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); }
   catch { return null; }
@@ -154,7 +157,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.55;
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.05, 60);
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.05, environment ? 260 : 60);
   scene.add(new THREE.HemisphereLight('#cfe6ff', '#070c14', 0.7));
   const key = new THREE.DirectionalLight('#fff1e0', 2.4); key.position.set(2.5, 4, 3); scene.add(key);
   const rim = new THREE.PointLight('#73bbd9', 14, 9); rim.position.set(-2.4, 1.4, -2); scene.add(rim);
@@ -169,6 +172,9 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   const glovebox = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.1, 2.05, 1.9)), new THREE.LineBasicMaterial({ color: '#2a3d52' }));
   glovebox.position.y = 0.37; scene.add(glovebox);
 
+  // Optional artistic environment, loaded after the bench is interactive. Establishing shot, then dolly in.
+  const env = environment ? addEnvironment(scene, { ...environment, onReady: () => kick() }) : null;
+  if (env) grid.visible = false;
   const m = mats();
   const groups = new Map<string, THREE.Group>();
   const placed = new Map<string, { target: THREE.Vector3; yaw: number; drop: number }>();
@@ -215,7 +221,9 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   };
 
   // Orbit camera (drag empty space / arrow keys), damped.
+  const maxR = environment ? 48 : 6.5;
   const orbit = { theta: -0.55, phi: 1.12, r: 4.4, tTheta: -0.55, tPhi: 1.12, tR: 4.4, target: new THREE.Vector3(0, 0.05, 0), tTarget: new THREE.Vector3(0, 0.05, 0) };
+  if (env && motionOn) { orbit.r = 40; orbit.theta = -0.25; orbit.phi = 1.32; orbit.target.set(-3, -3, 0); } // establishing shot
   const applyCamera = () => {
     const { theta, phi, r, target } = orbit;
     camera.position.set(target.x + r * Math.sin(phi) * Math.sin(theta), target.y + r * Math.cos(phi), target.z + r * Math.sin(phi) * Math.cos(theta));
@@ -282,12 +290,12 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     }
     kick();
   };
-  const onWheel = (e: WheelEvent) => { e.preventDefault(); orbit.tR = THREE.MathUtils.clamp(orbit.tR + e.deltaY * 0.0025, 2.6, 6.5); kick(); };
+  const onWheel = (e: WheelEvent) => { e.preventDefault(); orbit.tR = THREE.MathUtils.clamp(orbit.tR + e.deltaY * 0.0025 * (orbit.tR / 4), 2.6, maxR); kick(); };
   const onKey = (e: KeyboardEvent) => {
     const step = { ArrowLeft: [0.12, 0], ArrowRight: [-0.12, 0], ArrowUp: [0, -0.08], ArrowDown: [0, 0.08] }[e.key];
     if (step) { e.preventDefault(); orbit.tTheta += step[0]!; orbit.tPhi = THREE.MathUtils.clamp(orbit.tPhi + step[1]!, 0.45, 1.5); kick(); }
     if (e.key === '+' || e.key === '=') { orbit.tR = Math.max(2.6, orbit.tR - 0.3); kick(); }
-    if (e.key === '-') { orbit.tR = Math.min(6.5, orbit.tR + 0.3); kick(); }
+    if (e.key === '-') { orbit.tR = Math.min(maxR, orbit.tR + 0.3 * (orbit.tR / 4)); kick(); }
   };
   let highlighted: string | null = null;
   const highlight = (id: string | null) => { highlighted = id; };
@@ -302,7 +310,8 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   };
 
   const render = (now: number) => {
-    const t = (now - t0) / 1000, ease = motion ? 0.14 : 1;
+    // Far camera moves (establishing shot, wide framing) glide slowly; close work stays snappy.
+    const t = (now - t0) / 1000, ease = motion ? (Math.max(orbit.r, orbit.tR) > 8 ? 0.035 : 0.14) : 1;
     let busy = false;
     const step = (a: number, b: number) => { const v = a + (b - a) * ease; if (Math.abs(b - v) > 1e-4) busy = true; return Math.abs(b - v) > 1e-4 ? v : b; };
     orbit.theta = step(orbit.theta, orbit.tTheta); orbit.phi = step(orbit.phi, orbit.tPhi); orbit.r = step(orbit.r, orbit.tR);
@@ -316,6 +325,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       const yaw = step(g.userData.yaw ?? p.yaw, p.yaw); g.userData.yaw = yaw;
       g.rotation.set(base.x, base.y + yaw, base.z);
     }
+    if (env?.update(1 / 60, motion)) busy = true;
     if (motion) { const blades = groups.get('fan')?.getObjectByName('blades'); if (blades && state?.installed.fan) { blades.rotation.x = t * 1.6; busy = true; } }
     if (ghost) {
       if (!drag) { const tgt = state?.pendingTarget ? new THREE.Vector3(...ANCHORS3D[state.pendingTarget]!) : ghostHome; ghostPos.lerp(tgt, motion ? 0.12 : 1); if (ghostPos.distanceTo(tgt) > 1e-3) busy = true; }
@@ -381,8 +391,10 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       setGhost(s.choosing ? s.selectedPart : null);
       if (s.qualified && !wasQualified && prev) sweep = 1;
       wasQualified = s.qualified;
-      if (s.focus === 'fan') orbit.tTarget.set(-0.6, 0, 0); else orbit.tTarget.set(0, 0.05, 0);
+      if (s.focus === 'fan') orbit.tTarget.set(-0.6, 0, 0); else if (s.focus === 'wide' && env) orbit.tTarget.set(-4, -2.5, 0); else orbit.tTarget.set(0, 0.05, 0);
       if (s.focus === 'fan' && prev?.focus !== 'fan') { orbit.tR = Math.min(orbit.tR, 3.6); orbit.tTheta = -0.9; }
+      if (s.focus === 'wide' && env && prev?.focus !== 'wide') { orbit.tR = 16; orbit.tTheta = -0.45; orbit.tPhi = 1.25; }
+      if (s.focus === 'overview' && prev?.focus === 'wide') orbit.tR = 4.4;
       kick();
     },
     faultMoment() {
@@ -392,6 +404,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       orbit.tTarget.set(-0.6, 0, 0); orbit.tR = 3.4; orbit.tTheta = -0.95;
       kick();
     },
+    react(kind) { env?.react(kind); kick(); },
     resize() { size(); kick(); },
     setMotion(on) { motion = on; kick(); },
     stop() {
@@ -399,7 +412,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       canvas.removeEventListener('pointerdown', onDown); canvas.removeEventListener('pointermove', onMove); canvas.removeEventListener('pointerup', onUp);
       canvas.removeEventListener('wheel', onWheel); canvas.removeEventListener('keydown', onKey); canvas.removeEventListener('webglcontextlost', lose);
       scene.traverse((o) => { if (o instanceof THREE.Mesh || o instanceof THREE.LineSegments) { o.geometry.dispose(); const mm = o.material; (Array.isArray(mm) ? mm : [mm]).forEach((x) => x.dispose()); } });
-      pmrem.dispose(); glowTex.dispose(); renderer.dispose();
+      env?.dispose(); pmrem.dispose(); glowTex.dispose(); renderer.dispose();
     }
   };
 }
