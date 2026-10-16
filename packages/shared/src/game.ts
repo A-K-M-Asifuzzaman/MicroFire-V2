@@ -95,3 +95,8 @@ export const missionDefinitions = [
   { id: 'claim-trial', mechanic: 'classify-and-correct', prerequisite: 'flame-detective', output: 'source-backed-argument' },
   { id: 'lunar-habitat', mechanic: 'identify-gaps-propose-test', prerequisite: 'claim-trial', output: 'provisional-case-report' }
 ] as const satisfies readonly { id: MissionId; mechanic: string; prerequisite: MissionId | null; output: string }[];
+
+export type TransitionCode = 'INVALID_ACTION' | 'UNAVAILABLE' | 'PREREQUISITE_MISSING' | 'WRONG_MISSION' | 'UNKNOWN_EXPERIMENT' | 'UNKNOWN_CLAIM' |
+  'NOT_INSPECTED' | 'NOT_AN_OBSERVATION' | 'WRONG_ANCHOR' | 'ALREADY_INSTALLED' | 'NOT_INSTALLED' | 'HAS_DEPENDENTS' | 'QUALIFICATION_FAILED' |
+  'NOT_QUALIFIED' | 'PREDICTION_REQUIRED' | 'UNSUPPORTED_DECISION' | 'COMPLETION_CRITERIA_UNMET' | 'LIMIT_REACHED' | 'SAVE_LIMIT_REACHED' | 'INVARIANT_VIOLATION';
+export type Fault = { partId: PartId; code: 'MISSING' | 'WRONG_ANCHOR' | 'MISSING_PREREQUISITE' | 'REVERSED'; message: string; repair: string };
