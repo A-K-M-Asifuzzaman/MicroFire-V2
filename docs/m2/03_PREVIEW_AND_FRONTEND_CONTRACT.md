@@ -1,229 +1,133 @@
-# Proposed local preview and frontend contract
+# Proposed local preview and frontend contract — correction candidate 2
 
-**Not implemented. Freeze with Astra before coding.** This adds `/api/game/preview/*` endpoints and a training coordinator; it does not change public feature availability or old research DTOs.
+**Every M2 field/endpoint in this document is PROPOSED, NOT IMPLEMENTED.** Existing research API v1, GameState v2 and Passport v1 remain authoritative at runtime. Previous planning commit: **02e0588ce0eca1ebdb71bac0d758caea2abd1fc2**. Candidate 2 addresses Astra C1–C4; Claude consumer review and Astra approval are still required before gameplay coding.
 
-## Authorization boundary
+## Single typed contract and compatibility
 
-A demo mode value, query parameter, localStorage edit, disabled-button removal, guessed URL or `isMissionAvailable` request field cannot unlock a mission. The pure callback already exported by game-core is not a security boundary. In the preview, the server alone owns session state, constructs the two-ID allowlist callback and invokes the core reducer.
+The complete candidate type surface is [fixtures/contract-types.ts](fixtures/contract-types.ts), including **TrainingTransitionResult**, diagnostic findings, every endpoint envelope, all errors and the local save slot. It is a documentation fixture only, has no implementation and is not exported by a workspace package. Future Sol-owned shared schemas must reproduce its types plus the refinements here. Type-only references to current Fault/TransitionCode are review scaffolding: move their runtime schema primitives to shared once, re-export compatibly from game-core, and avoid shared→game-core→shared runtime imports. Claude does not maintain a second domain schema.
 
-Proposed server-only configuration, all required and off by default:
+`TrainingTransition` is a pure function signature returning a TrainingCase and domain feedback/refusal. It has no Snapshot, cookie, HTTP, signing key, storage or Three.js dependency. It wraps existing `transition`, never implements another placement reducer. The HTTP adapter authorizes first, invokes this pure coordinator, derives projections and signs/serializes before committing. Existing caller signatures, GameState v2 fields and Passport v1 fields do not change.
 
-- `MICROFIRE_LOCAL_GAME_PREVIEW=1`.
-- `MICROFIRE_PREVIEW_ORIGIN=http://127.0.0.1:<dedicated-port>`; one exact loopback origin including port, not `*` or a remote host.
-- `MICROFIRE_PREVIEW_ACCESS_TOKEN`: operator-provided high-entropy secret, at least 32 random bytes encoded safely, never NEXT_PUBLIC, URL/query, logs, screenshots or Git.
-- `MICROFIRE_PREVIEW_SIGNING_KEY`: separate ≥32-byte server secret; stable across local restarts to verify saved checkpoints. Purpose-separated MACs for session cookies and checkpoints.
+## C1 — Request, diagnostic findings and scientific meaning
 
-A reviewed future launcher first runs the existing data-integrity validation, then binds the existing Next server to **127.0.0.1**, checks configuration and refuses known hosted deployment environments (including VERCEL). Do not activate these settings now. Do not reuse the unrelated 322f2c2 deployment commit. Existing Node production builds can be tested on a local-only listener; NODE_ENV alone is neither authorization nor a ban on local production-build tests.
+Exact command: `{"type":"RUN_DIAGNOSTIC"}`, wrapped in ActionRequest with runtimeId, sessionId, expectedRevision and commandId. It is allowed while assembly is active, including incomplete/player-faulted rigs before introduction, and through Passport review. It is a Training check, never a sensor measurement. Complete cases use GET to read the last projection; no new progression commands.
 
-Every preview request verifies exact configured Host/origin, disabled/hosted conditions and authentication as appropriate. Mutation Origin must match; CORS is not opened. Validate forwarding metadata rather than using it to infer authorization; Next may populate X-Forwarded fields even locally. No trust in a client-asserted peer IP. Host-only checking is insufficient: loopback binding **and** the operator secret/capability are required. Review this deployment exclusion before enabling preview; if loopback-only operation cannot be established, keep it disabled. No remote tunnel, proxy deployment or public-preview authorization is included.
+Successful ActionResponse includes **snapshot.diagnostic**, a discriminated union:
 
-POST authorize takes the token in JSON over the loopback origin. Compare in constant time using Node crypto; never retain the submitted token in client storage. After success clear the input and issue a signed HttpOnly, SameSite=Strict, Path=/api/game/preview cookie with a **60-minute** lifetime, bound to the origin and local operator realm. The local HTTP loopback cookie cannot use the `__Host-` prefix/Secure requirements that assume HTTPS; any later HTTPS design needs separate review. GET routes also require the cookie except the disabled capability probe. Logout revokes the cookie; disable configuration revokes all preview operations regardless of cookies/checkpoint signatures. Local XSS is outside a MAC's protection: maintain CSP/text rendering and do not present it as anti-cheat or multi-user account security.
+| status | Exact content / UI |
+|---|---|
+| not-run | currentSetupRevision; prompt to run Training check; no findings or hidden inferred answer |
+| current | checkedSetupRevision=currentSetupRevision; qualified; findings array (zero faults iff qualified=true) |
+| stale | checkedSetupRevision < currentSetupRevision; currentSetupRevision; no old findings represented as current; prompt to rerun |
 
-Authorization must be deliberately supplied by the operator through an unlogged local password input or an equivalently private Playwright environment secret. Tests exercise the actual authorize endpoint and obtain the actual cookie. No test-only auth bypass, `context.addCookies` fabrication or hard-coded funded/provider token. No Meshy key is involved.
+Each current finding contains stable `id=partId+":"+faultCode`, partId, faultCode, **symptom**, **interpretation**, **repair**, and **purpose**. Symptom category is `authored-training-observation`: e.g. “Training orientation marker points out of the duct.” Interpretation category is `educational-model-inference`: existing diagnostic message explaining why the model fails. Repair is the existing specific corrective instruction. Purpose category is `source-supported-apparatus-description`, with source text and canonical hardware citations. None of these findings is a historical B20 malfunction or a NASA measured velocity. Genuine historical observations remain exclusively in canonical B20 Passport/dossier content, not diagnostic findings.
 
-## Endpoint protocol
+Allowed fault vocabulary is exactly existing MISSING, WRONG_ANCHOR, MISSING_PREREQUISITE, REVERSED, paired with existing PartId values (maximum40 unique choices). Accepted reachable rigs cannot contain wrong-anchor/orphan states; those codes remain valid diagnostic/refusal vocabulary and corruption tests. REVERSED findings only occur on the five existing orientationFault components. A current projection is exactly `diagnose(state.setup.installedParts)` plus authored symptom/source-purpose metadata; the backend supplies all explanatory fields. Claude renders them, not its own scientific rule engine. Purpose locators: page12/printed4 for duct/fan/straightener/nozzle/still camera/exit plate; page13/printed5 for lever ignition, opposed/concurrent sample configurations, video continuation and uncalibrated radiometer explanation (include page12 when location is described there). No new catalog observation is created.
 
-All JSON has `apiVersion:"1"`, no-store/data-only headers and strict runtime schemas. Existing endpoints/ApiErrorSchema remain unchanged. New game endpoints receive their own typed error schema and version-1 preview contract. Unknown object fields fail; no raw client state is accepted on start/action.
+The injected fan immediately has a visible orientation marker, schematic direction arrow and “Authored training fault” notice; RUN_DIAGNOSTIC reveals the readable symptom and purpose. Guided mode may show the exact repair. Correct diagnosis is supported by visible information, not an undocumented answer. The fixed first slice has no investigator-mode setting or hidden scientific criterion.
 
-| Method/path | Request | Success | Failure / behavior |
-|---|---|---|---|
-| GET /api/game/preview/capability | none | Enabled local instance: `{enabled:true, authorization:"operator-token-required", previewId:"bass-b20-training-v1"}` | Disabled/hosted/invalid host: 404. Does not issue a grant or change registry |
-| POST /api/game/preview/authorize | `{approvalToken:string}` | `{authorized:true, expiresAt}` plus HttpOnly cookie | 403 PREVIEW_UNAUTHORIZED; 404 if disabled; body/media/rate guards apply |
-| POST /api/game/preview/revoke | `{}` | `{authorized:false}`; expires cookie | Same gating; reauth needed for mutations/resume |
-| POST /api/game/preview/start | `{previewId:"bass-b20-training-v1", mode:"demo"}` | New Snapshot; fresh `createGameState` + authorized START_MISSION station-arrival | 403/404; 503 if session capacity reached; reject client initialState/completed flags |
-| GET /api/game/preview/session/:sessionId | no query | Latest Snapshot for authorized local realm | 404 SESSION_NOT_FOUND after expiry/restart/unknown ID; use saved checkpoint resume |
-| POST /api/game/preview/action | ActionRequest below | Snapshot + domain result | Domain refusal: HTTP 200 `ok:false`, unchanged snapshot; stale command:409; transport/auth failures below |
-| POST /api/game/preview/resume | `{checkpoint:string, commandId:string}` | Verified/restored Snapshot, scientific lineage rechecked | 400 invalid/untrusted/unsupported checkpoint, 409 stale active head/dataset mismatch, 403 reauth, 413 oversized |
+Only **training.diagnosticRevision** persists, outside GameState v2. On RUN_DIAGNOSTIC set it to current setup revision, increment the session revision once, keep setup revision unchanged, derive findings. Repeated runs with a new expected revision are accepted checks, not new faults/achievements. After any rig edit the previous revision becomes stale; no stale findings are replayed as current. GET/resume rederive the union from saved state and checked revision; no duplicate findings array or validation flag is stored. Diagnosis is a separate player action: SUBMIT_DIAGNOSIS requires a current diagnostic showing the injected reversed fan and the fan still reversed. Missing/stale check → DIAGNOSTIC_STALE unchanged; no fault → FAULT_NOT_INTRODUCED; wrong part/category → accepted feedback.correct=false with bounded counts, no rig/qualification change. Correct diagnosis records faultyRevision/time once. It remains historical evidence through subsequent repair edits; a stale display does not erase it or force an impossible diagnosis of an absent fan. A second diagnosis after the first correct one is WRONG_PHASE, not extra progress.
 
-Reusing a signed checkpoint does not bypass authorization: both cookie and server configuration are still required. Expose only two permitted mission IDs in snapshot capabilities; do not return pretend availability for unfinished missions. Core mission prerequisites remain checked after the callback.
+Full examples: DIAGNOSTIC_REQUEST, DIAGNOSTIC_SUCCESS, DIAGNOSTIC_ERROR, STALE_DIAGNOSTIC_RESPONSE and WRONG_DIAGNOSIS_RESPONSE in fixtures. Contract proofs reject missing diagnostic, mismatched revisions/findings/qualified flag, wrong source category/locator, and false historical labels. None comes from an implemented API.
 
-Both new and old API handlers use the **same existing limiter instance per request class**, not a fresh game allowance or a per-request limiter. Preserve **300 GET / 30 POST per process per minute** and streaming **32,768-byte** request limit, content type and malformed UTF-8 checks. Refactor extraction of these helpers only through reviewed Sol-owned adapter work; do not raise the numbers. Start/auth/action/resume/revoke all consume POST budget. 429 retains Retry-After and no mutation; browser backs off instead of speeding retries. A new game response may exceed request size because it contains a snapshot and opaque checkpoint; enforce a separate conservative 64 KiB response budget in this adapter, without changing existing routes.
+## C2 — Reachability and repair receipts
 
-## Proposed TypeScript surface
+Training adds **pendingRepair: {faultId,partId:'fan',removedAtRevision,removedAt}|null**. It is bounded and outside strict GameState v2. Completed `repair` contains those fields plus reinstalledAtRevision/at. Detailed transition table and two-history proof are in [02](02_MISSION_AND_SCIENCE.md#c2--repair-transition-contract).
 
-This is the exact review candidate for typed callers. `GameState`, `GameAction`, part/mission IDs and Fault/TransitionCode refer to existing exports. Runtime Zod schemas must enforce the additional refinements described below. Do not paste these as competing frontend domain schemas.
+Core mode=demo/guidance=guided; completed prefix ≤two missions; activeMission null or one of them. No later predictions/classifications/proposals/decision. Only B20 inspected IDs and the two canonical mission entries are admitted; exact canonical conclusion/limitations/citations are composed/checked separately from citation-lineage validation. Source/hash/regime guards in02 remain. Every current Assembly entry/completion requires introduced fault, correct diagnosis, completed receipt, no pending repair, current qualification and deliberate B20 observation. Check on input/output/resume; MAC alone is insufficient.
 
-```ts
-import type { GameAction, GameState, PartId } from '@microfire/shared';
-import type { Fault, TransitionCode } from '@microfire/game-core';
+Revision invariants: introduction ≤ diagnosis.faultyRevision < pending removal ≤ setup revision; completed removal < reinstall ≤ setup revision; timestamps fixed UTC milliseconds and chronological. Pending requires introduced/diagnosed target, fan absent, repair null. Wrong reversed reinstall consumes/clears pending without awarding repair; another removal creates a fresh pending receipt. Other part edits preserve pending. First correct reinstall consumes pending and creates exactly one historical completed receipt; later edits cannot replace/duplicate it. A new currently healthy rig still needs current qualification. Receipt at revision14 never pretends to certify a later revision16.
 
-type PreviewId = 'bass-b20-training-v1';
-type FaultCode = Fault['code'];
-type Step = 'source-orientation' | 'assembly' | 'diagnostic-required'
-  | 'diagnosis-required' | 'repair-required' | 'qualification-required'
-  | 'b20-inspection-required' | 'passport-review' | 'complete';
-type CorePreviewAction = Extract<GameAction, { type:
-  'START_MISSION' | 'INSPECT_EVIDENCE' | 'COLLECT_EVIDENCE' |
-  'INSTALL_PART' | 'REMOVE_PART' | 'QUALIFY_INSTRUMENT' |
-  'OBSERVE_DOCUMENTED_RESULT' | 'COMPLETE_MISSION' }>;
-type TrainingAction =
-  | { type:'GAME'; action:CorePreviewAction }
-  | { type:'RUN_DIAGNOSTIC' }
-  | { type:'SUBMIT_DIAGNOSIS'; partId:PartId; faultCode:FaultCode }
-  | { type:'ADD_LEARNER_NOTE'; text:string };
+A core refusal preserves all state, metadata, revisions and checkpoint bytes. Accepted actions increment **session revision** once, irrespective of how many inner core calls occur; each accepted install/remove increments **setup revision**, including the two atomic fan-injection edits. Wrong diagnosis is an accepted training update; feedback does not make it a refused placement. Counts are safe integers: reserve one unit for a later correct choice, refuse only an overflowing wrong-count increment before mutation, never block correct diagnosis/repair on counters. No retry grade or attempt cap. Counter sums must not exceed session revision; the correct fan/REVERSED cell is at most1. Reserve a tested32-step completion suffix before admitting optional repeat/error/setup actions near safe-integer revision exhaustion; refuse those optional updates before consuming the reserve. Essential completion remains possible without wrapping.
 
-type DiagnosisChoice = { partId:PartId; faultCode:FaultCode; at:string };
-type Training = {
-  scenarioVersion:PreviewId;
-  fault:{ id:'training-fan-reversed-v1'; origin:'authored-training';
-    introducedAt:string; introducedRevision:number } | null;
-  diagnosticRevision:number | null;
-  diagnosis:{ at:string; faultyRevision:number } | null;
-  repair:{ removedAtRevision:number; reinstalledAtRevision:number; at:string } | null;
-  // Sparse list: unique (partId,faultCode), max 40 cells. Exact counts, no click log.
-  diagnosisCounts:{ partId:PartId; faultCode:FaultCode; count:number }[];
-  firstWrongDiagnosis:DiagnosisChoice | null;
-  lastWrongDiagnosis:DiagnosisChoice | null;
-};
-type TrainingCase = { state:GameState; training:Training };
-type CheckpointPayload = TrainingCase & {
-  checkpointVersion:1; previewId:PreviewId; sessionId:string; revision:number;
-  catalogSha256:string; rulesVersion:'m2-training-r1'; origin:string;
-};
-type EvidenceReview = {
-  status:'empty'|'lineage-verified'|'not-validated'|'rejected';
-  scope:'structure-and-citation-lineage-only'; certification:false;
-  catalogSha256:string;
-  entries:{ entryId:string; status:'lineage-verified'|'not-validated'|'rejected'; issues:string[] }[];
-};
-type Progress = {
-  step:Step; completedChecks:number; totalChecks:5;
-  allowedMissions:('station-arrival'|'bass-assembly')[];
-  allowedActionTypes:TrainingAction['type'][];
-  allowedCoreActionTypes:CorePreviewAction['type'][];
-  diagnosisReady:boolean; repairReady:boolean; qualificationReady:boolean;
-  nextInstruction:string;
-};
-type Snapshot = TrainingCase & {
-  previewId:PreviewId; sessionId:string; revision:number;
-  checkpoint:string; // base64url(payload UTF-8) + '.' + base64url(HMAC-SHA256)
-  progress:Progress; evidenceReview:EvidenceReview;
-  access:{ scope:'local-gameplay-preview'; expiresAt:string;
-    publicAvailabilityChanged:false; scientificApproval:false };
-};
-type ActionRequest = {
-  sessionId:string; expectedRevision:number; commandId:string; action:TrainingAction;
-};
-type TrainingCode = 'DIAGNOSIS_REQUIRED'|'DIAGNOSTIC_STALE'|'FAULT_NOT_INTRODUCED'
-  | 'REPAIR_REQUIRED'|'WRONG_PHASE'|'SCENARIO_MISMATCH'|'NOTE_LIMIT_REACHED'
-  | 'CHECKPOINT_LIMIT_REACHED'|'EVIDENCE_REJECTED';
-type DomainResult =
-  | { ok:true; feedback?:{ correct:boolean; hint:string }; snapshot:Snapshot }
-  | { ok:false; code:TransitionCode|TrainingCode; message:string;
-      faults?:Fault[]; snapshot:Snapshot };
-type HttpCode = 'INVALID_REQUEST'|'NOT_FOUND'|'PAYLOAD_TOO_LARGE'
-  | 'UNSUPPORTED_MEDIA_TYPE'|'RATE_LIMITED'|'INTERNAL_ERROR'
-  | 'PREVIEW_UNAUTHORIZED'|'SESSION_NOT_FOUND'|'STALE_SESSION'
-  | 'COMMAND_ID_REUSED'|'CHECKPOINT_UNTRUSTED'|'CHECKPOINT_VERSION_UNSUPPORTED'
-  | 'DATASET_MISMATCH'|'PREVIEW_CAPACITY';
-type Wire<T> = { apiVersion:'1'; data:T };
-type HttpFailure = { apiVersion:'1'; error:{ code:HttpCode; message:string; retryable:boolean } };
-type StartRequest = { previewId:PreviewId; mode:'demo' };
-type StartResponse = Wire<Snapshot>;
-type ActionResponse = Wire<DomainResult>;
-type ResumeRequest = { checkpoint:string; commandId:string };
-type ResumeResponse = Wire<Snapshot>;
-```
+## C4A — Local operator authorization lifecycle
 
-Progress intentionally exposes only the two literal mission IDs. IDs here must match existing IdSchema semantics; commandId/sessionId are bounded UUID-format strings (36 lowercase characters), not arbitrary TextSchema. All revisions/counts are nonnegative safe integers. Sparse diagnosis cells have unique part/fault pairs, positive counts, and a maximum of40 entries. Timestamps use existing ISO validation. MAC verification is server-only, constant-time, over the exact decoded payload bytes with a fixed purpose prefix `microfire-m2-checkpoint-v1\0`. Reject malformed base64url and oversize strings before decoding; do not attempt unsigned parsing as a fallback for progression.
+Off by default. All future server-only configuration required:
 
-`EvidenceReview` and `Progress` are derived response projections, **not stored proof**. Always recompute on resume and after mutations. The checkpoint stores one `state`, one training metadata object and provenance/version fields. Do not persist a second phase or completion boolean that can contradict them. Signed data is visible/base64-encoded, not encrypted: include no secrets or personal details.
+- MICROFIRE_LOCAL_GAME_PREVIEW=1;
+- MICROFIRE_PREVIEW_ORIGIN exactly `http://127.0.0.1:<dedicated-port>`;
+- MICROFIRE_PREVIEW_ACCESS_TOKEN: canonical base64url of32 random bytes, operator supplied;
+- MICROFIRE_PREVIEW_SIGNING_KEY: separate canonical base64url of32 random bytes;
+- MICROFIRE_PREVIEW_REALM_ID: stable lowercase UUID identifying this one local operator realm;
+- MICROFIRE_PREVIEW_KEY_ID: public bounded lowercase identifier, 1–32 ASCII characters.
 
-Pure coordinator proposal: `transitionTraining(current:TrainingCase, action:TrainingAction, catalog:Catalog, at:string): TrainingTransitionResult`. It takes no cookie, storage, network, Three.js or signing key. It invokes `transition` with a server-authorized invocation context (the HTTP layer has already authorized the request). The coordinator constructs a fixed station-arrival/bass-assembly availability callback; no user-configurable function enters its payload. New actions and metadata are versioned independently, outside strict GameState v2. The first slice stays guided; an investigator-mode control is deferred, though its eventual rules must be identical. Core transition result types remain source-compatible. The future runtime schema for core failure codes should be sourced once (review extraction/re-export from shared if necessary), not independently reinvented in Claude's UI.
+A future reviewed launcher validates data/configuration, rejects known hosted environments (including VERCEL) and binds Next to127.0.0.1. No proxy/tunnel/remote preview is supported; NODE_ENV alone is not the test. A production Node build can be tested locally. Every request verifies enabled/local conditions and exact Host. POST requires exact configured Origin; missing/null/foreign Origin is403. GET may omit Origin; reject it when present and different. Reject cross-site Sec-Fetch-Site; absent fetch-metadata headers do not confer access. Reject Forwarded; permit X-Forwarded-Host/Proto/Port only if absent or single exact configured host/http/port; X-Forwarded-For, if present, must be one loopback address (never authority). Pin the actual local Next behavior in HTTP tests; incompatible metadata keeps preview disabled, not relaxed. The existing GET dispatcher must retain Request headers/cookies, not only path/URL. Every protected read/mutation checks authorization before returning cached data.
 
-## Reachability refinements
+Only someone possessing the operator token can authorize; no existing account system is claimed. They enter it in an unlogged local password field. POST authorize parses/bounds/constant-time compares decoded equal-length32-byte values, then creates a **random32-byte opaque grant** in server memory. Cookie `microfire_m2_grant` is host-only, Path=/api/game/preview, HttpOnly, SameSite=Strict, Max-Age=3600, **Secure=false only for this exact HTTP loopback contract**. No Domain, no __Host- prefix. HTTPS/public operation needs separate review. Store a hash of the opaque grant with realm/origin/runtimeId, issued/expiry times; not a client-supplied actor or authorization flag. All testers intentionally share one realm/case namespace, not private user accounts. At most8 grants, absolute60min expiry, no sliding refresh. A repeated authorize with an existing valid cookie returns that grant's current expiry rather than allocating another; authorization never creates a mission. If an authorize response and its cookie are lost, a new grant may be issued; the abandoned grant expires and cannot duplicate gameplay.
 
-The wrapper validator requires core mode=demo, dataset/hash/preview/rules/origin matches, and a completed prefix of at most station-arrival/bass-assembly. An active mission must be null or one of those two IDs. Predictions, classifications, proposals and decision remain empty/null in this episode; no later mission state is imported. Core setup consistency and current entry/revision invariants still apply. Training fault/diagnosis/repair revisions cannot exceed the core setup revision; repair removal must follow introduction and reinstall must follow removal. No diagnosis/repair receipt exists before a fault. Current B20 Assembly evidence requires qualification and the required diagnosed/repaired fault; completion requires that evidence and the existing station prerequisite. Enforce these checks on action input, output and resume; a MAC does not replace schema/invariant validation.
+Revoke removes the presented grant from the server map and clears the cookie with identical path. An absent/revoked/expired cookie may call revoke idempotently (200 authorized:false, no protected data); all other protected endpoints return403 PREVIEW_UNAUTHORIZED. Copied revoked grants fail too. Logout preserves cases/checkpoints. Browser cookie loss → deliberate reauthorization and GET/resume, no auto reset. Runtime disable immediately blocks routes404 and drops grants; configuration/key/token/realm changes require restart. Restart creates a fresh runtimeId and empty grants, so all old cookies fail, including after disable/re-enable. Token rotation alone leaves signed checkpoints recoverable if key/realm/origin/rules unchanged; signing-key rotation uses a new keyId and makes old tokens read-only. No old-key verification ring or automatic re-sign migration is included.
 
-## Phase/action table
+No secret in NEXT_PUBLIC, URLs, bundles, logs, traces or storage. Browser receives only the access token typed by the operator, then clears the input; signing key never enters JS. The auth cookie is not the checkpoint and is not MAC-based. SameSite + exact POST Origin + local binding + secret grant are cumulative CSRF boundaries; a localhost URL or browser demo flag grants nothing. A stolen live grant can be replayed until revocation/expiry: this is a bearer capability, not protection from same-origin XSS or a hostile local OS user. Preserve CSP/text rendering and bounded unauthenticated request/rate checks. No funded/provider token is involved.
 
-The coordinator validates **every** request, including actions listed as allowed by an earlier snapshot. A stale HUD does not authorize an action. All core actions remain wrapped as GAME; arbitrary GameAction union members are rejected in this episode.
+## Endpoint protocol and typed errors
 
-| Derived step | Commands allowed / guard | Result |
+All responses use Wire/HttpFailure with apiVersion1 and existing no-store/data-only security headers. Requests do **not** carry apiVersion (same convention as current API). Strict schemas reject unknown fields. Keep shared300 GET/30 POST per process/min and streamed32,768 actual UTF-8-byte body guard, even for auth/retries. Authentication occurs before protected cache lookup; rate limits apply before expensive parsing. No alternate allowance or mocked grant.
+
+| Method `/api/game/preview/…` | Proposed request | Successful data / failures |
 |---|---|---|
-| source-orientation | GAME INSPECT_EVIDENCE B20, COLLECT_EVIDENCE canonical claim, COMPLETE_MISSION station-arrival; after completion START_MISSION bass-assembly | Existing source proof; assembly active; never auto-seed completed IDs |
-| assembly | INSTALL_PART, REMOVE_PART, RUN_DIAGNOSTIC | Existing physical constraints; correct ten-part build atomically injects fan fault once |
-| diagnostic-required | RUN_DIAGNOSTIC; non-injected-part setup edits allowed | Current faulty revision captured; no fan repair until diagnosis |
-| diagnosis-required | SUBMIT_DIAGNOSIS after current diagnostic; RUN_DIAGNOSTIC; non-injected-part edits | Wrong diagnosis accepted with feedback false/count update; correct fan fault enters repair-required |
-| repair-required | REMOVE_PART fan then INSTALL_PART fan correct; other repairs; RUN_DIAGNOSTIC | Existing reducer handles rig; repair receipt only for actual identified fan correction |
-| qualification-required | QUALIFY_INSTRUMENT; setup edits and RUN_DIAGNOSTIC | Requires required fault+diagnosis+repair and zero current faults; edits always revoke qualification |
-| b20-inspection-required | OBSERVE_DOCUMENTED_RESULT B20, RUN_DIAGNOSTIC, setup edits | On source binding + qualifiedRevision, one current assembly Passport entry; edits return to checks |
-| passport-review | ADD_LEARNER_NOTE; COMPLETE_MISSION bass-assembly; diagnostic read | Source proof already exists; canonical caveats unchanged; no more rig edits in this episode |
-| complete | Session GET, Save/download/reload; no further progression command except idempotent repeat of completed command | Readable final case; explicit new start creates a distinct case after backup prompt |
+| GET capability | none | CapabilityResponse: enabled,true token-required, previewId,runtimeId;404 disabled/invalid-host. No grant |
+| POST authorize | AuthorizeRequest approvalToken | AuthorizeResponse plus real cookie;403 invalid;503 grant capacity |
+| POST revoke | exact empty object | RevokeResponse authorized:false; idempotent grant deletion |
+| POST start | StartRequest runtimeId, caller UUID sessionId, previewId, mode:demo, commandId | StartResponse revision0 after core station start;409 runtime/case-ID conflict;503 case capacity |
+| GET session/:sessionId | UUID, no query | StartResponse latest projection;403 grant;404 lost/expired/unknown case |
+| POST action | ActionRequest runtimeId,sessionId,expectedRevision,commandId,action | ActionResponse;200 unchanged domain refusal;409 stale/runtime/request-identity conflict |
+| POST resume | ResumeRequest runtimeId,checkpoint,commandId | ResumeResponse;400 untrusted/version;409 active-head/dataset; key-unavailable400;403 reauth;413 oversize |
 
-If all parts are present but player-generated orientation faults remain before scripted introduction, assembly/diagnostic feedback allows their repair without claiming the required introduced fault is done. Qualification returns FAULT_NOT_INTRODUCED until the correct-build trigger has run. Diagnosis tied to an earlier setup cannot authorize a different fault; recompute/require current diagnostic. Progress derivation checks existing current Passport entries, core mission status, qualification and training receipts in that order, and must be a tested pure projection.
+RuntimeId/sessionId are lowercase UUIDs,36 characters; sessionId is a caller-chosen **identifier only**, not source state or authority. commandId is64 lowercase hex. All counts/revisions/generations safe integers; emitted timestamps exactly24 characters from toISOString(), years0000–9999, milliseconds. New source-note limits and Unicode rules in04 apply. Http errors:400 INVALID_REQUEST/CHECKPOINT_UNTRUSTED/CHECKPOINT_VERSION_UNSUPPORTED/CHECKPOINT_KEY_UNAVAILABLE;403 PREVIEW_UNAUTHORIZED;404 NOT_FOUND/SESSION_NOT_FOUND;409 STALE_SESSION/COMMAND_ID_REUSED/RUNTIME_CHANGED/CASE_ID_REUSED/DATASET_MISMATCH;413 PAYLOAD_TOO_LARGE;415 UNSUPPORTED_MEDIA_TYPE;429 RATE_LIMITED with Retry-After;503 PREVIEW_CAPACITY;500 INTERNAL_ERROR generic/no secret. Only429/503 have retryable:true;500 is ambiguous, so GET/reconcile first. A valid grant with wrong runtime gets409, while an expired grant always gets403 before that. A checkpoint with altered rules/origin/realm is400 CHECKPOINT_UNTRUSTED; altered dataset/hash is409 DATASET_MISMATCH. None is permission to discard raw progress.
 
-## Transaction and retry semantics
+## C4B — Checkpoint serialization and lifecycle
 
-Server session map holds at most **8 active sessions**, each ≤20 KiB decoded payload; expire idle sessions after **60 minutes**. It is a single-process local preview store, not a distributed database or deployment architecture. Bind sessions to the authorized local operator realm. No arbitrary user/account identifier or PII is collected.
+CheckpointPayload v1 contains exactly one TrainingCase, sessionId/revision, pinned catalog hash, rulesVersion **m2-training-r2**, origin, realmId, keyId, issuedAt, **expiresAt:null**, and lastCommand `{endpoint:'start'|'action',commandId,expectedRevision}`. No grant, runtimeId, local generation, request body, diagnostic findings or persisted validation projection. lastCommand is one bounded commit receipt, not full idempotency history. Start has expectedRevision:null; action receipt has expectedRevision=payload.revision−1. These fields are versioned wrapper additions, not GameState v3. Candidate1 r1 examples were unpublished planning fixtures: do not silently migrate them into r2 trusted progress.
 
-Serialize each session's action handling. Compare expectedRevision to current revision before reducing. Same commandId + SHA-256 digest of the exact serialized request body bytes as the latest processed command returns the cached exact result without reapplying; same ID with another body returns 409 COMMAND_ID_REUSED. Older unknown command IDs with stale revision get 409 STALE_SESSION. A client sends only one in-flight command, retries the same commandId/body after ambiguous network failure, and GETs the session before sending a new command. This needs only a bounded latest-command receipt; it is not unlimited idempotency history.
+Canonical JSON for signing/intent hashing: JSON-compatible plain values only; recursively sort object keys by ASCII order; retain array order; serialize strings with JSON.stringify **without normalization**; reject lone surrogates, undefined, nonfinite/fractional/unsafe numbers, nonplain objects and duplicate JSON member names at the request boundary. IDs/text/timestamps have explicit bounds. UTF-8 encode the resulting compact JSON. Sign `microfire-m2-checkpoint-v1\0` followed by those exact bytes with Node HMAC-SHA256. Token=`base64url(payload)+'.'+base64url(mac)`, canonical unpadded alphabet, exactly two segments and43 MAC characters. Bound encoded size before decode; timingSafeEqual equal-length32-byte MACs; reject noncanonical JSON/base64, trailing bytes or malformed UTF-8. Existing research JSON parsing is unchanged; the preview's stricter duplicate-member check is a new adapter acceptance requirement.
 
-All inner core calls, metadata updates, evidence validation, budget checks, checkpoint signing and response serialization finish **before** committing the candidate to the session map. No partial install/injection or Passport append is committed on failure. A fully rejected command leaves state/training/revision/checkpoint unchanged. Transport failures never change it. Wrong diagnosis is an explicit **accepted** training update with feedback false; revision advances once. Placement domain refusals are unchanged-state results; their coaching feedback is transient, not persisted through a purported rejection. Persistent rejected-placement analytics would need a separately reviewed accepted action; none is proposed here.
+issuedAt is server time of this committed version, unchanged on GET/resume/duplicate; expiresAt is intentionally null. Authorization expires in60min; compatible checkpoints do not expire scientific evidence by clock. Enforce issuedAt/core timestamps chronology; no fabricated future receipt, tolerance ≤5min for local clock drift, otherwise preserve read-only until clock/review correction. Only current configured keyId verifies; rotation/loss means CHECKPOINT_KEY_UNAVAILABLE/read-only/raw export. Realm/origin/rules/catalog mismatches cannot auto-import. A signature proves server issuance, not scientific truth, player reading, or current authorization. Structure/reachability/canonical-content/lineage checks precede restoration; runtime loss may explicitly resume an older **saved** valid checkpoint, not certify anti-rollback achievements.
 
-GET returns latest signed checkpoint; local Save writes that token, not speculative client state. A new authorized action rechecks cookie expiry even when session exists. Runtime disable/reauth leaves saved data readable for recovery but stops mutation. No automatic resubmission queue or retroactive claim of saved progress.
+## C4C — Request identity, retries and bounded state
 
-## Failure contract
+All three gameplay POSTs bind to **runtimeId**. Define intent as `{endpoint:'start'|'action'|'resume',request:<entire request excluding commandId>}`. commandId=lowercase hex SHA-256 of canonical intent JSON as defined above. The browser uses Web Crypto, the server Node crypto; fixed vectors in proofs. No caller-selected random idempotency UUID is used. Reordered JSON keys give the same intent; unknown/duplicate fields are invalid. A supplied ID whose intent digest differs returns409 COMMAND_ID_REUSED before dispatch, even after cached-response eviction. This collision resistance is ordinary SHA-256, not a claim of information-theoretic uniqueness. Expected revision and runtime are part of identity, so the same action at a different revision is deliberately a different command. The extra64-char ID is not a credential. Clients retain the exact request until resolved; never regenerate runtime/revision automatically after an ambiguous timeout.
 
-| Status | code | Client action |
-|---:|---|---|
-| 400 | INVALID_REQUEST | Keep current snapshot/input; show schema error; do not cast unknown response |
-| 400 | CHECKPOINT_UNTRUSTED / CHECKPOINT_VERSION_UNSUPPORTED | Preserve/download exact raw value; do not trust progress; existing save remains |
-| 403 | PREVIEW_UNAUTHORIZED | Preserve checkpoint; reauthorize deliberately, then GET/resume |
-| 404 | NOT_FOUND / SESSION_NOT_FOUND | Disabled preview or lost local runtime session; inspect capability or resume saved signed checkpoint after authorization |
-| 409 | STALE_SESSION / COMMAND_ID_REUSED | GET current; resolve competing tab/state; never blindly replay with a new ID |
-| 409 | DATASET_MISMATCH | Read-only recovery; no automatic catalog rewrite or re-signing |
-| 413 | PAYLOAD_TOO_LARGE | Preserve raw payload, explain 32 KiB boundary; no “invalid scientific evidence” label |
-| 415 | UNSUPPORTED_MEDIA_TYPE | Correct client request encoding; unchanged state |
-| 429 | RATE_LIMITED | Respect Retry-After; retain command ID for an uncommitted request |
-| 503 | PREVIEW_CAPACITY | Keep checkpoint; close/expire another local case or retry later |
-| 500 | INTERNAL_ERROR | Safe generic text, no stacks/secrets; GET last state before deciding retry |
-| 200 domain false | Core code or TrainingCode | Show exact guidance/faults; snapshot is unchanged; recovery stays available |
+| Endpoint | Identity, expected revision, duplicate and replay semantics |
+|---|---|
+| start | Caller creates one fresh session UUID and retains it with the request. Under a realm-level create lock, absent case creates revision0 and stores its start-intent digest. Same ID/body returns the **latest** case snapshot without resetting it; same case ID/different start intent → CASE_ID_REUSED. Idle eviction retains a tombstone/start digest until process restart: duplicate start returns404 SESSION_NOT_FOUND and **cannot recreate/reset the case**. Resume its signed checkpoint or deliberately choose a new case ID. Client never automatically retries start after known eviction/restart or loss of intent. Runtime change prevents old start reexecution after process loss. Empty orphan cases count toward8 and expire; no hidden close/reset endpoint |
+| action | Serialize per case. Authenticate/config/body digest first. If same latest accepted command receipt and head revision=expected+1, return cached feedback and existing head with **fresh access projection**; do not reapply. Then require expectedRevision=current or409 STALE_SESSION. Refusals are deterministic/unchanged and can be recomputed without mutating on repeat. An older accepted command necessarily has stale expected revision and cannot execute again. One latest accepted response retained, ≤64KiB per case; old result history not promised. Each accepted action, including a wrong diagnosis or repeated check, increments session revision once. Persist lastCommand with the new checkpoint. If receipt-only feedback is lost on restart, new runtime forces reconciliation, not action replay |
+| resume | Authenticate, verify checkpoint and intent, then serialize creation/head check by embedded sessionId. Absent head reconstructs exactly embedded state/revision/checkpoint, records start identity as unknown (later start on that ID conflicts). Present identical revision+token returns current projection idempotently; equal revision/different token or older/newer incompatible token → STALE_SESSION, never overwrite a live head. A checkpoint **ahead** of a live head is also a conflict, not client authority to jump it. No session revision increment or re-sign on resume. Duplicate resumes return same head under fresh access; intervening action makes old resume stale. No separate unlimited resume cache needed |
 
-## Concrete request/response examples
+Session map ≤8 active cases, payload≤20KiB each, latest action receipt≤64KiB per case, idle TTL60min. Keep at most256 issued-case UUID/start-digest tombstones per runtime (including evicted cases); never evict tombstones to admit another start. At256 return503 PREVIEW_CAPACITY; explicit operator restart/new runtime is required for more fresh cases. A valid checkpoint can restore an evicted issued case without resetting it; resumed unknown cases consume a tombstone slot with start digest unknown. This bounds identity retention while preventing a delayed start from recreating a lost case. Grants≤8 with60min absolute expiry. Deduplication **after authorization, before stale rejection** for the latest accepted command is mandatory. Hashing the complete intent provides same-ID/different-body detection without an unbounded collision ledger. Start and resume creation use one realm mutex; action uses its case lock; lock order realm→case, never inverse. Revocation/expiry checked again immediately before candidate commit under the authority/commit synchronization boundary; an action committed before logout linearizes before revoke, an action afterward is denied. Disable/key changes restart rather than racing in-place mutation.
 
-Valid start request (after real authorize/cookie):
+| Event | Required client behavior, all endpoints |
+|---|---|
+| Timeout/non-JSON/500 | Treat commit as unknown. Preserve request/checkpoint; GET known case. Same-runtime start/action can retry exact intent after reconciliation; resume repeats same token. No new session/command guessed |
+|409 | Keep input and both known revisions. GET/capability; reconcile. COMMAND_ID_REUSED is a client/canonicalization defect, never auto retry. RUNTIME_CHANGED → reauth/explicit resume, not replay old actions. STALE_SESSION → use current head, do not auto recast old command at new revision |
+|429 | Wait Retry-After, preserve same intent; retry after GET if another tab may have advanced. Rate budget includes repeats |
+|403 | Deliberately reauthorize. If same runtime, GET and recover/retry identical intent. New runtime → resume saved token. No progress deletion |
+|503 | Wait/retry same intent after capacity resolves; no IDs changed to evade limits |
+|400/413/415 | No automatic retry; correct transport/input or use raw recovery. Refusal must leave previous head intact |
+| Restart/lost receipt | Reauth, obtain new runtimeId, GET404 then explicitly resume last saved token. Its lastCommand tells whether the saved version includes an ambiguous action. Unsaved server-only progress can be lost if process also died. Never promise exactly-once across process loss |
+| Out-of-order response | Apply only matching current runtime/session/request identity and nondecreasing confirmed revision. Same revision/different checkpoint is conflict. Persist via04's generation/lock gate; a stale response cannot overwrite a newer local slot. Preserve rejected response for inspection/download |
 
-```json
-{"previewId":"bass-b20-training-v1","mode":"demo"}
-```
+All candidate reducer/metadata/source checks, signing and full response-schema/byte validation finish **before** session commit. Precommit transport/refusal errors do not mutate. Losing a response **after commit** can leave accepted progress on the live server; GET/idempotency recovers it. These are distinct outcomes, not a universal “transport failures never change state” promise.
 
-Valid placement uses the existing anchor, not a 3D coordinate:
+## Derived phase/action guards
 
-```json
-{"sessionId":"11111111-1111-4111-8111-111111111111","expectedRevision":4,"commandId":"22222222-2222-4222-8222-222222222222","action":{"type":"GAME","action":{"type":"INSTALL_PART","partId":"fan","anchorId":"duct-inlet","orientation":"correct"}}}
-```
+| Step | Allowed semantic commands / guards |
+|---|---|
+| source-orientation | B20 INSPECT_EVIDENCE, canonical COLLECT_EVIDENCE, COMPLETE station; START assembly only after real prerequisite |
+| assembly | INSTALL/REMOVE, RUN_DIAGNOSTIC; first zero-fault ten-part rig triggers one atomic injection |
+| diagnostic-required | RUN_DIAGNOSTIC, non-injected-part edits; fan removal denied DIAGNOSIS_REQUIRED |
+| diagnosis-required | current SUBMIT_DIAGNOSIS, RUN_DIAGNOSTIC, other edits; edits stale diagnostic, preserve known historical diagnosis only once earned |
+| repair-required | fan REMOVE/INSTALL + other repairs + diagnostic; pending receipt persisted; no qualification until completed repair and healthy current rig |
+| qualification-required | QUALIFY + setup edits/checks; all faults block; no auto source observation |
+| b20-inspection-required | explicit B20 OBSERVE_DOCUMENTED_RESULT, setup edits/checks; edit revokes qualification |
+| passport-review | bounded ADD_LEARNER_NOTE, COMPLETE assembly, diagnostic; no rig edits or repeated observation entry |
+| complete | GET/save/read/resume; identical old command recovery only, no fresh progression actions |
 
-Wrong-anchor variant with `anchorId:"duct-exit"` yields HTTP 200 data `{ok:false,code:"WRONG_ANCHOR",message:<core guidance>,snapshot:<unchanged authoritative Snapshot>}`. This is a response-shape description. The complete proposed response and matching request are in fixtures/WRONG_ANCHOR_RESPONSE.example.json and fixtures/WRONG_ANCHOR_REQUEST.example.json; the full proposed start response is fixtures/START_RESPONSE.example.json. They use real existing-core state and a clearly public test-only MAC key, not an implemented API or an authorization bypass.
+Progress exposes only the two mission IDs, permitted action *types*, current eligibility and a bounded nextInstruction. It is guidance, never authority. Every request is rechecked on the server.
 
-Complete HTTP error examples:
+## Consumer routes and ownership
 
-```json
-{"apiVersion":"1","error":{"code":"PREVIEW_UNAUTHORIZED","message":"Local preview authorization is required.","retryable":false}}
-```
+Proposed `/missions/station-arrival?preview=bass-b20-training-v1`, `/missions/bass-assembly?preview=…`, `/passport?profile=m2-preview` select presentation only. Default mission routes retain Coming Soon; public registry stays unchanged. The preview profile reads only04's isolated slot. Show “Local training preview”. No callback, localStorage or client boolean authorizes play.
 
-```json
-{"apiVersion":"1","error":{"code":"STALE_SESSION","message":"This case changed. Reload its current state before continuing.","retryable":false}}
-```
+Claude's future controller lives in apps/web/game, schema-checks every response, retains HTTP code/error/Retry-After and serializes mutations. Current research `callApi` drops error.code and `useLatestRequest` aborts older requests; neither may be used unchanged for these writes. 2D/3D share one confirmed Snapshot; per-frame movement stays local, named anchor/orientation commands commit only after server confirmation. Missing mesh/context loss yields playable2D, not a new state machine.
 
-Forbidden extra fields `{...,"isMissionAvailable":true}`, normal mode start, other episode IDs and later mission START actions fail; none can relax the core gate. A client-supplied `snapshot`, `qualifiedRevision`, `validation:true` or completed mission list on action/start is rejected, not merged.
-
-A future fixture factory must use a deterministic test clock/IDs and private test-only signing key, call the real coordinator/API, then parse the **entire** Snapshot/ActionResponse with shared schemas. Required fixtures: fresh source step; complete rig before fault injection (internal only); injected fan; wrong diagnosis; diagnosed/unrepaired; repaired/unqualified; qualified; B20 Passport review; complete; stale/corrupt/unknown-reference checkpoints. No fake MAC constant or unguarded fixture endpoint is part of the product.
-
-## Claude controller and route handoff
-
-Use one controller in `apps/web/game`, fed only by schema-checked Snapshots. Proposed entry surfaces are `/missions/station-arrival?preview=bass-b20-training-v1` and `/missions/bass-assembly?preview=bass-b20-training-v1`; query strings select the UI shell only. They do not authorize the API, pass a callback or change public registry state. A guarded local authorization form obtains the actual cookie before start. Default mission routes retain their current Coming Soon content.
-
-`/passport?profile=m2-preview` explicitly selects the isolated preview checkpoint reader; the default `/passport` continues reading the existing normal profile. A user-visible “Local training preview” label is mandatory. The profile query is not a grant: resumed progression still needs authorization/MAC validation. Reuse/refactor the accepted canonical-source/learner separation and per-entry recovery presenter in passport-preview.tsx rather than introducing a second Passport implementation. Do not write the preview into the normal key just to make the old reader show it.
-
-Existing `components/client-api.tsx` cannot be used unchanged for game transport: `callApi` parses the old ApiErrorSchema and discards machine error codes, while `useLatestRequest` aborts superseded requests. Claude should implement the small typed game transport/controller in `apps/web/game/client.ts`, parsing the new endpoint-specific success/error schemas and retaining HTTP status, error.code, message and Retry-After. Keep research callers unchanged. Mutating commands use **one in-flight request**, exact-body/command-ID retry and GET reconciliation, not latest-request-wins cancellation. Native same-origin fetch sends the HttpOnly cookie; never read it into JS. The existing Passport validator call can still use the old helper/schema.
-
-2D/3D adapters emit the same TrainingAction when a placement is committed. Pointer movement, hover, lighting, camera transforms and interpolation stay local visual state; never POST on animation frames. A drag maps to an existing named anchor/orientation; core result determines committed pose. Keyboard supplies the same select→anchor→orientation→install commands, focus feedback and repair actions. Renderer switching reads the same Snapshot without restarting, qualifying or modifying evidence. A rejected placement restores the last confirmed pose; an ambiguous response shows pending/recovery rather than a guessed success.
-
-## Compatibility / proposed files
-
-- Add reviewed schemas/types under `packages/shared/src/training.ts`, re-export in shared index; no existing strict v2 or Passport field changes. New game HTTP schema is endpoint-specific; existing research consumers continue parsing their existing responses.
-- Add pure coordinator/progress projection under `packages/game-core/src/training.ts`, with narrow existing-core reuse, not a second reducer for part placement.
-- Add server-only adapter under `apps/web/lib/game-preview.ts` and reviewed dispatch in existing API route/helper. Shared limiter/body-parser extraction stays behavior-preserving. No second API service or new dependency required; Node crypto supplies MACs/random IDs.
-- Add preview persistence adapter beside game-core persistence using SaveStorage; expose no signing key to the browser. It validates/delegates core state loading, never substitutes validation flags from storage.
-- Claude's future `apps/web/game` adapter uses these shared schemas and one controller for 2D/3D. Proposed filenames are an ownership map, not files created by this planning commit.
+Sol authors shared DTO/schema definitions and pure/domain/local-save admission rules, server-only API/crypto and validation. Claude authors browser transport, Web Locks/localStorage adapter/controller, UI and controls after reviewed contract freeze. No signing module may enter client barrels. The focused handoff is [09_CLAUDE_CONSUMER_HANDOFF.md](09_CLAUDE_CONSUMER_HANDOFF.md); it grants review only, not implementation approval.

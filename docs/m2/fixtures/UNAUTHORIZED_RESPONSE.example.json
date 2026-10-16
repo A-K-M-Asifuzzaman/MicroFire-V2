@@ -2,7 +2,7 @@
   "apiVersion": "1",
   "error": {
     "code": "PREVIEW_UNAUTHORIZED",
-    "message": "Local preview authorization is required.",
+    "message": "Authorize this local preview before reading, changing or resuming a case.",
     "retryable": false
   }
 }

@@ -1,0 +1,9 @@
+{
+  "apiVersion": "1",
+  "data": {
+    "enabled": true,
+    "authorization": "operator-token-required",
+    "previewId": "bass-b20-training-v1",
+    "runtimeId": "33333333-3333-4333-8333-333333333333"
+  }
+}

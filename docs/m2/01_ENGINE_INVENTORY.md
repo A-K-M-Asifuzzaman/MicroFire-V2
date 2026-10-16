@@ -1,6 +1,6 @@
 # Existing engine inventory
 
-All observations refer to b6d15a47ec25f57350896f1dc63dc59192f57b00. “Implemented” here means backend code exists. It does not imply frontend integration, end-to-end gameplay or release approval.
+All observations refer to b6d15a47ec25f57350896f1dc63dc59192f57b00. Candidate2 adds no engine implementation; corrected proposed diagnostics/receipts/storage/auth live in03/04 and the planning fixtures. “Implemented” here means backend code exists. It does not imply frontend integration, end-to-end gameplay or release approval.
 
 ## Reuse map
 
@@ -56,8 +56,8 @@ Use imported `GameAction` / `GameActionSchema`, not parallel frontend definition
 
 - Server-authorized local preview and explicit two-mission allowlist. Existing `options.isMissionAvailable` is a pure testing seam, not authentication. Never expose callback control in an HTTP payload.
 - Pure coordinator, `transitionTraining`, enforcing the authored episode sequence, one deterministic introduced fan fault, diagnostic/repair prerequisites and B20-only binding. Calls the existing reducer for installations, removal, qualification, source collection and mission completion.
-- Structured bounded training summary (fault/diagnosis/repair and choice counts), recoverable note editing boundary and preview checkpoint provenance. This metadata is currently absent.
-- API adapter with session serialization, expected-revision checking, idempotency and safe checkpoint resume. Do not trust client-supplied completed missions, activeMission or validation booleans.
+- Typed derived diagnostic findings, explicit bounded pending/completed repair receipts and training choice counts, recoverable note editing boundary and preview checkpoint provenance. This metadata is currently absent.
+- API adapter with revocable opaque grants, session serialization, expected-revision checks, canonical intent IDs, start tombstones and signed resume; locked browser saves use a separate epoch/generation. Do not trust client-supplied completed missions, activeMission or validation booleans.
 - Claude's real apparatus manipulation/HUD, training-vs-source presentation, earned Passport and persistence controls. 2D and 3D share backend state and command vocabulary.
 
 No proven current reducer transition needs to be rewritten for the two-step B20 slice. The coordinator must add missing guards; existing core behavior remains the reusable authority for mechanics. If implementation discovers a core defect, isolate and review a tested correction before integration.

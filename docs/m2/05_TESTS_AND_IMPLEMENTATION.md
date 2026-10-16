@@ -1,5 +1,7 @@
 # Implementation ownership, fixtures and acceptance
 
+**Candidate2: documentation/proof fixtures only; consumer review and Astra approval are pending.** The four changes are frozen as proposals in03/04, not shipped contracts.
+
 ## Responsibility and start conditions
 
 | Area | Sol | Claude | Astra / gate |
@@ -71,3 +73,14 @@ Required browser evidence: desktop1440×900, widths768/390/320, keyboard-only co
 ## Vertical-slice acceptance statement
 
 A reviewer must be able to reproduce the whole loop with actual controls and real local APIs, without editing storage, opening all missions, mocking scientific validation or supplying fake completion state. A source-bound Passport must survive save/reload with the same training fault/repair history and canonical limitations. After a refused action or failed network/save, the last valid progress remains recoverable. 2D must remain fully playable without WebGL. Passing unit tests or attractive scene screenshots alone cannot satisfy this gate.
+
+
+## Candidate2 adversarial contract proofs and implementation gates
+
+Run `node --import tsx docs/m2/fixtures/verify-contracts.ts`. This uses current core transitions, signed public-key examples and explicitly abstract receipt/storage/auth/retry models. It is not a preview service, browser adapter, coordinator or E2E test. Regenerate documentation examples only with `--write`; ordinary proof execution is read-only. Type-check all literals and the full planning type surface, including the pure result signature. See07 for actual results and scope.
+
+Twenty numbered proof groups cover usable diagnostic/source output and negative mutations, both repair histories and pending round-trips, reversed/duplicate repair, locked save orderings and old/new crash assumptions, stale resume/case/tombstone/epoch, grants expiry/revocation/restart, key/scope tamper, full intent IDs, start tombstones, action/resume retry decisions, out-of-order/error vectors,1,000 wrong attempts and byte/Unicode/science invariants. These **do not replace** runtime tests in the original twenty-area matrix.
+
+Future acceptance must additionally exercise: actual Web Locks with two tabs/workers; busy/no-lock fallback; crash before/after setItem; unknown raw + raw-bound discard into a new epoch; quota/read-back exceptions; delayed start after idle eviction cannot recreate a case;256-case tombstone capacity; real grant copy/revoke/reauth; wrong/missing/null Origin and exact Next forwarding metadata; duplicate JSON members; canonical bytes across Node/browser; auth expiry racing with commit; key/runtime rotation and unchanged scientific caveats; full MAX-size response preflight; every accepted optional note can still finish. Signed impossible receipts/conclusions/caveats must fail independent reachability/content checks, not merely MAC verification.
+
+Stage ordering after final contract approval remains: **A Sol backend foundation** (pure rules plus disabled HTTP/auth/storage schemas); **B Claude full accessible2D** including real persistence/evidence; **C Claude3D**; **D joint adversarial persistence/evidence hardening** (may overlap C after B passes); **E Astra vertical-slice acceptance**. Sol negative/API tests can run alongside B/C in separately owned files. No gameplay code starts during this correction assignment. Before registry integration, update both S3 browser expectations and the exact state expectations in tests/unit/api.test.ts while retaining no-Available/public mission-denial tests.

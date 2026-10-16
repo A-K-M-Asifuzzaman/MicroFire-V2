@@ -1,6 +1,6 @@
 # Registry reconciliation and ownership proposal
 
-No registry, ownership, asset, package or lockfile is changed by this documentation-only branch. Below is the exact row-level proposal for future shared review.
+**Candidate2 retains all nine reviewed wording proposals verbatim.** No registry, ownership, asset, package or lockfile is changed by this documentation-only branch. Below is the exact row-level proposal for future shared review.
 
 ## Nine handoff descriptions
 
@@ -33,7 +33,7 @@ Original dirty `packages/shared/src/features.ts` SHA-256: **4cbae99f3419faf80684
 | ask | Old pending grounded-API description must not overwrite accepted deterministic/no-AI correction; use proposal above |
 | methodology | Author-labelled small evaluation set and independent-evaluation caveat already match the accepted baseline's backend correction; preserve that wording. No unrelated rewrite or false independent scientific approval |
 
-Sol's integration action: create a reviewed row-level diff against **b6d15a4 + this approved plan**, record before/after states and reasons, update S3 browser badge expectations only for the three approved Preview changes, re-run registry invariants/current research browser tests. Do not replace the file with the older dirty proposal. Leave the original six edits physically intact until their owner explicitly resolves them. This reconciliation can proceed in parallel with M2 planning/contract review; runtime feature changes are not part of this planning commit.
+Sol's integration action: create a reviewed row-level diff against **b6d15a4 + this approved plan**, record before/after states and reasons, update S3 browser badge expectations and tests/unit/api.test.ts exact state expectations only for the three reviewed Preview changes, re-run registry invariants/current research browser tests. Do not replace the file with the older dirty proposal. Leave the original six edits physically intact until their owner explicitly resolves them. This reconciliation can proceed in parallel with M2 planning/contract review; runtime feature changes are not part of this planning commit.
 
 ## Assets and budget
 
@@ -50,7 +50,7 @@ The ledger has three30-credit entries (pix-v1, console-v1, pix-v2), total **90 r
 | packages/shared/src/training.ts and exports, core/HTTP type extraction | Shared freeze; Sol authors; Claude consumer review; Astra independent approval |
 | apps/web/lib/game-preview.ts and API dispatch/limits | Sol; shared review for contract/security changes |
 | apps/web/game, game pages/components, 2D/3D, PIX/HUD and accessible controls | Claude; Sol reviews payload/proof use, Astra tests experience |
-| data/asset-rights.json and its validation schema | Sol adopts schema/security validation; Claude supplies accurate asset provenance/processing/rights data; joint rights approval before publication |
+| data/asset-rights.json and its validation schema | **Sol is the single editor** for the ledger/schema migration window; Claude supplies accurate asset provenance/processing/rights data; joint rights approval before publication |
 | tools/meshy/ tooling, private-config handling and credit ledger | Sol owns safe tooling/budget invariants; Claude proposes asset jobs and visual acceptance; owner alone authorizes paid batches |
 | apps/web/public/models/ (GLB/glTF/bin/textures) and future procedural game assets | Claude owns visual files/optimization; Sol reviews dimensions/claims/source binding; rights schema and independent QA apply |
 | root/workspace package manifests + package-lock.json + shared config | Claude owns the **next** frontend dependency proposal/edit window; one editor at a time, pinned/jointly reviewed; Sol makes no concurrent edits |
@@ -63,3 +63,8 @@ Use the current Three.js dependency and existing props first. No R3F dependency 
 Required asset schema proposal: strict versioned object (`schemaVersion:1`, note, assets); each record retains current path/title/source/license/processing/reviewedBy/approved/part fields, with unique repo-relative allowlisted public-media paths, nonblank bounded strings and approved boolean. Adding schemaVersion to existing root needs an explicit ledger migration/test because the current ledger lacks it. Do not drop current provenance text during conversion. A rights release gate also needs a substantive approval decision, not only structural validation.
 
 The first M2 bench uses scripted geometry for all scientific fit interfaces, with only duct dimensions treated as sourced; other geometry labeled schematic. Model thumbnails, actors and consoles are artistic props. No Meshy-generated mesh may define anchor constraints or stand in for validated NASA hardware.
+
+
+## Correction-batch ownership freeze proposal
+
+Sol alone edits docs/m2 in this correction; no shared runtime file changes. After approval, Sol authors packages/shared/training types/exports and domain/save-admission schemas, game-core logic and server-only API/crypto. Claude reviews those changes, then owns apps/web/game browser transport/controller/lock/storage implementation and2D/3D components. Neither imports a server signer through a browser barrel. Allocate explicit separate E2E files before parallel batches; API dispatch remains Sol-owned despite broad frontend app ownership. Root/shared config stays one named editor per reviewed window. package-lock.json and manifests remain Claude's next dependency-edit window; Sol does not edit them concurrently. Astra approves actual integrated contracts/tests, not shared-file concurrent ownership.

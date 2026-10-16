@@ -1,7 +1,7 @@
 {
+  "runtimeId": "33333333-3333-4333-8333-333333333333",
   "sessionId": "11111111-1111-4111-8111-111111111111",
   "expectedRevision": 5,
-  "commandId": "22222222-2222-4222-8222-222222222222",
   "action": {
     "type": "GAME",
     "action": {
@@ -10,5 +10,6 @@
       "anchorId": "duct-exit",
       "orientation": "correct"
     }
-  }
+  },
+  "commandId": "59d93282d976c9471ef51b013522cdaa63c82b9d995221b007105d48888ec34e"
 }

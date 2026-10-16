@@ -1,10 +1,10 @@
-# M2 gameplay contract plan — review candidate 1
+# M2 gameplay contract plan — correction candidate 2
 
-Status: **M2 CONTRACT PLAN READY FOR ASTRA REVIEW**. Documentation only; no gameplay implementation, preview activation, state promotion, deployment or paid generation is authorized by this package. Independent contract approval is required before coordinated implementation.
+Status: **READY FOR CLAUDE CONSUMER REVIEW**. Astra final contract approval is pending. Documentation only; no gameplay implementation, preview activation, state promotion, deployment or paid generation is authorized by this package. Independent contract approval is required before coordinated implementation.
 
 ## Baseline and recovered workspace
 
-Exact approved parent: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Planning branch: **codex/m2-contract-plan**. Dedicated worktree: **MicroFire-V2-m2-plan**, beside the other checkouts under `/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3`.
+Exact approved M1.5 ancestor: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Exact previous planning commit / correction parent: **02e0588ce0eca1ebdb71bac0d758caea2abd1fc2**. Planning branch: **codex/m2-contract-plan**. Dedicated worktree: **MicroFire-V2-m2-plan**, beside the other checkouts under `/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3`.
 
 | Checkout | Branch | HEAD inspected | Pending work |
 |---|---|---|---|
@@ -13,7 +13,7 @@ Exact approved parent: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Planning br
 | MicroFire-V2-backend-review | feat/phase-one-backend-review | 1c1af90e41390a6dcb3e3cb87fefa0f9472f6542 | Untracked docs/EXISTING_WORK_RECOVERY_AUDIT_2026-10-14.md; preserved |
 | MicroFire-V2-astra-fixes | feat/astra-defect-fixes | f1afdcacde6dfc94317d8575d67f342e9bb2c03e | Inspected read-only |
 | MicroFire-V2-claude | feat/p1-ui | 322f2c25417ffd333094117a46c0bc9282d4972c | Clean; untouched |
-| MicroFire-V2-m2-plan | codex/m2-contract-plan | b6d15a47ec25f57350896f1dc63dc59192f57b00 before this documentation commit | This package only |
+| MicroFire-V2-m2-plan | codex/m2-contract-plan | 02e0588ce0eca1ebdb71bac0d758caea2abd1fc2 before this correction commit | This package only |
 
 All share the sole origin `https://github.com/A-K-M-Asifuzzaman/MicroFire-V2.git`. No fetch or reference-repository change was needed. The graph is `e8731c0 … 7ca790a → b6d15a4 → 322f2c2`. The planning branch was explicitly created from **b6d15a4**, excluding the `.gitignore`/`.vercelignore` deployment commit. Do not merge, cherry-pick or silently base work on 322f2c2. Commit hashes in the final delivery identify the documentation commit; `git rev-parse HEAD` here identifies it locally.
 
@@ -23,7 +23,7 @@ Read AGENTS.md, CLAUDE.md, FINAL_MASTER_PROMPT.md; docs/OWNERSHIP.md, API_CONTRA
 
 Astra's final M1.5 acceptance and supporting local evidence are at `/Users/asifzaman/.codex/visualizations/2026/10/14/01a13b66-4da0-7bc2-a7ec-1e54cfa974fd/astra-m15-final-review/FINAL_M15_ACCEPTANCE_REVIEW.md`. That review approves M2 planning, not public release or human science signoff. Required documents were available; no substitute GitHub branch was used.
 
-NASA report freshly downloaded and inspected for this plan: [BASS-II Summary Report](https://ntrs.nasa.gov/api/citations/20210011385/downloads/TM-20210011385.pdf), SHA-256 `5ffa911fd9b6356f204646003fb9342e341810dcdfdf5cb15756e7f01ec5f770`, matching the fixture. PDF pages **12–13** (printed **4–5**) and **112** (printed **104**) were extracted and visually inspected. Facts are paraphrased in this package; the PDF/images are not redistributed in Git. Source/rights limitations remain unchanged.
+Prior planning-source evidence (not downloaded again during these corrections): [BASS-II Summary Report](https://ntrs.nasa.gov/api/citations/20210011385/downloads/TM-20210011385.pdf), SHA-256 `5ffa911fd9b6356f204646003fb9342e341810dcdfdf5cb15756e7f01ec5f770`, matching the fixture. PDF pages **12–13** (printed **4–5**) and **112** (printed **104**) were extracted and visually inspected. Facts are paraphrased in this package; the PDF/images are not redistributed in Git. Source/rights limitations remain unchanged.
 
 ## Package map and deliverables
 
@@ -37,7 +37,8 @@ NASA report freshly downloaded and inspected for this plan: [BASS-II Summary Rep
 | [06_REGISTRY_AND_OWNERSHIP.md](06_REGISTRY_AND_OWNERSHIP.md) | Exact nine-row reconciliation, six pending edits, asset/tooling/schema/package-lock ownership and shared-file coordination |
 | [07_VERIFICATION_AND_REVIEW.md](07_VERIFICATION_AND_REVIEW.md) | Actual checks, source/size evidence, unresolved risks and independent approval checklist |
 | [08_BASELINE_PROBE.md](08_BASELINE_PROBE.md) | Reproducible existing-core/serialization probe, documentation only |
-| [fixtures/README.md](fixtures/README.md) and four example JSON files | Complete proposed start/domain-refusal/unauthorized wire examples, explicitly non-runtime fixtures |
+| [fixtures/README.md](fixtures/README.md), planning types/proof runner and17 JSON examples | Complete corrected wire examples, negative mutations and bounded contract proof oracles; no runtime exports |
+| [09_CLAUDE_CONSUMER_HANDOFF.md](09_CLAUDE_CONSUMER_HANDOFF.md) | Focused diagnostic/repair/auth/retry/save/conflict/accessibility consumer review and explicit coding gates |
 
 These are proposals to freeze, not newly implemented API endpoints. Existing docs/API_CONTRACTS.md remains authoritative for current runtime behavior. New contracts below must be implemented jointly and tested before callers use them.
 
@@ -45,11 +46,17 @@ These are proposals to freeze, not newly implemented API endpoints. Existing doc
 
 1. One training episode, `bass-b20-training-v1`, uses existing **station-arrival → bass-assembly** IDs. It is the first M2 vertical slice, not a replacement five-mission campaign. Existing prerequisites and progress prefix remain. Later three missions stay unavailable.
 2. Reuse GameState **v2**, Passport **v1**, `transition`, `diagnose`, source catalog and validation. Add a small pure training coordinator for required diagnosis/repair history; it owns no separate scientific truth or second Passport.
-3. A separate **local-only server capability** authorizes the episode. Default/public availability remains unchanged. The server owns runtime session state and only the server passes the existing testability callback to the core reducer. No client flag or demo save confers access.
-4. Add a **version-1 preview checkpoint envelope** containing the single existing GameState plus bounded training metadata. A server MAC protects its provenance; it never certifies science. No GameState v3 or destructive legacy migration is proposed.
+3. A separate **local-only revocable opaque server-memory grant** authorizes the episode. Default/public availability remains unchanged. The server owns runtime session state and only the server passes the existing testability callback to the core reducer. No client flag or demo save confers access.
+4. Add a **version-1 preview checkpoint envelope** containing the single existing GameState plus bounded training metadata, including exact pending repair provenance. A server MAC protects its provenance; it never certifies science. No GameState v3 or destructive legacy migration is proposed.
 5. Preserve the **32,768-byte POST limit**, shared rate limits and **500,000 UTF-16-unit core save ceiling**. This small episode has a stricter **20,480-byte checkpoint payload budget**, tested against realistic worst-note projections. No bulk save upload or security-limit relaxation.
 6. Require fault diagnosis and repair through a pure coordinator around current transitions. Plain core bass-assembly presently completes without a required fault; that remains an inventory finding, not a falsely claimed implemented mechanic.
 7. Finish the 2D real HTTP loop before 3D manipulation. Both views dispatch the same typed commands to the same coordinator. Existing PIX/console assets remain visual props.
+
+## Four Astra corrections and review routing
+
+Full review read: `/Users/asifzaman/.codex/visualizations/2026/10/14/01a13b66-4da0-7bc2-a7ec-1e54cfa974fd/astra-m2-contract-review/INDEPENDENT_M2_CONTRACT_REVIEW.md`. No review evidence was inaccessible. C1: explicit derived DiagnosticResult and pure result type. C2: pending repair cause/removal revision. C3: exclusive Web Lock plus epoch/generation save admission, safe read-only fallback. C4: revocable grants, key/runtime lifecycle, canonical request-intent hashes, start tombstones and exact action/resume retry rules. Details/examples/tests are in02–07/09 and fixtures.
+
+Candidate2 changes no runtime contracts or availability; the nine registry proposals and pending six edits remain preserved. Claude reviews the consumer package next, then Astra approves/rejects the exact corrected SHA. This delivery grants neither reviewer's signoff nor permission to start gameplay. The stable key/profile/source scope remain local only; no public release or paid job.
 
 ## Scope and next milestone
 
@@ -57,7 +64,7 @@ Next milestone after Astra approves this package: **Sol's tested coordinator + d
 
 ## Exact deliverable paths
 
-All paths are relative to the dedicated planning worktree:
+All files below are documentation, planning types/proofs or example data; none is exported by the application:
 
 - `docs/m2/01_ENGINE_INVENTORY.md`
 - `docs/m2/02_MISSION_AND_SCIENCE.md`
@@ -67,9 +74,26 @@ All paths are relative to the dedicated planning worktree:
 - `docs/m2/06_REGISTRY_AND_OWNERSHIP.md`
 - `docs/m2/07_VERIFICATION_AND_REVIEW.md`
 - `docs/m2/08_BASELINE_PROBE.md`
+- `docs/m2/09_CLAUDE_CONSUMER_HANDOFF.md`
 - `docs/m2/README.md`
+- `docs/m2/fixtures/AUTHORIZE_RESPONSE.example.json`
+- `docs/m2/fixtures/CAPABILITY_RESPONSE.example.json`
+- `docs/m2/fixtures/DIAGNOSTIC_ERROR.example.json`
+- `docs/m2/fixtures/DIAGNOSTIC_REQUEST.example.json`
+- `docs/m2/fixtures/DIAGNOSTIC_SUCCESS.example.json`
+- `docs/m2/fixtures/MEASUREMENTS.json`
+- `docs/m2/fixtures/PENDING_REPAIR_A.example.json`
+- `docs/m2/fixtures/PENDING_REPAIR_B.example.json`
 - `docs/m2/fixtures/README.md`
+- `docs/m2/fixtures/RESUME_REQUEST.example.json`
+- `docs/m2/fixtures/RESUME_RESPONSE.example.json`
+- `docs/m2/fixtures/REVOKE_RESPONSE.example.json`
+- `docs/m2/fixtures/STALE_DIAGNOSTIC_RESPONSE.example.json`
+- `docs/m2/fixtures/START_REQUEST.example.json`
 - `docs/m2/fixtures/START_RESPONSE.example.json`
 - `docs/m2/fixtures/UNAUTHORIZED_RESPONSE.example.json`
 - `docs/m2/fixtures/WRONG_ANCHOR_REQUEST.example.json`
 - `docs/m2/fixtures/WRONG_ANCHOR_RESPONSE.example.json`
+- `docs/m2/fixtures/WRONG_DIAGNOSIS_RESPONSE.example.json`
+- `docs/m2/fixtures/contract-types.ts`
+- `docs/m2/fixtures/verify-contracts.ts`

@@ -1,4 +1,6 @@
-# Reproducible planning probe (not gameplay implementation)
+# Reproducible baseline probe — historical candidate1 evidence
+
+**Candidate2:** this preserved original core/size probe describes the previous r1 projection, not the revised wire/checkpoint format. Use [fixtures/verify-contracts.ts](fixtures/verify-contracts.ts) and07 for current measurements, diagnostic/receipt/save/auth proof cases and canonical r2 examples. It remains useful as a current-core compatibility probe; do not interpret its public-key r1 token or surrogate-note assumptions as the corrected contract.
 
 This assertion script exercises **existing** game-core transitions and projects the proposed metadata/checkpoint serialization. It does not implement the coordinator, authentication, server API or preview persistence and must not be presented as their test. It lives as a code block in documentation so this commit remains docs-only.
 

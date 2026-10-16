@@ -54,11 +54,11 @@
               "setupRevision": null,
               "status": "current",
               "scenario": "research",
-              "createdAt": "2026-10-16T05:30:00.000Z"
+              "createdAt": "2026-10-16T10:00:00.000Z"
             }
           ]
         },
-        "updatedAt": "2026-10-16T05:30:00.000Z",
+        "updatedAt": "2026-10-16T10:00:00.000Z",
         "schemaVersion": 2,
         "setup": {
           "revision": 1,
@@ -78,18 +78,39 @@
       },
       "training": {
         "scenarioVersion": "bass-b20-training-v1",
-        "fault": null,
-        "diagnosticRevision": null,
-        "diagnosis": null,
+        "fault": {
+          "id": "training-fan-reversed-v1",
+          "origin": "authored-training",
+          "introducedAt": "2026-10-16T10:00:00.000Z",
+          "introducedRevision": 12
+        },
+        "diagnosticRevision": 12,
+        "diagnosis": {
+          "at": "2026-10-16T10:00:00.000Z",
+          "faultyRevision": 12
+        },
+        "pendingRepair": null,
         "repair": null,
-        "diagnosisCounts": [],
+        "diagnosisCounts": [
+          {
+            "partId": "fan",
+            "faultCode": "REVERSED",
+            "count": 1
+          }
+        ],
         "firstWrongDiagnosis": null,
         "lastWrongDiagnosis": null
       },
       "previewId": "bass-b20-training-v1",
+      "runtimeId": "33333333-3333-4333-8333-333333333333",
       "sessionId": "11111111-1111-4111-8111-111111111111",
       "revision": 5,
-      "checkpoint": "eyJjaGVja3BvaW50VmVyc2lvbiI6MSwicHJldmlld0lkIjoiYmFzcy1iMjAtdHJhaW5pbmctdjEiLCJzZXNzaW9uSWQiOiIxMTExMTExMS0xMTExLTQxMTEtODExMS0xMTExMTExMTExMTEiLCJyZXZpc2lvbiI6NSwiY2F0YWxvZ1NoYTI1NiI6IjFmOWQ0ODgzNzkxZGE3M2UyNTZhZjA5ZWIzOTk0ODA1YjUzYzNhMzk0ZWZmM2RiMGYwZDA2NmZjNTU4Nzc5ZGMiLCJydWxlc1ZlcnNpb24iOiJtMi10cmFpbmluZy1yMSIsIm9yaWdpbiI6Imh0dHA6Ly8xMjcuMC4wLjE6MzEwMiIsInN0YXRlIjp7ImRhdGFzZXRWZXJzaW9uIjoicDAtYmFzcy1iMjAtdjEiLCJtb2RlIjoiZGVtbyIsImd1aWRhbmNlIjoiZ3VpZGVkIiwiYWN0aXZlTWlzc2lvbiI6ImJhc3MtYXNzZW1ibHkiLCJjb21wbGV0ZWRNaXNzaW9ucyI6WyJzdGF0aW9uLWFycml2YWwiXSwiaW5zcGVjdGVkRXhwZXJpbWVudElkcyI6WyJiYXNzMi1iMjAiXSwicGFzc3BvcnQiOnsic2NoZW1hVmVyc2lvbiI6MSwicHVycG9zZSI6ImVkdWNhdGlvbmFsLXJlc2VhcmNoLXJlY29yZCIsImVudHJpZXMiOlt7ImlkIjoic3RhdGlvbi1hcnJpdmFsLWJhc3MyLWIyMC1idXJuZWQtZW50aXJlLXNhbXBsZSIsIm1pc3Npb25JZCI6InN0YXRpb24tYXJyaXZhbCIsImV4cGVyaW1lbnRJZHMiOlsiYmFzczItYjIwIl0sImNsYWltSWRzIjpbImJhc3MyLWIyMC1idXJuZWQtZW50aXJlLXNhbXBsZSJdLCJvYnNlcnZhdGlvblR5cGUiOiJvYnNlcnZlZCIsImV2aWRlbmNlTGV2ZWwiOiJkaXJlY3QiLCJjb25jbHVzaW9uIjoiVGhlIEIyMCBvYnNlcnZhdGlvbiBsb2cgcmVwb3J0cyB0aGF0IHRoZSBmbGFtZSBidXJuZWQgdGhlIGVudGlyZSBzYW1wbGUuIiwiY2l0YXRpb25zIjpbeyJzb3VyY2VJZCI6Im5hc2EtYmFzcy1paS0yMDIxMDAxMTM4NSIsImxvY2F0b3IiOnsia2luZCI6InBkZiIsInBhZ2UiOjExMiwicHJpbnRlZFBhZ2UiOiIxMDQiLCJzZWN0aW9uIjoiVGFibGUgQS4xLCBCMjAgKGFzLXJ1biA1MCksIDIwMTQtMDctMDIifX1dLCJsaW1pdGF0aW9ucyI6WyJPbmUgQkFTUy1JSSB0ZXN0LCBub3QgYSBjYXRhbG9nIG9mIE5BU0EgY29tYnVzdGlvbiByZXNlYXJjaC4iLCJUaGlzIHJlY29yZCBjYW5ub3QgZXN0YWJsaXNoIGx1bmFyIGZpcmUgc2FmZXR5IG9yIGlzb2xhdGUgYWlyZmxvdyBjYXVzYXRpb24uIiwiQWlyIGRpc3BsYXkgbWl4ZXMgdmVsb2NpdGllcyBhbmQgYSBwb3RlbnRpb21ldGVyIHNldHRpbmc7IHBvdCAwLjUgaXMgbm90IDAuNSBjbS9zLiIsIlByZXNzdXJlIGFuZCBtZWFzdXJlbWVudCB1bmNlcnRhaW50eSBhcmUgbm90IGVzdGFibGlzaGVkIGZvciB0aGlzIGluZGl2aWR1YWwgcm93LiJdLCJsZWFybmVyTm90ZXMiOltdLCJjb3JyZWN0aW9ucyI6W10sInNldHVwUmV2aXNpb24iOm51bGwsInN0YXR1cyI6ImN1cnJlbnQiLCJzY2VuYXJpbyI6InJlc2VhcmNoIiwiY3JlYXRlZEF0IjoiMjAyNi0xMC0xNlQwNTozMDowMC4wMDBaIn1dfSwidXBkYXRlZEF0IjoiMjAyNi0xMC0xNlQwNTozMDowMC4wMDBaIiwic2NoZW1hVmVyc2lvbiI6Miwic2V0dXAiOnsicmV2aXNpb24iOjEsImluc3RhbGxlZFBhcnRzIjpbeyJwYXJ0SWQiOiJmbG93LWR1Y3QiLCJhbmNob3JJZCI6Im1zZy13b3JrLXZvbHVtZS1tb3VudCIsIm9yaWVudGF0aW9uIjoiY29ycmVjdCJ9XSwicXVhbGlmaWVkUmV2aXNpb24iOm51bGx9LCJwcmVkaWN0aW9ucyI6W10sImNsYXNzaWZpY2F0aW9ucyI6W10sImRlY2lzaW9uIjpudWxsLCJwcm9wb3NhbHMiOltdfSwidHJhaW5pbmciOnsic2NlbmFyaW9WZXJzaW9uIjoiYmFzcy1iMjAtdHJhaW5pbmctdjEiLCJmYXVsdCI6bnVsbCwiZGlhZ25vc3RpY1JldmlzaW9uIjpudWxsLCJkaWFnbm9zaXMiOm51bGwsInJlcGFpciI6bnVsbCwiZGlhZ25vc2lzQ291bnRzIjpbXSwiZmlyc3RXcm9uZ0RpYWdub3NpcyI6bnVsbCwibGFzdFdyb25nRGlhZ25vc2lzIjpudWxsfX0.tLQ5kfmrH0nNM2ANv9f9kCgC1Sb5Vbi4O4sl2OPV5-w",
+      "checkpoint": "eyJjYXRhbG9nU2hhMjU2IjoiMWY5ZDQ4ODM3OTFkYTczZTI1NmFmMDllYjM5OTQ4MDViNTNjM2EzOTRlZmYzZGIwZjBkMDY2ZmM1NTg3NzlkYyIsImNoZWNrcG9pbnRWZXJzaW9uIjoxLCJleHBpcmVzQXQiOm51bGwsImlzc3VlZEF0IjoiMjAyNi0xMC0xNlQxMDowMDowMC4wMDBaIiwia2V5SWQiOiJwdWJsaWMtZXhhbXBsZS1rZXktcjIiLCJsYXN0Q29tbWFuZCI6eyJjb21tYW5kSWQiOiJkMTlmNGQ4MTU5ZTQyNzRjZDVhZWIxMzU0ODIxNDZkZjMxZmM3MWIxOTMwMjI4MDc1MWFiYmE5ZmUyYTQxNDM2IiwiZW5kcG9pbnQiOiJhY3Rpb24iLCJleHBlY3RlZFJldmlzaW9uIjo0fSwib3JpZ2luIjoiaHR0cDovLzEyNy4wLjAuMTozMTAyIiwicHJldmlld0lkIjoiYmFzcy1iMjAtdHJhaW5pbmctdjEiLCJyZWFsbUlkIjoiNDQ0NDQ0NDQtNDQ0NC00NDQ0LTg0NDQtNDQ0NDQ0NDQ0NDQ0IiwicmV2aXNpb24iOjUsInJ1bGVzVmVyc2lvbiI6Im0yLXRyYWluaW5nLXIyIiwic2Vzc2lvbklkIjoiMTExMTExMTEtMTExMS00MTExLTgxMTEtMTExMTExMTExMTExIiwic3RhdGUiOnsiYWN0aXZlTWlzc2lvbiI6ImJhc3MtYXNzZW1ibHkiLCJjbGFzc2lmaWNhdGlvbnMiOltdLCJjb21wbGV0ZWRNaXNzaW9ucyI6WyJzdGF0aW9uLWFycml2YWwiXSwiZGF0YXNldFZlcnNpb24iOiJwMC1iYXNzLWIyMC12MSIsImRlY2lzaW9uIjpudWxsLCJndWlkYW5jZSI6Imd1aWRlZCIsImluc3BlY3RlZEV4cGVyaW1lbnRJZHMiOlsiYmFzczItYjIwIl0sIm1vZGUiOiJkZW1vIiwicGFzc3BvcnQiOnsiZW50cmllcyI6W3siY2l0YXRpb25zIjpbeyJsb2NhdG9yIjp7ImtpbmQiOiJwZGYiLCJwYWdlIjoxMTIsInByaW50ZWRQYWdlIjoiMTA0Iiwic2VjdGlvbiI6IlRhYmxlIEEuMSwgQjIwIChhcy1ydW4gNTApLCAyMDE0LTA3LTAyIn0sInNvdXJjZUlkIjoibmFzYS1iYXNzLWlpLTIwMjEwMDExMzg1In1dLCJjbGFpbUlkcyI6WyJiYXNzMi1iMjAtYnVybmVkLWVudGlyZS1zYW1wbGUiXSwiY29uY2x1c2lvbiI6IlRoZSBCMjAgb2JzZXJ2YXRpb24gbG9nIHJlcG9ydHMgdGhhdCB0aGUgZmxhbWUgYnVybmVkIHRoZSBlbnRpcmUgc2FtcGxlLiIsImNvcnJlY3Rpb25zIjpbXSwiY3JlYXRlZEF0IjoiMjAyNi0xMC0xNlQxMDowMDowMC4wMDBaIiwiZXZpZGVuY2VMZXZlbCI6ImRpcmVjdCIsImV4cGVyaW1lbnRJZHMiOlsiYmFzczItYjIwIl0sImlkIjoic3RhdGlvbi1hcnJpdmFsLWJhc3MyLWIyMC1idXJuZWQtZW50aXJlLXNhbXBsZSIsImxlYXJuZXJOb3RlcyI6W10sImxpbWl0YXRpb25zIjpbIk9uZSBCQVNTLUlJIHRlc3QsIG5vdCBhIGNhdGFsb2cgb2YgTkFTQSBjb21idXN0aW9uIHJlc2VhcmNoLiIsIlRoaXMgcmVjb3JkIGNhbm5vdCBlc3RhYmxpc2ggbHVuYXIgZmlyZSBzYWZldHkgb3IgaXNvbGF0ZSBhaXJmbG93IGNhdXNhdGlvbi4iLCJBaXIgZGlzcGxheSBtaXhlcyB2ZWxvY2l0aWVzIGFuZCBhIHBvdGVudGlvbWV0ZXIgc2V0dGluZzsgcG90IDAuNSBpcyBub3QgMC41IGNtL3MuIiwiUHJlc3N1cmUgYW5kIG1lYXN1cmVtZW50IHVuY2VydGFpbnR5IGFyZSBub3QgZXN0YWJsaXNoZWQgZm9yIHRoaXMgaW5kaXZpZHVhbCByb3cuIl0sIm1pc3Npb25JZCI6InN0YXRpb24tYXJyaXZhbCIsIm9ic2VydmF0aW9uVHlwZSI6Im9ic2VydmVkIiwic2NlbmFyaW8iOiJyZXNlYXJjaCIsInNldHVwUmV2aXNpb24iOm51bGwsInN0YXR1cyI6ImN1cnJlbnQifV0sInB1cnBvc2UiOiJlZHVjYXRpb25hbC1yZXNlYXJjaC1yZWNvcmQiLCJzY2hlbWFWZXJzaW9uIjoxfSwicHJlZGljdGlvbnMiOltdLCJwcm9wb3NhbHMiOltdLCJzY2hlbWFWZXJzaW9uIjoyLCJzZXR1cCI6eyJpbnN0YWxsZWRQYXJ0cyI6W3siYW5jaG9ySWQiOiJtc2ctd29yay12b2x1bWUtbW91bnQiLCJvcmllbnRhdGlvbiI6ImNvcnJlY3QiLCJwYXJ0SWQiOiJmbG93LWR1Y3QifV0sInF1YWxpZmllZFJldmlzaW9uIjpudWxsLCJyZXZpc2lvbiI6MX0sInVwZGF0ZWRBdCI6IjIwMjYtMTAtMTZUMTA6MDA6MDAuMDAwWiJ9LCJ0cmFpbmluZyI6eyJkaWFnbm9zaXMiOnsiYXQiOiIyMDI2LTEwLTE2VDEwOjAwOjAwLjAwMFoiLCJmYXVsdHlSZXZpc2lvbiI6MTJ9LCJkaWFnbm9zaXNDb3VudHMiOlt7ImNvdW50IjoxLCJmYXVsdENvZGUiOiJSRVZFUlNFRCIsInBhcnRJZCI6ImZhbiJ9XSwiZGlhZ25vc3RpY1JldmlzaW9uIjoxMiwiZmF1bHQiOnsiaWQiOiJ0cmFpbmluZy1mYW4tcmV2ZXJzZWQtdjEiLCJpbnRyb2R1Y2VkQXQiOiIyMDI2LTEwLTE2VDEwOjAwOjAwLjAwMFoiLCJpbnRyb2R1Y2VkUmV2aXNpb24iOjEyLCJvcmlnaW4iOiJhdXRob3JlZC10cmFpbmluZyJ9LCJmaXJzdFdyb25nRGlhZ25vc2lzIjpudWxsLCJsYXN0V3JvbmdEaWFnbm9zaXMiOm51bGwsInBlbmRpbmdSZXBhaXIiOm51bGwsInJlcGFpciI6bnVsbCwic2NlbmFyaW9WZXJzaW9uIjoiYmFzcy1iMjAtdHJhaW5pbmctdjEifX0.GeSxVDZmgTZEZPWAcFtO87QhdbHK9WN3JiwOCKuXFrs",
+      "diagnostic": {
+        "status": "stale",
+        "checkedSetupRevision": 12,
+        "currentSetupRevision": 1
+      },
       "progress": {
         "step": "assembly",
         "completedChecks": 1,
@@ -109,7 +130,7 @@
         "diagnosisReady": false,
         "repairReady": false,
         "qualificationReady": false,
-        "nextInstruction": "Install the duct before attaching the remaining sourced components."
+        "nextInstruction": "Inspect the training configuration and follow the current diagnostic/repair step."
       },
       "evidenceReview": {
         "status": "lineage-verified",
@@ -126,7 +147,7 @@
       },
       "access": {
         "scope": "local-gameplay-preview",
-        "expiresAt": "2026-10-16T06:30:00.000Z",
+        "expiresAt": "2026-10-16T11:00:00.000Z",
         "publicAvailabilityChanged": false,
         "scientificApproval": false
       }

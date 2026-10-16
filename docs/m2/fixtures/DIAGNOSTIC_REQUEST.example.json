@@ -1,0 +1,9 @@
+{
+  "runtimeId": "33333333-3333-4333-8333-333333333333",
+  "sessionId": "11111111-1111-4111-8111-111111111111",
+  "expectedRevision": 14,
+  "action": {
+    "type": "RUN_DIAGNOSTIC"
+  },
+  "commandId": "f1313832e342560b225636fe89d52b9c241d2acfcd05575a0127a67c604b1c5e"
+}
