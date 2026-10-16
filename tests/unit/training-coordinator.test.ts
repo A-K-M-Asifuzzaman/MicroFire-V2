@@ -82,3 +82,11 @@ it('keeps notes separate, rejects fifth/invalid notes and locks rig edits after 
   for(const a of [remove('fan'),finishActions[1]!])expect(transitionTraining(c,a,catalog,at).ok).toBe(false);
   c=advance([finishActions[2]!],c);expect(transitionTraining(c,{type:'RUN_DIAGNOSTIC'},catalog,at).ok).toBe(false);
 });
+it('requires a fresh diagnostic before diagnosis and preserves later earned diagnosis on stale displays',()=>{
+  const built=advance(initialActions),choice:TrainingAction={type:'SUBMIT_DIAGNOSIS',partId:'fan',faultCode:'REVERSED'};
+  const missing=transitionTraining(built,choice,catalog,at);expect(!missing.ok&&missing.code).toBe('DIAGNOSTIC_STALE');expect(missing.current).toBe(built);
+  const stale=advance([{type:'RUN_DIAGNOSTIC'},remove('exit-plate')],built);const refused=transitionTraining(stale,choice,catalog,at);expect(!refused.ok&&refused.code).toBe('DIAGNOSTIC_STALE');expect(refused.current).toBe(stale);
+  const diagnosed=advance([{type:'RUN_DIAGNOSTIC'},choice],stale);const repeated=transitionTraining(diagnosed,choice,catalog,at);expect(!repeated.ok&&repeated.code).toBe('WRONG_PHASE');expect(repeated.current).toBe(diagnosed);
+  const pending=advance([remove('fan')],diagnosed);expect(trainingDiagnostic(pending).status).toBe('stale');expect(pending.training.diagnosis).toEqual(diagnosed.training.diagnosis);
+  const duplicate=transitionTraining(pending,remove('fan'),catalog,at);expect(!duplicate.ok&&duplicate.code).toBe('NOT_INSTALLED');expect(duplicate.current).toBe(pending);
+});

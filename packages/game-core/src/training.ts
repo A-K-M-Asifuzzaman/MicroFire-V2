@@ -14,6 +14,7 @@ export function trainingCatalogMatches(dataset:Catalog):boolean {try{return JSON
 export function validateTrainingCase(input:unknown,dataset:Catalog):TrainingCase {
   if(!trainingCatalogMatches(dataset))throw Error('Training catalog mismatch');
   const c=TrainingCaseSchema.parse(input),s=c.state,t=c.training;
+  if(canonicalJson(c)!==canonicalJson(input))throw Error('Training validation cannot normalize saved fields');
   if(s.datasetVersion!==dataset.datasetVersion)throw Error('Training dataset mismatch');
   const raw=JSON.stringify(s);
   const loaded=loadProgress({getItem:(key:string)=>key===saveKey('demo')?raw:null,setItem:()=>{throw Error('Read-only restore');},removeItem:()=>{throw Error('Read-only restore');}},'demo',dataset.datasetVersion);

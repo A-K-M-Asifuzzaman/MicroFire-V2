@@ -150,6 +150,7 @@ export class PreviewService {
       if(!schema)throw new PreviewFailure(404,'NOT_FOUND','API route not found.');
       // Content failures precede intent hashing, including strings canonical JSON cannot encode.
       if(route==='action'&&raw&&typeof raw==='object'&&'action' in raw){const a=(raw as {action:unknown}).action;if(a&&typeof a==='object'&&'type' in a&&a.type==='ADD_LEARNER_NOTE'&&'text' in a&&typeof a.text==='string'){const issue=noteIssue(a.text);if(issue)return failure(new PreviewFailure(400,'INVALID_REQUEST','Edit the learner note before submitting it again. Your previous progress is unchanged.'),undefined,issue);}}
+      if(route==='resume'&&raw&&typeof raw==='object'&&'checkpoint' in raw&&typeof raw.checkpoint==='string'&&raw.checkpoint.length>27351)throw new PreviewFailure(413,'PAYLOAD_TOO_LARGE','The checkpoint token is oversized. Preserve its raw bytes.');
       const parsed=schema.safeParse(raw);if(!parsed.success)throw new PreviewFailure(400,'INVALID_REQUEST','Request does not match the training contract.');
       const body=parsed.data;
       if('sessionId' in body)sessionId=body.sessionId;

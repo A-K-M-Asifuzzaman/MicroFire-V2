@@ -88,6 +88,12 @@ test('production HTTP: rejects ambiguous JSON, invalid notes and altered command
     const body=await c.actionBody(snapshot,initialActions[0]!);assert.equal((await c.raw('action',{...body,expectedRevision:2})).status,409);
     const note={...body,action:{type:'ADD_LEARNER_NOTE',text:' x '}};const invalid=await c.raw('action',note);assert.equal(invalid.status,400);assert.equal((await invalid.json()).error.noteIssue,'outer-whitespace');
     const over=await fetch(s.url+'/api/game/preview/action',{method:'POST',headers,body:' '.repeat(32769)});assert.equal(over.status,413);
+    for(const size of [32768,32769]){
+      const json=JSON.stringify({approvalToken:'wrong界'}),encoded=new TextEncoder().encode(json+' '.repeat(size-Buffer.byteLength(json)));
+      const stream=new ReadableStream<Uint8Array>({start(controller){controller.enqueue(encoded.slice(0,25));controller.enqueue(encoded.slice(25));controller.close();}});
+      const init:RequestInit&{duplex:'half'}={method:'POST',headers,body:stream,duplex:'half'};const chunked=await fetch(s.url+'/api/game/preview/authorize',init);assert.equal(chunked.status,size===32768?403:413);
+    }
+    const oversized={runtimeId:c.getRuntime(),checkpoint:'A'.repeat(27308)+'.'+'A'.repeat(43)};assert.equal((await c.raw('resume',{...oversized,commandId:await requestIdentity('resume',oversized)})).status,413);
     const safe=StartResponseSchema.parse(await (await c.raw('session/'+snapshot.sessionId)).json()).data;assert.equal(safe.checkpoint,snapshot.checkpoint);
     assert.equal(canonicalJson(safe.state),canonicalJson(snapshot.state));
   }finally{await s.stop();}
@@ -120,4 +126,22 @@ test('production HTTP: four maximum legal notes preserve caveats and completion 
     const fifth=await c.action(snapshot,{type:'ADD_LEARNER_NOTE',text:'fifth'});assert(!fifth.result.ok);assert.equal(fifth.result.code,'NOTE_LIMIT_REACHED');assert.equal(fifth.snapshot.checkpoint,snapshot.checkpoint);
     snapshot=await c.advance(snapshot,finishActions.slice(2));assert.equal(snapshot.progress.completedChecks,5);assert.equal(snapshot.state.passport.entries[1]!.learnerNotes.length,4);assert.equal(canonicalJson(snapshot.state.passport.entries[1]!.limitations),limits);assert(snapshot.checkpointBudget.payloadBytes<=20480);assert(Buffer.byteLength(JSON.stringify(snapshot))<65536);
   }finally{await s.stop();}
+});
+
+test('production HTTP: research and preview POSTs share the same unchanged 30-request allowance',async()=>{
+  const s=await server(3254);try{
+    const c=client(s);
+    for(let i=0;i<15;i++){
+      assert.equal((await c.raw('authorize',{approvalToken:'invalid'})).status,403);
+      const research=await fetch(s.url+'/api/ask',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({question:'What happened in B20?',targetConditions:{}})});assert.equal(research.status,200);
+    }
+    const limited=await c.raw('authorize',{approvalToken:'invalid'});assert.equal(limited.status,429);assert(Number(limited.headers.get('retry-after'))>=1);
+  }finally{await s.stop();}
+});
+
+test('production HTTP: signing-key rotation preserves raw recovery and refuses the old checkpoint',async()=>{
+  const first=await server(3255);let token:string;
+  try{const c=client(first);await c.auth();token=(await c.start()).snapshot.checkpoint;}finally{await first.stop();}
+  const rotated=await server(3255,true,{...first.env,MICROFIRE_PREVIEW_KEY_ID:'rotated-test-key',MICROFIRE_PREVIEW_SIGNING_KEY:randomBytes(32).toString('base64url')});
+  try{const c=client(rotated);await c.auth();const r={runtimeId:c.getRuntime(),checkpoint:token};const response=await c.raw('resume',{...r,commandId:await requestIdentity('resume',r)});assert.equal(response.status,400);assert.equal((await response.json()).error.code,'CHECKPOINT_KEY_UNAVAILABLE');assert(token.length>0);}finally{await rotated.stop();}
 });

@@ -73,6 +73,7 @@ export class CheckpointCodec {
     const parsed=CheckpointPayloadSchema.safeParse(input);
     if(!parsed.success)throw new PreviewFailure(400,'CHECKPOINT_UNTRUSTED','Checkpoint structure or history is invalid.');
     const p=parsed.data;
+    if(canonicalJson(p)!==canonicalJson(input))throw new PreviewFailure(400,'CHECKPOINT_UNTRUSTED','Checkpoint fields must be explicit and unchanged by validation.');
     if(p.keyId!==this.config.keyId)throw new PreviewFailure(400,'CHECKPOINT_KEY_UNAVAILABLE','This checkpoint requires an unavailable signing key. Preserve its raw bytes.');
     if(p.catalogSha256!==catalogSha256||p.state.datasetVersion!==catalog.datasetVersion)throw new PreviewFailure(409,'DATASET_MISMATCH','The checkpoint belongs to a different admitted dataset.');
     if(p.realmId!==this.config.realmId||p.origin!==this.config.origin||Date.parse(p.issuedAt)>this.now()+300000)throw new PreviewFailure(400,'CHECKPOINT_UNTRUSTED','Checkpoint realm, origin or clock is incompatible.');

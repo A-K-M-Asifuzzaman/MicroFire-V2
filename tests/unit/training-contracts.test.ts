@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import {
   canonicalJson,parsePreviewJson,requestIdentity,TrainingCaseSchema,CheckpointPayloadSchema,SnapshotSchema,
   StartRequestSchema,ActionRequestSchema,ResumeRequestSchema,StartResponseSchema,ActionResponseSchema,CapabilityResponseSchema,
-  AuthorizeResponseSchema,RevokeResponseSchema,HttpFailureSchema,LocalSaveResultSchema,equipmentCopy,partDefinitions,findingCopy,noteIssue
+  AuthorizeResponseSchema,RevokeResponseSchema,HttpFailureSchema,LocalSaveResultSchema,DiagnosticSuccessSchema,type DiagnosticSuccess,equipmentCopy,partDefinitions,findingCopy,noteIssue
 } from '@microfire/shared';
 const dir='docs/m2/fixtures/';
 const read=(n:string)=>JSON.parse(readFileSync(dir+n+'.example.json','utf8'));
@@ -43,6 +43,7 @@ describe('M2 frozen shared contracts and identities',()=>{
       if(f==='START_REQUEST.example.json')schema=StartRequestSchema;
       else if(f.includes('REQUEST'))schema=f.startsWith('RESUME')?ResumeRequestSchema:ActionRequestSchema;
       else if(f.startsWith('LOCAL_'))schema=LocalSaveResultSchema;
+      else if(f==='DIAGNOSTIC_SUCCESS.example.json')schema=DiagnosticSuccessSchema;
       else if(value.error)schema=HttpFailureSchema;
       else if(f.startsWith('CAPABILITY'))schema=CapabilityResponseSchema;
       else if(f.startsWith('AUTHORIZE'))schema=AuthorizeResponseSchema;
@@ -53,6 +54,7 @@ describe('M2 frozen shared contracts and identities',()=>{
       if(s){expect(SnapshotSchema.safeParse(s),f).toMatchObject({success:true});const p=JSON.parse(Buffer.from(s.checkpoint.split('.')[0],'base64url').toString());expect(CheckpointPayloadSchema.safeParse(p),f).toMatchObject({success:true});snapshots++;}
     }
     expect(count).toBe(33);expect(snapshots).toBe(14);
+    const diagnostic:DiagnosticSuccess=DiagnosticSuccessSchema.parse(read('DIAGNOSTIC_SUCCESS'));expect(diagnostic.data.snapshot.diagnostic.findings).toHaveLength(1);
   });
   it('rejects isolated future diagnosis, orphan/future repair and invalid progress metadata',()=>{
     const snapshot=read('WRONG_ANCHOR_RESPONSE').data.snapshot;
@@ -69,6 +71,7 @@ describe('M2 frozen shared contracts and identities',()=>{
         expect(SnapshotSchema.safeParse(changed).success,field).toBe(false);
       }
     }
+    const impossible=structuredClone(read('START_RESPONSE').data);impossible.state.activeMission=null;expect(SnapshotSchema.safeParse(impossible).success).toBe(false);
     const wrongChecks=structuredClone(snapshot);wrongChecks.progress.checks.reverse();expect(SnapshotSchema.safeParse(wrongChecks).success).toBe(false);
   });
   it('keeps all 10 labels and 15 frozen reachable diagnostic cases exact',()=>{

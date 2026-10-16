@@ -7,3 +7,4 @@ export * from './equipment';
 export * from './training';
 export * from './canonical';
 export * from './training-schemas';
+export * from './local-save';

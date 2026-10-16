@@ -82,8 +82,13 @@ it('enforces actual UTF8 request and response boundaries, duplicate JSON and mal
   for(const n of [32767,32768])expect(await readPreviewBody(body('{}'+' '.repeat(n-2)))).toEqual({});
   await expect(readPreviewBody(body('{}'+' '.repeat(32767)))) .rejects.toMatchObject({status:413});
   for(const raw of ['{"a":1,"a":2}',new Uint8Array([123,34,97,34,58,34,255,34,125])])await expect(readPreviewBody(body(raw))).rejects.toMatchObject({status:400});
+  const chunked=(size:number)=>{const json='{"text":"界"}',encoded=new TextEncoder().encode(json+' '.repeat(size-new TextEncoder().encode(json).length));const stream=new ReadableStream<Uint8Array>({start(c){c.enqueue(encoded.slice(0,10));c.enqueue(encoded.slice(10,100));c.enqueue(encoded.slice(100));c.close();}});const init:RequestInit&{duplex:'half'}={method:'POST',headers:{'content-type':'application/json','content-length':'1'},body:stream,duplex:'half'};return new Request('http://127.0.0.1/api',init);};
+  expect(await readPreviewBody(chunked(32768))).toEqual({text:'界'});
+  await expect(readPreviewBody(chunked(32769))).rejects.toMatchObject({status:413});
+  await expect(readPreviewBody(new Request('http://127.0.0.1/api',{method:'POST',body:'{}'}))).rejects.toMatchObject({status:415});
   for(const n of [65535,65536])expect(Buffer.byteLength(await previewResponse(z.string(),'x'.repeat(n-2)).text())).toBe(n);
   expect(()=>previewResponse(z.string(),'x'.repeat(65535))).toThrow();
+  const h=harness();await h.authorize();const oversized={runtimeId:h.service.authority.runtimeId,checkpoint:'A'.repeat(27308)+'.'+'A'.repeat(43)};const response=await h.send('resume',{...oversized,commandId:await requestIdentity('resume',oversized)});expect(response.status).toBe(413);
 });
 
 it('rechecks revocation after an in-flight body read before any case mutation',async()=>{

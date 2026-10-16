@@ -39,6 +39,8 @@ export const TrainingCaseSchema = z.strictObject({state:GameStateSchema,training
   const errors:string[]=[]; const r=s.setup.revision;
   const fail=(ok:unknown,message:string)=>{if(!ok)errors.push(message);};
   fail(s.mode==='demo'&&s.guidance==='guided','Training must be guided demo');
+  fail(PreviewTimeSchema.safeParse(s.updatedAt).success,'Noncanonical state timestamp');
+  fail(!(s.activeMission===null&&s.completedMissions.length===0)&&!(s.activeMission==='station-arrival'&&s.completedMissions.length>0)&&(!s.completedMissions.includes('bass-assembly')||s.activeMission===null),'Unreachable mission phase');
   fail(s.completedMissions.length<=2&&(!s.activeMission||['station-arrival','bass-assembly'].includes(s.activeMission)),'Unsupported mission');
   fail(s.predictions.length===0&&s.classifications.length===0&&s.proposals.length===0&&s.decision===null,'Later mission state');
   fail(s.inspectedExperimentIds.every(id=>id==='bass2-b20'),'Unknown inspected experiment');
@@ -77,7 +79,7 @@ export const TrainingCaseSchema = z.strictObject({state:GameStateSchema,training
     fail(['station-arrival','bass-assembly'].includes(e.missionId)&&e.experimentIds.length===1&&e.experimentIds[0]==='bass2-b20'&&e.claimIds.length===1&&e.claimIds[0]==='bass2-b20-burned-entire-sample','Unknown evidence');
     fail(e.status==='current'&&e.scenario==='research'&&e.observationType==='observed'&&e.evidenceLevel==='direct'&&e.corrections.length===0,'Invalid research provenance');
     fail(e.learnerNotes.length<=4&&e.learnerNotes.every(n=>noteIssue(n)===null),'Invalid notes');
-    fail(Date.parse(e.createdAt)<=stateTime,'Future source entry');
+    fail(PreviewTimeSchema.safeParse(e.createdAt).success&&Date.parse(e.createdAt)<=stateTime,'Future or noncanonical source timestamp');
     if(e.missionId==='bass-assembly')fail(t.repair&&!t.pendingRepair&&s.setup.qualifiedRevision===r&&healthy&&e.setupRevision===r,'Observation before repaired qualification');
     else fail(e.setupRevision===null&&e.learnerNotes.length===0,'Invalid Station source entry');
   }
@@ -140,4 +142,5 @@ export const LocalSaveResultSchema=z.union([z.strictObject({ok:z.literal(true),e
 
 export const FaultSchema=z.strictObject({partId:PartIdSchema,code:FaultCodeSchema,message:z.string().min(1).max(500),repair:z.string().min(1).max(500)});
 export const TrainingTransitionResultSchema=z.discriminatedUnion('ok',[z.strictObject({ok:z.literal(true),current:TrainingCaseSchema,feedback:feedback.optional()}),z.strictObject({ok:z.literal(false),current:TrainingCaseSchema,code:TrainingResultCodeSchema,message:z.string().min(1).max(500),faults:z.array(displayFault).max(10).optional()})]);
-export const DiagnosticSuccessSchema=ActionResponseSchema.refine(r=>r.data.ok&&r.data.snapshot.diagnostic.status==='current');
+export const CurrentDiagnosticSchema=DiagnosticResultSchema.options[2];
+export const DiagnosticSuccessSchema=wire(z.strictObject({ok:z.literal(true),snapshot:SnapshotSchema.safeExtend({diagnostic:CurrentDiagnosticSchema})}));

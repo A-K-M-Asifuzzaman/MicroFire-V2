@@ -47,6 +47,7 @@ it('rejects validly signed fabricated scientific text, missing limitations and i
   for(const state of [advance(initialActions.slice(0,5)),advance(episodeActions.slice(0,-1))]){
     const p={...payload(c),...state,revision:state.training.repair?22:5,lastCommand:{endpoint:'action' as const,commandId:'b'.repeat(64),expectedRevision:state.training.repair?21:4}};
     expect(codec.verify(codec.sign(p)).state).toEqual(state.state);
-    for(const alter of [(q:CheckpointPayload)=>{q.state.passport.entries[0]!.limitations=[];},(q:CheckpointPayload)=>{q.state.passport.entries[0]!.conclusion='NASA certified safe';},(q:CheckpointPayload)=>{q.training.diagnosis={at,faultyRevision:999};}]){const bad=structuredClone(p);alter(bad);expect(()=>codec.verify(signed(bad,c))).toThrow();}
+    const omitted=JSON.parse(JSON.stringify(p));delete omitted.state.passport.entries[0].learnerNotes;expect(()=>codec.verify(signed(omitted,c))).toThrow();
+    for(const alter of [(q:CheckpointPayload)=>{q.state.passport.entries[0]!.limitations=['Learner removed canonical source warnings.'];},(q:CheckpointPayload)=>{q.state.passport.entries[0]!.conclusion='NASA certified safe';},(q:CheckpointPayload)=>{q.training.diagnosis={at,faultyRevision:999};},(q:CheckpointPayload)=>{q.state.updatedAt='2026-10-16T10:00:00Z';},(q:CheckpointPayload)=>{q.state.passport.entries[0]!.createdAt='2026-10-16T10:00:00Z';}]){const bad=structuredClone(p);alter(bad);expect(()=>codec.verify(signed(bad,c))).toThrow();}
   }
 });
