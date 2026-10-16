@@ -1,4 +1,8 @@
-// Server-only pages: no client islands, so these routes ship only the shell.
+// Server pages. The only client island is the opt-in local training preview entry on the two BASS-II mission pages.
+import { Suspense } from 'react';
+import { b20Data } from '../game/contract/b20';
+import { partSpecs } from '../game/contract/parts';
+import { PreviewEntry } from '../game/preview-entry';
 import Link from 'next/link';
 import { featureLabels, features, missionDefinitions, type Feature } from '@microfire/shared';
 import { catalog, coverage, quarantineLedger, sourceDetail } from '@microfire/science';
@@ -116,6 +120,8 @@ function StatusBlock({ f }: { f: Feature }) {
   return <div className="status-line"><span className="badge" data-state={f.state}>{featureLabels[f.state]}</span><p>{f.reason}</p></div>;
 }
 export const missionIds = missionDefinitions.map((m) => m.id);
+/** The two missions the local BASS-II training preview spans. Public state is unchanged: without ?preview=… nothing loads. */
+const previewMissions = new Set(['station-arrival', 'bass-assembly']);
 export function MissionPage({ id }: { id: string }) {
   const index = missionDefinitions.findIndex((m) => m.id === id);
   const m = missionDefinitions[index]!, f = feature(`/missions/${id}`)!, brief = briefs[id]!;
@@ -142,6 +148,7 @@ export function MissionPage({ id }: { id: string }) {
         <div className="actions"><Link className="btn btn-quiet btn-sm" href="/missions">Back to the map</Link><Link className="btn btn-primary btn-sm" href={`/experiments/${b20.id}`}>Inspect the {b20.testId} record</Link></div>
       </div>
     </div>
+    {previewMissions.has(id) && <Suspense fallback={null}><PreviewEntry data={{ parts: partSpecs(), b20: b20Data() }} /></Suspense>}
   </div>;
 }
 
