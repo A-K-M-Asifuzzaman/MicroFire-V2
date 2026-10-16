@@ -1,0 +1,9 @@
+{
+  "apiVersion": "1",
+  "error": {
+    "code": "INVALID_REQUEST",
+    "noteIssue": "outer-whitespace",
+    "message": "Remove spaces or line breaks at the beginning and end. Your submitted text is still in the editor.",
+    "retryable": false
+  }
+}

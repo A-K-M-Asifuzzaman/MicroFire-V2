@@ -1,18 +1,19 @@
 {
-  "diagnosticResponseBytes": 12967,
+  "diagnosticResponseBytes": 15798,
   "scope": "planning serialization only; no M2 runtime implemented",
-  "canonicalCheckpointBytes": 13769,
-  "signedTokenBytes": 18403,
-  "resumeBodyBytes": 18550,
+  "canonicalCheckpointBytes": 13415,
+  "signedTokenBytes": 17931,
+  "resumeBodyBytes": 18078,
   "largestPendingHistoryBytes": 3228,
   "maxTokenBytes": 27351,
   "maxResumeBodyBytes": 27498,
   "localSlotAtMaxTokenBytes": 27552,
   "legalNoteBytes": 1502,
   "legacyInvalidSurrogateNoteBytes": 2048,
-  "sourcePassportBytes": 8269,
+  "sourcePassportBytes": 7915,
   "idempotencyReceiptBytes": 136,
   "addedEnvelopeBytes": 583,
-  "fixtureCount": 17,
-  "fullCompleteResponseBytes": 32785
+  "fixtureCount": 32,
+  "ordinaryCompleteResponseBytes": 12366,
+  "fullCompleteResponseBytes": 39965
 }

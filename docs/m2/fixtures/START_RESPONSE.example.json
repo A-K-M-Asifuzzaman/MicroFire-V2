@@ -40,13 +40,65 @@
     "runtimeId": "33333333-3333-4333-8333-333333333333",
     "sessionId": "11111111-1111-4111-8111-111111111111",
     "revision": 0,
-    "checkpoint": "eyJjYXRhbG9nU2hhMjU2IjoiMWY5ZDQ4ODM3OTFkYTczZTI1NmFmMDllYjM5OTQ4MDViNTNjM2EzOTRlZmYzZGIwZjBkMDY2ZmM1NTg3NzlkYyIsImNoZWNrcG9pbnRWZXJzaW9uIjoxLCJleHBpcmVzQXQiOm51bGwsImlzc3VlZEF0IjoiMjAyNi0xMC0xNlQxMDowMDowMC4wMDBaIiwia2V5SWQiOiJwdWJsaWMtZXhhbXBsZS1rZXktcjIiLCJsYXN0Q29tbWFuZCI6eyJjb21tYW5kSWQiOiJlMjgyM2UwZmYyMjE4YjhlOTMyZDJiMzM1NGM0N2Q5MTM1ZWRhODRjYmM0NmNjNWYyYTdjNGUzYjY5NDE2NjE2IiwiZW5kcG9pbnQiOiJzdGFydCIsImV4cGVjdGVkUmV2aXNpb24iOm51bGx9LCJvcmlnaW4iOiJodHRwOi8vMTI3LjAuMC4xOjMxMDIiLCJwcmV2aWV3SWQiOiJiYXNzLWIyMC10cmFpbmluZy12MSIsInJlYWxtSWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtODQ0NC00NDQ0NDQ0NDQ0NDQiLCJyZXZpc2lvbiI6MCwicnVsZXNWZXJzaW9uIjoibTItdHJhaW5pbmctcjIiLCJzZXNzaW9uSWQiOiIxMTExMTExMS0xMTExLTQxMTEtODExMS0xMTExMTExMTExMTEiLCJzdGF0ZSI6eyJhY3RpdmVNaXNzaW9uIjoic3RhdGlvbi1hcnJpdmFsIiwiY2xhc3NpZmljYXRpb25zIjpbXSwiY29tcGxldGVkTWlzc2lvbnMiOltdLCJkYXRhc2V0VmVyc2lvbiI6InAwLWJhc3MtYjIwLXYxIiwiZGVjaXNpb24iOm51bGwsImd1aWRhbmNlIjoiZ3VpZGVkIiwiaW5zcGVjdGVkRXhwZXJpbWVudElkcyI6W10sIm1vZGUiOiJkZW1vIiwicGFzc3BvcnQiOnsiZW50cmllcyI6W10sInB1cnBvc2UiOiJlZHVjYXRpb25hbC1yZXNlYXJjaC1yZWNvcmQiLCJzY2hlbWFWZXJzaW9uIjoxfSwicHJlZGljdGlvbnMiOltdLCJwcm9wb3NhbHMiOltdLCJzY2hlbWFWZXJzaW9uIjoyLCJzZXR1cCI6eyJpbnN0YWxsZWRQYXJ0cyI6W10sInF1YWxpZmllZFJldmlzaW9uIjpudWxsLCJyZXZpc2lvbiI6MH0sInVwZGF0ZWRBdCI6IjIwMjYtMTAtMTZUMTA6MDA6MDAuMDAwWiJ9LCJ0cmFpbmluZyI6eyJkaWFnbm9zaXMiOm51bGwsImRpYWdub3Npc0NvdW50cyI6W10sImRpYWdub3N0aWNSZXZpc2lvbiI6bnVsbCwiZmF1bHQiOm51bGwsImZpcnN0V3JvbmdEaWFnbm9zaXMiOm51bGwsImxhc3RXcm9uZ0RpYWdub3NpcyI6bnVsbCwicGVuZGluZ1JlcGFpciI6bnVsbCwicmVwYWlyIjpudWxsLCJzY2VuYXJpb1ZlcnNpb24iOiJiYXNzLWIyMC10cmFpbmluZy12MSJ9fQ.7eioIeDond2OpjT6_-Fc9RAuQcQXeHFPi7s5MyHVxaw",
+    "checkpoint": "eyJjYXRhbG9nU2hhMjU2IjoiMWY5ZDQ4ODM3OTFkYTczZTI1NmFmMDllYjM5OTQ4MDViNTNjM2EzOTRlZmYzZGIwZjBkMDY2ZmM1NTg3NzlkYyIsImNoZWNrcG9pbnRWZXJzaW9uIjoxLCJleHBpcmVzQXQiOm51bGwsImlzc3VlZEF0IjoiMjAyNi0xMC0xNlQxMDowMDowMC4wMDBaIiwia2V5SWQiOiJwdWJsaWMtZXhhbXBsZS1rZXktcjIiLCJsYXN0Q29tbWFuZCI6eyJjb21tYW5kSWQiOiJlMjgyM2UwZmYyMjE4YjhlOTMyZDJiMzM1NGM0N2Q5MTM1ZWRhODRjYmM0NmNjNWYyYTdjNGUzYjY5NDE2NjE2IiwiZW5kcG9pbnQiOiJzdGFydCIsImV4cGVjdGVkUmV2aXNpb24iOm51bGx9LCJvcmlnaW4iOiJodHRwOi8vMTI3LjAuMC4xOjMxMDIiLCJwcmV2aWV3SWQiOiJiYXNzLWIyMC10cmFpbmluZy12MSIsInJlYWxtSWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtODQ0NC00NDQ0NDQ0NDQ0NDQiLCJyZXZpc2lvbiI6MCwicnVsZXNWZXJzaW9uIjoibTItdHJhaW5pbmctcjMiLCJzZXNzaW9uSWQiOiIxMTExMTExMS0xMTExLTQxMTEtODExMS0xMTExMTExMTExMTEiLCJzdGF0ZSI6eyJhY3RpdmVNaXNzaW9uIjoic3RhdGlvbi1hcnJpdmFsIiwiY2xhc3NpZmljYXRpb25zIjpbXSwiY29tcGxldGVkTWlzc2lvbnMiOltdLCJkYXRhc2V0VmVyc2lvbiI6InAwLWJhc3MtYjIwLXYxIiwiZGVjaXNpb24iOm51bGwsImd1aWRhbmNlIjoiZ3VpZGVkIiwiaW5zcGVjdGVkRXhwZXJpbWVudElkcyI6W10sIm1vZGUiOiJkZW1vIiwicGFzc3BvcnQiOnsiZW50cmllcyI6W10sInB1cnBvc2UiOiJlZHVjYXRpb25hbC1yZXNlYXJjaC1yZWNvcmQiLCJzY2hlbWFWZXJzaW9uIjoxfSwicHJlZGljdGlvbnMiOltdLCJwcm9wb3NhbHMiOltdLCJzY2hlbWFWZXJzaW9uIjoyLCJzZXR1cCI6eyJpbnN0YWxsZWRQYXJ0cyI6W10sInF1YWxpZmllZFJldmlzaW9uIjpudWxsLCJyZXZpc2lvbiI6MH0sInVwZGF0ZWRBdCI6IjIwMjYtMTAtMTZUMTA6MDA6MDAuMDAwWiJ9LCJ0cmFpbmluZyI6eyJkaWFnbm9zaXMiOm51bGwsImRpYWdub3Npc0NvdW50cyI6W10sImRpYWdub3N0aWNSZXZpc2lvbiI6bnVsbCwiZmF1bHQiOm51bGwsImZpcnN0V3JvbmdEaWFnbm9zaXMiOm51bGwsImxhc3RXcm9uZ0RpYWdub3NpcyI6bnVsbCwicGVuZGluZ1JlcGFpciI6bnVsbCwicmVwYWlyIjpudWxsLCJzY2VuYXJpb1ZlcnNpb24iOiJiYXNzLWIyMC10cmFpbmluZy12MSJ9fQ.i66h9Ct_2D2Edvl2zYmuYHjNsxEtJKpr4IWFU1KPHzA",
+    "checkpointBudget": {
+      "payloadBytes": 1204,
+      "limitBytes": 20480,
+      "remainingBytes": 19276,
+      "warningAtBytes": 16384,
+      "optionalUpdatesRequireFinalizationCheck": true
+    },
+    "passportPresentation": {
+      "sourceEvidence": {
+        "origin": "research",
+        "passportEntryIds": [],
+        "correctionPolicy": "none"
+      },
+      "trainingHistory": {
+        "origin": "authored-training",
+        "evidenceLevel": "not-applicable",
+        "historicalNASAEvent": false,
+        "corrections": []
+      },
+      "learnerConclusions": {
+        "origin": "learner-authored",
+        "scientificValidation": "not-assessed",
+        "notes": []
+      }
+    },
     "diagnostic": {
       "status": "not-run",
       "currentSetupRevision": 0
     },
     "progress": {
       "step": "source-orientation",
+      "checks": [
+        {
+          "id": "source-collected",
+          "label": "Collect the B20 source observation",
+          "done": false
+        },
+        {
+          "id": "apparatus-qualified",
+          "label": "Qualify the current apparatus",
+          "done": false
+        },
+        {
+          "id": "fault-diagnosed-and-repaired",
+          "label": "Diagnose and repair the training fault",
+          "done": false
+        },
+        {
+          "id": "b20-lineage-matched",
+          "label": "Review the source-backed B20 result",
+          "done": false
+        },
+        {
+          "id": "episode-completed",
+          "label": "Complete the training episode",
+          "done": false
+        }
+      ],
       "completedChecks": 0,
       "totalChecks": 5,
       "allowedMissions": [
@@ -64,7 +116,7 @@
       "diagnosisReady": false,
       "repairReady": false,
       "qualificationReady": false,
-      "nextInstruction": "Open B20 and collect the canonical source observation."
+      "nextInstruction": "Read B20’s conditions and source, then collect its documented observation."
     },
     "evidenceReview": {
       "status": "empty",

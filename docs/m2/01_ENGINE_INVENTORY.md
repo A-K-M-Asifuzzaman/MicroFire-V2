@@ -1,6 +1,6 @@
 # Existing engine inventory
 
-All observations refer to b6d15a47ec25f57350896f1dc63dc59192f57b00. Candidate2 adds no engine implementation; corrected proposed diagnostics/receipts/storage/auth live in03/04 and the planning fixtures. “Implemented” here means backend code exists. It does not imply frontend integration, end-to-end gameplay or release approval.
+All observations refer to b6d15a47ec25f57350896f1dc63dc59192f57b00. Candidate3 adds no engine implementation; human label fields and separate training presentation are proposed exports only; corrected proposed diagnostics/receipts/storage/auth live in03/04 and the planning fixtures. “Implemented” here means backend code exists. It does not imply frontend integration, end-to-end gameplay or release approval.
 
 ## Reuse map
 

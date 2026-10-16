@@ -1,10 +1,10 @@
-# M2 gameplay contract plan — correction candidate 2
+# M2 gameplay contract plan — final consumer candidate 3
 
-Status: **READY FOR CLAUDE CONSUMER REVIEW**. Astra final contract approval is pending. Documentation only; no gameplay implementation, preview activation, state promotion, deployment or paid generation is authorized by this package. Independent contract approval is required before coordinated implementation.
+Status: **READY FOR ASTRA FINAL M2 CONTRACT REVIEW**. The owner supplied Claude’s C1–C4 substance acceptance and final R1–R5 request; independent final approval is pending. Documentation only; no gameplay implementation, preview activation, state promotion, deployment or paid generation is authorized by this package. Independent contract approval is required before coordinated implementation.
 
 ## Baseline and recovered workspace
 
-Exact approved M1.5 ancestor: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Exact previous planning commit / correction parent: **02e0588ce0eca1ebdb71bac0d758caea2abd1fc2**. Planning branch: **codex/m2-contract-plan**. Dedicated worktree: **MicroFire-V2-m2-plan**, beside the other checkouts under `/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3`.
+Exact approved M1.5 ancestor: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Exact previous correction commit / parent: **030e1e9283d0887a0d5464fd668e3fa5e675bbc3**. Planning branch: **codex/m2-contract-plan**. Dedicated worktree: **MicroFire-V2-m2-plan**, beside the other checkouts under `/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3`.
 
 | Checkout | Branch | HEAD inspected | Pending work |
 |---|---|---|---|
@@ -13,7 +13,7 @@ Exact approved M1.5 ancestor: **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Exac
 | MicroFire-V2-backend-review | feat/phase-one-backend-review | 1c1af90e41390a6dcb3e3cb87fefa0f9472f6542 | Untracked docs/EXISTING_WORK_RECOVERY_AUDIT_2026-10-14.md; preserved |
 | MicroFire-V2-astra-fixes | feat/astra-defect-fixes | f1afdcacde6dfc94317d8575d67f342e9bb2c03e | Inspected read-only |
 | MicroFire-V2-claude | feat/p1-ui | 322f2c25417ffd333094117a46c0bc9282d4972c | Clean; untouched |
-| MicroFire-V2-m2-plan | codex/m2-contract-plan | 02e0588ce0eca1ebdb71bac0d758caea2abd1fc2 before this correction commit | This package only |
+| MicroFire-V2-m2-plan | codex/m2-contract-plan | 030e1e9283d0887a0d5464fd668e3fa5e675bbc3 before this correction commit | This package only |
 
 All share the sole origin `https://github.com/A-K-M-Asifuzzaman/MicroFire-V2.git`. No fetch or reference-repository change was needed. The graph is `e8731c0 … 7ca790a → b6d15a4 → 322f2c2`. The planning branch was explicitly created from **b6d15a4**, excluding the `.gitignore`/`.vercelignore` deployment commit. Do not merge, cherry-pick or silently base work on 322f2c2. Commit hashes in the final delivery identify the documentation commit; `git rev-parse HEAD` here identifies it locally.
 
@@ -37,7 +37,7 @@ Prior planning-source evidence (not downloaded again during these corrections): 
 | [06_REGISTRY_AND_OWNERSHIP.md](06_REGISTRY_AND_OWNERSHIP.md) | Exact nine-row reconciliation, six pending edits, asset/tooling/schema/package-lock ownership and shared-file coordination |
 | [07_VERIFICATION_AND_REVIEW.md](07_VERIFICATION_AND_REVIEW.md) | Actual checks, source/size evidence, unresolved risks and independent approval checklist |
 | [08_BASELINE_PROBE.md](08_BASELINE_PROBE.md) | Reproducible existing-core/serialization probe, documentation only |
-| [fixtures/README.md](fixtures/README.md), planning types/proof runner and17 JSON examples | Complete corrected wire examples, negative mutations and bounded contract proof oracles; no runtime exports |
+| [fixtures/README.md](fixtures/README.md), planning types/label table/proof runner and32 typed JSON examples | Complete corrected wire examples, negative mutations and bounded contract proof oracles; no runtime exports |
 | [09_CLAUDE_CONSUMER_HANDOFF.md](09_CLAUDE_CONSUMER_HANDOFF.md) | Focused diagnostic/repair/auth/retry/save/conflict/accessibility consumer review and explicit coding gates |
 
 These are proposals to freeze, not newly implemented API endpoints. Existing docs/API_CONTRACTS.md remains authoritative for current runtime behavior. New contracts below must be implemented jointly and tested before callers use them.
@@ -56,7 +56,11 @@ These are proposals to freeze, not newly implemented API endpoints. Existing doc
 
 Full review read: `/Users/asifzaman/.codex/visualizations/2026/10/14/01a13b66-4da0-7bc2-a7ec-1e54cfa974fd/astra-m2-contract-review/INDEPENDENT_M2_CONTRACT_REVIEW.md`. No review evidence was inaccessible. C1: explicit derived DiagnosticResult and pure result type. C2: pending repair cause/removal revision. C3: exclusive Web Lock plus epoch/generation save admission, safe read-only fallback. C4: revocable grants, key/runtime lifecycle, canonical request-intent hashes, start tombstones and exact action/resume retry rules. Details/examples/tests are in02–07/09 and fixtures.
 
-Candidate2 changes no runtime contracts or availability; the nine registry proposals and pending six edits remain preserved. Claude reviews the consumer package next, then Astra approves/rejects the exact corrected SHA. This delivery grants neither reviewer's signoff nor permission to start gameplay. The stable key/profile/source scope remain local only; no public release or paid job.
+Candidate2 changes no runtime contracts or availability; the nine registry proposals and pending six edits remain preserved. This final consumer candidate addresses R1–R5; Astra next approves/rejects the exact corrected SHA. This delivery claims no final reviewer signoff nor permission to start gameplay. The stable key/profile/source scope remain local only; no public release or paid job.
+
+## Final consumer corrections
+
+R1 freezes10 human equipment/anchor labels and15 reachable symptom strings. R2 keeps research Passport corrections empty and derives a structurally separate authored-training section. R3 names all5 derived learning checks and verifies the count. R4 adds local lock/write errors and freezes invalid notes as400 INVALID_REQUEST with noteIssue. R5 chooses guided source reading with no invented distractor. All N1–N8 decisions, per-engine cross-process storage gates and request/response size distinctions are frozen in [10_FINAL_CONSUMER_CORRECTIONS.md](10_FINAL_CONSUMER_CORRECTIONS.md). The exact handoff is09;07 records fresh evidence/limits. No runtime implementation is included.
 
 ## Scope and next milestone
 
@@ -64,7 +68,7 @@ Next milestone after Astra approves this package: **Sol's tested coordinator + d
 
 ## Exact deliverable paths
 
-All files below are documentation, planning types/proofs or example data; none is exported by the application:
+Only documentation, contract proofs and example data; no application exports:
 
 - `docs/m2/01_ENGINE_INVENTORY.md`
 - `docs/m2/02_MISSION_AND_SCIENCE.md`
@@ -75,19 +79,37 @@ All files below are documentation, planning types/proofs or example data; none i
 - `docs/m2/07_VERIFICATION_AND_REVIEW.md`
 - `docs/m2/08_BASELINE_PROBE.md`
 - `docs/m2/09_CLAUDE_CONSUMER_HANDOFF.md`
+- `docs/m2/10_FINAL_CONSUMER_CORRECTIONS.md`
 - `docs/m2/README.md`
 - `docs/m2/fixtures/AUTHORIZE_RESPONSE.example.json`
+- `docs/m2/fixtures/CANONICAL_JSON_VECTORS.json`
 - `docs/m2/fixtures/CAPABILITY_RESPONSE.example.json`
+- `docs/m2/fixtures/CHECKPOINT_KEY_FAILURE_RESPONSE.example.json`
+- `docs/m2/fixtures/COMMAND_REUSED_RESPONSE.example.json`
+- `docs/m2/fixtures/COMPLETE_RESPONSE.example.json`
+- `docs/m2/fixtures/DIAGNOSIS_REQUEST.example.json`
 - `docs/m2/fixtures/DIAGNOSTIC_ERROR.example.json`
 - `docs/m2/fixtures/DIAGNOSTIC_REQUEST.example.json`
 - `docs/m2/fixtures/DIAGNOSTIC_SUCCESS.example.json`
+- `docs/m2/fixtures/EQUIPMENT_COPY.md`
+- `docs/m2/fixtures/FAULT_INJECTED_RESPONSE.example.json`
+- `docs/m2/fixtures/LOCAL_LOCK_BUSY_RESULT.example.json`
+- `docs/m2/fixtures/LOCAL_WRITE_FAILED_RESULT.example.json`
 - `docs/m2/fixtures/MEASUREMENTS.json`
+- `docs/m2/fixtures/NOTE_INVALID_RESPONSE.example.json`
+- `docs/m2/fixtures/PASSPORT_REVIEW_RESPONSE.example.json`
 - `docs/m2/fixtures/PENDING_REPAIR_A.example.json`
 - `docs/m2/fixtures/PENDING_REPAIR_B.example.json`
+- `docs/m2/fixtures/QUALIFICATION_FAILED_RESPONSE.example.json`
+- `docs/m2/fixtures/RATE_LIMITED_RESPONSE.example.json`
 - `docs/m2/fixtures/README.md`
+- `docs/m2/fixtures/RESUME_AFTER_RESTART_REQUEST.example.json`
+- `docs/m2/fixtures/RESUME_AFTER_RESTART_RESPONSE.example.json`
 - `docs/m2/fixtures/RESUME_REQUEST.example.json`
 - `docs/m2/fixtures/RESUME_RESPONSE.example.json`
+- `docs/m2/fixtures/REVISION_CONFLICT_RESPONSE.example.json`
 - `docs/m2/fixtures/REVOKE_RESPONSE.example.json`
+- `docs/m2/fixtures/RUNTIME_CHANGED_RESPONSE.example.json`
 - `docs/m2/fixtures/STALE_DIAGNOSTIC_RESPONSE.example.json`
 - `docs/m2/fixtures/START_REQUEST.example.json`
 - `docs/m2/fixtures/START_RESPONSE.example.json`
@@ -96,4 +118,5 @@ All files below are documentation, planning types/proofs or example data; none i
 - `docs/m2/fixtures/WRONG_ANCHOR_RESPONSE.example.json`
 - `docs/m2/fixtures/WRONG_DIAGNOSIS_RESPONSE.example.json`
 - `docs/m2/fixtures/contract-types.ts`
+- `docs/m2/fixtures/equipment-copy.ts`
 - `docs/m2/fixtures/verify-contracts.ts`

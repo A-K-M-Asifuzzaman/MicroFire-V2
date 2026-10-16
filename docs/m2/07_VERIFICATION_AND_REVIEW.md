@@ -1,66 +1,69 @@
-# Candidate2 correction verification and review decisions
+# Candidate3 final consumer verification
 
-**READY FOR CLAUDE CONSUMER REVIEW.** This is Sol's corrected documentation candidate, not Claude signoff or Astra approval. Exact previous commit: **02e0588ce0eca1ebdb71bac0d758caea2abd1fc2**; accepted M1.5 ancestor **b6d15a47ec25f57350896f1dc63dc59192f57b00**. New correction SHA is reported in the delivery and resolved by `git rev-parse HEAD` after commit. Branch codex/m2-contract-plan; no322f2c2 integration.
+**READY FOR ASTRA FINAL M2 CONTRACT REVIEW.** Previous commit: **030e1e9283d0887a0d5464fd668e3fa5e675bbc3**; accepted M1.5 ancestor **b6d15a47ec25f57350896f1dc63dc59192f57b00**. New correction SHA is supplied in the delivery and by `git rev-parse HEAD`. Branch codex/m2-contract-plan;322f2c2 remains excluded. The owner supplied Claude’s C1–C4 substance acceptance and R1–R5 requirements; this candidate does not claim Astra final approval or runtime implementation.
 
-## Corrections tied to Astra findings
+## R1–R5 changes and evidence
 
-| Finding | Concrete corrected contract | Evidence / remaining runtime gate |
+| Correction | Frozen proposal | Planning verification |
 |---|---|---|
-| C1 missing diagnostic output | Snapshot.diagnostic current/stale/not-run union; symptoms/model inference/source purpose/repair; full pure TrainingTransitionResult; endpoint auth/capability types | Full diagnostic success/refusal/wrong/stale fixtures; negative missing/malformed/source-inconsistent mutations; strict literal checks. Runtime schemas/coordinator absent |
-| C2 ambiguous repair history | Bounded pendingRepair with cause, target, actual removal revision/time; consumed into first completed receipt; reverse reinstall clears pending without credit | Both Astra histories distinguish13/15 at same rig15; real core and metadata round-trips;30 permitted edit permutations preserve receipt and same-state future behavior |
-| C3 stale cross-tab overwrite | One LocalSlot, exclusive Web Lock, epoch/generation compare, safe tombstones, explicit raw-bound case/discard consent; read-only fallback | Both simultaneous serialized orders, stale N overwrite, stale resume, cross-case/epoch/tombstone conflicts and old/new crash model; actual browser/worker/lock/storage exception tests still required |
-| C4 incomplete auth/retry lifecycle | Opaque revocable server grants; fixed expiry/restart/rotation; canonical intent SHA IDs; start tombstones; precise action dedup-before-stale and resume head equality; issuedAt/no checkpoint expiry | Grant truth table, MAC/key/tamper and identity/retry/head models. Actual cookies/headers/revocation races/HTTP behavior remain implementation gates |
+| R1 | One table,10 part labels/10 anchor labels/15 symptom records; proposed PartDefinition label/anchorLabel; readable diagnostic/refusal copy | equipment-copy.ts + generated EQUIPMENT_COPY.md; machine IDs unchanged; all15 strings checked, no raw identifiers in presentation copy; DIAGNOSTIC_SUCCESS/WRONG_ANCHOR updated |
+| R2 | Research Passport v1 entries require corrections=[]; typed sourceEvidence/trainingHistory/learnerConclusions projection; training never direct | Real core COLLECT/OBSERVE actions generate research entries. No positive fixture mutation of corrections; receipts derive one typed fan-repair-v1 record only after B20 observation. False direct stamp/receipt/source corrections fail; fault/review/complete examples added |
+| R3 | Five ordered named derived checks; count equals done checks | Before/after fault/repair/qualification/observation/completion, after core save/load, and after qualification revocation; a mismatched count fails |
+| R4 | LOCAL_LOCK_BUSY; LOCAL_WRITE_FAILED cause/writeOutcome; invalid note400 INVALID_REQUEST/noteIssue | Busy/quota/unknown read-back cases; blank/outer whitespace/surrogate/control/length failures preserve state and draft semantics; accepted internal tab/newline retained; valid fifth note is separate domain limit |
+| R5 | Guided B20 source reading, no distractor or invented admitted hypothesis | Inspection still required; only canonical admitted observation collected; unknown claim recovery wording does not label all hypotheses unrelated |
 
-The four original wire examples were updated; thirteen additional complete wire examples cover start input, diagnostic/repair and capability/auth/revoke/resume. All17 valid examples are typechecked, and invalid response/input cases are explicit in fixtures/README, negative mutations and expected TypeScript errors. No valid M2 runtime schema or endpoint is falsely claimed to exist.
+Detailed decisions/conditions: [10_FINAL_CONSUMER_CORRECTIONS.md](10_FINAL_CONSUMER_CORRECTIONS.md). Exact frontend handoff: [09](09_CLAUDE_CONSUMER_HANDOFF.md). All M2 types/fields remain PROPOSED until the backend exists. C1–C4 pending-repair/locking/authentication/retry architecture remains; candidate3 changes labels/provenance/checks/consumer errors and bumps rulesVersion to m2-training-r3, preserving GameState v2/Passport v1 and raw recovery.
 
-## Actual fresh checks for this correction assignment
+## Fresh commands and actual results
 
-Executed in MicroFire-V2-m2-plan with existing installed dependencies and Node24 from `/Users/asifzaman/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin` on PATH. No install or package/lockfile change. Temporary logs/type harness: `/private/tmp/m2-contract-corrections/`.
+Executed in the exact planning worktree using existing dependencies and Node24 at `/Users/asifzaman/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin` on PATH. No dependency installation/lockfile edit. Logs/type harness: `/private/tmp/m2-final-consumer/`.
 
-| Command/check | Actual result |
+| Command / check | Actual result |
 |---|---|
-| pwd, git top-level/remote/branch/status/log/worktrees | Exact clean starting branch/02e0588; sole writable V2 origin; other worktree identities recorded before edits |
-| `npm test` | **103 passed,5 files**,3.48s; existing random-action/save/classification/science/API regression coverage |
-| `npm run validate:data` | **1 source,1 admitted experiment,55 quarantined rows**, local fixture hash matches; remote links explicitly not rechecked |
-| `node --import tsx docs/m2/fixtures/verify-contracts.ts --write` | Generated updated documentation fixtures/measurements;20 proof groups pass |
-| `node --import tsx docs/m2/fixtures/verify-contracts.ts --emit-types /private/tmp/m2-contract-corrections/typecheck-fixtures.ts` | Read-only example drift check and20 proof groups pass; emits temporary literal harness only |
-| `node node_modules/typescript/bin/tsc --noEmit --strict --noUncheckedIndexedAccess --exactOptionalPropertyTypes --skipLibCheck --moduleResolution bundler --module ESNext --target ES2022 --resolveJsonModule --esModuleInterop docs/m2/fixtures/contract-types.ts docs/m2/fixtures/verify-contracts.ts /private/tmp/m2-contract-corrections/typecheck-fixtures.ts` | Pass after correcting proof-helper narrowing; full proposed types, pure result signature, proof script and17 complete JSON literals; expected errors for missing diagnostic/historical category/normal mode/client availability |
-| Documentation/JSON/relative-link/manifest/Git whitespace/scope checks | Recorded at final delivery; only docs/m2 files may enter the correction commit |
+| pwd, Git root/remote/branch/status/log/worktree inventory | Correct clean030e1e9 starting branch and sole V2 origin; other worktrees recorded for preservation check |
+| `npm test` | **103 passed,5 files**,3.66s; existing game/science/contracts/API/Astra regressions |
+| `npm run validate:data` | **1 source,1 admitted experiment,55 quarantined legacy rows**; local fixture hash matches. Remote links not rechecked |
+| `node --import tsx docs/m2/fixtures/verify-contracts.ts --write` | Updated planning examples/copy/vectors/measurement fixtures;26 proof groups passed |
+| `node --import tsx docs/m2/fixtures/verify-contracts.ts --emit-types /private/tmp/m2-final-consumer/typed-examples.ts` | Read-only drift/invariant checks;26 groups pass, including both repair histories and30 edit permutations; emits temporary literal harness |
+| `node node_modules/typescript/bin/tsc --noEmit --strict --noUncheckedIndexedAccess --exactOptionalPropertyTypes --skipLibCheck --moduleResolution bundler --module ESNext --target ES2022 --resolveJsonModule --esModuleInterop docs/m2/fixtures/contract-types.ts docs/m2/fixtures/equipment-copy.ts docs/m2/fixtures/verify-contracts.ts /private/tmp/m2-final-consumer/typed-examples.ts` | Full proposed types, label table/proof code and **32 complete typed examples** pass; expected errors cover missing diagnostic, historical symptom category, normal mode, client availability and training-as-direct |
+| JSON/link/manifest/fence, frozen registry reasons, Git scope/whitespace and other-worktree checks | Pass:50 manifest files,34 valid JSON files, local links/fences; docs/m2-only changes; all5 other worktree HEAD/status pairs and pending registry SHA-256 unchanged; nine proposals unchanged; accepted ancestor present and322f2c2 excluded |
 
-The first strict proof-script typecheck found a nullable test-head access and an overly broad helper GameAction return type; both were narrowed without a cast or runtime package change, then the full check passed. This is correction evidence, not a claim that an earlier failed check passed unchanged. Current source/reducer remains byte-identical to the accepted baseline.
+An initial strict check caught the newly requested LOCAL_LOCK_BUSY missing from the error-code union; it was added and the check rerun. Passing results refer to the final corrected files. The proof helpers are reference oracles, not production game/API/storage/auth code. Type compatibility and invariant/model assertions do not prove the unimplemented runtime works.
 
-## New measured byte projections
+## Byte accounting
 
-Reproduce from committed [MEASUREMENTS.json](fixtures/MEASUREMENTS.json) with the proof script. All sizes are actual UTF-8 bytes of canonical/JSON transport objects, not string.length guesses. This is a serialization projection, not completed end-to-end validation.
+Actual current projection sizes are committed in [MEASUREMENTS.json](fixtures/MEASUREMENTS.json) and reproduced by the runner. Bodies use compact canonical JSON/UTF-8 bytes, including identity/signature/base64 overhead. Four maximum legal500-unit BMP notes are admitted through the ADD_LEARNER_NOTE expected-action oracle; research entries remain reducer-generated with empty corrections.
 
-| Shape | Bytes |
+| Shape | UTF-8 bytes |
 |---|---:|
-| Representative complete checkpoint,39 large wrong-choice cells + one correct choice,4 maximum legal500-unit notes,2 canonical entries/correction, max32-char keyId,5-digit loopback port and safe-integer revision | **13,769** |
-| Its signed base64url token | **18,403** |
-| Its full resume request (runtime UUID +64-hex commandId) | **18,550** |
-| Larger of the two pending repair-history checkpoints | **3,228** |
-| Last accepted command receipt | **136** |
-| Complete wrapper overhead beyond TrainingCase | **583** |
-| Full completed ActionResponse, including duplicated token/state/projections | **32,785** |
-| Full ten-finding current diagnostic response | **12,967** |
-| Mathematical maximum token from20,480 decoded bytes | **27,351** |
-| Full resume request using that maximum token | **27,498** |
-| LocalSlot envelope with max token +UUID epoch/head +max generation/revision | **27,552** (≤28,000 local cap) |
+| Representative full complete checkpoint:2 source entries,4 max legal notes,39 large wrong-choice cells+1 correct, max keyId/loopback port/revision | **13,415** |
+| Signed token | **17,931** |
+| Complete resume request | **18,078** |
+| Larger pending-repair checkpoint | **3,228** |
+| Last-command receipt / wrapper beyond TrainingCase | **136 /583** |
+| Ordinary COMPLETE_RESPONSE (no learner notes) | **12,366** |
+| Full complete ActionResponse stress projection including notes, named checks, three-section Passport and token/state | **39,965** |
+| Full ten-finding diagnostic response | **15,798** |
+| Mathematical maximum token from20,480-byte payload | **27,351** |
+| Resume request with maximum token | **27,498** |
+| LocalSlot with maximum token/epoch/generation | **27,552**, below28,000 cap |
 
-Compared with candidate1 13,420/18,006, provenance/auth-scope/lastCommand and identity fields now fit with headroom. The earlier15,612/20,928 surrogate-note stress projection is historical: candidate2 explicitly **rejects lone surrogates**, so2,048-byte escaped-surrogate notes are invalid, preserved raw/input on refusal, not accepted legal progress. The maximum legal500-unit well-formed BMP note is1,502 serialized bytes. Four such notes are included above. Keep2,048 as a defensive byte ceiling. No source text or notes were truncated.
+Previous candidate2 figures13,769/18,403/18,550 and32,785 are historical and were reproduced by the consumer. Removing fictional repairs from research correction arrays reduces checkpoint size; bounded derived presentation/checks increase response size. No source text/limitations/notes were truncated. The old2,048-byte escaped-surrogate note stressor is invalid under the well-formed Unicode policy; maximum legal500-unit note bytes remain1,502. Large histogram counters stress shape size, not a claim that those histories were executed.
 
-Large histogram counters are **shape/budget stressors**, not a claim this many attempts ran; their sum fits the projected session revision and the correct-choice cell remains1. The projection does not prove every reachable state can complete. Optional update preflight must reserve a complete essential suffix (bytes and safe revisions), and runtime property tests must verify it. Diagnostic output is derived/not in checkpoint; only checked revision persists. Local epoch/generation never expands the HTTP resume body because only the signed token is uploaded.
+**Actual current32KiB guard is request-only**, in apps/web/lib/api.ts MAX_BODY/readJson; the current Response.json success helper imposes no general matching response cap. Proposed M2 responses have their own65,536-byte precommit cap, not implemented. Therefore39,965 bytes is allowed by the proposed response contract and is not a32KiB request failure. State/token/local-slot/extracted checkpoint remain independently bounded. Tests cover separate request/payload arithmetic and65,535/65,536/65,537 response boundaries; actual streaming/runtime/browser memory tests remain required. Optional updates must preflight the entire essential completion suffix; serialization projections are not a proof every reachable state can finish.
 
-## Scientific and compatibility invariants
+## Consumer recommendations N1–N8
 
-No science data, shared runtime schemas, feature states or source IDs were edited. B20 remains the only admitted experiment, oxygen17.4 calibrated;55 legacy rows remain excluded, B16/B19 human-review/admission unresolved. Ten apparatus functions and7.6×7.6×17cm duct remain sourced to NASA report PDF12–13; detailed geometry/order/anchors are schematic. Candidate2 labels all diagnostic symptoms/faults as authored training; sourced hardware purpose is separate from model inference and canonical historical B20 outcome. A signature, save shape, qualification animation or citation lineage never certifies a combustion claim. Canonical caveats/learner notes stay distinct; deterministic Ask/ranking/abstention unchanged.
+N1 adopt caller grant state/expiry without secret. N2 adopt optional authenticated409 runtime/currentRevision context, no unauthenticated leak. N3 add qualification/conflict/restart/reuse/rate/key/diagnosis/resume examples. N4 derive exact byte budget with no client admission authority. N5 require one shared pure canonicalJson implementation plus fixed Node/browser vectors before runtime integration. N6 defer optional per-part lock-hint DTOs; existing metadata/action eligibility suffice. N7 keep all POSTs/refusals/retries within the unchanged30/min budget; use local inspection,2.1s controller pacing and truthful429 recovery, test8 mistakes. N8 require lazy gameplay/3D loading while public descriptions remain light. Rationale and exact fields are in10.
 
-Candidate1 source-download/hash/visual evidence remains in Git history and the original07/08; no new download or human source approval is claimed. Astra's independent primary-source check and review were available and read. Remote browser/spec references were read only for the lock/storage contract. No NASA figure/PDF/media added, no reference repository written.
+## Browser evidence and remaining gates
 
-## Approval questions / handoff
+The owner’s consumer report says Chromium cross-process stress found zero lost updates; it was **not rerun here**, and no extra evidence path was provided. Firefox/WebKit remain untested. Writable persistence requires independently accepted cross-process lost-update/visibility tests for each supported engine/build family, with versions/OS/process method/iterations/commit, plus crash/reopen, stale response, exceptions and recovery. Until accepted for an engine, use LOCAL_READ_ONLY and exact raw checkpoint download/read-only restore even when Web Locks exists. Notifications are never atomic synchronization. These are acceptance requirements, not passing browser results.
 
-No missing local evidence blocks **consumer review**. The following deliberate choices require Claude consumer agreement and Astra final approval: typed current/stale finding presentation; pending receipt semantics; Web Locks + epoch/generation with read-only/download fallback; opaque local grants; canonical intent IDs instead of random idempotency UUIDs; nonexpiring compatible checkpoints with current-key-only verification and read-only recovery after rotation;256 start tombstones per runtime; exact source/training Passport rendering. These choices are specified, not left for Claude to guess. Any amendment updates types/examples/proofs/docs together before freeze.
+Astra must approve the exact new candidate SHA before implementation. No remaining substantive consumer choice is left undefined: frozen copy, separate training provenance, named predicates, note status/code policy, local errors, source activity, compatibility gates and N1–N8 decisions are specified. Any reviewer amendment must update types/examples/proofs/docs together. Next stage after approval remains Sol backend foundation, then Claude full accessible2D,3D/joint hardening, Astra real vertical-slice review. No activation/release follows from this delivery.
 
-Use [09_CLAUDE_CONSUMER_HANDOFF.md](09_CLAUDE_CONSUMER_HANDOFF.md) as the exact review packet. No message has been sent to Claude or another chat. After consumer agreement, Astra reviews the **new correction SHA**. Only a subsequent explicit approval permits stage A backend implementation, then complete2D,3D/joint hardening and independent vertical-slice acceptance. Existing nine registry proposals stay pending coordinated integration; no Available promotion. Sol alone edits the ledger/schema migration window; Claude owns frontend models/UI and the next dependency/lockfile window; shared file edits remain serialized.
+## Preserved scope and science
 
-Not rerun for this docs-only correction: build, browser/E2E, lint, npm advisory audit, live Meshy balance, native screen-reader/device/power-loss checks. The proof runner tests bounded models/current core/serialization, not new runtime API behavior. No preview activation, gameplay coordinator, push/merge/deploy, reference mutation or paid generation is part of this delivery.
+B20 alone,17.4 vol% calibrated oxygen;55 other records quarantined; B16/B19 unresolved; source apparatus functions versus schematic geometry; no simulation-to-direct promotion; source limitations separate from unassessed notes; deterministic ranking/Ask/abstention unchanged. Original lineage validation/raw-save recovery remain, with new scenario provenance checks separate. Human scientific approval remains distinct. Nine registry proposals and the six pending edits are preserved; no Available change. Production reducers/shared exports/data/API/frontend/assets/config/lockfile are untouched; reference repositories read-only.
+
+Not run: new M2 runtime API/E2E, browser locking in any engine, build/lint/audit, native accessibility/device/network-memory profiling, live balance or paid generation. No push, merge, deployment, mission unlock, preview activation, Meshy job or scientific promotion occurred.

@@ -7,14 +7,14 @@ Proposed episode ID **bass-b20-training-v1**. It deliberately spans the existing
 | Step | Player action | Authoritative consequence / requirement |
 |---|---|---|
 | Station entry | Authorize local preview; follow source terminal instead of fictional alert | Server creates a fresh demo case and START_MISSION station-arrival; false alert is authored fiction, not NASA telemetry |
-| Source orientation | Open B20 source/conditions, select its canonical observed statement, collect it | INSPECT_EVIDENCE → COLLECT_EVIDENCE → COMPLETE_MISSION station-arrival; first cited Passport entry. A distractor cannot award it |
+| Source orientation | Open B20 source/conditions, select its canonical observed statement, collect it | INSPECT_EVIDENCE → COLLECT_EVIDENCE → COMPLETE_MISSION station-arrival; first cited Passport entry. Guided source reading offers only the admitted observation; no distractor is used |
 | Equipment assembly | Start bass-assembly; select ten parts, choose anchors and orientations | Existing dependency/anchor guards accept or refuse each placement; current setup visible; no arbitrary drag collision determines eligibility |
 | Fault introduction | Finish an initially correct rig | Coordinator atomically removes/reinstalls the fan reversed once; labels the deliberate training fault. New revision, no qualification; never described as an actual B20 incident |
 | Diagnosis | Inspect orientation/flow-path schematic, run diagnostic, submit part + fault category | Coordinator calls diagnose on real installed parts. Wrong diagnosis gives targeted feedback and recorded aggregate choice counts; no progression credit |
 | Repair | After correct diagnosis, remove fan and reinstall facing into duct | Existing REMOVE_PART/INSTALL_PART; no auto-repair button. Reversed replacement remains faulty; qualification remains unavailable |
 | Training qualification | Run the check after repair | Requires diagnosed episode fault, actual repair sequence and diagnose(...).qualified at current revision; then core QUALIFY_INSTRUMENT |
 | Verified B20 observation | Open historical B20 evidence panel and source pointer | Coordinator checks pinned record/hash/regime and qualification; calls OBSERVE_DOCUMENTED_RESULT. Source text, not a simulated flame, produces scientific evidence |
-| Evidence Passport | Review source/limitations, repair annotation and optional learner notes; finish | Current core entry + clearly labeled training correction, copied canonical caveats, separate notes; COMPLETE_MISSION bass-assembly only after all episode gates |
+| Evidence Passport | Review source/limitations, repair annotation and optional learner notes; finish | Current core research entries with empty corrections, a separate typed authored-training projection, canonical caveats and separate learner notes; COMPLETE_MISSION bass-assembly only after all episode gates |
 | Save/reload/continue | Explicit Save; reload at any checkpoint and resume | Signed preview checkpoint restored and revalidated; same phase, part states, proof and notes. Reauth if needed; no normal/demo legacy overwrite |
 
 The initial station source exercise necessarily exposes the source observation before the workshop: existing Station Arrival completion requires a real observed claim. This is source familiarization, not a blind prediction task. After qualification the player must deliberately inspect the B20 result again; do not imply the game produced or independently measured it. Flame Detective's later prediction mechanic remains a separate stage.
@@ -61,7 +61,7 @@ Every accepted setup edit clears qualification through existing changeSetup beha
 
 ## Scoring, summaries and learning
 
-Use five derived learning checks: source collected, rig qualified, required fault diagnosed/repaired, B20 lineage matched, episode completed. Display progress such as “3 of 5 learning checks”; never a fire-risk/confidence/safety score. Wrong attempts change feedback and aggregate training counts, not a permanent grade or lost scientific evidence. No speed bonus. Identical state/action/catalog/time produces identical output.
+Use five named derived learning checks (exact IDs/labels/predicates/count invariant in10): source collected, rig qualified, required fault diagnosed/repaired, B20 lineage matched, episode completed. Display progress such as “3 of 5 learning checks”; never a fire-risk/confidence/safety score. Wrong attempts change feedback and aggregate training counts, not a permanent grade or lost scientific evidence. No speed bonus. Identical state/action/catalog/time produces identical output.
 
 The checkpoint records current part choices, the injected fault, first/last wrong diagnosis and per-choice counts, accepted repair before/after revisions, source inspection and notes. It is explicitly an **action summary**, not an exhaustive click/drag event log. Counts are not silently truncated. Refuse only overflowing wrong-count increments before mutation; a correct diagnosis remains possible without incrementing a full wrong-choice cell. No hidden deletion of scientific text or learner notes is allowed.
 
@@ -82,20 +82,15 @@ Pin dataset `p0-bass-b20-v1`, catalog SHA-256 `1f9d4883791da73e256af09eb3994805b
 
 All **55 other legacy rows remain excluded**. B16 and B19 each have calibrated initial/final **17.3/17.2**, versus legacy B16 16.5/16.4 and B19 16.4/16.3. Restrictor differs (B19 0; B16/B20 2); pot/velocity, procedure and anomaly caveats remain. Their source-cell review status is not runtime admission. No promotion or new NASA field is part of M2.
 
-## Passport composition
+## Passport composition — R2 final candidate
 
-Reuse the two existing entries generated by Station Arrival and Assembly. `conclusion` stays the canonical observed claim. `limitations` retains every canonical experiment caveat. `claimIds`, `experimentIds` and `citations` are catalog-derived, never accepted from a client note.
+Reuse the two **research** entries generated by real Station Arrival COLLECT_EVIDENCE and Assembly OBSERVE_DOCUMENTED_RESULT reducer actions. Both have canonical conclusion/citations/limitations and **corrections=[]**. Learner notes remain their own learnerNotes field and are never source conclusions. No training string is inserted into a research correction array, even with a prefix.
 
-For the assembly entry only, attach one existing-schema `corrections` item:
-- previous: `[Training simulation] fan orientation reversed at setup revision R.`
-- revised: `[Training simulation] fan reinstalled correctly at revision R2; training check passed at revision R3.`
-- reason: `Authored training fault and repair, not a documented NASA incident or a validation of a combustion outcome.`
-- at: server action time of successful repair.
+`Snapshot.passportPresentation` exposes structurally distinct sourceEvidence (research entry references), trainingHistory (authored-training, evidenceLevel:not-applicable, historicalNASAEvent:false) and learnerConclusions (learner-authored, scientificValidation:not-assessed). It is recomputed from the single core Passport and authoritative signed training receipts, not persisted as a second Passport. After the guarded B20 observation action, the Assembly view derives exactly one fan-repair-v1 annotation; before it, trainingHistory.corrections is empty. The annotation's exact setup-revision fields/template and equality checks are frozen in [10](10_FINAL_CONSUMER_CORRECTIONS.md#r2--structural-passport-provenance-no-prefixes-as-authority). A raw source-only Passport export does not falsely claim to contain training history; the full case checkpoint retains the receipts for faithful reconstruction.
 
-The source entry may retain `scenario:research`/observed/direct because its evidence is the historical source, while the correction carries an explicit training label. The frontend renders these as separate **Source observation**, **Training repair**, **Learner interpretation** sections. It must not put a “direct evidence” stamp over the simulated repair. The checkpoint's training summary supplies choices/counts; there is no parallel Passport array.
+ADD_LEARNER_NOTE is proposed only during Passport review. At most4 notes, each≤500 UTF-16 units/2,048 serialized bytes. Invalid content returns **HTTP400 INVALID_REQUEST with noteIssue** before command hashing/mutation; preserve the editor input, never trim/normalize/truncate it. Valid fifth note is a separate HTTP200 NOTE_LIMIT_REACHED refusal. Canonical limitations stay immutable, and lineage validation does not assess learner prose. [R4](10_FINAL_CONSUMER_CORRECTIONS.md#r4--precise-save-and-note-failures) defines exact controls, Unicode, errors and recovery.
 
-ADD_LEARNER_NOTE appends at most four notes to the current assembly entry during Passport review. Each note must be nonblank, ≤500 UTF-16 units, ≤2,048 serialized UTF-8 bytes; reject control characters other than tab/newline and preserve accepted text. Reject lone surrogates explicitly. Because existing TextSchema trims outer whitespace, this action also requires text===text.trim(): refuse surrounding whitespace with explicit guidance while retaining the input, rather than silently normalizing it. Refusal is before mutation, with no effect on completion. No auto-trimming, silent truncation or replacement of older notes. Canonical limitations cannot be edited through this action. Validation proves structure/citation lineage, not conclusions, notes, repair history or scientific truth.
-
+Named learning checks, label/copy tables, guided source reading and consumer decisions are authoritative proposals in [10](10_FINAL_CONSUMER_CORRECTIONS.md). Station Arrival has no authored distractor in this slice, no invented NASA claim and no hypothesis-judgment score. It teaches tracing the one admitted observation to conditions/source/limitations. Broader classification mechanics remain deferred.
 
 ## C2 — Repair transition contract
 
@@ -112,7 +107,7 @@ Candidate2 chooses explicit bounded **pending provenance**, preserving interveni
 | Pending repair, fan absent | GAME INSTALL_PART fan/correct at duct-inlet | core install; repair={...pending,reinstalledAtRevision:new setup revision,at}; pending=null; session+1/setup+1 | Wrong anchor/order unchanged; actual manual repair, not a NASA observed event |
 | First repair already completed | later core edits before observation | preserve first historical repair unchanged; never create second receipt or overwrite original removedAtRevision; qualification cleared by core | New reversed fan/missing part must still be repaired for current qualification; no repeat achievement/score |
 | Completed receipt, no pending, all ten parts correct | GAME QUALIFY_INSTRUMENT | core qualifiedRevision=current setup; session+1, setup unchanged | Missing receipt→REPAIR_REQUIRED; remaining faults→QUALIFICATION_FAILED; training configuration check only |
-| Current qualification and required history | explicit GAME OBSERVE_DOCUMENTED_RESULT B20 | canonical B20 Assembly entry plus one labeled repair correction; session+1; lock later rig edits | Wrong source/hash/regime→SCENARIO_MISMATCH/EVIDENCE_REJECTED; no fictional outcome promoted |
+| Current qualification and required history | explicit GAME OBSERVE_DOCUMENTED_RESULT B20 | canonical B20 Assembly entry plus one separately typed training-history record; session+1; lock later rig edits | Wrong source/hash/regime→SCENARIO_MISMATCH/EVIDENCE_REJECTED; no fictional outcome promoted |
 
 Historical diagnosis identifies the introduced fault at its then-current faultyRevision, which can be greater than introduction if other parts were edited first. Subsequent rig edits stale only the diagnostic display, not that earned identification. Qualification recomputes all current faults even if the earlier diagnostic is stale. The completed repair is history, not an assertion the fan remains healthy forever.
 
