@@ -83,12 +83,20 @@
 .m2-pix[data-pose="alarm"] .m2-pix-line, .m2-pix[data-pose="concern"] .m2-pix-line { background: rgb(226 176 74 / .1); border-color: rgb(226 176 74 / .45); }
 .m2-pix[data-pose="reveal"] .m2-pix-line, .m2-pix[data-pose="cheer"] .m2-pix-line { background: rgb(127 214 209 / .1); border-color: rgb(127 214 209 / .45); }
 .m2-pix .m2-pix-stage { transition: transform .5s var(--ease); }
-.m2-pix[data-pose="cheer"] .m2-pix-stage { animation: m2-hop .9s var(--ease) 1; }
-.m2-pix[data-pose="alarm"] .m2-pix-stage { animation: m2-shake .5s ease 2; }
+/* One restrained gesture per new pose; nothing loops. Reduced motion removes them all (see below). */
+.m2-pix[data-pose="cheer"] .m2-pix-stage { animation: m2-hop .8s var(--ease) 1; }
+.m2-pix[data-pose="alarm"] .m2-pix-stage { animation: m2-startle .6s var(--ease) 1; }
+.m2-pix[data-pose="nod"] .m2-pix-stage { animation: m2-nod .7s var(--ease) 1; }
+.m2-pix[data-pose="look"] .m2-pix-stage { transform: rotate(4deg); }
+.m2-pix[data-pose="concern"] .m2-pix-stage { transform: translateY(2px) rotate(-4deg); }
+.m2-pix-line::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; vertical-align: 1px; background: var(--m2-cyan); }
+.m2-pix[data-pose="alarm"] .m2-pix-line::before, .m2-pix[data-pose="concern"] .m2-pix-line::before { background: var(--m2-amber); }
+.m2-pix[data-pose="cheer"] .m2-pix-line::before, .m2-pix[data-pose="reveal"] .m2-pix-line::before { background: var(--m2-teal); }
 .m2-pix[data-pose="think"] .m2-pix-stage { transform: rotate(-8deg); }
 .m2-pix[data-pose="reveal"] .m2-pix-stage { transform: scale(1.08); }
-@keyframes m2-hop { 40% { transform: translateY(-14px); } 70% { transform: translateY(2px); } }
-@keyframes m2-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+@keyframes m2-hop { 40% { transform: translateY(-8px); } 70% { transform: translateY(1px); } }
+@keyframes m2-startle { 30% { transform: translateY(-3px) rotate(-6deg); } }
+@keyframes m2-nod { 35% { transform: translateY(3px) rotate(2deg); } 70% { transform: translateY(-1px); } }
 
 /* Arrival cinematic */
 .m2-arrival { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: #02050a; overflow: hidden; transition: opacity .6s var(--ease); }
@@ -133,6 +141,7 @@
 .m2-bench-loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--frost-dim); font: 500 var(--step--1) var(--mono); min-height: 200px; }
 .m2-bench-label { position: absolute; left: 12px; top: 10px; margin: 0; font: 500 .7rem/1.3 var(--mono); color: var(--frost-dim); max-width: 60%; pointer-events: none; }
 .m2-bench-hint { position: absolute; left: 12px; bottom: 8px; margin: 0; pointer-events: none; }
+.m2-bench-env { position: absolute; right: 12px; top: 10px; margin: 0; padding: 4px 8px; border-radius: 6px; background: rgb(4 7 12 / .72); pointer-events: none; }
 /* Captions stay legible over the lit bay, not just the dark void. */
 .m2-bench-label, .m2-bench-hint { padding: 4px 8px; border-radius: 6px; background: rgb(4 7 12 / .72); }
 .m2-bench-tip { position: absolute; transform: translate(12px, -130%); pointer-events: none; padding: 6px 10px; border-radius: 8px; background: rgb(4 7 12 / .9); border: 1px solid var(--m2-cyan); font-size: .8rem; white-space: nowrap; }

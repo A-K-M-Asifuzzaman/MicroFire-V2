@@ -60,6 +60,22 @@ export function rig(s: Snapshot, specs: readonly PartSpec[]): RigPart[] {
 /** True when this confirmed change is the moment the server introduced the authored training fault. */
 export const faultIntroduced = (before: Snapshot | null, after: Snapshot) => !!before && before.training.fault === null && after.training.fault !== null;
 
+/** The setup's current revision is the one the server qualified. */
+export const qualifiedNow = (s: Snapshot) => s.state.setup.qualifiedRevision !== null && s.state.setup.qualifiedRevision === s.state.setup.revision;
+
+/**
+ * Astronaut acknowledgement for a confirmed change, read only from the before/after snapshots the server returned,
+ * so no celebration can run ahead of the rules. Strongest outcome wins. The fault reaction is driven separately.
+ */
+export function astronautCue(ev: { kind: 'accepted' | 'refused'; before?: Snapshot | null; after?: Snapshot } | null): 'nod' | 'wave' | 'cheer' | null {
+  if (ev?.kind !== 'accepted' || !ev.before || !ev.after) return null;
+  const { before, after } = ev;
+  if (qualifiedNow(after) && !qualifiedNow(before)) return 'cheer';
+  if (after.training.repair && !before.training.repair) return 'wave';
+  if (after.training.diagnosis && !before.training.diagnosis) return 'nod';
+  return null;
+}
+
 export const allows = (s: Snapshot, type: TrainingAction['type']) => s.progress.allowedActionTypes.includes(type);
 export const allowsCore = (s: Snapshot, type: CorePreviewAction['type']) => allows(s, 'GAME') && s.progress.allowedCoreActionTypes.includes(type);
 

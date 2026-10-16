@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import type { PartSpec } from '../contract';
-import { addEnvironment, type EnvReaction } from './bench-environment';
+import { addEnvironment, type EnvCue, type EnvOptions, type EnvProgress } from './bench-environment';
 
 export type BenchState = {
   installed: Record<string, { anchorId: string; orientation: 'correct' | 'reversed' }>;
@@ -26,10 +26,14 @@ export type BenchCallbacks = {
   onDrop(partId: string, anchorId: string): void;
   onHover(h: { x: number; y: number; text: string } | null): void;
   onLost(): void;
+  /** The apparatus has drawn its first frame (the scene is visible, not just constructed). */
+  onFirstFrame?(): void;
+  /** Lab scenery progress: real model counts for the tier in use (`lite` on small screens and software renderers). */
+  onEnvProgress?(p: EnvProgress, lite: boolean): void;
 };
-export type BenchApi = { update(s: BenchState): void; faultMoment(): void; react(kind: EnvReaction): void; resize(): void; setMotion(on: boolean): void; stop(): void };
+export type BenchApi = { update(s: BenchState): void; faultMoment(): void; react(cue: EnvCue): void; resize(): void; setMotion(on: boolean): void; stop(): void };
 /** Artistic environment (Meshy). Absent → the bench renders exactly as before. */
-export type BenchEnvironment = Parameters<typeof addEnvironment>[1] | null;
+export type BenchEnvironment = EnvOptions | null;
 
 const L = 1.7, H = 0.76, hx = L / 2, hy = H / 2;
 export const ANCHORS3D: Record<string, [number, number, number]> = {
@@ -42,9 +46,9 @@ const C = { cyan: new THREE.Color('#73bbd9'), amber: new THREE.Color('#e2b04a'),
 
 function mats() {
   return {
-    metal: new THREE.MeshStandardMaterial({ color: '#9fb0c0', metalness: 0.85, roughness: 0.3 }),
+    metal: new THREE.MeshStandardMaterial({ color: '#c3d0dc', metalness: 0.85, roughness: 0.25 }),
     dark: new THREE.MeshStandardMaterial({ color: '#22344a', metalness: 0.55, roughness: 0.42 }),
-    copper: new THREE.MeshStandardMaterial({ color: '#b9733f', metalness: 0.8, roughness: 0.35 }),
+    copper: new THREE.MeshStandardMaterial({ color: '#e08a48', metalness: 0.8, roughness: 0.28 }),
     sample: new THREE.MeshStandardMaterial({ color: '#dfe9ef', metalness: 0, roughness: 0.15, transparent: true, opacity: 0.85 }),
     glass: new THREE.MeshPhysicalMaterial({ color: '#9fd8ef', metalness: 0, roughness: 0.08, transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide }),
     cone: new THREE.MeshBasicMaterial({ color: C.cyan, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide }),
@@ -147,11 +151,14 @@ function buildPart(id: string, m: Mats): THREE.Group {
   return g;
 }
 
-export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, parts: readonly PartSpec[], cb: BenchCallbacks, motionOn: boolean, environment: Omit<NonNullable<BenchEnvironment>, 'onReady'> | null = null): Promise<BenchApi | null> {
+export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, parts: readonly PartSpec[], cb: BenchCallbacks, motionOn: boolean, environment: BenchEnvironment = null): Promise<BenchApi | null> {
   let renderer: THREE.WebGLRenderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); }
   catch { return null; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
+  // Software rasterisers (SwiftShader, llvmpipe) pay ~170 ms per shader program: draw fewer pixels and load only the lite scenery.
+  const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info');
+  const software = /swiftshader|llvmpipe|softpipe|software/i.test(dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '');
+  renderer.setPixelRatio(software ? 1 : Math.min(devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
   const scene = new THREE.Scene();
@@ -172,13 +179,27 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   const glovebox = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.1, 2.05, 1.9)), new THREE.LineBasicMaterial({ color: '#2a3d52' }));
   glovebox.position.y = 0.37; scene.add(glovebox);
 
-  // Optional artistic environment, loaded after the bench is interactive. Establishing shot, then dolly in.
-  const env = environment ? addEnvironment(scene, { ...environment, onReady: () => kick() }) : null;
-  if (env) { // dark work mat under the apparatus so it reads against the pale desk
-    const mat = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 3.8), new THREE.MeshStandardMaterial({ color: '#0b1420', roughness: 0.85, metalness: 0.1 }));
-    mat.rotation.x = -Math.PI / 2; mat.position.y = -hy - 0.285; scene.add(mat);
-  }
+  // Optional artistic environment: lights now, scenery after the apparatus's first frame. Establishing shot, then dolly in.
+  const lite = !!environment && (environment.lite || software);
+  // The establishing shot holds (timestamp) until the scenery has arrived, at most 2.5 s after the first frame; any input ends it.
+  let hold = 0, firstFrame = false, firstAt = 0;
+  const env = environment ? addEnvironment(scene, renderer, camera, { ...environment, lite, onChange: () => kick(), onProgress: (p) => {
+    if (p.loaded >= p.total) hold = Math.min(hold, Math.max(performance.now() + 500, firstAt + 1500)); // a beat on the full room
+    cb.onEnvProgress?.(p, lite);
+  } }) : null;
   const m = mats();
+  if (env) { // dark work mat with a glowing edge, plus a hero key and back light, so the apparatus owns the frame
+    // The mat covers the whole (1.8 × 0.85 m) desk top, so close-ups never look past it onto glare; the cyan outline marks the work zone.
+    const mat = new THREE.Mesh(new THREE.PlaneGeometry(17, 8), new THREE.MeshBasicMaterial({ color: '#070b12' })); // unlit: the stacked bench lights turned any lit dark mat grey
+    mat.position.z = -1.5;
+    const edge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(5.6, 5)), new THREE.LineBasicMaterial({ color: C.cyan, transparent: true, opacity: 0.8 }));
+    for (const o of [mat, edge]) { o.rotation.x = -Math.PI / 2; o.position.y = -hy - 0.284; scene.add(o); }
+    floor.visible = false; // the cyan contact glow was for the empty void; on the mat it read as a pale veil
+    m.glass.envMapIntensity = 0.35; // keep the duct glass from veiling the parts inside it
+    const hero = new THREE.SpotLight('#fff4e6', 55, 14, 0.22, 0.5, 1); hero.position.set(1.5, 6, 3); hero.target.position.set(0, 0, 0); scene.add(hero, hero.target);
+    const back = new THREE.PointLight(C.cyan, 18, 7); back.position.set(0.5, 1.6, -2.4); scene.add(back);
+    scene.environmentIntensity = 0.8; renderer.toneMappingExposure = 1.15;
+  }
   const groups = new Map<string, THREE.Group>();
   const placed = new Map<string, { target: THREE.Vector3; yaw: number; drop: number }>();
   for (const p of parts) { const g = buildPart(p.id, m); g.visible = false; scene.add(g); groups.set(p.id, g); }
@@ -224,9 +245,9 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   };
 
   // Orbit camera (drag empty space / arrow keys), damped.
-  const maxR = environment ? 48 : 6.5;
+  const maxR = environment ? 28 : 6.5;
   const orbit = { theta: -0.55, phi: 1.12, r: 4.4, tTheta: -0.55, tPhi: 1.12, tR: 4.4, target: new THREE.Vector3(0, 0.05, 0), tTarget: new THREE.Vector3(0, 0.05, 0) };
-  if (env && motionOn) { orbit.r = 40; orbit.theta = -0.25; orbit.phi = 1.32; orbit.target.set(-3, -3, 0); } // establishing shot
+  if (env && motionOn) { hold = Infinity; orbit.r = 24; orbit.theta = -0.15; orbit.phi = 1.35; orbit.target.set(-5, 0, -1); } // establishing shot: astronaut, porthole, bench
   const applyCamera = () => {
     const { theta, phi, r, target } = orbit;
     camera.position.set(target.x + r * Math.sin(phi) * Math.sin(theta), target.y + r * Math.cos(phi), target.z + r * Math.sin(phi) * Math.cos(theta));
@@ -258,7 +279,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   let drag: { kind: 'orbit' | 'ghost'; x: number; y: number; moved: boolean } | null = null;
   const plane = new THREE.Plane(), hitPoint = new THREE.Vector3();
   const onDown = (e: PointerEvent) => {
-    pick(e);
+    hold = 0; pick(e);
     drag = { kind: state?.choosing && hitGhost() ? 'ghost' : 'orbit', x: e.clientX, y: e.clientY, moved: false };
     if (drag.kind === 'ghost' && ghost) plane.setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()).negate(), ghost.position);
     canvas.setPointerCapture(e.pointerId); kick();
@@ -293,8 +314,9 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     }
     kick();
   };
-  const onWheel = (e: WheelEvent) => { e.preventDefault(); orbit.tR = THREE.MathUtils.clamp(orbit.tR + e.deltaY * 0.0025 * (orbit.tR / 4), 2.6, maxR); kick(); };
+  const onWheel = (e: WheelEvent) => { e.preventDefault(); hold = 0; orbit.tR = THREE.MathUtils.clamp(orbit.tR + e.deltaY * 0.0025 * (orbit.tR / 4), 2.6, maxR); kick(); };
   const onKey = (e: KeyboardEvent) => {
+    hold = 0;
     const step = { ArrowLeft: [0.12, 0], ArrowRight: [-0.12, 0], ArrowUp: [0, -0.08], ArrowDown: [0, 0.08] }[e.key];
     if (step) { e.preventDefault(); orbit.tTheta += step[0]!; orbit.tPhi = THREE.MathUtils.clamp(orbit.tPhi + step[1]!, 0.45, 1.5); kick(); }
     if (e.key === '+' || e.key === '=') { orbit.tR = Math.max(2.6, orbit.tR - 0.3); kick(); }
@@ -317,8 +339,10 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     const t = (now - t0) / 1000, ease = motion ? (Math.max(orbit.r, orbit.tR) > 8 ? 0.035 : 0.14) : 1;
     let busy = false;
     const step = (a: number, b: number) => { const v = a + (b - a) * ease; if (Math.abs(b - v) > 1e-4) busy = true; return Math.abs(b - v) > 1e-4 ? v : b; };
-    orbit.theta = step(orbit.theta, orbit.tTheta); orbit.phi = step(orbit.phi, orbit.tPhi); orbit.r = step(orbit.r, orbit.tR);
-    orbit.target.lerp(orbit.tTarget, ease); if (orbit.target.distanceTo(orbit.tTarget) > 1e-3) busy = true;
+    if (now >= hold) {
+      orbit.theta = step(orbit.theta, orbit.tTheta); orbit.phi = step(orbit.phi, orbit.tPhi); orbit.r = step(orbit.r, orbit.tR);
+      orbit.target.lerp(orbit.tTarget, ease); if (orbit.target.distanceTo(orbit.tTarget) > 1e-3) busy = true;
+    } else busy = true;
     applyCamera();
     for (const [id, p] of placed) {
       const g = groups.get(id)!;
@@ -328,7 +352,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       const yaw = step(g.userData.yaw ?? p.yaw, p.yaw); g.userData.yaw = yaw;
       g.rotation.set(base.x, base.y + yaw, base.z);
     }
-    if (env?.update(1 / 60, motion)) busy = true;
+    if (env?.update(1 / 60, motion, t)) busy = true;
     if (motion) { const blades = groups.get('fan')?.getObjectByName('blades'); if (blades && state?.installed.fan) { blades.rotation.x = t * 1.6; busy = true; } }
     if (ghost) {
       if (!drag) { const tgt = state?.pendingTarget ? new THREE.Vector3(...ANCHORS3D[state.pendingTarget]!) : ghostHome; ghostPos.lerp(tgt, motion ? 0.12 : 1); if (ghostPos.distanceTo(tgt) > 1e-3) busy = true; }
@@ -346,7 +370,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       if (state?.choosing && motion) { a.ring.scale.setScalar(1 + (target ? 0.25 : 0.08) * Math.sin(t * 4)); busy = true; } else a.ring.scale.setScalar(1);
     }
     // Flagged parts glow amber (server findings or the authored fault record only).
-    if (flaggedMats.length) { const k = motion ? 0.35 + 0.25 * Math.sin(t * 3) : 0.5; for (const mm of flaggedMats) mm.emissiveIntensity = k; if (motion) busy = true; }
+    if (flaggedMats.length) { const k = motion ? 0.75 + 0.45 * Math.sin(t * 3) : 0.9; for (const mm of flaggedMats) mm.emissiveIntensity = k; if (motion) busy = true; }
     for (const [id, g] of groups) g.scale.setScalar(step(g.scale.x, id === state?.selectedPart ? 1.06 : 1));
     if (fault > 0) { alarm.intensity = 9 * fault * (0.6 + 0.4 * Math.sin(t * 9)); fault = Math.max(0, fault - (motion ? 0.006 : 1)); busy = true; } else alarm.intensity = state?.flagged.length ? 2.2 : 0;
     if (sweep > 0) {
@@ -356,6 +380,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     } else { (scan.material as THREE.MeshBasicMaterial).opacity = 0; (scanWide.material as THREE.MeshBasicMaterial).opacity = 0; }
     if (chevrons.visible && motion) { chevrons.children.forEach((c, i) => { ((c as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = 0.25 + 0.4 * (0.5 + 0.5 * Math.sin(t * 3 - i * 0.7 * chevrons.scale.x)); }); busy = true; }
     renderer.render(scene, camera);
+    if (!firstFrame) { firstFrame = true; firstAt = now; hold = Math.min(hold, now + 2500); cb.onFirstFrame?.(); setTimeout(() => env?.start(), 0); }
     return busy || !!drag;
   };
   const loop = (now: number) => { frame = 0; if (lost) return; if (render(now)) frame = requestAnimationFrame(loop); };
@@ -396,7 +421,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       wasQualified = s.qualified;
       if (s.focus === 'fan') orbit.tTarget.set(-0.6, 0, 0); else if (s.focus === 'wide' && env) orbit.tTarget.set(-4, -2.5, 0); else orbit.tTarget.set(0, 0.05, 0);
       if (s.focus === 'fan' && prev?.focus !== 'fan') { orbit.tR = Math.min(orbit.tR, 3.6); orbit.tTheta = -0.9; }
-      if (s.focus === 'wide' && env && prev?.focus !== 'wide') { orbit.tR = 16; orbit.tTheta = -0.45; orbit.tPhi = 1.25; }
+      if (s.focus === 'wide' && env && prev?.focus !== 'wide') { orbit.tR = 13; orbit.tTheta = -0.25; orbit.tPhi = 1.25; }
       if (s.focus === 'overview' && prev?.focus === 'wide') orbit.tR = 4.4;
       kick();
     },
@@ -407,7 +432,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       orbit.tTarget.set(-0.6, 0, 0); orbit.tR = 3.4; orbit.tTheta = -0.95;
       kick();
     },
-    react(kind) { env?.react(kind); kick(); },
+    react(cue) { env?.react(cue); kick(); },
     resize() { size(); kick(); },
     setMotion(on) { motion = on; kick(); },
     stop() {

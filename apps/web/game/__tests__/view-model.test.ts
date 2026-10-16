@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe as group, expect, test } from 'vitest';
 import { toPartSpecs } from '../contract/specs';
-import { budgetLevel, describe, faultIntroduced, install, journeyStage, rig, stationStep } from '../view-model';
+import { astronautCue, budgetLevel, describe, faultIntroduced, install, journeyStage, rig, stationStep } from '../view-model';
 import { fixtureDir, snap } from './fixtures';
 
 const specs = toPartSpecs();
@@ -72,4 +72,18 @@ test('passport projection keeps training history out of research corrections', (
   expect(s.state.passport.entries.every((e) => e.corrections.length === 0)).toBe(true);
   expect(s.passportPresentation.trainingHistory).toMatchObject({ evidenceLevel: 'not-applicable', historicalNASAEvent: false });
   expect(budgetLevel(s)).toBe('ok');
+});
+
+test('astronaut cues follow confirmed snapshot changes only', () => {
+  const ok = (before: string | null, after: string | ReturnType<typeof snap>) => ({ kind: 'accepted' as const, before: before ? snap(before) : null, after: typeof after === 'string' ? snap(after) : after });
+  expect(astronautCue(ok('DIAGNOSTIC_SUCCESS', 'PENDING_REPAIR_A'))).toBe('nod');
+  expect(astronautCue(ok('PENDING_REPAIR_A', 'PASSPORT_REVIEW_RESPONSE'))).toBe('cheer');
+  const repaired = structuredClone(snap('PENDING_REPAIR_A'));
+  repaired.training.repair = structuredClone(snap('PASSPORT_REVIEW_RESPONSE').training.repair);
+  expect(astronautCue(ok('PENDING_REPAIR_A', repaired))).toBe('wave');
+  expect(astronautCue(ok('DIAGNOSTIC_SUCCESS', 'WRONG_DIAGNOSIS_RESPONSE'))).toBeNull(); // wrong answer: no acknowledgement
+  expect(astronautCue(ok('FAULT_INJECTED_RESPONSE', 'QUALIFICATION_REPAIR_REQUIRED_RESPONSE'))).toBeNull(); // qualification refused
+  expect(astronautCue(ok(null, 'COMPLETE_RESPONSE'))).toBeNull(); // resume: nothing happened just now
+  expect(astronautCue({ kind: 'refused' })).toBeNull();
+  expect(astronautCue(null)).toBeNull();
 });

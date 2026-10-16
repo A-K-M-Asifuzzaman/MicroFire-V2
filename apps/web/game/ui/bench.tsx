@@ -2,20 +2,20 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PartId, Snapshot } from '../contract';
 import { isBusy } from '../controller';
-import { allowsCore, install, journeyStage, rig } from '../view-model';
+import { allowsCore, astronautCue, install, journeyStage, qualifiedNow, rig } from '../view-model';
 import type { BenchApi, BenchState } from './bench-scene';
 import { LAB_ENVIRONMENT } from './lab-assets';
 import { anchorLabel, useGame } from './context';
 
 /** 3D view of the same confirmed state as the schematic; drops and clicks become the same intents as in 2D. */
-const qualifiedNow = (s: Snapshot) => s.state.setup.qualifiedRevision !== null && s.state.setup.qualifiedRevision === s.state.setup.revision;
-
 export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultMoment: number | null; onUnavailable: () => void }) {
   const { c, s: st, data, selection, select } = useGame();
   const host = useRef<HTMLDivElement>(null);
   const api = useRef<BenchApi | null>(null);
   const [tip, setTip] = useState<{ x: number; y: number; text: string } | null>(null);
   const [ready, setReady] = useState(false);
+  const [frame, setFrame] = useState(false);
+  const [env, setEnv] = useState<{ loaded: number; total: number; lite: boolean } | null>(null);
   const latest = useRef({ s, selection, st });
   useEffect(() => { latest.current = { s, selection, st }; });
 
@@ -30,7 +30,7 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
       installed: Object.fromEntries(parts.filter((p) => p.installed).map((p) => [p.spec.id, p.installed!])),
       flagged: parts.filter((p) => p.authoredFault || p.findings.length > 0).map((p) => p.spec.id),
       pendingRepair: s.training.pendingRepair?.partId ?? null,
-      qualified: s.state.setup.qualifiedRevision !== null && s.state.setup.qualifiedRevision === s.state.setup.revision,
+      qualified: qualifiedNow(s),
       selectedPart: selection.partId, selectedAnchor: selection.anchorId, orientation: selection.orientation,
       choosing: !!sel && !sel.installed, pendingTarget: pending,
       focus: ['fault', 'investigation', 'diagnosis', 'repair'].includes(stage) ? 'fan' : ['qualification', 'observation'].includes(stage) && qualifiedNow(s) ? 'wide' : 'overview'
@@ -60,7 +60,9 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
           void c.send(install(part.id, anchorId, sel.orientation), `Install ${part.label} at ${anchorLabel(data, anchorId)}`);
         },
         onHover: setTip,
-        onLost: () => { if (!cancelled) onUnavailable(); }
+        onLost: () => { if (!cancelled) onUnavailable(); },
+        onFirstFrame: () => { if (!cancelled) setFrame(true); },
+        onEnvProgress: (p, lite) => { if (!cancelled) setEnv({ ...p, lite }); }
       }, motion(), LAB_ENVIRONMENT && { ...LAB_ENVIRONMENT, lite: matchMedia('(max-width: 760px), (pointer: coarse)').matches });
       if (cancelled) { a?.stop(); return; }
       if (!a) { onUnavailable(); return; }
@@ -82,20 +84,16 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
 
   useEffect(() => { if (ready) api.current?.update(benchState()); });
   useEffect(() => { if (ready && faultMoment !== null) { api.current?.faultMoment(); api.current?.react('look'); } }, [faultMoment, ready]);
-  // The astronaut reacts to confirmed outcomes only (presentation; never an outcome of its own).
-  const ev = st.event;
-  useEffect(() => {
-    if (!ready || ev?.kind !== 'accepted') return;
-    const a = ev.action;
-    if (a?.type === 'SUBMIT_DIAGNOSIS' && ev.feedback?.correct !== false) api.current?.react('wave');
-    if (a?.type === 'GAME' && a.action.type === 'QUALIFY_INSTRUMENT') api.current?.react('cheer');
-    if (a?.type === 'GAME' && a.action.type === 'INSTALL_PART' && ev.after.training.repair && !ev.before?.training.repair) api.current?.react('wave');
-  }, [ev, ready]);
+  // The astronaut acknowledges outcomes the confirmed snapshots already show (presentation; never an outcome of its own).
+  const cue = astronautCue(st.event);
+  useEffect(() => { if (ready && cue) api.current?.react(cue); }, [st.event, cue, ready]);
 
-  return <div className="m2-bench" ref={host} data-ready={ready}>
-    {!ready && <div className="m2-bench-loading">Preparing the 3D bench…</div>}
+  const scenery = env && env.loaded < env.total;
+  return <div className="m2-bench" ref={host} data-ready={ready} data-frame={frame} data-env={env ? (scenery ? 'loading' : 'ready') : 'none'} data-env-tier={env?.lite ? 'lite' : 'full'} data-cue={cue ?? ''}>
+    {!frame && <div className="m2-bench-loading">{ready ? 'Compiling the 3D bench…' : 'Preparing the 3D bench…'}</div>}
+    {scenery && <p className="m2-bench-env m2-fine">Loading lab scenery · {env.loaded} of {env.total} models</p>}
     {tip && <span className="m2-bench-tip" style={{ left: tip.x, top: tip.y }}>{tip.text}</span>}
-    <p className="m2-bench-label">Schematic training model — not a NASA engineering CAD reconstruction. Duct proportions sourced; other geometry schematic.</p>
+    <p className="m2-bench-label">Schematic training model — not a NASA engineering CAD reconstruction. Duct proportions sourced; other geometry schematic.{env && ' The bay, astronaut and Earth view are illustrative.'}</p>
     <p className="m2-bench-hint m2-fine">Select a part in the tray, then drag its preview onto a glowing mount — or click a mount. The server decides whether it fits.</p>
   </div>;
 }
