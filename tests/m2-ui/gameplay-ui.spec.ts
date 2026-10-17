@@ -215,16 +215,19 @@ test('no-WebGL: the 3D bench falls back to the full 2D schematic without losing 
 
 test('3D bench renders the same confirmed rig and keeps the 2D controls', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'one WebGL render pass');
-  test.setTimeout(90_000); // software WebGL here: ~170 ms per shader program
+  test.setTimeout(90_000); // a software-WebGL runner pays ~0.2–0.5 s per shader program
   await open(page, 'fault');
   await page.getByRole('button', { name: '3D bench' }).click();
   const bench = page.locator('.m2-bench');
   await expect(bench).toHaveAttribute('data-frame', 'true', { timeout: 45_000 });
   await expect(page.getByRole('group', { name: 'Parts tray' })).toBeVisible(); // 2D controls stay usable throughout
-  // Scenery arrives after the apparatus and reports real counts; software renderers get the lite tier.
-  await expect(bench).toHaveAttribute('data-env', 'ready', { timeout: 30_000 });
-  await expect(bench).toHaveAttribute('data-env-tier', 'lite');
-  await expect(page.getByText('The bay, astronaut and Earth view are illustrative.', { exact: false })).toBeVisible();
+  // Either honest outcome, depending on the runner's WebGL: GPU → the scenery loads (real model counts) and the caption
+  // says it is illustrative; software rasteriser → the scenery is switched off and the caption says so.
+  await expect(bench).toHaveAttribute('data-env', /^(ready|off)$/, { timeout: 30_000 });
+  await expect(page.getByText((await bench.getAttribute('data-env')) === 'off' ? 'Lab scenery is off on this device' : 'The bay, astronaut, inspection arm and Earth view are illustrative.', { exact: false })).toBeVisible();
+  // Camera compositions are real buttons below the view, never over the apparatus.
+  await page.getByRole('group', { name: 'Camera view' }).getByRole('button', { name: 'Inspect' }).click();
+  await page.getByRole('group', { name: 'Camera view' }).getByRole('button', { name: 'Work view' }).click();
   await expect(page.getByText('Schematic training model — not a NASA engineering CAD reconstruction.', { exact: false }).first()).toBeVisible();
   await page.waitForTimeout(1500);
   await bench.screenshot({ path: 'docs/qa/screenshots/m2/bench-3d-fault-desktop.jpg', type: 'jpeg', quality: 78 });

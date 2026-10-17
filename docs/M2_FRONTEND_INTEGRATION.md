@@ -43,6 +43,40 @@ These names match Sol's committed `codex/m2-stage-a-backend` exports at `9f61c21
    - respect the 30 POST/min budget with one disposable server per full run (a perfect run is 23 POSTs).
 5. **Passport route.** The `/passport?profile=m2-preview` view is not built yet; the Passport currently renders inside the mission shell.
 
+## Checked against Sol's Stage A at `196b61a` (read-only; Astra's Stage A review pending)
+
+No contract conflicts were found. Each point below was checked against `docs/M2_STAGE_A_CLAUDE_HANDOFF.md` and the shared source at `196b61a`.
+
+| Need | Sol provides | Frontend status |
+|---|---|---|
+| Availability and start | GET `/capability` (runtimeId, grant required/valid); POST `/authorize` `{approvalToken}` sets an HttpOnly grant cookie; POST `/start` `{runtimeId,sessionId,previewId:'bass-b20-training-v1',mode:'demo',commandId}` returns revision 0 | `createHttpTransport` calls exactly these paths. AuthPanel clears the password field after one POST. Public missions stay locked; capability is not authorization |
+| Preview session | Grant expires after 3600 s or on revoke; a restart clears all grants and changes the runtimeId; GET `/session/:id` returns the latest head | The controller's `authorized()` detects runtime change; 403 pauses writes; reconcile is by GET |
+| Action dispatch | POST `/action` `{runtimeId,sessionId,expectedRevision,commandId,action}`; `requestIdentity` is async (`Promise<string>`) and hashes everything except commandId | `ContractRuntime.identify` has the same async signature. One write in flight; POST starts paced at least 2.1 s apart; the exact request is retained while the outcome is unknown |
+| Fault and repair | Fault `training-fan-reversed-v1` introduced once; `snapshot.diagnostic` is not-run/stale/current; `training.pendingRepair` and `training.repair` receipts | DiagnosticBoard renders the supplied copy only; stale findings are hidden; repair receipts are shown. Astronaut cues read these fields from before/after snapshots |
+| Qualification | `QUALIFY_INSTRUMENT`; REPAIR_REQUIRED and QUALIFICATION_FAILED refusals; qualified when `state.setup.qualifiedRevision === revision` | QualificationPanel says "Training configuration check passed — not a NASA certification". The wide camera and cheer fire only on that confirmed condition |
+| Passport | `state.passport` entries (corrections `[]`), `passportPresentation.{sourceEvidence,trainingHistory,learnerConclusions}`; `ADD_LEARNER_NOTE` at most 4, preflighted by `noteIssue` | Three-section Passport by `data-origin`; the note draft is kept on a 400 with the typed issue |
+| Save and restore | Every snapshot carries a signed checkpoint; POST `/resume` `{runtimeId,checkpoint,commandId}` (`ResumeResponseSchema` is `StartResponseSchema`); pure `admitLocalSave` / `admitLocalDiscard`, `PREVIEW_SAVE_KEY` / `PREVIEW_SAVE_LOCK` | Checkpoint download plus resume from file (≤28,000 bytes). **Writable local save not built**: it waits for Astra's per-engine consistency acceptance, so `engineConsistencyAccepted:false` remains the default |
+| Errors | 200 refusal vs HTTP errors; 400 noteIssue; 403; 409 (incl. COMMAND_ID_REUSED); 429/503 with Retry-After; timeout, non-JSON or 500 = commit unknown | LinkBanner covers each one; covered by the fixture gallery and controller unit tests |
+
+**Dependencies for the joint milestone, in order:**
+1. Astra approves Stage A.
+2. Merge Sol's reviewed SHA, then apply the three-file seam above.
+3. Run a local launcher with private secrets: `scripts/local-game-preview.ts`, with `MICROFIRE_LOCAL_GAME_PREVIEW=1` and the origin, realm, key-id, access-token and signing-key variables. Never paste these into chat or commit them.
+4. Add live browser tests (one full mission each for keyboard, touch, no-WebGL and 3D), within the 30 POST/min budget.
+5. Writable save only after Astra accepts each engine's consistency results.
+
+**Example request** (shape from Sol's handoff; identities are computed at runtime, never copied from fixtures):
+
+```ts
+const request = { runtimeId: snapshot.runtimeId, sessionId: snapshot.sessionId, expectedRevision: snapshot.revision, action: { type: 'RUN_DIAGNOSTIC' } };
+const body = { ...request, commandId: await requestIdentity('action', request) };
+// → 200 {apiVersion:'1', ok:true, snapshot, feedback?} | 200 {ok:false, code, message, faults?, snapshot} | HttpFailure
+```
+
+**Open items for Sol:**
+- Response parsing: Sol exports `parsePreviewJson`, which rejects duplicate JSON members. The browser transport currently uses `res.json()` before zod parsing. Should responses also go through `parsePreviewJson`? The frontend will follow Sol's answer.
+- The fault-category display labels (Missing, Wrong mount, Missing supporting part, Reversed orientation) are presentation copy and still need Sol's confirmation.
+
 ## What runs where
 
 - **Public mission pages** (`/missions/station-arrival`, `/missions/bass-assembly`):

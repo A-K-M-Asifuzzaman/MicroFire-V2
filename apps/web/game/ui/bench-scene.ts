@@ -3,8 +3,12 @@
 // The scene is a VIEW: it shows confirmed state, previews intents, and reports clicks/drops. It never decides progress.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import type { PartSpec } from '../contract';
-import { addEnvironment, type EnvCue, type EnvOptions, type EnvProgress } from './bench-environment';
+import { addEnvironment, DESK, type EnvCue, type EnvOptions, type EnvProgress } from './bench-environment';
 
 export type BenchState = {
   installed: Record<string, { anchorId: string; orientation: 'correct' | 'reversed' }>;
@@ -30,8 +34,12 @@ export type BenchCallbacks = {
   onFirstFrame?(): void;
   /** Lab scenery progress: real model counts for the tier in use (`lite` on small screens and software renderers). */
   onEnvProgress?(p: EnvProgress, lite: boolean): void;
+  /** No lab scenery on this device: software rasterisers spend ~0.5 s compiling each scenery shader and would block the page. */
+  onEnvOff?(): void;
 };
-export type BenchApi = { update(s: BenchState): void; faultMoment(): void; react(cue: EnvCue): void; resize(): void; setMotion(on: boolean): void; stop(): void };
+/** Camera compositions: establishing bay shot, assembly work view, fault inspection, qualified wide view. */
+export type BenchView = 'establish' | 'work' | 'inspect' | 'wide';
+export type BenchApi = { update(s: BenchState): void; faultMoment(): void; react(cue: EnvCue): void; view(v: BenchView): void; resize(): void; setMotion(on: boolean): void; stop(): void };
 /** Artistic environment (Meshy). Absent → the bench renders exactly as before. */
 export type BenchEnvironment = EnvOptions | null;
 
@@ -164,8 +172,8 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.55;
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.05, environment ? 260 : 60);
-  scene.add(new THREE.HemisphereLight('#cfe6ff', '#070c14', 0.7));
+  const camera = new THREE.PerspectiveCamera(environment ? 30 : 34, 1, 0.05, environment ? 320 : 60);
+  const hemi = new THREE.HemisphereLight('#cfe6ff', '#070c14', 0.7); scene.add(hemi);
   const key = new THREE.DirectionalLight('#fff1e0', 2.4); key.position.set(2.5, 4, 3); scene.add(key);
   const rim = new THREE.PointLight('#73bbd9', 14, 9); rim.position.set(-2.4, 1.4, -2); scene.add(rim);
   const warm = new THREE.PointLight('#ff8738', 5, 6); warm.position.set(1.8, -0.6, 2); scene.add(warm);
@@ -180,25 +188,46 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   glovebox.position.y = 0.37; scene.add(glovebox);
 
   // Optional artistic environment: lights now, scenery after the apparatus's first frame. Establishing shot, then dolly in.
-  const lite = !!environment && (environment.lite || software);
+  const lite = !!environment?.lite;
   // The establishing shot holds (timestamp) until the scenery has arrived, at most 2.5 s after the first frame; any input ends it.
   let hold = 0, firstFrame = false, firstAt = 0;
-  const env = environment ? addEnvironment(scene, renderer, camera, { ...environment, lite, onChange: () => kick(), onProgress: (p) => {
+  if (environment && software) cb.onEnvOff?.();
+  const env = environment && !software ? addEnvironment(scene, renderer, camera, { ...environment, lite, onChange: () => kick(), onProgress: (p) => {
     if (p.loaded >= p.total) hold = Math.min(hold, Math.max(performance.now() + 500, firstAt + 1500)); // a beat on the full room
     cb.onEnvProgress?.(p, lite);
   } }) : null;
   const m = mats();
-  if (env) { // dark work mat with a glowing edge, plus a hero key and back light, so the apparatus owns the frame
-    // The mat covers the whole (1.8 × 0.85 m) desk top, so close-ups never look past it onto glare; the cyan outline marks the work zone.
-    const mat = new THREE.Mesh(new THREE.PlaneGeometry(17, 8), new THREE.MeshBasicMaterial({ color: '#070b12' })); // unlit: the stacked bench lights turned any lit dark mat grey
-    mat.position.z = -1.5;
+  // Cinematic look (lab environment only): atmosphere, a cinematic key with real apparatus shadows, bloom on light sources.
+  // The heavy parts (shadow map, bloom) are skipped on the lite tier (phones, software renderers).
+  let composer: EffectComposer | null = null;
+  if (env) {
+    scene.background = new THREE.Color('#03060b');
+    scene.fog = new THREE.FogExp2('#050a12', 0.016);
+    hemi.intensity = 0.35; key.intensity = 1.4;
+    // Instrument plate: covers the workstation top so close-ups never look past it; the cyan outline marks the work zone.
+    const mat = new THREE.Mesh(new THREE.PlaneGeometry(DESK.w - 0.4, DESK.d - 0.4), new THREE.MeshBasicMaterial({ color: '#0a0f16' })); // unlit: stays near-black under the key
+    mat.position.z = DESK.z;
     const edge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(5.6, 5)), new THREE.LineBasicMaterial({ color: C.cyan, transparent: true, opacity: 0.8 }));
-    for (const o of [mat, edge]) { o.rotation.x = -Math.PI / 2; o.position.y = -hy - 0.284; scene.add(o); }
-    floor.visible = false; // the cyan contact glow was for the empty void; on the mat it read as a pale veil
-    m.glass.envMapIntensity = 0.35; // keep the duct glass from veiling the parts inside it
-    const hero = new THREE.SpotLight('#fff4e6', 55, 14, 0.22, 0.5, 1); hero.position.set(1.5, 6, 3); hero.target.position.set(0, 0, 0); scene.add(hero, hero.target);
-    const back = new THREE.PointLight(C.cyan, 18, 7); back.position.set(0.5, 1.6, -2.4); scene.add(back);
-    scene.environmentIntensity = 0.8; renderer.toneMappingExposure = 1.15;
+    const catcher = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 5), new THREE.ShadowMaterial({ opacity: 0.6, color: '#000000' })); catcher.receiveShadow = true;
+    for (const o of [mat, edge, catcher]) { o.rotation.x = -Math.PI / 2; o.position.y = -hy - 0.284; scene.add(o); }
+    catcher.position.y += 0.002;
+    floor.visible = false; // the cyan contact glow was for the empty void; on the plate it read as a pale veil
+    m.glass.envMapIntensity = 0.35; m.glass.opacity = 0.07; m.glass.color.set('#7fc4e0'); // keep the duct glass from veiling the parts inside it
+    m.metal.color.set('#a7b4c2'); m.metal.roughness = 0.32; // satin rather than mirror: highlights stay below the bloom threshold
+    const hero = new THREE.SpotLight('#fff2e2', 34, 16, 0.26, 0.55, 1); hero.position.set(2.2, 6.5, 3.2); hero.target.position.set(0, 0, 0); scene.add(hero, hero.target);
+    // Every light costs every lit shader (software rasterisers pay ~0.5 s per program), so existing lights are re-purposed:
+    // the rim becomes a teal back light and the warm fill becomes the igniter accent.
+    rim.color.copy(C.teal); rim.intensity = 26; rim.distance = 8; rim.position.set(-0.6, 1.8, -2.6);
+    warm.distance = 2.2; warm.decay = 1.6; warm.position.set(0.3, -0.05, 0.75); warm.intensity = 0;
+    if (!lite) {
+      renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      hero.castShadow = true; hero.shadow.mapSize.set(1024, 1024); hero.shadow.bias = -0.0004; hero.shadow.camera.near = 3; hero.shadow.camera.far = 12; hero.shadow.radius = 4;
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      composer.addPass(new UnrealBloomPass(new THREE.Vector2(512, 512), 0.6, 0.5, 2.0)); // threshold 2 (linear HDR): only the deliberately over-range light sources bloom
+      composer.addPass(new OutputPass());
+    }
+    scene.environmentIntensity = 0.7; renderer.toneMappingExposure = 1.0;
   }
   const groups = new Map<string, THREE.Group>();
   const placed = new Map<string, { target: THREE.Vector3; yaw: number; drop: number }>();
@@ -210,7 +239,10 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       o.material = o.material.clone(); o.userData.emissive = o.material.emissive.clone(); o.userData.ei = o.material.emissiveIntensity;
     }
   });
+  for (const g of groups.values()) g.traverse((o) => { if (o instanceof THREE.Mesh && !(o.material as THREE.Material).transparent) o.castShadow = true; });
   let flaggedMats: THREE.MeshStandardMaterial[] = [];
+  // Install feedback: a confirmed fit flashes its mount ring once (presentation of a server-confirmed change).
+  const flash = new Map<string, number>();
 
   // Mount rings + generous invisible hit targets (touch friendly).
   const anchorObjs = new Map<string, { ring: THREE.Mesh; hit: THREE.Mesh }>();
@@ -245,11 +277,32 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   };
 
   // Orbit camera (drag empty space / arrow keys), damped.
-  const maxR = environment ? 28 : 6.5;
-  const orbit = { theta: -0.55, phi: 1.12, r: 4.4, tTheta: -0.55, tPhi: 1.12, tR: 4.4, target: new THREE.Vector3(0, 0.05, 0), tTarget: new THREE.Vector3(0, 0.05, 0) };
-  if (env && motionOn) { hold = Infinity; orbit.r = 24; orbit.theta = -0.15; orbit.phi = 1.35; orbit.target.set(-5, 0, -1); } // establishing shot: astronaut, porthole, bench
+  // In the lab, the work view is a low, close hero framing: the apparatus fills the frame with the window behind it.
+  // Compositions. Work: the apparatus and its mounts fill roughly half the frame, low and close, window behind.
+  // Inspect: closer, on the flagged part. Establish / wide: the bay (lab only). Narrow screens pull back per view.
+  type Shot = { r: number; theta: number; phi: number; target: [number, number, number] };
+  const VIEWS: Partial<Record<BenchView, Shot>> = env
+    ? { establish: { r: 29, theta: 0.42, phi: 1.1, target: [-4.5, 0.5, -2] }, work: { r: 3.7, theta: -0.5, phi: 1.3, target: [0.05, 0.1, 0] }, inspect: { r: 2.6, theta: -0.95, phi: 1.24, target: [-0.6, 0, 0] }, wide: { r: 12, theta: -0.3, phi: 1.3, target: [-4, -2.5, 0] } }
+    : { work: { r: 4.4, theta: -0.55, phi: 1.12, target: [0, 0.05, 0] }, inspect: { r: 3.4, theta: -0.95, phi: 1.12, target: [-0.6, 0, 0] } };
+  const maxR = environment ? 30 : 6.5, HERO = VIEWS.work!;
+  const orbit = { theta: HERO.theta, phi: HERO.phi, r: HERO.r, tTheta: HERO.theta, tPhi: HERO.phi, tR: HERO.r, target: new THREE.Vector3(...HERO.target), tTarget: new THREE.Vector3(...HERO.target) };
+  let view: BenchView = 'work', viewFocus: THREE.Vector3 | null = null;
+  const fitR = (r: number) => r * (camera.aspect < 0.9 ? 1.6 : camera.aspect < 1.3 ? 1.2 : 1);
+  const setView = (v: BenchView, focus: THREE.Vector3 | null = null) => {
+    const shot = VIEWS[v] ?? HERO; view = VIEWS[v] ? v : 'work'; viewFocus = focus;
+    orbit.tR = fitR(shot.r); orbit.tTheta = shot.theta; orbit.tPhi = shot.phi;
+    if (focus) orbit.tTarget.copy(focus); else orbit.tTarget.set(...shot.target);
+  };
+  /** The first fitted part the confirmed state flags (authored fault or a finding), as a world point. */
+  const flaggedPoint = (s: BenchState | null) => {
+    const id = s?.flagged.find((f) => s.installed[f]);
+    const at = id ? ANCHORS3D[s!.installed[id]!.anchorId] : undefined;
+    return at ? new THREE.Vector3(...at) : null;
+  };
+  if (env && motionOn) { hold = Infinity; orbit.r = 29; orbit.theta = 0.42; orbit.phi = 1.1; orbit.target.set(-4.5, 0.5, -2); } // opening crane: high three-quarter view of the bay, then down onto the bench
+  let lastInput = 0, drift = 0;
   const applyCamera = () => {
-    const { theta, phi, r, target } = orbit;
+    const { phi, r, target } = orbit, theta = orbit.theta + drift;
     camera.position.set(target.x + r * Math.sin(phi) * Math.sin(theta), target.y + r * Math.cos(phi), target.z + r * Math.sin(phi) * Math.cos(theta));
     camera.lookAt(target);
   };
@@ -279,7 +332,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   let drag: { kind: 'orbit' | 'ghost'; x: number; y: number; moved: boolean } | null = null;
   const plane = new THREE.Plane(), hitPoint = new THREE.Vector3();
   const onDown = (e: PointerEvent) => {
-    hold = 0; pick(e);
+    hold = 0; lastInput = performance.now(); pick(e);
     drag = { kind: state?.choosing && hitGhost() ? 'ghost' : 'orbit', x: e.clientX, y: e.clientY, moved: false };
     if (drag.kind === 'ghost' && ghost) plane.setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()).negate(), ghost.position);
     canvas.setPointerCapture(e.pointerId); kick();
@@ -314,23 +367,46 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     }
     kick();
   };
-  const onWheel = (e: WheelEvent) => { e.preventDefault(); hold = 0; orbit.tR = THREE.MathUtils.clamp(orbit.tR + e.deltaY * 0.0025 * (orbit.tR / 4), 2.6, maxR); kick(); };
+  const onWheel = (e: WheelEvent) => { e.preventDefault(); hold = 0; lastInput = performance.now(); orbit.tR = THREE.MathUtils.clamp(orbit.tR + e.deltaY * 0.0025 * (orbit.tR / 4), 2.6, maxR); kick(); };
   const onKey = (e: KeyboardEvent) => {
-    hold = 0;
+    hold = 0; lastInput = performance.now();
     const step = { ArrowLeft: [0.12, 0], ArrowRight: [-0.12, 0], ArrowUp: [0, -0.08], ArrowDown: [0, 0.08] }[e.key];
     if (step) { e.preventDefault(); orbit.tTheta += step[0]!; orbit.tPhi = THREE.MathUtils.clamp(orbit.tPhi + step[1]!, 0.45, 1.5); kick(); }
     if (e.key === '+' || e.key === '=') { orbit.tR = Math.max(2.6, orbit.tR - 0.3); kick(); }
     if (e.key === '-') { orbit.tR = Math.min(maxR, orbit.tR + 0.3 * (orbit.tR / 4)); kick(); }
+  };
+  // Callouts: HTML labels pinned to parts (amber for flagged, cyan for selected, the duct when nothing else).
+  // aria-hidden: the same information is in the 2D panels; the text is the frozen equipment copy, never a measurement.
+  const calloutLayer = document.createElement('div'); calloutLayer.className = 'm2-callouts'; calloutLayer.setAttribute('aria-hidden', 'true'); host.appendChild(calloutLayer);
+  const callouts = new Map<string, HTMLElement>(), proj = new THREE.Vector3();
+  const placeCallouts = () => {
+    if (!state) return;
+    const want = new Map<string, 'amber' | 'cyan'>();
+    for (const id of state.flagged) if (state.installed[id]) want.set(id, 'amber');
+    if (state.selectedPart && state.installed[state.selectedPart] && !want.has(state.selectedPart)) want.set(state.selectedPart, 'cyan');
+    if (!want.size && state.installed['flow-duct']) want.set('flow-duct', 'cyan');
+    for (const [id, el] of callouts) if (!want.has(id)) { el.remove(); callouts.delete(id); }
+    const r = host.getBoundingClientRect();
+    for (const [id, tone] of want) {
+      let el = callouts.get(id);
+      if (!el) { el = document.createElement('span'); el.className = 'm2-callout'; el.textContent = parts.find((p) => p.id === id)?.label ?? id; calloutLayer.appendChild(el); callouts.set(id, el); }
+      el.dataset.tone = tone;
+      const [x, y, z] = ANCHORS3D[state.installed[id]!.anchorId] ?? [0, 0, 0];
+      proj.set(x, y + (id === 'flow-duct' ? hy + 0.15 : 0.12), z).project(camera);
+      const hidden = proj.z > 1 || Math.abs(proj.x) > 1.05 || Math.abs(proj.y) > 1.05 || orbit.r > 9;
+      el.style.opacity = hidden ? '0' : '1';
+      el.style.transform = `translate(${((proj.x + 1) / 2) * r.width}px, ${((1 - proj.y) / 2) * r.height}px) translate(-50%, calc(-100% - 14px))`; // leader line ends on the part
+    }
   };
   let highlighted: string | null = null;
   const highlight = (id: string | null) => { highlighted = id; };
 
   const size = () => {
     const r = host.getBoundingClientRect();
-    renderer.setSize(r.width, r.height, false);
+    renderer.setSize(r.width, r.height, false); composer?.setSize(r.width, r.height); composer?.setPixelRatio(renderer.getPixelRatio());
     camera.aspect = r.width / Math.max(1, r.height);
-    // Narrow viewports: pull back so the whole duct stays framed.
-    orbit.tR = Math.max(orbit.tR, camera.aspect < 0.9 ? 6 : camera.aspect < 1.3 ? 5 : 4.4);
+    // Narrow viewports: the current composition pulls back so the whole duct stays framed.
+    setView(view, viewFocus);
     camera.updateProjectionMatrix();
   };
 
@@ -343,6 +419,9 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       orbit.theta = step(orbit.theta, orbit.tTheta); orbit.phi = step(orbit.phi, orbit.tPhi); orbit.r = step(orbit.r, orbit.tR);
       orbit.target.lerp(orbit.tTarget, ease); if (orbit.target.distanceTo(orbit.tTarget) > 1e-3) busy = true;
     } else busy = true;
+    // A slow, small idle drift once the learner has left the camera alone for a while (never under reduced motion).
+    const idle = env && motion && !drag && now >= hold && now - lastInput > 6000;
+    drift = step(drift, idle ? 0.07 * Math.sin(t * 0.11) : 0); if (idle) busy = true;
     applyCamera();
     for (const [id, p] of placed) {
       const g = groups.get(id)!;
@@ -366,8 +445,10 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       const target = id === highlighted || id === state?.selectedAnchor;
       const occupied = Object.values(state?.installed ?? {}).some((v) => v.anchorId === id);
       const want = state?.choosing ? (target ? 1 : occupied ? 0.12 : 0.55) : id === state?.pendingTarget ? 0.8 : 0;
-      mat.opacity = step(mat.opacity, want); mat.color.copy(target ? C.flame : C.cyan);
-      if (state?.choosing && motion) { a.ring.scale.setScalar(1 + (target ? 0.25 : 0.08) * Math.sin(t * 4)); busy = true; } else a.ring.scale.setScalar(1);
+      const f = flash.get(id) ?? 0;
+      mat.opacity = Math.max(step(mat.opacity, want), f); mat.color.copy(target ? C.flame : f > 0 ? C.teal : C.cyan);
+      if (f > 0) { a.ring.scale.setScalar(1 + (1 - f) * 2.2); const nf = motion ? f - 0.025 : 0; if (nf > 0) flash.set(id, nf); else flash.delete(id); busy = true; }
+      else if (state?.choosing && motion) { a.ring.scale.setScalar(1 + (target ? 0.25 : 0.08) * Math.sin(t * 4)); busy = true; } else a.ring.scale.setScalar(1);
     }
     // Flagged parts glow amber (server findings or the authored fault record only).
     if (flaggedMats.length) { const k = motion ? 0.75 + 0.45 * Math.sin(t * 3) : 0.9; for (const mm of flaggedMats) mm.emissiveIntensity = k; if (motion) busy = true; }
@@ -379,7 +460,10 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       sweep = Math.max(0, sweep - (motion ? 0.012 : 1)); busy = true;
     } else { (scan.material as THREE.MeshBasicMaterial).opacity = 0; (scanWide.material as THREE.MeshBasicMaterial).opacity = 0; }
     if (chevrons.visible && motion) { chevrons.children.forEach((c, i) => { ((c as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = 0.25 + 0.4 * (0.5 + 0.5 * Math.sin(t * 3 - i * 0.7 * chevrons.scale.x)); }); busy = true; }
-    renderer.render(scene, camera);
+    // Warm accent at the igniter while it is fitted: a gentle breath, never a flicker (no combustion is simulated).
+    if (env) warm.intensity = state?.installed.igniter ? 1.6 + (motion ? 0.4 * Math.sin(t * 1.3) : 0) : 0;
+    placeCallouts();
+    if (composer) composer.render(); else renderer.render(scene, camera);
     if (!firstFrame) { firstFrame = true; firstAt = now; hold = Math.min(hold, now + 2500); cb.onFirstFrame?.(); setTimeout(() => env?.start(), 0); }
     return busy || !!drag;
   };
@@ -403,6 +487,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
         g.visible = true;
         placed.set(id, { target: new THREE.Vector3(x, y, z), yaw: inst.orientation === 'reversed' ? Math.PI : 0, drop: fresh && prev ? 0.7 : 0 });
         if (fresh) g.userData.yaw = inst.orientation === 'reversed' ? Math.PI : 0;
+        if (fresh && prev) flash.set(inst.anchorId, 1);
       }
       flaggedMats = [];
       for (const [id, g] of groups) {
@@ -419,20 +504,21 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       setGhost(s.choosing ? s.selectedPart : null);
       if (s.qualified && !wasQualified && prev) sweep = 1;
       wasQualified = s.qualified;
-      if (s.focus === 'fan') orbit.tTarget.set(-0.6, 0, 0); else if (s.focus === 'wide' && env) orbit.tTarget.set(-4, -2.5, 0); else orbit.tTarget.set(0, 0.05, 0);
-      if (s.focus === 'fan' && prev?.focus !== 'fan') { orbit.tR = Math.min(orbit.tR, 3.6); orbit.tTheta = -0.9; }
-      if (s.focus === 'wide' && env && prev?.focus !== 'wide') { orbit.tR = 13; orbit.tTheta = -0.25; orbit.tPhi = 1.25; }
-      if (s.focus === 'overview' && prev?.focus === 'wide') orbit.tR = 4.4;
+      // Stage changes pick the composition; within a stage the learner's own view choice stands.
+      if (s.focus !== prev?.focus) setView(s.focus === 'fan' ? 'inspect' : s.focus === 'wide' ? 'wide' : 'work', s.focus === 'fan' ? flaggedPoint(s) : null);
+      const mount = s.choosing && s.selectedAnchor ? ANCHORS3D[s.selectedAnchor] : undefined;
+      env?.aim(flaggedPoint(s) ?? (mount ? new THREE.Vector3(...mount) : null), motion);
       kick();
     },
     faultMoment() {
       fault = 1;
       const g = groups.get('fan'), p = placed.get('fan');
       if (g && p) g.userData.yaw = 0; // turn from standard to reversed on screen: the server already did it
-      orbit.tTarget.set(-0.6, 0, 0); orbit.tR = 3.4; orbit.tTheta = -0.95;
+      setView('inspect', flaggedPoint(state));
       kick();
     },
     react(cue) { env?.react(cue); kick(); },
+    view(v) { hold = 0; lastInput = performance.now(); setView(v, v === 'inspect' ? flaggedPoint(state) : null); kick(); },
     resize() { size(); kick(); },
     setMotion(on) { motion = on; kick(); },
     stop() {
@@ -440,7 +526,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       canvas.removeEventListener('pointerdown', onDown); canvas.removeEventListener('pointermove', onMove); canvas.removeEventListener('pointerup', onUp);
       canvas.removeEventListener('wheel', onWheel); canvas.removeEventListener('keydown', onKey); canvas.removeEventListener('webglcontextlost', lose);
       scene.traverse((o) => { if (o instanceof THREE.Mesh || o instanceof THREE.LineSegments) { o.geometry.dispose(); const mm = o.material; (Array.isArray(mm) ? mm : [mm]).forEach((x) => x.dispose()); } });
-      env?.dispose(); pmrem.dispose(); glowTex.dispose(); renderer.dispose();
+      env?.dispose(); composer?.dispose(); calloutLayer.remove(); pmrem.dispose(); glowTex.dispose(); renderer.dispose();
     }
   };
 }

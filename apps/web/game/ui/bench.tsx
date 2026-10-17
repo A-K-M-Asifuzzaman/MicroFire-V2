@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { PartId, Snapshot } from '../contract';
 import { isBusy } from '../controller';
 import { allowsCore, astronautCue, install, journeyStage, qualifiedNow, rig } from '../view-model';
-import type { BenchApi, BenchState } from './bench-scene';
+import type { BenchApi, BenchState, BenchView } from './bench-scene';
 import { LAB_ENVIRONMENT } from './lab-assets';
 import { anchorLabel, useGame } from './context';
 
@@ -16,6 +16,7 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
   const [ready, setReady] = useState(false);
   const [frame, setFrame] = useState(false);
   const [env, setEnv] = useState<{ loaded: number; total: number; lite: boolean } | null>(null);
+  const [envOff, setEnvOff] = useState(false);
   const latest = useRef({ s, selection, st });
   useEffect(() => { latest.current = { s, selection, st }; });
 
@@ -62,7 +63,8 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
         onHover: setTip,
         onLost: () => { if (!cancelled) onUnavailable(); },
         onFirstFrame: () => { if (!cancelled) setFrame(true); },
-        onEnvProgress: (p, lite) => { if (!cancelled) setEnv({ ...p, lite }); }
+        onEnvProgress: (p, lite) => { if (!cancelled) setEnv({ ...p, lite }); },
+        onEnvOff: () => { if (!cancelled) setEnvOff(true); }
       }, motion(), LAB_ENVIRONMENT && { ...LAB_ENVIRONMENT, lite: matchMedia('(max-width: 760px), (pointer: coarse)').matches });
       if (cancelled) { a?.stop(); return; }
       if (!a) { onUnavailable(); return; }
@@ -89,11 +91,24 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
   useEffect(() => { if (ready && cue) api.current?.react(cue); }, [st.event, cue, ready]);
 
   const scenery = env && env.loaded < env.total;
-  return <div className="m2-bench" ref={host} data-ready={ready} data-frame={frame} data-env={env ? (scenery ? 'loading' : 'ready') : 'none'} data-env-tier={env?.lite ? 'lite' : 'full'} data-cue={cue ?? ''}>
-    {!frame && <div className="m2-bench-loading">{ready ? 'Compiling the 3D bench…' : 'Preparing the 3D bench…'}</div>}
-    {scenery && <p className="m2-bench-env m2-fine">Loading lab scenery · {env.loaded} of {env.total} models</p>}
-    {tip && <span className="m2-bench-tip" style={{ left: tip.x, top: tip.y }}>{tip.text}</span>}
-    <p className="m2-bench-label">Schematic training model — not a NASA engineering CAD reconstruction. Duct proportions sourced; other geometry schematic.{env && ' The bay, astronaut and Earth view are illustrative.'}</p>
-    <p className="m2-bench-hint m2-fine">Select a part in the tray, then drag its preview onto a glowing mount — or click a mount. The server decides whether it fits.</p>
+  const lab = !!LAB_ENVIRONMENT && !envOff;
+  const views: [BenchView, string][] = [...(lab ? [['establish', 'Bay'] as [BenchView, string]] : []), ['work', 'Work view'], ['inspect', 'Inspect'], ...(lab && qualifiedNow(s) ? [['wide', 'Wide'] as [BenchView, string]] : [])];
+  return <div className="m2-stage3d">
+    <div className="m2-bench" ref={host} data-ready={ready} data-frame={frame} data-env={envOff ? 'off' : env ? (scenery ? 'loading' : 'ready') : 'none'} data-env-tier={env?.lite ? 'lite' : 'full'} data-cue={cue ?? ''}>
+      {!frame && <div className="m2-bench-loading">{ready ? 'Compiling the 3D bench…' : 'Preparing the 3D bench…'}</div>}
+      {scenery && <p className="m2-bench-env m2-fine">Loading lab scenery · {env.loaded} of {env.total} models</p>}
+      {tip && <span className="m2-bench-tip" style={{ left: tip.x, top: tip.y }}>{tip.text}</span>}
+    </div>
+    {/* Captions and camera controls sit below the view, never over the apparatus. */}
+    <div className="m2-bench-bar">
+      <div className="m2-views" role="group" aria-label="Camera view">
+        {views.map(([v, name]) => <button key={v} type="button" className="m2-view" onClick={() => api.current?.view(v)} disabled={!frame}>{name}</button>)}
+      </div>
+      <details className="m2-bench-help">
+        <summary>How to use the 3D bench</summary>
+        <p className="m2-fine">Select a part in the tray, then drag its preview onto a glowing mount — or click a mount. The server decides whether it fits. Drag empty space or use the arrow keys to orbit; plus and minus zoom.</p>
+      </details>
+      <p className="m2-bench-label">Schematic training model — not a NASA engineering CAD reconstruction. Duct proportions sourced; other geometry schematic.{lab && env && ' The bay, astronaut, inspection arm and Earth view are illustrative.'}{envOff && ' Lab scenery is off on this device (software graphics) so the bench stays responsive.'}</p>
+    </div>
   </div>;
 }

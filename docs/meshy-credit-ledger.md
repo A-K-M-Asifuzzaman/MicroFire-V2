@@ -50,3 +50,14 @@ Owner authorised up to 600 new credits for M2: 300 first, then a quality review 
 - **Payload:** desktop bay 2.99 MB across 28 files (PIX included). Mobile (≤760 px or coarse pointer) skips the side props and two walls: 2.44 MB, 18 files. Loaded only after the learner opens the 3D bench.
 - **Grounding:** decoration only. The apparatus, mounts, faults and qualification remain procedural and server-decided. Meshy geometry never decides an outcome.
 - **Rights:** `data/asset-rights.json` entries carry a `coordination` field because Sol owns the ledger migration and must confirm them.
+
+## M2 visual correction pass (2026-10-17) — no spending
+- Live balance verified again: **2,813**. Jobs: 0. Credits spent: 0.
+- **lab-wall-v1 retired.** Procedural dark paneling replaced it because it read as a plain, bright wall. Its served files and proposed rights entries were removed; the raw GLB stays in git-ignored `incoming/`. The 30 credits remain spent.
+- The Meshy workstation is now a side console. The hero workstation, window wall, observation window and inspection arm are procedural. The rejected `lab-viewport-v1` stays unused; the procedural window has a genuine opening.
+- **Proposed next batch, awaiting owner approval (not run):** ≤ 90 credits, text-to-3D meshy-7.1 at 30 each (20 preview + 10 PBR refine), no retries without approval.
+  1. Mechanical wall module for both sides of the window.
+  2. An artistic chamber housing frame around the apparatus; open apertures stay procedural.
+  3. A recessed control-panel housing for the workstation.
+
+  The inspection arm stays procedural: Meshy returns one fused mesh, which cannot articulate.
