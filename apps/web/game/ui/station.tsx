@@ -10,7 +10,7 @@ import { CitationList } from '../../components/evidence-ui';
  * Opening sequence: a title card, then the training bay (a still rendered from MicroFire's own 3D bench) pushes in
  * behind the episode title. ~4.7 s, skippable, absent under reduced motion. The image is illustrative, and labelled so.
  */
-export function ArrivalCinematic({ onDone }: { onDone: () => void }) {
+export function ArrivalCinematic({ onDone, title = 'BASS-II training episode', sub = 'Schematic training model · NASA source record B20' }: { onDone: () => void; title?: string; sub?: string }) {
   const [phase, setPhase] = useState(0);
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { onDone(); return; }
@@ -26,8 +26,8 @@ export function ArrivalCinematic({ onDone }: { onDone: () => void }) {
     <div className="m2-arrival-bay" aria-hidden="true">{Array.from({ length: 7 }, (_, i) => <span key={i} style={{ ['--i' as string]: i }} />)}</div>
     <div className="m2-arrival-copy">
       <p className="eyebrow">MicroFire Observatory · Training bay</p>
-      <p className="m2-arrival-title">BASS-II training episode</p>
-      <p className="m2-arrival-sub">Schematic training model · NASA source record B20</p>
+      <p className="m2-arrival-title">{title}</p>
+      <p className="m2-arrival-sub">{sub}</p>
     </div>
     <p className="m2-arrival-note">Illustrative training bay, rendered from the 3D bench</p>
     <button className="btn btn-quiet btn-sm m2-skip" onClick={onDone}>Skip intro</button>

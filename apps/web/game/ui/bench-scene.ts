@@ -301,6 +301,11 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     const at = id ? ANCHORS3D[s!.installed[id]!.anchorId] : undefined;
     return at ? new THREE.Vector3(...at) : null;
   };
+  /** Flagged part first, otherwise the selected fitted part (what Inspect and the arm's lamp look at). */
+  const focusPoint = (s: BenchState | null) => {
+    const at = s?.selectedPart && s.installed[s.selectedPart] ? ANCHORS3D[s.installed[s.selectedPart]!.anchorId] : undefined;
+    return flaggedPoint(s) ?? (at ? new THREE.Vector3(...at) : null);
+  };
   if (env && motionOn) { hold = Infinity; orbit.r = 29; orbit.theta = 0.42; orbit.phi = 1.1; orbit.target.set(-4.5, 0.5, -2); } // opening crane: high three-quarter view of the bay, then down onto the bench
   let lastInput = 0, drift = 0;
   const applyCamera = () => {
@@ -509,7 +514,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       // Stage changes pick the composition; within a stage the learner's own view choice stands.
       if (s.focus !== prev?.focus) setView(s.focus === 'fan' ? 'inspect' : s.focus === 'wide' ? 'wide' : 'work', s.focus === 'fan' ? flaggedPoint(s) : null);
       const mount = s.choosing && s.selectedAnchor ? ANCHORS3D[s.selectedAnchor] : undefined;
-      env?.aim(flaggedPoint(s) ?? (mount ? new THREE.Vector3(...mount) : null), motion);
+      env?.aim(mount ? new THREE.Vector3(...mount) : focusPoint(s), motion);
       kick();
     },
     faultMoment() {
@@ -520,7 +525,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       kick();
     },
     react(cue) { env?.react(cue); kick(); },
-    view(v) { hold = 0; lastInput = performance.now(); setView(v, v === 'inspect' ? flaggedPoint(state) : null); kick(); },
+    view(v) { hold = 0; lastInput = performance.now(); setView(v, v === 'inspect' ? focusPoint(state) : null); kick(); },
     resize() { size(); kick(); },
     setMotion(on) { motion = on; kick(); },
     stop() {
@@ -529,6 +534,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       canvas.removeEventListener('wheel', onWheel); canvas.removeEventListener('keydown', onKey); canvas.removeEventListener('webglcontextlost', lose);
       scene.traverse((o) => { if (o instanceof THREE.Mesh || o instanceof THREE.LineSegments) { o.geometry.dispose(); const mm = o.material; (Array.isArray(mm) ? mm : [mm]).forEach((x) => x.dispose()); } });
       env?.dispose(); composer?.dispose(); calloutLayer.remove(); pmrem.dispose(); glowTex.dispose(); renderer.dispose();
+      renderer.forceContextLoss(); // release the GPU context now, not at GC: page-to-page navigation never stacks contexts
     }
   };
 }

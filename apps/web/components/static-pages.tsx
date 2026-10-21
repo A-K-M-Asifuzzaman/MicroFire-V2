@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { featureLabels, features, missionDefinitions, type Feature } from '@microfire/shared';
 import { catalog, coverage, quarantineLedger, sourceDetail } from '@microfire/science';
 import { CoverageNote, Kind } from './evidence-ui';
+import { BAY_TOUR, BayTeaser } from './home-sections';
 import { feature, PageHero, Sheet } from './page-kit';
 
 export function SourcesPage() {
@@ -89,6 +90,7 @@ export function MissionsPage() {
       <p className="lede">An interactive research station is being built. Every decision will leave an evidence trail in your Passport.</p>
     </header>
     <StatusBlock f={feature('/missions')!} />
+    <BayTeaser compact />
     <div className="mission-map">
       <svg viewBox="0 0 1440 470" role="group" aria-label="Mission map: five locations, none playable yet">
         <path d={`M${nodes.map(([x, y]) => `${x} ${y}`).join(' L')}`} fill="none" stroke="#2f5566" strokeWidth="14" strokeLinejoin="round" />
@@ -112,7 +114,7 @@ export function MissionsPage() {
     <div style={{ marginTop: 32 }}>
       <p className="eyebrow">Evidence Passport / persists between missions</p>
       <p className="path-steps">{['Explore', 'Assemble', 'Observe', 'Verify', 'Decide'].flatMap((s, i) => i ? [<span key={`a${i}`} aria-hidden="true">→</span>, <span key={s}>{s}</span>] : [<span key={s}>{s}</span>])}</p>
-      <p className="meta">No mission is playable yet. Mission rules exist and are tested; the scenes are in development. <Link href="/passport">See how the Passport will work</Link>.</p>
+      <p className="meta">No mission is playable yet. Mission rules exist and are tested. The BASS-II training bay is built and can be <Link href={BAY_TOUR}>toured now</Link>; its gameplay opens after server integration. <Link href="/passport">See how the Passport will work</Link>.</p>
     </div>
   </div>;
 }
@@ -143,11 +145,14 @@ export function MissionPage({ id }: { id: string }) {
       </dl>
       <div className="panel stack frame">
         <p className="eyebrow" style={{ margin: 0 }}>Not playable yet</p>
-        <p style={{ margin: 0 }}>This mission&apos;s rules are implemented and tested, but its scene and controls are still being built. Nothing here is simulated gameplay.</p>
+        {previewMissions.has(id)
+          ? <p style={{ margin: 0 }}>This mission&apos;s rules are implemented and tested, and its 3D training bay is built. Gameplay, training qualification and Passport entries open only after the mission&apos;s server integration is approved. The tour below is illustrative and records nothing.</p>
+          : <p style={{ margin: 0 }}>This mission&apos;s rules are implemented and tested, but its scene and controls are still being built. Nothing here is simulated gameplay.</p>}
         <button className="btn btn-quiet" disabled>{featureLabels[f.state]}</button>
         <div className="actions"><Link className="btn btn-quiet btn-sm" href="/missions">Back to the map</Link><Link className="btn btn-primary btn-sm" href={`/experiments/${b20.id}`}>Inspect the {b20.testId} record</Link></div>
       </div>
     </div>
+    {previewMissions.has(id) && <BayTeaser compact />}
     {previewMissions.has(id) && <Suspense fallback={null}><PreviewEntry data={{ parts: partSpecs(), b20: b20Data() }} /></Suspense>}
   </div>;
 }

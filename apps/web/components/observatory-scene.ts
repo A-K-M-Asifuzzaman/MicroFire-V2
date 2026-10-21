@@ -438,6 +438,7 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
         (Array.isArray(m.material) ? m.material : m.material ? [m.material] : []).forEach((mat) => { (mat as THREE.MeshBasicMaterial).map?.dispose(); mat.dispose(); });
       });
       glowTex.dispose(); scene.environment?.dispose(); pmrem.dispose(); env.dispose?.(); composer.dispose(); renderer.dispose();
+      renderer.forceContextLoss(); // free the GPU context on navigation instead of waiting for GC
     }
   };
 }

@@ -123,4 +123,4 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
   </div>;
 }
 
-const onFullscreen = (fn: () => void) => { document.addEventListener('fullscreenchange', fn); return () => document.removeEventListener('fullscreenchange', fn); };
+export const onFullscreen = (fn: () => void) => { document.addEventListener('fullscreenchange', fn); return () => document.removeEventListener('fullscreenchange', fn); };

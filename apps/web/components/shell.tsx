@@ -14,7 +14,7 @@ const sections = [
 const evidenceTools = [
   ['/dashboard', 'Workstation'], ['/ask', 'Ask PIX'], ['/gaps', 'Frontier'], ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology']
 ] as const;
-const missionTools = [['/missions', 'Mission map'], ['/passport', 'Evidence Passport']] as const;
+const missionTools = [['/missions', 'Mission map'], ['/missions/bass-assembly/tour', 'Training bay'], ['/passport', 'Evidence Passport']] as const;
 const observatory = ['/', '/lab', '/missions'];
 /** Unfinished destinations say so before arrival (state straight from the shared registry). */
 
@@ -72,6 +72,8 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
           <nav aria-label="Main">{links}
             <p className="menu-group">Evidence tools</p>
             {evidenceTools.map(([href, label]) => <Link key={href} className="nav-link sub" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}
+            <p className="menu-group">Missions</p>
+            <Link className="nav-link sub" href="/missions/bass-assembly/tour" aria-current={path === '/missions/bass-assembly/tour' ? 'page' : undefined}>Training bay tour</Link>
             <p className="menu-group">Your record</p>
             <Link className="nav-link sub" href="/passport" aria-current={path === '/passport' ? 'page' : undefined}>Passport</Link>
           </nav>

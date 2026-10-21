@@ -50,6 +50,27 @@ export function GravityDuel({ recordHref }: { recordHref: string }) {
   </section>;
 }
 
+export const BAY_TOUR = '/missions/bass-assembly/tour';
+/** Invitation into the 3D training bay (home, mission map, BASS-II briefings). The mission stays gated; the tour is labelled illustrative. */
+export function BayTeaser({ compact = false }: { compact?: boolean }) {
+  return <section className="bay-teaser" data-compact={compact || undefined} aria-labelledby="bay-teaser-title">
+    <div className="bay-teaser-scene" aria-hidden="true"><i /></div>
+    <div className={compact ? 'bay-teaser-body' : 'wrap bay-teaser-body'}>
+      <div className="bay-teaser-copy" data-reveal>
+        <p className="eyebrow">Mission 02 · BASS-II training bay</p>
+        <h2 id="bay-teaser-title">Step inside the <em>training bay.</em></h2>
+        <p className="lede">A cinematic 3D bay built around a schematic model of the BASS-II flow duct, with an open chamber gantry, a jointed inspection arm, an astronaut at the window and PIX as your guide. Tour it now. The mission&apos;s gameplay opens once its server integration is approved.</p>
+        <ul className="bay-teaser-chips"><li>Real-time 3D</li><li>Full-screen inspection</li><li>Optional lab sound and narration</li></ul>
+        <div className="actions">
+          <Link className="btn btn-primary" href={BAY_TOUR}>Tour the training bay <span aria-hidden="true">→</span></Link>
+          {!compact && <Link className="text-link" href="/missions/bass-assembly">Mission briefing</Link>}
+        </div>
+        <p className="bay-teaser-note">Illustrative scene rendered from MicroFire&apos;s own 3D bench. Not NASA imagery.</p>
+      </div>
+    </div>
+  </section>;
+}
+
 export function PixIntro() {
   return <section className="pix-intro" aria-labelledby="pix-intro-title">
     <div className="wrap pix-intro-grid">

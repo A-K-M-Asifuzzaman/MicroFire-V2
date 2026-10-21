@@ -728,6 +728,32 @@ input[type="range"] { accent-color: var(--flame); }
 @keyframes core { 50% { opacity: .55; } }
 
 /* ---------- trust strip ---------- */
+/* Training bay invitation: MicroFire's own render of the 3D bay, full-bleed on home, a framed card on mission pages. */
+.bay-teaser { position: relative; overflow: hidden; isolation: isolate; min-height: min(82vh, 760px); display: grid; align-items: center; background: #03060b; border-top: 1px solid rgb(115 187 217 / .12); }
+.bay-teaser[data-compact] { min-height: 440px; border: 1px solid rgb(115 187 217 / .2); border-radius: 28px; margin-block: clamp(28px, 4vw, 48px); box-shadow: 0 30px 80px rgb(0 0 0 / .45); }
+.bay-teaser-scene { position: absolute; inset: 0; z-index: -1; }
+.bay-teaser-scene::before { content: ""; position: absolute; inset: -4%; background: url('/media/m2/lab-arrival.jpg') 62% center / cover no-repeat; }
+.bay-teaser-scene::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(3 6 11 / .94) 0%, rgb(3 6 11 / .78) 34%, rgb(3 6 11 / .2) 62%, rgb(3 6 11 / .35) 100%), linear-gradient(180deg, rgb(3 6 11 / .5), transparent 22%, transparent 78%, rgb(3 6 11 / .85)); }
+.bay-teaser-scene i { position: absolute; inset: 0; background: linear-gradient(100deg, transparent 40%, rgb(127 214 209 / .08) 50%, transparent 60%); background-size: 250% 100%; animation: bay-sweep 9s ease-in-out infinite; z-index: 1; }
+@keyframes bay-sweep { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+@supports (animation-timeline: view()) { .bay-teaser-scene::before { animation: bay-push linear both; animation-timeline: view(); } }
+@keyframes bay-push { from { transform: scale(1.14) translateY(2%); } to { transform: scale(1.02) translateY(-2%); } }
+.bay-teaser-body { padding-block: clamp(56px, 8vw, 110px); width: 100%; }
+.bay-teaser[data-compact] .bay-teaser-body { padding: clamp(28px, 4vw, 48px); }
+.bay-teaser-copy { max-width: 560px; }
+.bay-teaser h2 { font-size: clamp(2.1rem, 1rem + 3.4vw, 3.9rem); }
+.bay-teaser[data-compact] h2 { font-size: var(--step-3); }
+.bay-teaser .lede { color: var(--frost); text-shadow: 0 2px 18px rgb(0 0 0 / .7); }
+.bay-teaser-chips { list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.bay-teaser-chips li { font: 500 .72rem/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; border: 1px solid rgb(115 187 217 / .35); background: rgb(3 6 11 / .55); color: var(--cyan); }
+.bay-teaser-note { margin: 18px 0 0; font: 500 .72rem/1.4 var(--mono); color: var(--frost-dim); }
+@media (max-width: 760px) {
+  .bay-teaser { min-height: 0; align-items: end; }
+  .bay-teaser-scene::before { background-position: 66% top; inset: 0 0 auto; height: 56%; }
+  .bay-teaser-scene::after { background: linear-gradient(180deg, rgb(3 6 11 / .1) 0%, rgb(3 6 11 / .35) 34%, rgb(3 6 11 / .96) 56%, #03060b 100%); }
+  .bay-teaser-body { padding-top: min(52vw, 260px); }
+}
+@media (prefers-reduced-motion: reduce) { .bay-teaser-scene i, .bay-teaser-scene::before { animation: none !important; } }
 .trust-strip { padding-block: clamp(40px, 6vw, 72px); background: #05080e; border-top: 1px solid rgb(115 187 217 / .12); }
 .trust-strip dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 18px; }
 .trust-strip dl > div { padding: 20px 22px; border-radius: 18px; border: 1px solid rgb(115 187 217 / .18); background: linear-gradient(160deg, rgb(20 32 46 / .7), rgb(7 12 20 / .7)); }

@@ -81,6 +81,7 @@ export async function startPix(canvas: HTMLCanvasElement, host: HTMLElement, ini
       window.removeEventListener('pointermove', onMove); canvas.removeEventListener('webglcontextlost', lose);
       scene.traverse((o) => { const m = o as THREE.Mesh; m.geometry?.dispose(); (Array.isArray(m.material) ? m.material : m.material ? [m.material] : []).forEach((x) => x.dispose()); });
       scene.environment?.dispose(); pmrem.dispose(); env.dispose?.(); renderer.dispose();
+      renderer.forceContextLoss(); // free the GPU context on navigation instead of waiting for GC
     }
   };
 }

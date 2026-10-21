@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { catalog, coverage } from '@microfire/science';
 import { ObservatoryHero, type Station } from '../components/observatory-hero';
-import { GravityDuel, PixIntro, TrustStrip } from '../components/home-sections';
+import { BayTeaser, GravityDuel, PixIntro, TrustStrip } from '../components/home-sections';
 import { locatorText, value } from '../components/page-kit';
 
 const stations: Station[] = [
@@ -10,7 +10,7 @@ const stations: Station[] = [
   { title: 'Evidence Workstation', short: 'Workstation', href: '/dashboard', description: 'Trace a question to where confidence ends.' },
   { title: 'Ask PIX', short: 'PIX', href: '/ask', description: 'Cited answers, or an honest “not known”.' },
   { title: 'Research Frontier', short: 'Frontier', href: '/gaps', description: 'See what this catalog does and does not document.' },
-  { title: 'Mission map', short: 'Missions', href: '/missions', description: 'Five mission previews · none playable yet.' }
+  { title: 'Mission map', short: 'Missions', href: '/missions', description: 'Mission previews and the 3D training bay · none playable yet.' }
 ];
 
 export default function Home() {
@@ -32,6 +32,7 @@ export default function Home() {
         </div>
       </div>
     </ObservatoryHero>
+    <BayTeaser />
     <GravityDuel recordHref={href} />
     <PixIntro />
     <TrustStrip admitted={cov.validatedExperiments} sources={cov.validatedSources} quarantined={cov.quarantinedCandidates} />
