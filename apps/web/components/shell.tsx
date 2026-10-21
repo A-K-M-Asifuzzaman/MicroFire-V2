@@ -65,6 +65,8 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
   const current = sections.find((s) => inSection(path, s.match));
   const links = sections.map((s) => { const tag = tags[s.href]; return <Link key={s.href} className="nav-link" href={s.href} aria-current={s === current ? 'page' : undefined}>
     {s.label}{tag && <span className="nav-tag">{tag}</span>}</Link>; });
+  // Design-review prototypes (/design/…) bring their own navigation and identity; the shell steps aside.
+  if (path === '/design' || path.startsWith('/design/')) return <><a className="skip" href="#main">Skip to content</a><main id="main" tabIndex={-1}>{children}</main></>;
   return <div className="surface" data-surface={surface} data-home={path === '/' ? 'true' : undefined}>
     <a className="skip" href="#main">Skip to content</a>
     <CursorFx enabled={path === '/'} />

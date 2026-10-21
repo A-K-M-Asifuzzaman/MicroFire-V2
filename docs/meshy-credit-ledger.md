@@ -71,3 +71,18 @@ The owner authorised **one** generation with a 30-credit cap; the other two prop
 
 - Optimised to 0.94 MB on disk (0.84 MB transferred), 18.4k triangles, WebP at 1024 px. Live balance before 2,813; after 2,783.
 - No retries. The wall-module and control-panel proposals are not authorised and were not run.
+
+## M4 art-direction prototypes, batch 1 (2026-10-21): 70 credits
+
+The owner authorised up to 300 credits for this milestone; the first batch was capped at 100. Floor: 2,483.
+
+| Job | Credits | Result |
+|---|---|---|
+| `hero-chamber-v1` (meshy-7.1, text-to-3D + 2K PBR refine) | 30 | Accepted. Design A's hero exhibit chamber, built around MicroFire's own illustrated flame |
+| `orbital-arch-v1` (meshy-7.1, text-to-3D + 2K PBR refine) | 30 | Accepted. Design A's colonnade of structural arches |
+| `astronaut-v1-suit` (retexture, original UVs) | 10 | Accepted after compositing. The first request was rejected at creation (HTTP 404 on an expired task id; no task, 0 credits) and was re-sent once with the original GLB |
+
+- **Balance:** 2,783 → 2,713, verified live.
+- **Ledger rows:** the two text-to-3D jobs ran concurrently, so their rows' `spent` fields overlap. The `reconcile:M4-batch-1` ledger row records the true per-job split. Paid jobs now run sequentially.
+- **Suit fix:** the retexture produced a clear visor with a generated face. The visor region was restored from the original texture before use.
+- **Spending stopped at 70.** The prototypes did not need more models (Design B is illustrated).

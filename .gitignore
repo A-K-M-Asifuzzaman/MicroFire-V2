@@ -17,3 +17,4 @@ test-results/
 
 # Meshy downloads stay local until QA + rights approval
 tools/meshy/incoming/
+docs/qa/screenshots/m4/recordings/

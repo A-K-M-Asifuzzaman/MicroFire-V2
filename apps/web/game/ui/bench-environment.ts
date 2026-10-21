@@ -12,7 +12,8 @@ type Placement = { url: string; height: number; position: [number, number, numbe
 type Clip = 'idle' | 'look' | 'wave' | 'cheer';
 /** Astronaut acknowledgement: clips, plus a procedural head nod. */
 export type EnvCue = 'look' | 'nod' | 'wave' | 'cheer';
-export type EnvOptions = { manifest: Placement[]; astronaut: { url: string; clips: Record<Clip, string> } | null; lite: boolean };
+/** `tint` multiplies the suit colour (the original white suit is calmed with a cool grey; a textured suit can pass white). */
+export type EnvOptions = { manifest: Placement[]; astronaut: { url: string; clips: Record<Clip, string>; tint?: string } | null; lite: boolean };
 export type EnvProgress = { loaded: number; total: number };
 
 /** Floor (y) of the bay: the bench top sits just under the apparatus base plate. */
@@ -262,7 +263,7 @@ export function addEnvironment(scene: THREE.Scene, renderer: THREE.WebGLRenderer
     // Art direction without regeneration: a cool satin suit instead of flat white, so it reads against the window light.
     base.scene.traverse((o) => {
       if (!(o instanceof THREE.Mesh) || !(o.material instanceof THREE.MeshStandardMaterial)) return;
-      const m = o.material.clone(); m.color.multiply(new THREE.Color('#aab8ca')); m.roughness = Math.min(1, m.roughness * 0.75 + 0.15); m.metalness = Math.max(m.metalness, 0.12); m.envMapIntensity = 0.9;
+      const m = o.material.clone(); m.color.multiply(new THREE.Color(opts.astronaut!.tint ?? '#aab8ca')); m.roughness = Math.min(1, m.roughness * 0.75 + 0.15); m.metalness = Math.max(m.metalness, 0.12); m.envMapIntensity = 0.9;
       o.material = m;
     });
     const mixer = mixerState.mixer = new THREE.AnimationMixer(base.scene);

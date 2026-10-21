@@ -1,31 +1,17 @@
 'use client';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { PartSpec } from '../contract';
-import type { BenchApi, BenchState, BenchView } from './bench-scene';
 import { onFullscreen } from './bench';
-import { LAB_ENVIRONMENT } from './lab-assets';
-import { PixGuide, type Reaction } from './pix';
-import { soundscape } from './soundscape';
+import { PixGuide } from './pix';
 import { ArrivalCinematic } from './station';
+import { useBay } from './use-bay';
 import './game.css';
 
-/**
- * Visitor tour of the training bay: the same 3D bench, showing the apparatus in its reference configuration from
- * the frozen equipment specification. No session, no server state, no fixtures: nothing is fitted, flagged,
- * qualified or recorded here. The mission itself stays gated until its server integration is approved.
- */
-const reference = (parts: PartSpec[], selectedPart: string | null): BenchState => ({
-  installed: Object.fromEntries(parts.map((p) => [p.id, { anchorId: p.anchorId, orientation: 'correct' as const }])),
-  flagged: [], pendingRepair: null, qualified: false, selectedPart, selectedAnchor: null, orientation: 'correct', choosing: false, pendingTarget: null, focus: 'overview'
-});
 const INTRO_KEY = 'microfire.bay.intro';
 
+/** The public, illustrative Training Bay tour (see useBay: no session, no server state, nothing recorded). */
 export function BayTour({ parts }: { parts: PartSpec[] }) {
-  const host = useRef<HTMLDivElement>(null), stage = useRef<HTMLDivElement>(null), api = useRef<BenchApi | null>(null);
-  const [sel, setSel] = useState<string | null>(null);
-  const [ready, setReady] = useState(false), [frame, setFrame] = useState(false), [off, setOff] = useState(false);
-  const [env, setEnv] = useState<{ loaded: number; total: number; lite: boolean } | null>(null), [envOff, setEnvOff] = useState(false);
-  const [tip, setTip] = useState<{ x: number; y: number; text: string } | null>(null);
+  const stage = useRef<HTMLDivElement>(null);
   // The arrival plays once per browser session (skippable; absent under reduced motion); "Replay intro" brings it back.
   const [intro, setIntro] = useState(false);
   useEffect(() => {
@@ -36,70 +22,7 @@ export function BayTour({ parts }: { parts: PartSpec[] }) {
   }, []);
   const full = useSyncExternalStore(onFullscreen, () => !!stage.current && document.fullscreenElement === stage.current, () => false);
   const canFull = useSyncExternalStore(onFullscreen, () => document.fullscreenEnabled, () => false);
-
-  useEffect(() => {
-    const el = host.current;
-    if (!el) return;
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-    let cancelled = false, visible = true;
-    const canvas = document.createElement('canvas');
-    canvas.tabIndex = 0;
-    canvas.setAttribute('aria-label', '3D training bay. Drag to orbit, arrow keys to rotate, plus and minus to zoom. Select parts with the list below.');
-    el.prepend(canvas);
-    const motion = () => visible && !reduce.matches && !document.hidden;
-    const none = () => undefined;
-    import('./bench-scene').then(async ({ startBench }) => {
-      if (cancelled) return;
-      const a = await startBench(canvas, el, parts, {
-        onSelectPart: (id) => setSel(id), onSelectAnchor: none, onDrop: none, onHover: setTip,
-        onLost: () => { if (!cancelled) setOff(true); },
-        onFirstFrame: () => { if (!cancelled) setFrame(true); },
-        onEnvProgress: (p, lite) => { if (!cancelled) setEnv({ ...p, lite }); },
-        onEnvOff: () => { if (!cancelled) setEnvOff(true); }
-      }, motion(), LAB_ENVIRONMENT && { ...LAB_ENVIRONMENT, lite: matchMedia('(max-width: 760px), (pointer: coarse)').matches });
-      if (cancelled) { a?.stop(); return; }
-      if (!a) { setOff(true); return; }
-      api.current = a; setReady(true);
-    }).catch(() => setOff(true));
-    const io = new IntersectionObserver(([e]) => { visible = !!e?.isIntersecting; api.current?.setMotion(motion()); });
-    io.observe(el);
-    const sync = () => api.current?.setMotion(motion());
-    const onResize = () => api.current?.resize();
-    reduce.addEventListener('change', sync); document.addEventListener('visibilitychange', sync); window.addEventListener('resize', onResize);
-    return () => {
-      cancelled = true; io.disconnect();
-      reduce.removeEventListener('change', sync); document.removeEventListener('visibilitychange', sync); window.removeEventListener('resize', onResize);
-      api.current?.stop(); api.current = null; canvas.remove();
-    };
-  }, [parts]);
-
-  useEffect(() => { if (ready) api.current?.update(reference(parts, sel)); }, [ready, sel, parts]);
-  // The astronaut greets the visitor once the scenery has loaded and the intro is out of the way (presentation only).
-  const waved = useRef(false);
-  const sceneryReady = !!env && env.loaded >= env.total;
-  useEffect(() => { if (ready && sceneryReady && !intro && !waved.current) { waved.current = true; api.current?.react('wave'); } }, [ready, sceneryReady, intro]);
-
-  // Guided tour: PIX walks through every part in mounting order while the camera inspects each one. Any choice of
-  // the visitor's own (a part, a camera view) ends it. The words are the frozen equipment copy, nothing new.
-  const [guide, setGuide] = useState<number | null>(null);
-  useEffect(() => {
-    if (guide === null) return;
-    const p = parts[guide];
-    if (!p) { setGuide(null); api.current?.view('work'); return; } // eslint-disable-line react-hooks/set-state-in-effect -- the tour ends after its last part
-    setSel(p.id);
-    const look = setTimeout(() => api.current?.view('inspect'), 120);
-    const next = setTimeout(() => setGuide(guide + 1), 6000);
-    return () => { clearTimeout(look); clearTimeout(next); };
-  }, [guide, parts]);
-  const part = parts.find((p) => p.id === sel) ?? null;
-  const r: Reaction = part && guide !== null
-    ? { pose: guide === 0 ? 'welcome' : 'look', pix: 'cited', line: `${guide + 1} of ${parts.length}: the ${part.label.toLowerCase()}, at the ${part.anchorLabel.toLowerCase()}. NASA’s description: ${part.sourceNote}` }
-    : part ? { pose: 'look', pix: 'searching', line: `That’s the ${part.label.toLowerCase()}. It mounts at the ${part.anchorLabel.toLowerCase()}.` }
-      : { pose: 'welcome', pix: 'idle', line: 'Welcome to the training bay. Pick any part, or press Guided tour and I’ll walk you through the apparatus. This tour records nothing.' };
-  useEffect(() => { soundscape.say(r.line); }, [r.line]);
-  const pick = (id: string) => { setGuide(null); setSel((cur) => (cur === id ? null : id)); };
-  const lab = !!LAB_ENVIRONMENT && !envOff;
-  const views: [BenchView, string][] = [...(lab ? [['establish', 'Bay'] as [BenchView, string]] : []), ['work', 'Work view'], ['inspect', part ? `Inspect ${part.label.toLowerCase()}` : 'Inspect']];
+  const { host, ready, frame, off, env, envOff, sceneryReady, lab, tip, sel, part, pick, guide, setGuide, reaction: r, views, view } = useBay(parts, { greet: !intro });
 
   return <div className="m2 m2-tour">
     {intro && <ArrivalCinematic onDone={() => setIntro(false)} title="The BASS-II training bay" sub="Illustrative tour · schematic training model" />}
@@ -120,7 +43,7 @@ export function BayTour({ parts }: { parts: PartSpec[] }) {
         <div className="m2-bench-bar">
           <div className="m2-views" role="group" aria-label="Camera view">
             <button type="button" className="m2-view m2-guide-btn" aria-pressed={guide !== null} onClick={() => setGuide(guide === null ? 0 : null)} disabled={!frame}>{guide === null ? 'Guided tour' : `Stop tour · ${guide + 1}/${parts.length}`}</button>
-            {views.map(([v, name]) => <button key={v} type="button" className="m2-view" onClick={() => { setGuide(null); api.current?.view(v); }} disabled={!frame}>{name}</button>)}
+            {views.map(([v, name]) => <button key={v} type="button" className="m2-view" onClick={() => view(v)} disabled={!frame}>{name}</button>)}
             {canFull && <button type="button" className="m2-view" aria-pressed={full} onClick={() => { if (full) void document.exitFullscreen(); else void stage.current?.requestFullscreen().catch(() => undefined); }}>{full ? 'Exit full screen' : 'Full screen'}</button>}
             <button type="button" className="m2-view" onClick={() => setIntro(true)}>Replay intro</button>
           </div>

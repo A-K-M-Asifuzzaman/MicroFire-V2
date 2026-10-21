@@ -5,7 +5,7 @@
 // Commands:
 //   balance                         read-only credit balance (free)
 //   tasks                           read-only list of existing text-to-3D tasks for reuse (free)
-//   run <jobId> --approved-cap <N> --floor <B>      ONE planned job from jobs.json; refuses if its estimate exceeds the cap
+//   run <jobId> --approved-cap <N> --floor <B>      ONE planned job from jobs.json (text/image-to-3D or retexture); refuses if its estimate exceeds the cap
 //   rig <jobId> --approved-cap <N> --floor <B>      auto-rig a downloaded humanoid job (5 credits)
 //   animate <jobId> <id,id,…> --approved-cap <N> --floor <B>   preset actions on its rig (3 credits each)
 //   library [search]                                read-only animation library lookup (free)
@@ -120,7 +120,12 @@ try {
     const { cap, before } = await guard(job.estimateCredits);
     console.log(`Balance before: ${before.balance}. Running ${job.id} (estimate ${job.estimateCredits}, cap ${cap}).`);
     let preview, finalTask;
-    if (job.image) { // image-to-3D from a local concept image, sent as a data URI
+    if (job.retexture) { // new textures on an existing model (original UVs kept, so they can be swapped into its rigged copy)
+      const { model_file: file, ...body } = job.retexture; // a local GLB is sent as a data URI (task ids can expire)
+      if (file) body.model_url = `data:model/gltf-binary;base64,${(await readFile(path.join(here, file))).toString('base64')}`;
+      preview = await call('POST', '/v1/retexture', body);
+      finalTask = await poll(preview.result, 'retexture', '/v1/retexture');
+    } else if (job.image) { // image-to-3D from a local concept image, sent as a data URI
       const png = await readFile(path.join(here, job.image.file));
       const { file: _file, ...params } = job.image;
       preview = await call('POST', '/v1/image-to-3d', { image_url: `data:image/png;base64,${png.toString('base64')}`, ...params });
@@ -133,6 +138,7 @@ try {
     const dir = path.join(here, 'incoming', job.id); await mkdir(dir, { recursive: true });
     if (finalTask.model_urls?.glb) await download(finalTask.model_urls.glb, path.join(dir, `${job.id}.glb`));
     if (finalTask.thumbnail_url) await download(finalTask.thumbnail_url, path.join(dir, `${job.id}-thumb.png`));
+    for (const [i, set] of (finalTask.texture_urls ?? []).entries()) for (const [kind, url] of Object.entries(set ?? {})) if (url) await download(url, path.join(dir, `${job.id}-${i}-${kind}.png`));
     const after = await balance();
     const entry = { at: new Date().toISOString(), job: job.id, previewTask: preview.result, finalTask: finalTask.id, estimate: job.estimateCredits, approvedCap: cap, balanceBefore: before.balance, balanceAfter: after.balance, spent: before.balance - after.balance, status: 'downloaded-pending-qa' };
     await appendFile(path.join(here, 'ledger.jsonl'), `${JSON.stringify(entry)}\n`);

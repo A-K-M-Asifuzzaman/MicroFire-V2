@@ -38,7 +38,7 @@ export type BenchCallbacks = {
   onEnvOff?(): void;
 };
 /** Camera compositions: establishing bay shot, assembly work view, fault inspection, qualified wide view. */
-export type BenchView = 'establish' | 'work' | 'inspect' | 'wide';
+export type BenchView = 'establish' | 'work' | 'inspect' | 'wide' | 'hero';
 export type BenchApi = { update(s: BenchState): void; faultMoment(): void; react(cue: EnvCue): void; view(v: BenchView): void; resize(): void; setMotion(on: boolean): void; stop(): void };
 /** Artistic environment (Meshy). Absent → the bench renders exactly as before. */
 export type BenchEnvironment = EnvOptions | null;
@@ -284,7 +284,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   // Inspect: closer, on the flagged part. Establish / wide: the bay (lab only). Narrow screens pull back per view.
   type Shot = { r: number; theta: number; phi: number; target: [number, number, number] };
   const VIEWS: Partial<Record<BenchView, Shot>> = env
-    ? { establish: { r: 29, theta: 0.42, phi: 1.1, target: [-4.5, 0.5, -2] }, work: { r: 3.7, theta: -0.5, phi: 1.3, target: [0.05, 0.1, 0] }, inspect: { r: 2.6, theta: -0.95, phi: 1.24, target: [-0.6, 0, 0] }, wide: { r: 12, theta: -0.3, phi: 1.3, target: [-4, -2.5, 0] } }
+    ? { establish: { r: 29, theta: 0.42, phi: 1.1, target: [-4.5, 0.5, -2] }, hero: { r: 6.2, theta: -0.52, phi: 1.24, target: [0.25, 0.55, 0] }, work: { r: 3.7, theta: -0.5, phi: 1.3, target: [0.05, 0.1, 0] }, inspect: { r: 2.6, theta: -0.95, phi: 1.24, target: [-0.6, 0, 0] }, wide: { r: 12, theta: -0.3, phi: 1.3, target: [-4, -2.5, 0] } }
     : { work: { r: 4.4, theta: -0.55, phi: 1.12, target: [0, 0.05, 0] }, inspect: { r: 3.4, theta: -0.95, phi: 1.12, target: [-0.6, 0, 0] } };
   const maxR = environment ? 30 : 6.5, HERO = VIEWS.work!;
   const orbit = { theta: HERO.theta, phi: HERO.phi, r: HERO.r, tTheta: HERO.theta, tPhi: HERO.phi, tR: HERO.r, target: new THREE.Vector3(...HERO.target), tTarget: new THREE.Vector3(...HERO.target) };
