@@ -218,6 +218,32 @@
           "glb"
         ]
       }
+    },
+    {
+      "id": "chamber-housing-v1",
+      "batch": "M2 premium chamber pilot (owner-authorized ONE generation, cap 30)",
+      "purpose": "Artistic open gantry housing framing the procedural, source-labelled BASS-II training apparatus. Decorative only: it never replaces, hides or defines any scientific part or mount.",
+      "estimateCredits": 30,
+      "preview": {
+        "prompt": "Open skeletal gantry frame enclosure for a laboratory experiment: four slim corner pillars joined by top and bottom rectangular rails, a low base plinth ring, completely open on all four sides and the top, hollow empty interior with nothing inside, no panels, no glass, no walls, single object. Premium hard-surface sci-fi orbital lab design: dark titanium and midnight-navy metal, layered mechanical joints and brackets, thin cyan light strips along the rails, small amber status lights on the pillars. No text, no logos.",
+        "ai_model": "meshy-7.1",
+        "model_type": "standard",
+        "topology": "triangle",
+        "should_remesh": true,
+        "target_polycount": 20000,
+        "moderation": true,
+        "target_formats": [
+          "glb"
+        ]
+      },
+      "refine": {
+        "enable_pbr": true,
+        "texture_resolution": "2k",
+        "texture_prompt": "dark brushed titanium metal frame, midnight navy painted pillar panels, thin emissive cyan light strips on the rails, small warm amber status lights, subtle realistic wear and machined edges, physically based materials, no text, no logos",
+        "target_formats": [
+          "glb"
+        ]
+      }
     }
   ]
 }

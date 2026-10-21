@@ -61,3 +61,13 @@ Owner authorised up to 600 new credits for M2: 300 first, then a quality review 
   3. A recessed control-panel housing for the workstation.
 
   The inspection arm stays procedural: Meshy returns one fused mesh, which cannot articulate.
+
+## M2 chamber housing pilot (generated 2026-10-17, QA 2026-10-21)
+The owner authorised **one** generation with a 30-credit cap; the other two proposed models and any retries were not authorised. Published price (docs.meshy.ai/en/api/pricing): text-to-3D preview 20 + 2K refine 10 = 30. The tool was run with cap 30 and floor 2,783.
+
+| Job | Mode | Credits | Balance after | QA | Used |
+|---|---|---|---|---|---|
+| chamber-housing-v1 | Text-to-3D meshy-7.1 preview `01a148d3-b0fd-73bf-a24c-a41174f0d5d3` → refine `01a148d4-e29d-70f1-93e4-43ff2fd98741`, PBR 2K | 30 | **2,783** | **Accepted, desktop only.** A genuinely open gantry: four pillars, truss top, no panels or glass. Meshy added a round pedestal (sunk out of sight under the instrument plate) and a thin flat sheet under the truss. On phones that sheet and the faceted truss crossed the pulled-back view, so the lite tier excludes it | Yes: framing the apparatus (desktop) |
+
+- Optimised to 0.94 MB on disk (0.84 MB transferred), 18.4k triangles, WebP at 1024 px. Live balance before 2,813; after 2,783.
+- No retries. The wall-module and control-panel proposals are not authorised and were not run.

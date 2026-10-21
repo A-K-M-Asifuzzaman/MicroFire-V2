@@ -103,3 +103,21 @@ Measured with in-page WebGL call timers, fault stage, local production server, t
 - The work view looks past the duct glass, so glass tint still lifts the parts behind it slightly.
 - The Meshy side props are mostly out of frame in the gameplay views.
 - The qualification (D) composition is unverified without a qualified fixture.
+
+## Chamber housing pilot (one Meshy generation, 30 credits)
+
+These are identical scripted views, captured on GPU before and after. They are in `docs/qa/screenshots/m2/chamber-pilot/`: `before-*`, `after-*` (shipped), and `v1-after-*`, the first attempt with the chamber on mobile too, which was rejected.
+
+| View | Effect |
+|---|---|
+| Bay | Better. A dark open gantry frames the apparatus as an exhibit; nothing is hidden |
+| Work | Neutral for the chamber: only a pillar edge at the frame border. Better overall: the flow straightener got a satin finish in the lab, and its 36 cells no longer blow out white |
+| Inspect / Fault | Neutral: the frame stays outside the shot. The fault pulse is narrowed so its peak never blooms |
+| Mobile Work | Worse with the chamber: its truss and a thin flat sheet under it crossed the top third. Excluded from the lite tier, so this view is unchanged from before |
+
+Same-build A/B on the GPU desktop path, with the chamber request allowed vs blocked:
+- First frame is unchanged (0.45–0.47 s).
+- Scenery completes 20–90 ms later (0.68–0.74 vs 0.64–0.66 s).
+- Shader programs are unchanged (40).
+- Frame time is 16.7 ms median and 16.8 ms p95 both ways (vsync-capped, so headroom is not measured).
+- The extra download is 838 KB on desktop and 0 on mobile and software, where the chamber is not loaded.

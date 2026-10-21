@@ -204,7 +204,8 @@ export function addEnvironment(scene: THREE.Scene, renderer: THREE.WebGLRenderer
     earth.position.copy(earthAt); clouds.position.copy(earthAt).setZ(earthAt.z + 0.5); root.add(earth, clouds);
   }
 
-  const ARM = { base: new THREE.Vector3(2.75, BENCH_TOP, -1.9), shoulderH: 0.42, upper: 1.15, fore: 1.05, head: 0.26 };
+  const ARM = { base: new THREE.Vector3(2.85, BENCH_TOP, -0.5), // outside the chamber's open right side, reaching between its pillars
+     shoulderH: 0.42, upper: 1.15, fore: 1.05, head: 0.26 };
   function buildArm() {
     const ti = new THREE.MeshStandardMaterial({ color: '#8b97a4', metalness: 0.9, roughness: 0.34 });
     const gr = new THREE.MeshStandardMaterial({ color: '#18212b', metalness: 0.6, roughness: 0.4 });

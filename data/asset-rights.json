@@ -298,6 +298,61 @@
       "approved": true,
       "coordination": "Proposed by Claude in feat/m2-claude-gameplay; Sol (rights-ledger owner) to confirm and carry into the migrated ledger",
       "part": "M2 training bay — astronaut trainer (rigged, animated) — baseColor.webp"
+    },
+    {
+      "path": "apps/web/public/models/lab/chamber/baseColor_1.webp",
+      "title": "M2 training bay — chamber housing (open gantry frame)",
+      "source": "Meshy Text-to-3D (meshy-7.1), preview task 01a148d3-b0fd-73bf-a24c-a41174f0d5d3, refine task 01a148d4-e29d-70f1-93e4-43ff2fd98741, 2026-10-17, job chamber-housing-v1 in tools/meshy/jobs.json",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos, insignia or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized + lightly simplified geometry (18.4k triangles), external WebP textures at 1024 px (7.2 MB GLB → 0.94 MB). Scaled 2× around the procedural apparatus with its pedestal sunk under the instrument plate; desktop tier only. Decoration only: never covers, replaces or defines a scientific part or mount; not NASA engineering CAD",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-17/21; owner authorised this single 30-credit pilot",
+      "approved": true,
+      "coordination": "Proposed by Claude in feat/m2-claude-gameplay; Sol (rights-ledger owner) to confirm and carry into the migrated ledger",
+      "part": "M2 training bay — chamber housing — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/lab/chamber/chamber.bin",
+      "title": "M2 training bay — chamber housing (open gantry frame)",
+      "source": "Meshy Text-to-3D (meshy-7.1), preview task 01a148d3-b0fd-73bf-a24c-a41174f0d5d3, refine task 01a148d4-e29d-70f1-93e4-43ff2fd98741, 2026-10-17, job chamber-housing-v1 in tools/meshy/jobs.json",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos, insignia or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized + lightly simplified geometry (18.4k triangles), external WebP textures at 1024 px (7.2 MB GLB → 0.94 MB). Scaled 2× around the procedural apparatus with its pedestal sunk under the instrument plate; desktop tier only. Decoration only: never covers, replaces or defines a scientific part or mount; not NASA engineering CAD",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-17/21; owner authorised this single 30-credit pilot",
+      "approved": true,
+      "coordination": "Proposed by Claude in feat/m2-claude-gameplay; Sol (rights-ledger owner) to confirm and carry into the migrated ledger",
+      "part": "M2 training bay — chamber housing — chamber.bin"
+    },
+    {
+      "path": "apps/web/public/models/lab/chamber/chamber.gltf",
+      "title": "M2 training bay — chamber housing (open gantry frame)",
+      "source": "Meshy Text-to-3D (meshy-7.1), preview task 01a148d3-b0fd-73bf-a24c-a41174f0d5d3, refine task 01a148d4-e29d-70f1-93e4-43ff2fd98741, 2026-10-17, job chamber-housing-v1 in tools/meshy/jobs.json",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos, insignia or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized + lightly simplified geometry (18.4k triangles), external WebP textures at 1024 px (7.2 MB GLB → 0.94 MB). Scaled 2× around the procedural apparatus with its pedestal sunk under the instrument plate; desktop tier only. Decoration only: never covers, replaces or defines a scientific part or mount; not NASA engineering CAD",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-17/21; owner authorised this single 30-credit pilot",
+      "approved": true,
+      "coordination": "Proposed by Claude in feat/m2-claude-gameplay; Sol (rights-ledger owner) to confirm and carry into the migrated ledger",
+      "part": "M2 training bay — chamber housing — chamber.gltf"
+    },
+    {
+      "path": "apps/web/public/models/lab/chamber/metallicRoughness_1.webp",
+      "title": "M2 training bay — chamber housing (open gantry frame)",
+      "source": "Meshy Text-to-3D (meshy-7.1), preview task 01a148d3-b0fd-73bf-a24c-a41174f0d5d3, refine task 01a148d4-e29d-70f1-93e4-43ff2fd98741, 2026-10-17, job chamber-housing-v1 in tools/meshy/jobs.json",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos, insignia or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized + lightly simplified geometry (18.4k triangles), external WebP textures at 1024 px (7.2 MB GLB → 0.94 MB). Scaled 2× around the procedural apparatus with its pedestal sunk under the instrument plate; desktop tier only. Decoration only: never covers, replaces or defines a scientific part or mount; not NASA engineering CAD",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-17/21; owner authorised this single 30-credit pilot",
+      "approved": true,
+      "coordination": "Proposed by Claude in feat/m2-claude-gameplay; Sol (rights-ledger owner) to confirm and carry into the migrated ledger",
+      "part": "M2 training bay — chamber housing — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/lab/chamber/normal_1.webp",
+      "title": "M2 training bay — chamber housing (open gantry frame)",
+      "source": "Meshy Text-to-3D (meshy-7.1), preview task 01a148d3-b0fd-73bf-a24c-a41174f0d5d3, refine task 01a148d4-e29d-70f1-93e4-43ff2fd98741, 2026-10-17, job chamber-housing-v1 in tools/meshy/jobs.json",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos, insignia or text",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized + lightly simplified geometry (18.4k triangles), external WebP textures at 1024 px (7.2 MB GLB → 0.94 MB). Scaled 2× around the procedural apparatus with its pedestal sunk under the instrument plate; desktop tier only. Decoration only: never covers, replaces or defines a scientific part or mount; not NASA engineering CAD",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-17/21; owner authorised this single 30-credit pilot",
+      "approved": true,
+      "coordination": "Proposed by Claude in feat/m2-claude-gameplay; Sol (rights-ledger owner) to confirm and carry into the migrated ledger",
+      "part": "M2 training bay — chamber housing — normal_1.webp"
     }
   ]
 }

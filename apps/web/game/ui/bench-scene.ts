@@ -240,6 +240,8 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     }
   });
   for (const g of groups.values()) g.traverse((o) => { if (o instanceof THREE.Mesh && !(o.material as THREE.Material).transparent) o.castShadow = true; });
+  // Under the lab key light the 36 straightener cells summed into a white blow-out: satin finish there (material only).
+  if (env) groups.get('flow-straightener')?.traverse((o) => { if (o instanceof THREE.Mesh && o.material instanceof THREE.MeshStandardMaterial && !o.material.transparent) o.material.roughness = 0.6; });
   let flaggedMats: THREE.MeshStandardMaterial[] = [];
   // Install feedback: a confirmed fit flashes its mount ring once (presentation of a server-confirmed change).
   const flash = new Map<string, number>();
@@ -450,8 +452,8 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       if (f > 0) { a.ring.scale.setScalar(1 + (1 - f) * 2.2); const nf = motion ? f - 0.025 : 0; if (nf > 0) flash.set(id, nf); else flash.delete(id); busy = true; }
       else if (state?.choosing && motion) { a.ring.scale.setScalar(1 + (target ? 0.25 : 0.08) * Math.sin(t * 4)); busy = true; } else a.ring.scale.setScalar(1);
     }
-    // Flagged parts glow amber (server findings or the authored fault record only).
-    if (flaggedMats.length) { const k = motion ? 0.75 + 0.45 * Math.sin(t * 3) : 0.9; for (const mm of flaggedMats) mm.emissiveIntensity = k; if (motion) busy = true; }
+    // Flagged parts (server findings or the authored fault record only) pulse amber; narrower in the lab so the peak never blooms.
+    if (flaggedMats.length) { const [mid, amp] = env ? [0.6, 0.25] : [0.75, 0.45]; const k = motion ? mid + amp * Math.sin(t * 3) : 0.9; for (const mm of flaggedMats) mm.emissiveIntensity = k; if (motion) busy = true; }
     for (const [id, g] of groups) g.scale.setScalar(step(g.scale.x, id === state?.selectedPart ? 1.06 : 1));
     if (fault > 0) { alarm.intensity = 9 * fault * (0.6 + 0.4 * Math.sin(t * 9)); fault = Math.max(0, fault - (motion ? 0.006 : 1)); busy = true; } else alarm.intensity = state?.flagged.length ? 2.2 : 0;
     if (sweep > 0) {
