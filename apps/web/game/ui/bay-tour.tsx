@@ -79,12 +79,25 @@ export function BayTour({ parts }: { parts: PartSpec[] }) {
   const sceneryReady = !!env && env.loaded >= env.total;
   useEffect(() => { if (ready && sceneryReady && !intro && !waved.current) { waved.current = true; api.current?.react('wave'); } }, [ready, sceneryReady, intro]);
 
+  // Guided tour: PIX walks through every part in mounting order while the camera inspects each one. Any choice of
+  // the visitor's own (a part, a camera view) ends it. The words are the frozen equipment copy, nothing new.
+  const [guide, setGuide] = useState<number | null>(null);
+  useEffect(() => {
+    if (guide === null) return;
+    const p = parts[guide];
+    if (!p) { setGuide(null); api.current?.view('work'); return; } // eslint-disable-line react-hooks/set-state-in-effect -- the tour ends after its last part
+    setSel(p.id);
+    const look = setTimeout(() => api.current?.view('inspect'), 120);
+    const next = setTimeout(() => setGuide(guide + 1), 6000);
+    return () => { clearTimeout(look); clearTimeout(next); };
+  }, [guide, parts]);
   const part = parts.find((p) => p.id === sel) ?? null;
-  const r: Reaction = part
-    ? { pose: 'look', pix: 'searching', line: `That’s the ${part.label.toLowerCase()}. It mounts at the ${part.anchorLabel.toLowerCase()}.` }
-    : { pose: 'welcome', pix: 'idle', line: 'Welcome to the training bay. Pick any part to see what it is and where it mounts. This tour records nothing.' };
+  const r: Reaction = part && guide !== null
+    ? { pose: guide === 0 ? 'welcome' : 'look', pix: 'cited', line: `${guide + 1} of ${parts.length}: the ${part.label.toLowerCase()}, at the ${part.anchorLabel.toLowerCase()}. NASA’s description: ${part.sourceNote}` }
+    : part ? { pose: 'look', pix: 'searching', line: `That’s the ${part.label.toLowerCase()}. It mounts at the ${part.anchorLabel.toLowerCase()}.` }
+      : { pose: 'welcome', pix: 'idle', line: 'Welcome to the training bay. Pick any part, or press Guided tour and I’ll walk you through the apparatus. This tour records nothing.' };
   useEffect(() => { soundscape.say(r.line); }, [r.line]);
-  const pick = (id: string) => { setSel((cur) => (cur === id ? null : id)); };
+  const pick = (id: string) => { setGuide(null); setSel((cur) => (cur === id ? null : id)); };
   const lab = !!LAB_ENVIRONMENT && !envOff;
   const views: [BenchView, string][] = [...(lab ? [['establish', 'Bay'] as [BenchView, string]] : []), ['work', 'Work view'], ['inspect', part ? `Inspect ${part.label.toLowerCase()}` : 'Inspect']];
 
@@ -106,7 +119,8 @@ export function BayTour({ parts }: { parts: PartSpec[] }) {
         </div>
         <div className="m2-bench-bar">
           <div className="m2-views" role="group" aria-label="Camera view">
-            {views.map(([v, name]) => <button key={v} type="button" className="m2-view" onClick={() => api.current?.view(v)} disabled={!frame}>{name}</button>)}
+            <button type="button" className="m2-view m2-guide-btn" aria-pressed={guide !== null} onClick={() => setGuide(guide === null ? 0 : null)} disabled={!frame}>{guide === null ? 'Guided tour' : `Stop tour · ${guide + 1}/${parts.length}`}</button>
+            {views.map(([v, name]) => <button key={v} type="button" className="m2-view" onClick={() => { setGuide(null); api.current?.view(v); }} disabled={!frame}>{name}</button>)}
             {canFull && <button type="button" className="m2-view" aria-pressed={full} onClick={() => { if (full) void document.exitFullscreen(); else void stage.current?.requestFullscreen().catch(() => undefined); }}>{full ? 'Exit full screen' : 'Full screen'}</button>}
             <button type="button" className="m2-view" onClick={() => setIntro(true)}>Replay intro</button>
           </div>

@@ -15,7 +15,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   return <>
     <div className="wrap page" style={{ paddingBottom: 0 }}>
       <nav aria-label="Breadcrumb" className="crumbs"><Link href="/missions">Mission map</Link> / <Link href="/missions/bass-assembly">Mission 02</Link> / Training bay</nav>
-      <header className="page-head reveal">
+      <header className="page-head reveal tour-head">
         <p className="eyebrow">Mission 02 · BASS-II training bay · illustrative tour</p>
         <h1>Step inside the training bay.</h1>
         <div className="status-line"><span className="badge" data-state="preview">Illustrative preview</span><p>Look around the bay and inspect each part. The mission&apos;s gameplay opens after its server integration is approved; this tour records nothing.</p></div>

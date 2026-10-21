@@ -19,6 +19,14 @@ const observatory = ['/', '/lab', '/missions'];
 /** Unfinished destinations say so before arrival (state straight from the shared registry). */
 
 
+// Moving between pages is moving between stations of one observatory: a short arrival sweep names the destination.
+const stationNames: [string, string][] = [
+  ['/missions/bass-assembly/tour', 'Training bay'], ['/missions', 'Mission map'], ['/passport', 'Evidence Passport'], ['/atlas', 'Experiment Atlas'],
+  ['/experiments', 'Evidence dossier'], ['/dashboard', 'Evidence Workstation'], ['/ask', 'Ask PIX'], ['/gaps', 'Research Frontier'],
+  ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology'], ['/lab', 'Flame Lab'], ['/roadmap', 'Progress']
+];
+const stationName = (path: string) => path === '/' ? 'Observatory deck' : stationNames.find(([p]) => path === p || path.startsWith(`${p}/`))?.[1] ?? 'MicroFire';
+
 const inSection = (path: string, prefixes: readonly string[]) => prefixes.some((p) => p === '/' ? path === '/' : path === p || path.startsWith(`${p}/`));
 
 export function BrandMark() {
@@ -38,6 +46,7 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
   const first = useRef(true);
   useEffect(() => {
     if (first.current) { first.current = false; lastHeading.current = document.querySelector('main h1'); return; }
+    document.documentElement.dataset.navigated = 'true'; // arrival sweeps run only after a navigation, never on first load
     // The new route may commit a frame or two after the path changes; wait for its own heading, not the old one.
     let frames = 0, raf = 0;
     const attempt = () => {
@@ -86,6 +95,7 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
     {current?.label === 'Missions' && <nav className="subnav" aria-label="Mission tools">
       <div className="wrap">{missionTools.map(([href, label]) => <Link key={href} className="nav-link" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}</div>
     </nav>}
+    <div className="route-veil" key={path} aria-hidden="true"><span>Arriving · {stationName(path)}</span></div>
     <main id="main" tabIndex={-1}>{children}</main>
     <footer className="site-footer">
       <div className="wrap">

@@ -2,6 +2,9 @@
 import Link from 'next/link';
 import { flamePath } from './flame-shape';
 import { PixStage } from './pix-stage';
+import { BAY_TOUR } from './routes';
+
+export { BAY_TOUR };
 
 /** Earth vs microgravity, side by side. Shapes are the same illustrative outlines as the Gravity Lens. */
 export function GravityDuel({ recordHref }: { recordHref: string }) {
@@ -50,7 +53,6 @@ export function GravityDuel({ recordHref }: { recordHref: string }) {
   </section>;
 }
 
-export const BAY_TOUR = '/missions/bass-assembly/tour';
 /** Invitation into the 3D training bay (home, mission map, BASS-II briefings). The mission stays gated; the tour is labelled illustrative. */
 export function BayTeaser({ compact = false }: { compact?: boolean }) {
   return <section className="bay-teaser" data-compact={compact || undefined} aria-labelledby="bay-teaser-title">

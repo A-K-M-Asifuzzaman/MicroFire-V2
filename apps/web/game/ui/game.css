@@ -193,6 +193,10 @@
 .m2-tour-card dd { margin: 0; font-size: var(--step--1); line-height: 1.5; }
 .m2-tour-still { margin: 0; display: grid; gap: 10px; }
 .m2-tour-still-img { aspect-ratio: 16 / 9; border-radius: var(--radius); border: 1px solid var(--m2-line); background: url('/media/m2/lab-arrival.jpg') center / cover no-repeat; }
+.m2-guide-btn { border-color: rgb(127 214 209 / .6); color: #bff3ff; }
+.m2-guide-btn[aria-pressed="true"] { background: rgb(127 214 209 / .16); }
+.tour-head { margin-bottom: 18px; }
+.tour-head h1 { font-size: clamp(2rem, 1.2rem + 2.6vw, 3.2rem); margin-bottom: .2em; }
 @media (max-width: 960px) { .m2-tour-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 760px) { .m2-tour .m2-bench { aspect-ratio: 4 / 5; } }
 .m2-sound { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }

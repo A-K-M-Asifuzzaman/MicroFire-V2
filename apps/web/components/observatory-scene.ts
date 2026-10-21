@@ -11,17 +11,34 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { loadModel, cleanFinish } from './model-loader';
 
 export type Anchor = { x: number; y: number; visible: boolean };
+/** Where PIX flies: its home beside the chamber, a station (index), or the Training Bay door. */
+export type PixTarget = 'home' | 'bay' | number;
+export type PixGesture = 'wave' | 'nod' | 'shake' | 'spin' | 'hop';
 export type ObservatoryApi = {
   setGravity(g: number): void; setMotion(on: boolean): void; focusStation(i: number | null, pan?: boolean): void;
   setScroll(p: number): void; resize(): void; stop(): void;
+  /** Fast-forward the opening flight (any visitor input does this). */
+  skipIntro(): void;
+  setPix(target: PixTarget, gesture?: PixGesture): void;
+  /** Turn toward the Training Bay door and open it a little (hover/focus on the entrance). */
+  peekBay(on: boolean): void;
+  /** Fly to the Training Bay door and open it; resolves when the shot is complete. */
+  enterBay(): Promise<void>;
 };
 export type ObservatoryOptions = {
   canvas: HTMLCanvasElement; host: HTMLElement; stage: () => DOMRect | null; stations: string[];
   mobile: boolean; motion: boolean; gravity: number;
-  onAnchors: (anchors: Anchor[]) => void; onLost: () => void; onRestored: () => void;
+  /** Play the directed opening flight (once per session; never under reduced motion). */
+  intro: boolean; onIntroDone: () => void;
+  onAnchors: (anchors: Anchor[]) => void; onPix: (a: Anchor) => void; onLost: () => void; onRestored: () => void;
 };
 
 const ease = (t: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
+const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
+const inOut = (t: number) => { const x = clamp01(t); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+/** Eased progress of a sub-span [a, b] of the 0..1 timeline. */
+const span = (u: number, a: number, b: number) => inOut((u - a) / (b - a));
+const INTRO_MS = 6800, ENTER_MS = 1500;
 const BLUE = new THREE.Color('#6fa6ff'), ORANGE = new THREE.Color('#ff9446');
 const FRESNEL_VERT = 'varying vec3 vN; varying vec3 vV; varying vec3 vP; void main(){ vec4 w = modelMatrix * vec4(position,1.); vP = position; vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix * viewMatrix * w; }';
 
@@ -48,6 +65,16 @@ function screenTexture(kind: number, title: string): THREE.CanvasTexture {
     x.beginPath(); pts.forEach(([a, b], i) => (i ? x.lineTo(a!, b!) : x.moveTo(a!, b!))); x.stroke();
     pts.forEach(([a, b]) => { x.beginPath(); x.arc(a!, b!, 14, 0, Math.PI * 2); x.fillStyle = '#163447'; x.fill(); x.stroke(); });
   }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  return t;
+}
+function signTexture(): THREE.CanvasTexture {
+  const c = document.createElement('canvas'); c.width = 520; c.height = 100;
+  const x = c.getContext('2d')!;
+  x.fillStyle = 'rgba(6,16,26,.85)'; x.fillRect(0, 0, 520, 100);
+  x.strokeStyle = 'rgba(127,214,209,.8)'; x.lineWidth = 3; x.strokeRect(3, 3, 514, 94);
+  x.fillStyle = '#e9f6ff'; x.font = '700 34px ui-monospace, Menlo, monospace'; x.textAlign = 'center'; x.fillText('TRAINING BAY', 260, 46);
+  x.fillStyle = '#7fd6d1'; x.font = '500 17px ui-monospace, Menlo, monospace'; x.fillText('BASS-II · ILLUSTRATIVE TOUR', 260, 78);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
   return t;
 }
@@ -264,7 +291,18 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
     vertexShader: 'varying vec2 vU; void main(){ vU = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
     fragmentShader: 'uniform float t; uniform float o; varying vec2 vU; void main(){ float y = fract(t * .22 + o); float b = smoothstep(.06, 0., abs(vU.y - (1. - y))); float lines = .04 * step(.5, fract(vU.y * 60.)); gl_FragColor = vec4(pow(vec3(.45,.85,1.) * (b * .5 + lines), vec3(2.2)), 1.); }'
   });
-  let pixSlot: THREE.Group | null = null, pixHead: THREE.Object3D | null = null;
+  // PIX is a free-flying companion (below); its station is a charging dock it returns to.
+  const pix = new THREE.Group(), pixBody = new THREE.Group(); pix.add(pixBody); scene.add(pix);
+  {
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 0.6, 32), trim); body.position.y = 0.3; pixBody.add(body);
+    const skull = new THREE.Mesh(new THREE.SphereGeometry(0.34, 32, 24), trim); skull.scale.set(1.25, 0.95, 1); skull.position.y = 0.95; pixBody.add(skull);
+    for (const x of [-0.11, 0.11]) { const eye = new THREE.Mesh(new THREE.SphereGeometry(0.045, 12, 8), new THREE.MeshBasicMaterial({ color: '#9fe3e3' })); eye.position.set(x, 0.97, 0.32); pixBody.add(eye); }
+  }
+  // Rim light behind PIX (separates the white shell from the dark deck) and a soft hover glow beneath it.
+  const pixRim = new THREE.PointLight('#8fd3ff', o.mobile ? 5 : 7, 3.2, 2); pixRim.position.set(0, 1.1, -0.7); pix.add(pixRim);
+  const pixThruster = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: '#73bbd9', transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.5 }));
+  pixThruster.scale.set(0.9, 0.35, 1); pixThruster.position.y = -0.12; pix.add(pixThruster);
+  let pixStation = -1;
   o.stations.forEach((title, i) => {
     const g = new THREE.Group(), a = angles[i]!, R = 6, parts: THREE.Object3D[] = [];
     g.position.set(Math.sin(a) * R + 0.6, -2.45, -Math.cos(a) * R - 2.2); g.lookAt(0, -2.45, 0);
@@ -273,15 +311,9 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
     const holo = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.012, 6, 64), new THREE.MeshBasicMaterial({ color: '#ff9a5c', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
     holo.rotation.x = -Math.PI / 2; g.add(holo); holos.push(holo);
     if (title === 'PIX') {
-      pixSlot = new THREE.Group(); g.add(pixSlot);
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.4, 0.9, 32), metal); body.position.y = 0.45; pixSlot.add(body);
-      const head = new THREE.Group(); head.position.y = 1.35; pixSlot.add(head); pixHead = head;
-      const skull = new THREE.Mesh(new THREE.SphereGeometry(0.42, 32, 24), trim); skull.scale.set(1.25, 0.95, 1); head.add(skull);
-      const visor = new THREE.Mesh(new THREE.SphereGeometry(0.36, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2.2), new THREE.MeshStandardMaterial({ color: '#05080d', metalness: 0.2, roughness: 0.2 }));
-      visor.rotation.x = Math.PI / 2; visor.position.z = 0.1; visor.scale.set(1.15, 1, 0.8); head.add(visor);
-      for (const x of [-0.13, 0.13]) { const eye = new THREE.Mesh(new THREE.SphereGeometry(0.055, 12, 8), new THREE.MeshBasicMaterial({ color: '#9fe3e3' })); eye.position.set(x, 0.02, 0.4); head.add(eye); }
-      const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.3, 8), trim); ant.position.y = 0.48; head.add(ant);
-      const tip = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 8), new THREE.MeshBasicMaterial({ color: '#ff8738' })); tip.position.y = 0.66; head.add(tip);
+      pixStation = i;
+      const dock = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.62, 0.32, 48), metal); dock.position.y = 0.16; g.add(dock);
+      const dockLine = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.018, 8, 64), cyanLine); dockLine.rotation.x = Math.PI / 2; dockLine.position.y = 0.33; g.add(dockLine);
       screens.push(new THREE.MeshBasicMaterial()); // placeholder so indices line up
       anchors.push(new THREE.Vector3(0, 2.2, 0));
     } else {
@@ -314,19 +346,92 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
     kick();
   });
   void loadModel('/models/pix/pix.gltf').then((model) => {
-    if (!model || disposed || !pixSlot) return;
-    cleanFinish(model); fit(model, 1.5, 'height');
-    const holder = new THREE.Group(); holder.add(model); holder.position.y = 0.35;
-    (pixSlot as THREE.Group).clear(); (pixSlot as THREE.Group).add(holder); pixHead = holder;
+    if (!model || disposed) return;
+    cleanFinish(model); fit(model, 1.25, 'height');
+    pixBody.traverse((ob) => { const m = ob as THREE.Mesh; m.geometry?.dispose(); });
+    pixBody.clear(); pixBody.add(model);
     kick();
   });
+
+  // ---- Training Bay entrance: a bulkhead off the deck, joined to the chamber by a lit floor path ----
+  const bay = new THREE.Group(); scene.add(bay);
+  const BAY_POS = new THREE.Vector3(-6.4, -2.45, -3.6);
+  bay.position.copy(BAY_POS); bay.lookAt(0, -2.45, 0);
+  const W = 2.3, Hh = 3.3, T = 0.34;
+  const frameParts: [number, number, number, number, number][] = [[-W / 2 - T / 2, Hh / 2, T, Hh + T, 0.6], [W / 2 + T / 2, Hh / 2, T, Hh + T, 0.6], [0, Hh + T / 2, W + T * 2, T, 0.6]];
+  frameParts.forEach(([x, y, w, h, d]) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), metal); m.position.set(x, y, 0); bay.add(m); });
+  for (const [x, y, w, h] of [[-W / 2 - 0.02, Hh / 2, 0.035, Hh], [W / 2 + 0.02, Hh / 2, 0.035, Hh], [0, Hh + 0.02, W + 0.06, 0.035]] as const) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.05), cyanLine); m.position.set(x, y, 0.31); bay.add(m);
+  }
+  const doorMat = new THREE.MeshStandardMaterial({ color: '#2a3a4c', metalness: 0.8, roughness: 0.38 });
+  const seamMat = new THREE.MeshStandardMaterial({ color: '#000000', emissive: '#7fd6d1', emissiveIntensity: 1.6 });
+  const doors = [-1, 1].map((side) => {
+    const d = new THREE.Group();
+    const panel = new THREE.Mesh(new THREE.BoxGeometry(W / 2, Hh, 0.12), doorMat); panel.position.set(side * W / 4, Hh / 2, 0); d.add(panel);
+    const seam = new THREE.Mesh(new THREE.BoxGeometry(0.03, Hh * 0.92, 0.13), seamMat); seam.position.set(side * 0.02, Hh / 2, 0.01); d.add(seam);
+    for (let k = 0; k < 3; k++) { const rib = new THREE.Mesh(new THREE.BoxGeometry(W / 2 - 0.2, 0.04, 0.14), trim); rib.position.set(side * W / 4, 0.7 + k * 0.95, 0.02); d.add(rib); }
+    d.userData.side = side; bay.add(d); return d;
+  });
+  // Light from inside: a bright back wall and a cyan point light that rises as the doors open.
+  const bayGlowMat = new THREE.SpriteMaterial({ map: glowTex, color: '#bff3ff', transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.25 });
+  const bayGlow = new THREE.Sprite(bayGlowMat); bayGlow.scale.set(3.2, 4.2, 1); bayGlow.position.set(0, Hh / 2, -0.9); bay.add(bayGlow);
+  const bayLight = new THREE.PointLight('#8fe6ff', 4, 9, 1.6); bayLight.position.set(0, 1.8, 0.6); bay.add(bayLight);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(W, Hh), new THREE.MeshBasicMaterial({ color: '#0d2a3a' })); back.position.set(0, Hh / 2, -1.6); bay.add(back);
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.5), new THREE.MeshBasicMaterial({ map: signTexture(), transparent: true, toneMapped: false }));
+  sign.position.set(0, Hh + 0.62, 0.32); bay.add(sign);
+  // Floor path: chevrons from the chamber to the door, lit in sequence.
+  const chevrons: THREE.MeshBasicMaterial[] = [];
+  const toBay = new THREE.Vector3(BAY_POS.x, 0, BAY_POS.z), N = 9;
+  for (let k = 0; k < N; k++) {
+    const p = toBay.clone().multiplyScalar(0.3 + (k / (N - 1)) * 0.55);
+    const shape = new THREE.Shape(); shape.moveTo(-0.22, -0.1); shape.lineTo(0, 0.1); shape.lineTo(0.22, -0.1); shape.lineTo(0.22, -0.02); shape.lineTo(0, 0.18); shape.lineTo(-0.22, -0.02);
+    const m = new THREE.MeshBasicMaterial({ color: '#73bbd9', transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending, depthWrite: false });
+    const c = new THREE.Mesh(new THREE.ShapeGeometry(shape), m); c.position.set(p.x, -2.43, p.z); c.rotation.x = -Math.PI / 2;
+    c.rotation.z = Math.atan2(-toBay.x, -toBay.z); scene.add(c); chevrons.push(m); // tip points toward the door
+  }
+  const bayCenter = new THREE.Vector3(0, Hh / 2, 0); bay.localToWorld(bayCenter);
+  const bayFront = new THREE.Vector3(0, Hh * 0.55, 3.4); bay.localToWorld(bayFront);
+  const bayThreshold = new THREE.Vector3(0, Hh * 0.5, 0.9); bay.localToWorld(bayThreshold); // the enter shot ends at the door
+  const bayInside = new THREE.Vector3(0, Hh * 0.45, -1.4); bay.localToWorld(bayInside);
+  let door = 0, peek = 0, peekGoal = 0, bayModel = false;
+  // The real Meshy chamber gantry from the training bay stands behind the doors (desktop; loaded after the intro).
+  const loadBayModel = () => {
+    if (bayModel || o.mobile) return; bayModel = true;
+    void loadModel('/models/lab/chamber/chamber.gltf').then((model) => {
+      if (!model || disposed) return;
+      fit(model, 2.4, 'height'); model.position.z -= 1.0; model.rotation.y = 0.5; bay.add(model); kick();
+    });
+  };
 
   // ---- camera rig: orbit about the chamber so it stays aligned with the HTML flame stage ----
   const rig = { yaw: -1.6, pitch: 0.75, dist: 9, tYaw: o.mobile ? 0 : 0.38, tPitch: o.mobile ? 0.24 : 0.2, px: 0, py: 0, drag: 0, scroll: 0 };
   let width = 1, height = 1, g = o.gravity, shownG = g, motion = o.motion, focus: number | null = null, pan = false, frame = 0, lost = false, t0 = performance.now(), last = t0;
-  const entranceStart = performance.now(), entranceMs = o.motion ? 700 : 0; // one short settle, never a forced flight
+  let offX = 0, offY = 0; // view offset that puts the chamber behind the HTML flame stage
+  // Opening flight (once per session): from high above the deck, Earth and the window ring in view, down onto the
+  // chamber, then the stations boot in sequence. Any visitor input fast-forwards it. Otherwise one short settle.
+  let intro = o.intro && o.motion, introU = intro ? 0 : 1, introSpeed = 1;
+  const entranceStart = performance.now(), entranceMs = !intro && o.motion ? 700 : 0;
   if (!o.motion) { rig.yaw = rig.tYaw; rig.pitch = rig.tPitch; }
+  const INTRO_LOOK = new THREE.Vector3(6, -34, -125), ORIGIN = new THREE.Vector3();
+  // Entering the bay: a short move from wherever the camera is to the door, which opens on the way.
+  let enter: { u: number; from: THREE.Vector3; look: THREE.Vector3; done: (() => void) | null } | null = null;
+  const lookAt = new THREE.Vector3();
 
+  // PIX: flies between its home beside the chamber, the stations and the bay door; gestures are short and never loop.
+  let pixTarget: PixTarget = intro && pixStation >= 0 ? pixStation : 'home', gesture: { kind: PixGesture; t: number } | null = null;
+  const homeSlot = o.mobile ? new THREE.Vector3(-1.25, 1.5, 0.7) : new THREE.Vector3(-2.45, -0.35, 0.9);
+  const pixGoal = new THREE.Vector3(), pixStep = new THREE.Vector3(), tmp = new THREE.Vector3();
+  const goalFor = (tg: PixTarget, out: THREE.Vector3) => {
+    if (tg === 'home') return out.copy(homeSlot);
+    if (tg === 'bay') return out.copy(bayCenter).lerp(bayFront, 0.5).add(tmp.set(0.9, 0.2, 0));
+    const st = stationGroups[tg];
+    if (!st) return out.copy(homeSlot);
+    if (tg === pixStation) return out.copy(st.position).add(tmp.set(0, 0.42, 0)); // back on its dock
+    return out.copy(st.position).lerp(ORIGIN, 0.38).setY(-0.5);
+  };
+  goalFor(pixTarget, pix.position);
+
+  const applyOffset = (k: number) => { camera.setViewOffset(width, height, offX * k, offY * k, width, height); camera.updateProjectionMatrix(); };
   const layout = () => {
     const r = o.host.getBoundingClientRect(); width = Math.max(1, r.width); height = Math.max(1, r.height);
     renderer.setSize(width, height, false);
@@ -338,21 +443,42 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
     const half = s ? Math.min(s.width, s.height) / 2 : Math.min(width, height) * 0.3;
     // Glass radius (1 unit) projects to ~42% of the stage's half-size (38% on phones), so the HTML flame sits inside the chamber.
     rig.dist = (height / 2) / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * half * (o.mobile ? 0.38 : 0.42));
-    camera.setViewOffset(width, height, width / 2 - sx, height / 2 - sy, width, height);
-    camera.updateProjectionMatrix();
+    offX = width / 2 - sx; offY = height / 2 - sy;
+    applyOffset(enter ? 1 - inOut(enter.u) : 1);
   };
   const v = new THREE.Vector3();
+  const BLOOM = bloom.strength;
   const render = (now: number) => {
-    const t = (now - t0) / 1000, dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const raw = Math.min(0.25, (now - last) / 1000), t = (now - t0) / 1000, dt = Math.min(0.05, raw); last = now;
     shared.t.value = motion ? t : 0;
     const k = entranceMs ? ease((now - entranceStart) / entranceMs) : 1;
-    const targetYaw = rig.tYaw + rig.px + rig.drag + (focus !== null && pan ? angles[focus]! * 0.32 : 0) + (motion ? Math.sin(t * 0.06) * 0.04 : 0);
-    const targetPitch = rig.tPitch + rig.py + rig.scroll * 0.35;
-    if (k < 1) { rig.yaw = THREE.MathUtils.lerp(targetYaw - 0.25, targetYaw, k); rig.pitch = THREE.MathUtils.lerp(targetPitch + 0.08, targetPitch, k); }
-    else { rig.yaw += (targetYaw - rig.yaw) * (motion ? 0.06 : 1); rig.pitch += (targetPitch - rig.pitch) * (motion ? 0.06 : 1); }
-    const dist = rig.dist * (1 + (1 - k) * 0.12 + rig.scroll * 0.25);
+    const targetYaw = rig.tYaw + rig.px + rig.drag + (focus !== null && pan ? angles[focus]! * 0.32 : 0) + peek * (o.mobile ? 0.55 : 0.42) + (motion ? Math.sin(t * 0.06) * 0.04 : 0);
+    const targetPitch = rig.tPitch + rig.py + rig.scroll * 0.35 + peek * 0.04;
+    let dist: number;
+    lookAt.copy(ORIGIN);
+    if (intro) {
+      introU = Math.min(1, introU + (raw * 1000 * introSpeed) / INTRO_MS);
+      const u = introU, d = span(u, 0.08, 1);
+      rig.yaw = targetYaw + 1.2 * (1 - span(u, 0, 1)); rig.pitch = targetPitch + 0.8 * (1 - span(u, 0.06, 0.94));
+      dist = rig.dist * (1 + 3.4 * (1 - d));
+      lookAt.copy(INTRO_LOOK).lerp(ORIGIN, span(u, 0.18, 0.88));
+      (scene.fog as THREE.FogExp2).density = 0.005 + 0.015 * d;
+      if (u >= 1) { intro = false; o.onIntroDone(); loadBayModel(); }
+    } else {
+      if (k < 1) { rig.yaw = THREE.MathUtils.lerp(targetYaw - 0.25, targetYaw, k); rig.pitch = THREE.MathUtils.lerp(targetPitch + 0.08, targetPitch, k); }
+      else { rig.yaw += (targetYaw - rig.yaw) * (motion ? 0.06 : 1); rig.pitch += (targetPitch - rig.pitch) * (motion ? 0.06 : 1); }
+      dist = rig.dist * (1 + (1 - k) * 0.12 + rig.scroll * 0.25 - peek * 0.06);
+    }
     camera.position.set(Math.sin(rig.yaw) * Math.cos(rig.pitch) * dist, Math.sin(rig.pitch) * dist, Math.cos(rig.yaw) * Math.cos(rig.pitch) * dist);
-    camera.lookAt(0, 0, 0);
+    if (enter) {
+      enter.u = Math.min(1, enter.u + (raw * 1000) / ENTER_MS);
+      const e = inOut(enter.u);
+      camera.position.copy(enter.from).lerp(bayThreshold, e); lookAt.copy(enter.look).lerp(bayInside, e);
+      applyOffset(1 - e);
+      bloom.strength = BLOOM + e * 0.5;
+      if (enter.u >= 1 && enter.done) { const done = enter.done; enter.done = null; done(); }
+    }
+    camera.lookAt(lookAt);
     shownG += (g - shownG) * (motion ? 0.1 : 1); shared.g.value = shownG;
     const flicker = motion ? 1 + Math.sin(t * 13.1) * 0.04 * shownG + Math.sin(t * 7.3) * 0.03 : 1;
     flameLight.color.copy(BLUE).lerp(ORANGE, shownG); flameLight.intensity = (14 + 26 * shownG) * flicker;
@@ -372,7 +498,33 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
       dust.rotation.y = t * 0.01;
     }
     emberMat.color.copy(BLUE).lerp(ORANGE, shownG);
-    if (pixHead) { (pixHead as THREE.Object3D).position.y = (pixSlot && pixHead !== pixSlot ? 0.35 : 1.35) + (motion ? Math.sin(t * 1.6) * 0.07 : 0); (pixHead as THREE.Object3D).rotation.y = motion ? Math.sin(t * 0.5) * 0.3 : 0; }
+    // PIX: glide toward the goal, lean into the move, face the visitor (or what it is pointing at), then any gesture.
+    goalFor(pixTarget, pixGoal);
+    if (motion) { pixStep.copy(pixGoal).sub(pix.position).multiplyScalar(1 - Math.exp(-dt * 2.6)); pix.position.add(pixStep); } else { pixStep.set(0, 0, 0); pix.position.copy(pixGoal); }
+    const faceCam = Math.atan2(camera.position.x - pix.position.x, camera.position.z - pix.position.z);
+    const poi = pixTarget === 'bay' ? bayCenter : typeof pixTarget === 'number' && pixTarget !== pixStation ? stationGroups[pixTarget]?.position : null;
+    pix.rotation.y = poi ? THREE.MathUtils.lerp(faceCam, Math.atan2(poi.x - pix.position.x, poi.z - pix.position.z), 0.45) : faceCam;
+    const speed = pixStep.length() / Math.max(dt, 1e-3);
+    let rx = THREE.MathUtils.clamp(speed * 0.08, 0, 0.3), ry = 0, rz = 0, hop = 0;
+    if (gesture) {
+      const p = (now - gesture.t) / 1300, env = Math.sin(Math.min(1, p) * Math.PI);
+      if (gesture.kind === 'wave') rz = Math.sin(p * Math.PI * 6) * 0.38 * env;
+      if (gesture.kind === 'nod') rx += Math.sin(p * Math.PI * 4) * 0.3 * env;
+      if (gesture.kind === 'shake') ry = Math.sin(p * Math.PI * 6) * 0.5 * env;
+      if (gesture.kind === 'spin') ry = inOut(p) * Math.PI * 2;
+      if (gesture.kind === 'hop' || gesture.kind === 'spin') hop = Math.sin(Math.min(1, p) * Math.PI) * 0.3;
+      if (p >= 1) gesture = null;
+    }
+    pixBody.rotation.set(rx, ry, rz);
+    pixBody.position.y = hop + (motion ? Math.sin(t * 1.7) * 0.07 : 0);
+    pixThruster.material.opacity = 0.3 + (motion ? 0.12 * Math.sin(t * 6) : 0) + Math.min(0.3, speed * 0.1);
+    // Training Bay door, inner light and the marching floor path.
+    door += ((enter ? 1 : peekGoal ? 0.38 : 0.06) - door) * (motion ? 0.07 : 1);
+    peek += (peekGoal - peek) * (motion ? 0.06 : 1);
+    doors.forEach((d) => { d.position.x = (d.userData.side as number) * door * (W / 2 + 0.04); });
+    bayGlowMat.opacity = 0.18 + door * 0.8; bayLight.intensity = 3 + door * 16 + (motion ? Math.sin(t * 2) * 0.6 : 0);
+    const boot = (i: number) => clamp01((introU - 0.6 - i * 0.05) / 0.14);
+    chevrons.forEach((m, i) => { m.opacity = boot(i * 0.4) * (0.12 + (0.45 + peek * 0.4) * Math.pow(Math.max(0, Math.sin((motion ? t * 3 : 1) - i * 0.7)), 6)); m.color.set(peek > 0.3 ? '#ff8738' : '#73bbd9'); });
     stars.rotation.y = motion ? t * 0.003 : 0; starsNear.rotation.y = motion ? t * 0.006 : 0;
     planet.rotation.y = motion ? t * 0.004 : 0;
     { // satellite orbit: angle along the tilted trail, slow tumble, blinking beacons
@@ -381,16 +533,15 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
       satellite.rotation.set(0.3, -a + Math.PI / 2, motion ? Math.sin(t * 0.2) * 0.15 : 0);
       beacons.forEach((m, k) => m.color.set(motion && (Math.floor(t * 1.4 + k * 0.5) % 2) ? '#160303' : k ? '#3bff8a' : '#ff3b2f'));
     }
-    screens.forEach((m, i) => m.color.setScalar(focus === i ? 1.25 : 0.75));
-    pads.forEach((m, i) => { m.color.set(focus === i ? '#ff8738' : '#73bbd9'); m.opacity = focus === i ? 0.9 : 0.25 + (motion ? 0.1 * Math.sin(t * 2 + i) : 0); });
+    screens.forEach((m, i) => m.color.setScalar((focus === i ? 1.25 : 0.75) * boot(i)));
+    pads.forEach((m, i) => { m.color.set(focus === i ? '#ff8738' : '#73bbd9'); m.opacity = (focus === i ? 0.9 : 0.25 + (motion ? 0.1 * Math.sin(t * 2 + i) : 0)) * boot(i); });
     holos.forEach((h, i) => { const on = focus === i; const p = motion ? (t * 0.8 + i * 0.3) % 1 : 0.5; h.position.y = on ? 0.1 + p * 2.2 : 0; (h.material as THREE.MeshBasicMaterial).opacity = on ? (1 - p) * 0.9 : 0; });
     leds.forEach((m, i) => m.color.setScalar(motion && Math.sin(t * (2 + i)) > 0.6 ? 0.25 : 1).multiply(new THREE.Color(i % 2 ? '#ff8738' : '#73bbd9')));
     composer.render();
-    o.onAnchors(stationGroups.map((grp, i) => {
-      v.copy(anchors[i]!); grp.localToWorld(v); v.project(camera);
-      return { x: ((v.x + 1) / 2) * width, y: ((1 - v.y) / 2) * height, visible: v.z < 1 && Math.abs(v.x) < 1.05 && Math.abs(v.y) < 1.05 };
-    }));
-    return k < 1 || Math.abs(targetYaw - rig.yaw) > 0.0005 || Math.abs(targetPitch - rig.pitch) > 0.0005 || Math.abs(g - shownG) > 0.002;
+    const project = (p: THREE.Vector3): Anchor => { p.project(camera); return { x: ((p.x + 1) / 2) * width, y: ((1 - p.y) / 2) * height, visible: p.z < 1 && Math.abs(p.x) < 1.05 && Math.abs(p.y) < 1.05 }; };
+    o.onAnchors(stationGroups.map((grp, i) => { v.copy(anchors[i]!); grp.localToWorld(v); return project(v); }));
+    o.onPix(project(v.copy(pix.position).add(tmp.set(0, 1.45, 0))));
+    return intro || !!enter || k < 1 || Math.abs(targetYaw - rig.yaw) > 0.0005 || Math.abs(targetPitch - rig.pitch) > 0.0005 || Math.abs(g - shownG) > 0.002 || !!gesture || pixStep.lengthSq() > 1e-8;
   };
   const loop = (now: number) => {
     frame = 0;
@@ -427,6 +578,14 @@ export function startObservatory(o: ObservatoryOptions): ObservatoryApi | null {
     focusStation(i, p = true) { focus = i; pan = p; kick(); },
     setScroll(p) { rig.scroll = Math.min(1, Math.max(0, p)); kick(); },
     resize() { layout(); kick(); },
+    skipIntro() { if (intro) { introSpeed = 7; kick(); } },
+    setPix(target, gest) { pixTarget = target; if (gest) gesture = { kind: gest, t: performance.now() }; kick(); },
+    peekBay(on) { peekGoal = on ? 1 : 0; if (on) loadBayModel(); kick(); },
+    enterBay() {
+      if (!motion || lost) return Promise.resolve();
+      intro = false; loadBayModel();
+      return new Promise<void>((done) => { enter = { u: 0, from: camera.position.clone(), look: lookAt.clone(), done }; pixTarget = 'bay'; kick(); });
+    },
     stop() {
       disposed = true;
       cancelAnimationFrame(frame); frame = 0; lost = true;
