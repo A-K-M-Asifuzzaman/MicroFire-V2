@@ -228,6 +228,14 @@ test('3D bench renders the same confirmed rig and keeps the 2D controls', async 
   // Camera compositions are real buttons below the view, never over the apparatus.
   await page.getByRole('group', { name: 'Camera view' }).getByRole('button', { name: 'Inspect' }).click();
   await page.getByRole('group', { name: 'Camera view' }).getByRole('button', { name: 'Work view' }).click();
+  // Full screen (native API) enters and leaves; the scene keeps rendering the same confirmed state.
+  const fullBtn = page.getByRole('group', { name: 'Camera view' }).getByRole('button', { name: 'Full screen' });
+  if (await fullBtn.count()) {
+    await fullBtn.click();
+    await expect(page.getByRole('button', { name: 'Exit full screen' })).toHaveAttribute('aria-pressed', 'true');
+    await page.getByRole('button', { name: 'Exit full screen' }).click();
+    await expect(page.getByRole('group', { name: 'Camera view' }).getByRole('button', { name: 'Full screen' })).toHaveAttribute('aria-pressed', 'false');
+  }
   await expect(page.getByText('Schematic training model — not a NASA engineering CAD reconstruction.', { exact: false }).first()).toBeVisible();
   await page.waitForTimeout(1500);
   await bench.screenshot({ path: 'docs/qa/screenshots/m2/bench-3d-fault-desktop.jpg', type: 'jpeg', quality: 78 });
@@ -277,4 +285,33 @@ test('screenshot evidence for every major stage', async ({ page }, info) => {
     await page.waitForTimeout(400);
     await page.locator('.m2').screenshot({ path: `docs/qa/screenshots/m2/${s}-${info.project.name}.jpg`, type: 'jpeg', quality: 55, scale: 'css' });
   }
+});
+
+test('arrival sequence: rendered training bay behind the title, labelled illustrative, skippable, absent under reduced motion', async ({ page, browser }, info) => {
+  await page.goto('/m2-fixtures?scenario=arrival&intro=1');
+  const arrival = page.locator('.m2-arrival');
+  await expect(arrival).toBeVisible();
+  await expect(page.getByText('Illustrative training bay, rendered from the 3D bench')).toBeAttached();
+  await page.waitForTimeout(2600);
+  await page.screenshot({ path: `docs/qa/screenshots/m2/arrival-sequence-${info.project.name}.jpg`, type: 'jpeg', quality: 70, scale: 'css' });
+  await page.getByRole('button', { name: 'Skip intro' }).click();
+  await expect(arrival).toHaveCount(0);
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  const still = await ctx.newPage();
+  await still.goto('/m2-fixtures?scenario=arrival&intro=1');
+  await expect(still.getByRole('heading', { level: 2 }).first()).toBeVisible();
+  await expect(still.locator('.m2-arrival')).toHaveCount(0);
+  await ctx.close();
+});
+
+test('sound and PIX narration are opt-in toggles; nothing plays by default', async ({ page }) => {
+  await open(page, 'fault');
+  const group = page.getByRole('group', { name: 'Sound' });
+  const lab = group.getByRole('button', { name: 'Lab sound' }), voice = group.getByRole('button', { name: 'Read PIX aloud' });
+  await expect(lab).toHaveAttribute('aria-pressed', 'false');
+  await expect(voice).toHaveAttribute('aria-pressed', 'false');
+  await lab.click();
+  await expect(lab).toHaveAttribute('aria-pressed', 'true');
+  await lab.click();
+  await expect(lab).toHaveAttribute('aria-pressed', 'false');
 });

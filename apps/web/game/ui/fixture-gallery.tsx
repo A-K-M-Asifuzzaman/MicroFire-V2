@@ -39,7 +39,8 @@ function seedEvent(sc: Scenario): GameEvent | undefined {
     : { id: 1, kind: 'refused', label: 'Fixture', action: e.action, code: e.result.code, message: e.result.message, faults: e.result.faults ?? [] };
 }
 
-export function FixtureGallery({ scenarios, current, data }: { scenarios: Scenario[]; current: string; data: GameData }) {
+/** `intro` replays the arrival sequence (live play shows it on Station Arrival; the gallery only on request: `?intro=1`). */
+export function FixtureGallery({ scenarios, current, data, intro = false }: { scenarios: Scenario[]; current: string; data: GameData; intro?: boolean }) {
   const sc = scenarios.find((s) => s.id === current) ?? scenarios[0]!;
   const controller = useMemo(() => {
     const event = seedEvent(sc);
@@ -58,7 +59,7 @@ export function FixtureGallery({ scenarios, current, data }: { scenarios: Scenar
         <Link href={`/m2-fixtures?scenario=${s.id}`} aria-current={s.id === sc.id ? 'page' : undefined}>{s.title}</Link></li>)}</ul></div>)}
     </nav>
     <GameProvider key={sc.id} controller={controller} data={data}>
-      <MissionShell banner={<p className="m2-fixture-banner" role="note"><b>Fixture gallery — not a playable mission.</b> This view replays approved M2 contract examples ({sc.sources.join(', ')}) through the real gameplay controller. Requests are recorded in the intent log and never sent; no server, no saved progress, no scientific validation.</p>} />
+      <MissionShell intro={intro} banner={<p className="m2-fixture-banner" role="note"><b>Fixture gallery — not a playable mission.</b> This view replays approved M2 contract examples ({sc.sources.join(', ')}) through the real gameplay controller. Requests are recorded in the intent log and never sent; no server, no saved progress, no scientific validation.</p>} />
     </GameProvider>
   </div>;
 }

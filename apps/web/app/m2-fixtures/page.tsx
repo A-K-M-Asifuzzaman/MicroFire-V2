@@ -19,7 +19,7 @@ function dir() {
   return null;
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ scenario?: string }> }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ scenario?: string; intro?: string }> }) {
   const d = process.env.MICROFIRE_M2_FIXTURE_GALLERY === '1' ? dir() : null;
   if (!d) notFound();
   const read = <T,>(name: string): T => JSON.parse(readFileSync(path.join(d, `${name}.example.json`), 'utf8')) as T;
@@ -63,6 +63,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ s
     { id: 'save-busy', group: 'Saving', title: 'Save · another tab holds the lock', snapshot: snap('PENDING_REPAIR_A'), save: read<LocalSaveResult>('LOCAL_LOCK_BUSY_RESULT'), sources: ['LOCAL_LOCK_BUSY_RESULT'] },
     { id: 'save-failed', group: 'Saving', title: 'Save · read-back mismatch', snapshot: snap('PENDING_REPAIR_A'), save: read<LocalSaveResult>('LOCAL_WRITE_FAILED_RESULT'), sources: ['LOCAL_WRITE_FAILED_RESULT'] }
   ];
-  const current = (await searchParams).scenario ?? 'arrival';
-  return <FixtureGallery scenarios={scenarios} current={current} data={{ parts: partSpecs(), b20: b20Data() }} />;
+  const q = await searchParams, current = q.scenario ?? 'arrival';
+  return <FixtureGallery scenarios={scenarios} current={current} intro={q.intro === '1'} data={{ parts: partSpecs(), b20: b20Data() }} />;
 }

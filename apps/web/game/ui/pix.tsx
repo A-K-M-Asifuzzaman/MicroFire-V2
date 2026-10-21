@@ -4,6 +4,7 @@ import type { PixState } from '../../components/pix-avatar';
 import type { Snapshot } from '../contract';
 import type { ControllerState } from '../controller';
 import { faultIntroduced, journeyStage } from '../view-model';
+import { SoundControls } from './sound';
 
 export type Reaction = { pose: 'welcome' | 'look' | 'nod' | 'concern' | 'alarm' | 'think' | 'cheer' | 'reveal'; pix: PixState; line: string };
 
@@ -53,5 +54,6 @@ export function PixGuide({ r }: { r: Reaction }) {
   return <aside className="m2-pix" data-pose={r.pose} aria-label="PIX, your training guide">
     <PixStage state={r.pix} className="m2-pix-stage" />
     <p className="m2-pix-line" aria-live="polite">{r.line}</p>
+    <SoundControls line={r.line} />
   </aside>;
 }

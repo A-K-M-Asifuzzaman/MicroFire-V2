@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { PartId, Snapshot } from '../contract';
 import { isBusy } from '../controller';
 import { allowsCore, astronautCue, install, journeyStage, qualifiedNow, rig } from '../view-model';
@@ -17,6 +17,11 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
   const [frame, setFrame] = useState(false);
   const [env, setEnv] = useState<{ loaded: number; total: number; lite: boolean } | null>(null);
   const [envOff, setEnvOff] = useState(false);
+  const stage = useRef<HTMLDivElement>(null);
+  // Full-screen view (native Fullscreen API; Esc leaves it). The 2D panels stay on the page underneath.
+  const full = useSyncExternalStore(onFullscreen, () => !!stage.current && document.fullscreenElement === stage.current, () => false);
+  const canFull = useSyncExternalStore(onFullscreen, () => document.fullscreenEnabled, () => false);
+  const toggleFull = () => { if (full) void document.exitFullscreen(); else void stage.current?.requestFullscreen().catch(() => undefined); };
   const latest = useRef({ s, selection, st });
   useEffect(() => { latest.current = { s, selection, st }; });
 
@@ -93,9 +98,13 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
   const scenery = env && env.loaded < env.total;
   const lab = !!LAB_ENVIRONMENT && !envOff;
   const views: [BenchView, string][] = [...(lab ? [['establish', 'Bay'] as [BenchView, string]] : []), ['work', 'Work view'], ['inspect', 'Inspect'], ...(lab && qualifiedNow(s) ? [['wide', 'Wide'] as [BenchView, string]] : [])];
-  return <div className="m2-stage3d">
+  return <div className="m2-stage3d" ref={stage}>
     <div className="m2-bench" ref={host} data-ready={ready} data-frame={frame} data-env={envOff ? 'off' : env ? (scenery ? 'loading' : 'ready') : 'none'} data-env-tier={env?.lite ? 'lite' : 'full'} data-cue={cue ?? ''}>
-      {!frame && <div className="m2-bench-loading">{ready ? 'Compiling the 3D bench…' : 'Preparing the 3D bench…'}</div>}
+      {!frame && <ol className="m2-bench-loading m2-load-steps" aria-label="Loading the 3D bench">
+        <li data-state={ready ? 'done' : 'now'}>Loading the 3D engine</li>
+        <li data-state={ready ? 'now' : 'next'}>Preparing materials and lights</li>
+        <li data-state="next">First frame</li>
+      </ol>}
       {scenery && <p className="m2-bench-env m2-fine">Loading lab scenery · {env.loaded} of {env.total} models</p>}
       {tip && <span className="m2-bench-tip" style={{ left: tip.x, top: tip.y }}>{tip.text}</span>}
     </div>
@@ -103,6 +112,7 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
     <div className="m2-bench-bar">
       <div className="m2-views" role="group" aria-label="Camera view">
         {views.map(([v, name]) => <button key={v} type="button" className="m2-view" onClick={() => api.current?.view(v)} disabled={!frame}>{name}</button>)}
+        {canFull && <button type="button" className="m2-view" aria-pressed={full} onClick={toggleFull}>{full ? 'Exit full screen' : 'Full screen'}</button>}
       </div>
       <details className="m2-bench-help">
         <summary>How to use the 3D bench</summary>
@@ -112,3 +122,5 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
     </div>
   </div>;
 }
+
+const onFullscreen = (fn: () => void) => { document.addEventListener('fullscreenchange', fn); return () => document.removeEventListener('fullscreenchange', fn); };

@@ -10,6 +10,7 @@ import { B20Dossier, ObservationGate } from './evidence';
 import { AccessTimer, Checks, JourneyRail, LinkBanner, SaveStatus } from './hud';
 import { PassportPanel } from './passport';
 import { PixGuide, reaction } from './pix';
+import { useSoundCues } from './sound';
 import { QualificationPanel, RepairPanel } from './repair';
 import { PartsTray, PlacementPanel, Schematic } from './schematic';
 import { ArrivalCinematic, SourceTerminal } from './station';
@@ -20,7 +21,7 @@ const Bench3D = dynamic(() => import('./bench').then((m) => m.Bench3D), { ssr: f
 
 
 /** Mission shell. Both views read one confirmed snapshot and send through one controller. */
-export function MissionShell({ banner }: { banner?: React.ReactNode }) {
+export function MissionShell({ banner, intro = false }: { banner?: React.ReactNode; intro?: boolean }) {
   const { s: st } = useGame();
   const s = st.snapshot;
   const link = st.link.status;
@@ -37,7 +38,7 @@ export function MissionShell({ banner }: { banner?: React.ReactNode }) {
     {(link === 'authorization-required' || link === 'authorizing') && <AuthPanel />}
     {!s && link === 'ready' && <StartPanel />}
     {!s && link === 'unavailable' && <Unavailable />}
-    {s && <Mission s={s} />}
+    {s && <Mission s={s} intro={intro} />}
   </div>;
 }
 
@@ -51,10 +52,10 @@ function Unavailable() {
     <p className="m2-fine">No gameplay is simulated in the browser. Missions only progress through the local server’s confirmed state.</p></div>;
 }
 
-function Mission({ s }: { s: Snapshot }) {
+function Mission({ s, intro: replay }: { s: Snapshot; intro: boolean }) {
   const { s: st, data, selection } = useGame();
   const stage = journeyStage(s);
-  const [intro, setIntro] = useState(stage === 'arrival' && st.mode === 'live');
+  const [intro, setIntro] = useState(stage === 'arrival' && (st.mode === 'live' || replay));
   const endIntro = useCallback(() => setIntro(false), []);
   const [view, setView] = useState<'2d' | '3d'>('2d');
   const [webglLost, setWebglLost] = useState(false);
@@ -64,6 +65,8 @@ function Mission({ s }: { s: Snapshot }) {
   const revealMoment = ev?.kind === 'accepted' && ev.action?.type === 'GAME' && ev.action.action.type === 'OBSERVE_DOCUMENTED_RESULT';
   const selectedLabel = data.parts.find((p) => p.id === selection.partId)?.label ?? null;
   const bench = !['arrival', 'passport', 'complete'].includes(stage);
+  const pix = reaction(st, s, selectedLabel);
+  useSoundCues(ev, pix.line);
   return <div className="m2-stage" data-stage={stage} data-fault={!!s.training.fault && !s.training.repair}>
     {intro && <ArrivalCinematic onDone={endIntro} />}
     {faultMoment !== null && <FaultFlash key={faultMoment} />}
@@ -99,7 +102,7 @@ function Mission({ s }: { s: Snapshot }) {
         </>}
       </div>
       <aside className="m2-side" aria-label="Mission status">
-        <PixGuide r={reaction(st, s, selectedLabel)} />
+        <PixGuide r={pix} />
         <section className="m2-next" aria-labelledby="m2-next-h"><h2 id="m2-next-h" className="m2-h">Next</h2><p>{s.progress.nextInstruction}</p></section>
         <Checks s={s} />
         {st.mode === 'fixture' && <IntentLog />}
