@@ -13,7 +13,13 @@
 .ign[data-beat="exit"] .ign-veil { background: #0b111a; animation: ign-to-site .5s ease-in forwards; }
 @keyframes ign-dissolve { 0% { opacity: .75; } 100% { opacity: 0; } }
 @keyframes ign-to-site { to { opacity: .85; } }
-.ign-loading { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: 600 .82rem/1 var(--mono, monospace); letter-spacing: .5em; text-transform: uppercase; color: rgb(238 244 248 / .45); }
+.ign-loading { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 16px; pointer-events: none; }
+.ign-loading p { margin: 0; max-width: none; font: 600 .82rem/1 var(--mono, monospace); letter-spacing: .5em; text-transform: uppercase; color: rgb(238 244 248 / .45); }
+.ign-loading p + progress + p { letter-spacing: .06em; text-transform: none; font-variant-numeric: tabular-nums; color: rgb(238 244 248 / .72); }
+.ign-loading progress { appearance: none; width: min(260px, 64vw); height: 3px; border: 0; border-radius: 3px; overflow: hidden; background: rgb(238 244 248 / .16); }
+.ign-loading progress::-webkit-progress-bar { background: rgb(238 244 248 / .16); }
+.ign-loading progress::-webkit-progress-value { background: #ff8738; transition: width .3s ease-out; }
+.ign-loading progress::-moz-progress-bar { background: #ff8738; }
 
 /* Captions: large, high-contrast, bottom centre, never over the subject's face. */
 .ign-caption { position: absolute; left: 50%; bottom: clamp(70px, 12vh, 120px); transform: translateX(-50%); width: min(92vw, 820px); margin: 0; text-align: center;

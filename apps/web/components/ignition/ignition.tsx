@@ -23,15 +23,17 @@ export function Ignition() {
   const host = useRef<HTMLDivElement>(null);
   const film = useRef<FilmApi | null>(null);
   const [beat, setBeat] = useState<Beat | 'loading' | null>(null);
+  const [progress, setProgress] = useState(0);
   const [sound, setSound] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const ended = useRef(false);
 
-  const close = useCallback((how: 'end' | 'skip') => {
+  // 'fail': the film could not load here (slow or broken download). Not marked seen, so the next visit tries again.
+  const close = useCallback((how: 'end' | 'skip' | 'fail') => {
     if (ended.current) return; ended.current = true;
     const h = document.documentElement, d = dialog.current;
     ignition.set('handoff');
-    try { localStorage.setItem(IGNITION_KEY, 'seen'); } catch { /* best effort */ }
+    try { if (how === 'fail') localStorage.removeItem(IGNITION_KEY); else localStorage.setItem(IGNITION_KEY, 'seen'); } catch { /* best effort */ }
     const finish = () => {
       film.current?.stop(); film.current = null;
       if (d?.open) d.close();
@@ -50,7 +52,7 @@ export function Ignition() {
   const play = useCallback(async () => {
     const d = dialog.current, el = host.current;
     if (!d || !el) return;
-    ended.current = false; setLeaving(false); setBeat('loading'); ignition.set('play'); delete document.documentElement.dataset.ignitionBeats;
+    ended.current = false; setLeaving(false); setBeat('loading'); setProgress(0); ignition.set('play'); delete document.documentElement.dataset.ignitionBeats;
     try { sessionStorage.setItem('microfire.home.intro', '1'); } catch { /* the observatory's own fly-in is replaced by the film */ }
     if (!d.open) try { d.showModal(); } catch { d.setAttribute('open', ''); }
     const canvas = document.createElement('canvas'); canvas.setAttribute('aria-hidden', 'true'); el.replaceChildren(canvas);
@@ -67,12 +69,13 @@ export function Ignition() {
           const h = document.documentElement; h.dataset.ignitionBeats = h.dataset.ignitionBeats ? `${h.dataset.ignitionBeats},${b}` : b; // every beat, even if two land in one frame
         },
         onEnd: () => close('end'),
+        onProgress: setProgress,
         ...(freeze !== null && !Number.isNaN(Number(freeze)) ? { freezeAt: Number(freeze) } : {})
       });
       if (ended.current) { api?.stop(); return; }
-      if (!api) { close('skip'); return; } // no WebGL, software graphics, or assets too slow: straight to the site
+      if (!api) { close('fail'); return; } // no WebGL, software graphics, or the download failed or stalled: straight to the site
       film.current = api;
-    } catch { close('skip'); }
+    } catch { close('fail'); }
   }, [close]);
 
   useEffect(() => {
@@ -104,7 +107,12 @@ export function Ignition() {
       <div className="ign-veil" aria-hidden="true" />
       <h2 id="ign-title" className="sr-only">MicroFire opening film</h2>
       <p id="ign-desc" className="sr-only">A fictional 8-second story, not a real NASA incident. A crew spacecraft travels from Earth toward the Moon. A small fire starts inside its cabin, where there is oxygen. PIX, MicroFire’s guide, wakes up and opens a hologram showing that in microgravity a flame grows round and dim instead of tall. The hologram opens into the MicroFire observatory. Skip at any time.</p>
-      {beat === 'loading' && <p className="ign-loading" aria-hidden="true">MicroFire</p>}
+      {/* Also before hydration (beat null): the gate opens the dialog while the page's scripts are still downloading. */}
+      {(beat === null || beat === 'loading') && <div className="ign-loading">
+        <p aria-hidden="true">MicroFire</p>
+        <progress max={1} value={progress} aria-label="Loading the opening film" />
+        <p aria-hidden="true">Loading the film · {Math.round(progress * 100)}%</p>
+      </div>}
       {cap?.alert && <p className="ign-alert" role="status"><span aria-hidden="true">▲</span> FIRE ANOMALY DETECTED</p>}
       {cap && !cap.alert && !title && <p className="ign-caption" key={beat} aria-live="polite">{cap.who && <b>{cap.who}: </b>}{cap.text}</p>}
       {title && <div className="ign-title" aria-hidden="true">

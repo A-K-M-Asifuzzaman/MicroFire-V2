@@ -115,10 +115,12 @@ test('no WebGL: the film bows out within a moment and the homepage is usable', a
   await expect(page.getByRole('link', { name: /Open the B20 record/ })).toBeVisible();
 });
 
-test('asset failure: if the astronaut cannot load, the visitor goes straight to the site', async ({ page }) => {
-  await page.route('**/models/astronaut-suit/**', (r) => r.abort());
+test('asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen', async ({ page }) => {
+  await page.route('**/models/astronaut-suit/**', async (r) => { await new Promise((ok) => setTimeout(ok, 1500)); await r.abort(); });
   await page.goto('/');
+  if (await page.locator('html[data-ignition="play"]').count()) await expect(page.getByRole('progressbar', { name: 'Loading the opening film' })).toBeVisible();
   await closed(page);
+  expect(await page.evaluate(() => localStorage.getItem('microfire.ignition.v1'))).toBeNull();
 });
 
 test('keyboard and screen readers: named dialog with a description, Skip first, Tab reaches Sound, captions are live, no axe violations', async ({ page }, info) => {

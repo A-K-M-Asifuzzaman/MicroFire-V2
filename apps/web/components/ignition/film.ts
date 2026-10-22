@@ -10,7 +10,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { cleanFinish, loadModel } from '../model-loader';
+import { cleanFinish } from '../model-loader';
 import { flameVolume } from '../proto/flame-volume';
 import { FILM_SECONDS } from './state';
 
@@ -21,6 +21,8 @@ export type FilmApi = { stop(): void; resize(): void; setSound(on: boolean): voi
 export type FilmOptions = {
   canvas: HTMLCanvasElement; host: HTMLElement; mobile: boolean;
   onBeat(b: Beat): void; onEnd(): void;
+  /** Model download progress, 0–1 (files finished / files expected). */
+  onProgress?(fraction: number): void;
   /** Evidence only: hold the film at this time (seconds). */
   freezeAt?: number;
 };
@@ -364,10 +366,22 @@ function path(keys: Key[]) {
   };
 }
 
-const loadGltf = (url: string, ms: number) => Promise.race([
-  new GLTFLoader().loadAsync(url).then((g) => g, () => null),
-  new Promise<null>((r) => setTimeout(() => r(null), ms))
-]);
+/** Files the two models fetch (2 × .gltf, 2 × .bin, 4 × .webp): the progress denominator until the loader has seen them all. */
+const MODEL_FILES = 8;
+/** Give up only when no file has finished for this long; a slow but moving connection still gets the film. */
+const STALL_MS = 15000;
+
+/** Astronaut and PIX through one manager, so the page can show real progress. Null if either fails or the download stalls. */
+async function loadModels(onProgress?: (f: number) => void) {
+  const mgr = new THREE.LoadingManager(), loader = new GLTFLoader(mgr);
+  let last = performance.now(), timer = 0;
+  mgr.onProgress = (_u, done, total) => { last = performance.now(); onProgress?.(done / Math.max(total, MODEL_FILES)); };
+  const stalled = new Promise<null>((r) => { timer = window.setInterval(() => { if (performance.now() - last > STALL_MS) r(null); }, 500); });
+  const both = Promise.all([loader.loadAsync('/models/astronaut-suit/astronaut.gltf'), loader.loadAsync('/models/pix/pix.gltf')]).then(([a, p]) => ({ astro: a, pixModel: p.scene }), () => null);
+  const got = await Promise.race([both, stalled]);
+  clearInterval(timer);
+  return got;
+}
 
 export async function startFilm(o: FilmOptions): Promise<FilmApi | null> {
   let renderer: THREE.WebGLRenderer;
@@ -375,8 +389,9 @@ export async function startFilm(o: FilmOptions): Promise<FilmApi | null> {
   const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info');
   // Software rasterisers cannot hold 60 fps here: the visitor goes straight to the site instead.
   if (/swiftshader|llvmpipe|softpipe|software/i.test(dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '')) { renderer.dispose(); renderer.forceContextLoss(); return null; }
-  const [astro, pixModel] = await Promise.all([loadGltf('/models/astronaut-suit/astronaut.gltf', 5000), Promise.race([loadModel('/models/pix/pix.gltf'), new Promise<null>((r) => setTimeout(() => r(null), 5000))])]);
-  if (!astro || !pixModel) { renderer.dispose(); renderer.forceContextLoss(); return null; } // slow or failed: direct entry
+  const models = await loadModels(o.onProgress);
+  if (!models) { renderer.dispose(); renderer.forceContextLoss(); return null; } // failed or stalled: direct entry
+  const { astro, pixModel } = models;
 
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, o.mobile ? 2 : 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;

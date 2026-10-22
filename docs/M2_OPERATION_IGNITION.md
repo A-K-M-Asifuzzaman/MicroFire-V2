@@ -61,7 +61,8 @@ The only downloads are the two existing models, about 2.6 MB, fetched only when 
   - the observatory's 3D waits while the film plays and starts at the hologram shot;
   - its own older opening flight is suppressed for that session;
   - during a replay it pauses.
-- **Failure:** if model loading takes more than 5 s, or WebGL is missing or fails, the overlay closes immediately.
+- **Loading:** a progress bar with a percentage (model files finished / expected) shows from first paint until the first frame.
+- **Failure:** if no model file finishes for 15 s, a model fails, or WebGL is missing or fails, the overlay closes straight to the site. A failed load is not marked seen, so the next visit tries again (with the files already cached). (Until 2026-10-22 this was a hard 5 s limit. On a 1.6 Mbps phone connection that dropped every visitor to the site without the film, and marked it seen for good.)
 
 ## Performance
 
