@@ -6,6 +6,8 @@ import { soundscape } from '../game/ui/soundscape';
 import { GravityLens, type LensRecord } from './gravity-lens';
 import { PixAvatar, type PixState } from './pix-avatar';
 import type { Anchor, ObservatoryApi, PixGesture, PixTarget } from './observatory-scene';
+import { ReplayIntro } from './ignition/ignition';
+import { ignition } from './ignition/state';
 import { BAY_TOUR } from './routes';
 
 /** `pix` is what PIX says when the station is focused (deterministic copy; counts come from the catalog). */
@@ -54,7 +56,8 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
     const query = matchMedia('(prefers-reduced-motion: reduce)');
     const mobileQuery = matchMedia('(max-width: 900px)');
     let visible = false, cancelled = false;
-    const motion = () => !query.matches && visible && !document.hidden && userMotion.current;
+    // While the opening film owns the GPU the observatory holds still (one renderer at a time).
+    const motion = () => !query.matches && visible && !document.hidden && userMotion.current && ignition.get() !== 'play';
     const sync = () => { api.current?.setMotion(motion()); setScene((s) => (s === 'active' || s === 'static' ? (query.matches ? 'static' : 'active') : s)); };
     syncMotion.current = sync;
     const io = new IntersectionObserver(([e]) => { visible = !!e?.isIntersecting; sync(); });
@@ -129,10 +132,17 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
       setIntro(playIntro ? 'play' : 'done');
       sync();
     }).catch(() => { setScene('unavailable'); setIntro('done'); });
+    // The opening film, if it plays, starts the observatory only at its final shot (handoff), never alongside it.
+    const filmRunning = () => document.documentElement.dataset.ignition === 'play' && ignition.get() !== 'handoff';
+    let waiting: (() => void) | null = null;
     const ric = typeof window.requestIdleCallback === 'function'; // Safari lacks it
-    const idle = ric ? window.requestIdleCallback(() => void start(), { timeout: 900 }) : setTimeout(() => void start(), 250);
+    const schedule = () => (ric ? window.requestIdleCallback(() => void start(), { timeout: 900 }) : setTimeout(() => void start(), 250));
+    let idle: number | ReturnType<typeof setTimeout> = 0;
+    if (filmRunning()) waiting = ignition.subscribe(() => { if (!filmRunning() && waiting) { waiting(); waiting = null; idle = schedule(); } });
+    else idle = schedule();
+    const unsubFilm = ignition.subscribe(sync);
     return () => {
-      cancelled = true;
+      cancelled = true; waiting?.(); unsubFilm();
       if (ric) window.cancelIdleCallback(idle as number); else clearTimeout(idle as ReturnType<typeof setTimeout>);
       io.disconnect(); cancelAnimationFrame(scrollRaf); window.removeEventListener('scroll', onScroll); query.removeEventListener('change', sync); document.removeEventListener('visibilitychange', sync); window.removeEventListener('resize', onResize);
       inputs.forEach((ev) => window.removeEventListener(ev, skip));
@@ -190,6 +200,7 @@ export function ObservatoryHero({ record, stations, children }: { record: LensRe
       <div className="obs-corner">
         {intro === 'play' && <button type="button" className="obs-skip" onClick={() => api.current?.skipIntro()}>Skip intro</button>}
         <HeroSound />
+        <ReplayIntro />
       </div>
     </section>
     <nav className="stations" aria-label="Observatory stations">

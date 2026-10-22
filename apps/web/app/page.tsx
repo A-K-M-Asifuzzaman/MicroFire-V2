@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { catalog, coverage } from '@microfire/science';
 import { EnterBayLink, ObservatoryHero, type Station } from '../components/observatory-hero';
 import { BayTeaser, GravityDuel, PixIntro, TrustStrip } from '../components/home-sections';
+import { Ignition } from '../components/ignition/ignition';
 import { locatorText, value } from '../components/page-kit';
 
 export default function Home() {
@@ -24,6 +25,7 @@ export default function Home() {
       pix: 'Five missions are on the map. None is playable yet, but the training bay is open for a tour.' }
   ];
   return <>
+    <Ignition />
     <ObservatoryHero stations={stations}
       record={{ href, title: e.title, flowDirection: value(e, 'flowDirection'), initialFlow: value(e, 'flowCmS'), locator: locatorText(e) }}>
       <div className="obs-head reveal">

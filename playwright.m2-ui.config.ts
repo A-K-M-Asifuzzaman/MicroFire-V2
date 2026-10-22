@@ -5,7 +5,8 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/m2-ui', fullyParallel: true, forbidOnly: Boolean(process.env.CI), retries: 0, workers: 3,
   reporter: [['list']],
-  use: { baseURL: 'http://127.0.0.1:3240', channel: 'chromium', trace: 'retain-on-failure' },
+  // The homepage opening film has been seen in every suite except tests/m2-ui/ignition.spec.ts, which starts fresh.
+  use: { baseURL: 'http://127.0.0.1:3240', channel: 'chromium', trace: 'retain-on-failure', storageState: 'tests/ignition-seen.json' },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
     { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } }
