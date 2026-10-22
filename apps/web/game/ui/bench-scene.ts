@@ -23,6 +23,8 @@ export type BenchState = {
   choosing: boolean;
   /** Mount of an install request awaiting the server. */
   pendingTarget: string | null;
+  /** The server's latest refusal of an install, if any: shown as a coral cross at that mount (never like a fit). */
+  refused?: { id: number; anchorId: string } | null;
   focus: 'overview' | 'fan' | 'wide';
 };
 export type BenchCallbacks = {
@@ -51,7 +53,7 @@ export const ANCHORS3D: Record<string, [number, number, number]> = {
   'top-window': [0.46, hy + 0.42, 0], 'front-window-mirror': [0.58, -hy - 0.18, hy + 0.26], 'downstream-top-back-corner': [hx - 0.14, hy - 0.12, -hy + 0.12],
   'duct-exit': [hx + 0.06, 0, 0]
 };
-const C = { cyan: new THREE.Color('#73bbd9'), amber: new THREE.Color('#e2b04a'), flame: new THREE.Color('#ff8738'), teal: new THREE.Color('#7fd6d1') };
+const C = { cyan: new THREE.Color('#73bbd9'), amber: new THREE.Color('#e2b04a'), flame: new THREE.Color('#ff8738'), teal: new THREE.Color('#3fd2c7'), coral: new THREE.Color('#ff6b6b') };
 
 export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, parts: readonly PartSpec[], cb: BenchCallbacks, motionOn: boolean, environment: BenchEnvironment = null): Promise<BenchApi | null> {
   let renderer: THREE.WebGLRenderer;
@@ -138,6 +140,8 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   let flaggedMats: THREE.MeshStandardMaterial[] = [];
   // Install feedback: a confirmed fit flashes its mount ring once (presentation of a server-confirmed change).
   const flash = new Map<string, number>();
+  // Refusal feedback: the mount the server refused turns coral and shakes once (a fit expands teal instead).
+  let denied: { id: number; anchorId: string; f: number } | null = null;
 
   // Mount rings + generous invisible hit targets (touch friendly).
   const anchorObjs = new Map<string, { ring: THREE.Mesh; hit: THREE.Mesh }>();
@@ -352,6 +356,15 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       const want = state?.choosing ? (target || designated ? 1 : occupied ? 0.12 : 0.4) : id === state?.pendingTarget ? 0.8 : 0;
       const f = flash.get(id) ?? 0;
       mat.opacity = Math.max(step(mat.opacity, want), f); mat.color.copy(target ? C.flame : f > 0 || designated ? C.teal : C.cyan);
+      const [ax] = ANCHORS3D[id]!;
+      if (denied?.anchorId === id && denied.f > 0) {
+        mat.color.copy(C.coral); mat.opacity = Math.max(mat.opacity, Math.min(1, denied.f * 1.6));
+        // A short shake, then a steady coral ring while that refusal is the latest server answer.
+        a.ring.position.x = ax + (motion ? Math.sin(t * 38) * 0.025 * Math.max(0, denied.f - 0.4) : 0); a.ring.scale.setScalar(1.2);
+        if (motion && denied.f > 0.4) { denied.f = Math.max(0.4, denied.f - 0.008); busy = true; }
+        continue;
+      }
+      a.ring.position.x = ax;
       if (f > 0) { a.ring.scale.setScalar(1 + (1 - f) * 2.2); const nf = motion ? f - 0.025 : 0; if (nf > 0) flash.set(id, nf); else flash.delete(id); busy = true; }
       else if (state?.choosing && motion) { a.ring.scale.setScalar((designated ? 1.35 : 1) + (target || designated ? 0.25 : 0.08) * Math.sin(t * 4)); busy = true; } else a.ring.scale.setScalar(designated ? 1.35 : 1);
     }
@@ -407,6 +420,13 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       chevrons.visible = !!fan && !!s.installed['flow-duct'];
       chevrons.scale.x = fan?.orientation === 'reversed' ? -1 : 1;
       setGhost(s.choosing ? s.selectedPart : null);
+      if (!s.refused) denied = null;
+      else if (s.refused.id !== denied?.id && ANCHORS3D[s.refused.anchorId]) denied = { ...s.refused, f: 1 };
+      // Choosing a mount glides the camera toward it (a cut under reduced motion); finishing returns to the work view.
+      if (s.choosing && s.selectedAnchor && s.selectedAnchor !== prev?.selectedAnchor && ANCHORS3D[s.selectedAnchor]) {
+        const at = new THREE.Vector3(...ANCHORS3D[s.selectedAnchor]!);
+        setView('work', new THREE.Vector3(...HERO.target).lerp(at, 0.55), { theta: HERO.theta, phi: HERO.phi, r: HERO.r * 0.8 });
+      } else if (prev?.choosing && !s.choosing && s.focus === prev.focus) setView('work');
       if (s.qualified && !wasQualified && prev) sweep = 1;
       wasQualified = s.qualified;
       // Stage changes pick the composition; within a stage the learner's own view choice stands.

@@ -32,7 +32,10 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
     const pending = (link.status === 'awaiting' || link.status === 'paced') && link.pending.endpoint === 'action' && link.pending.request.action.type === 'GAME'
       && link.pending.request.action.action.type === 'INSTALL_PART' ? link.pending.request.action.action.anchorId : null;
     const stage = journeyStage(s);
+    const ev = st.event;
+    const refused = ev?.kind === 'refused' && ev.action?.type === 'GAME' && ev.action.action.type === 'INSTALL_PART' ? { id: ev.id, anchorId: ev.action.action.anchorId } : null;
     return {
+      refused,
       installed: Object.fromEntries(parts.filter((p) => p.installed).map((p) => [p.spec.id, p.installed!])),
       flagged: parts.filter((p) => p.authoredFault || p.findings.length > 0).map((p) => p.spec.id),
       pendingRepair: s.training.pendingRepair?.partId ?? null,
@@ -78,11 +81,12 @@ export function Bench3D({ s, faultMoment, onUnavailable }: { s: Snapshot; faultM
     const io = new IntersectionObserver(([e]) => { visible = !!e?.isIntersecting; api.current?.setMotion(motion()); });
     io.observe(el);
     const sync = () => api.current?.setMotion(motion());
-    const onResize = () => api.current?.resize();
-    reduce.addEventListener('change', sync); document.addEventListener('visibilitychange', sync); window.addEventListener('resize', onResize);
+    // The host can change size without a window resize (the phone placement dock), so watch the element itself.
+    const ro = new ResizeObserver(() => api.current?.resize()); ro.observe(el);
+    reduce.addEventListener('change', sync); document.addEventListener('visibilitychange', sync);
     return () => {
-      cancelled = true; io.disconnect();
-      reduce.removeEventListener('change', sync); document.removeEventListener('visibilitychange', sync); window.removeEventListener('resize', onResize);
+      cancelled = true; io.disconnect(); ro.disconnect();
+      reduce.removeEventListener('change', sync); document.removeEventListener('visibilitychange', sync);
       api.current?.stop(); api.current = null; canvas.remove();
     };
     // The scene is created once; state flows in through update().

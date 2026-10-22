@@ -15,8 +15,9 @@ export const LAB_ENVIRONMENT: Omit<EnvOptions, 'lite'> | null = {
     { url: `${M}/cabinet/cabinet.gltf`, height: 20, position: [24, FLOOR, -2.5], rotationY: -0.6, tint: 0.55, detail: 'full' },
     { url: `${M}/cart/cart.gltf`, height: 11, position: [15, FLOOR, 6], rotationY: -1.0, tint: 0.65, detail: 'full' }
   ],
+  // Design A's re-textured suit (navy panels, orange accents; M4 retexture, 10 credits) on the same rigged, animated body.
   astronaut: {
-    url: '/models/astronaut/astronaut.gltf',
+    url: '/models/astronaut-suit/astronaut.gltf', tint: '#ffffff',
     clips: { idle: 'Idle', wave: 'Wave_One_Hand', look: 'Short_Breathe_and_Look_Around', cheer: 'Victory_Fist_Pump' }
   }
 };

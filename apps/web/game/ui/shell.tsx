@@ -14,6 +14,7 @@ import { useSoundCues } from './sound';
 import { QualificationPanel, RepairPanel } from './repair';
 import { AssemblyStatus, PartsTray, PlacementPanel, Schematic } from './schematic';
 import { ArrivalCinematic, SourceTerminal } from './station';
+import { m2Fonts } from './fonts';
 import './game.css';
 
 // The 3D bench is code-split and loads only when the learner asks for it (N8).
@@ -25,7 +26,7 @@ export function MissionShell({ banner, intro = false }: { banner?: React.ReactNo
   const { s: st } = useGame();
   const s = st.snapshot;
   const link = st.link.status;
-  return <div className="m2" data-mode={st.mode}>
+  return <div className={`m2 ${m2Fonts}`} data-mode={st.mode}>
     {banner}
     <header className="m2-top">
       <div className="m2-top-title">
@@ -67,25 +68,32 @@ function Mission({ s, intro: replay }: { s: Snapshot; intro: boolean }) {
   const bench = !['arrival', 'passport', 'complete'].includes(stage);
   const pix = reaction(st, s, selectedLabel);
   useSoundCues(ev, pix.line);
-  return <div className="m2-stage" data-stage={stage} data-fault={!!s.training.fault && !s.training.repair}>
+  // Phones: while part details are open, the view docks at the top so bench and controls are visible together.
+  const placing = bench && !!selection.partId;
+  return <div className="m2-stage" data-stage={stage} data-fault={!!s.training.fault && !s.training.repair} data-placing={placing}>
     {intro && <ArrivalCinematic onDone={endIntro} />}
     {faultMoment !== null && <FaultFlash key={faultMoment} />}
     <JourneyRail s={s} />
+    {stage === 'arrival' && <SourceTerminal s={s} />}
+    {/* The scientific viewport leads at full width; every panel sits below it, never over the apparatus. */}
+    {bench && <section className="m2-viewport" aria-labelledby="m2-bench-h">
+      <h2 id="m2-bench-h" className="sr-only">Training bench</h2>
+      <div className="m2-viewbar" role="group" aria-label="Apparatus view">
+        <button type="button" aria-pressed={view === '2d' || webglLost} onClick={() => choose('2d')}>Schematic (2D)</button>
+        <button type="button" aria-pressed={view === '3d' && !webglLost} onClick={() => choose('3d')}>3D bench</button>
+        <span className="m2-fine">Both views show the same server-confirmed apparatus.</span>
+      </div>
+      {s.training.fault && !s.training.repair && <p className="m2-fault-banner" role="status"><span aria-hidden="true">▲</span> Authored training fault — not a NASA incident.</p>}
+      <div className="m2-view-host">
+        {view === '3d' && !webglLost
+          ? <Bench3D s={s} faultMoment={faultMoment} onUnavailable={() => setWebglLost(true)} />
+          : <Schematic s={s} />}
+      </div>
+      {webglLost && view === '3d' && <p className="m2-notice" data-tone="info" role="status">The 3D bench is not available on this device (WebGL unavailable or lost). The schematic shows the same state; nothing was reset.</p>}
+    </section>}
     <div className="m2-grid">
       <div className="m2-main" id="m2-main">
-        {stage === 'arrival' && <SourceTerminal s={s} />}
         {bench && <>
-          <h2 className="sr-only">Training bench</h2>
-          <div className="m2-viewbar" role="group" aria-label="Apparatus view">
-            <button type="button" aria-pressed={view === '2d' || webglLost} onClick={() => choose('2d')}>Schematic (2D)</button>
-            <button type="button" aria-pressed={view === '3d' && !webglLost} onClick={() => choose('3d')}>3D bench</button>
-            <span className="m2-fine">Both views show the same server-confirmed apparatus.</span>
-          </div>
-          {s.training.fault && !s.training.repair && <p className="m2-fault-banner" role="status"><span aria-hidden="true">▲</span> Authored training fault — not a NASA incident.</p>}
-          {view === '3d' && !webglLost
-            ? <Bench3D s={s} faultMoment={faultMoment} onUnavailable={() => setWebglLost(true)} />
-            : <Schematic s={s} />}
-          {webglLost && view === '3d' && <p className="m2-notice" data-tone="info" role="status">The 3D bench is not available on this device (WebGL unavailable or lost). The schematic shows the same state; nothing was reset.</p>}
           <AssemblyStatus s={s} />
           <div className="m2-workbench">
             <PartsTray s={s} />
@@ -104,7 +112,7 @@ function Mission({ s, intro: replay }: { s: Snapshot; intro: boolean }) {
       </div>
       <aside className="m2-side" aria-label="Mission status">
         <PixGuide r={pix} />
-        <section className="m2-next" aria-labelledby="m2-next-h"><h2 id="m2-next-h" className="m2-h">Next</h2><p>{s.progress.nextInstruction}</p></section>
+        {!bench && <section className="m2-next" aria-labelledby="m2-next-h"><h2 id="m2-next-h" className="m2-h">Next</h2><p>{s.progress.nextInstruction}</p></section>}
         <Checks s={s} />
         {st.mode === 'fixture' && <IntentLog />}
       </aside>

@@ -146,12 +146,12 @@ export function PartsTray({ s }: { s: Snapshot }) {
   const { data, selection, select } = useGame();
   const parts = rig(s, data.parts), next = allowsCore(s, 'INSTALL_PART') ? suggested(parts) : undefined;
   return <div className="m2-tray" role="group" aria-label="Parts tray">
-    {parts.map((p) => {
+    {parts.map((p, i) => {
       const status = p.installed ? (p.authoredFault || p.findings.length ? 'Fitted · flagged' : 'Fitted') : p.pendingRepair ? 'Removed for repair' : p === next ? 'Not fitted · suggested next' : 'Not fitted';
       return <button key={p.spec.id} type="button" className="m2-part" aria-pressed={selection.partId === p.spec.id}
         data-state={p.installed ? 'fitted' : p.pendingRepair ? 'pending' : 'loose'} data-flagged={p.authoredFault || p.findings.length > 0} data-next={p === next}
         onClick={() => select({ partId: selection.partId === p.spec.id ? null : p.spec.id, anchorId: null, orientation: 'correct' })}>
-        <span className="m2-part-name">{p.spec.label}</span><span className="m2-part-state">{status}</span>
+        <span className="m2-num" aria-hidden="true">{i + 1}</span><span className="m2-part-name">{p.spec.label}</span><span className="m2-part-state">{status}</span>
       </button>;
     })}
   </div>;
@@ -170,7 +170,7 @@ export function PlacementPanel({ s }: { s: Snapshot }) {
   return <section className="m2-placement" aria-labelledby="m2-place-h" data-sheet="true">
     <div className="m2-placement-head">
       <h3 id="m2-place-h" className="m2-h3">{part.spec.label}</h3>
-      <button type="button" className="m2-close" onClick={() => select({ partId: null, anchorId: null })} aria-label="Close part details">×</button>
+      <button type="button" className="m2-close" onClick={() => select({ partId: null, anchorId: null })} aria-label="Back to bench: close part details"><span aria-hidden="true">×</span><span className="m2-close-text" aria-hidden="true">Back to bench</span></button>
     </div>
     <p className="m2-source-note"><span className="m2-tag">NASA hardware description</span> {part.spec.sourceNote}</p>
     {requires.length > 0 && <p className="m2-fine">Mounting order (educational model): fits after {requires.join(', ')}.</p>}

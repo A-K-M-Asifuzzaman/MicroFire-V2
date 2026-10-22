@@ -58,6 +58,11 @@ No contract conflicts were found. Each point below was checked against `docs/M2_
 | Save and restore | Every snapshot carries a signed checkpoint; POST `/resume` `{runtimeId,checkpoint,commandId}` (`ResumeResponseSchema` is `StartResponseSchema`); pure `admitLocalSave` / `admitLocalDiscard`, `PREVIEW_SAVE_KEY` / `PREVIEW_SAVE_LOCK` | Checkpoint download plus resume from file (≤28,000 bytes). **Writable local save not built**: it waits for Astra's per-engine consistency acceptance, so `engineConsistencyAccepted:false` remains the default |
 | Errors | 200 refusal vs HTTP errors; 400 noteIssue; 403; 409 (incl. COMMAND_ID_REUSED); 429/503 with Retry-After; timeout, non-JSON or 500 = commit unknown | LinkBanner covers each one; covered by the fixture gallery and controller unit tests |
 
+**Re-checked 2026-10-22** (read-only):
+- Sol's branch is still at `196b61a`, with no new commits.
+- `git merge-tree --write-tree HEAD 196b61a` from this branch reports no conflicts. Stage A touches no file under `apps/web/game/`.
+- No merge was made.
+
 **Dependencies for the joint milestone, in order:**
 1. Astra approves Stage A.
 2. Merge Sol's reviewed SHA, then apply the three-file seam above.

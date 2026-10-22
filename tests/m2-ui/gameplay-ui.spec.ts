@@ -66,6 +66,26 @@ test('touch placement: tapping a part opens the bottom sheet with reachable moun
   await expect(page.locator('.m2-intents')).toContainText('Install Fan at Duct inlet');
 });
 
+test('phone placement: the view docks above the part sheet, both visible and untouched; Back to bench undocks', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile', 'phone layout');
+  await open(page, 'assembly-refused');
+  const host = page.locator('.m2-view-host');
+  await expect(host).toHaveCSS('position', 'static');
+  await page.getByRole('group', { name: 'Parts tray' }).getByRole('button', { name: /^Fan/ }).tap();
+  const sheet = page.locator('.m2-placement');
+  await expect(host).toHaveCSS('position', 'fixed');
+  const [view, panel] = [(await host.boundingBox())!, (await sheet.boundingBox())!];
+  const vh = page.viewportSize()!.height;
+  expect(view.y).toBeGreaterThanOrEqual(0);
+  expect(view.y + view.height).toBeLessThanOrEqual(panel.y + 1); // no overlap: every mount and the sheet stay tappable
+  expect(panel.y + panel.height).toBeLessThanOrEqual(vh + 1);
+  await sheet.locator('label', { hasText: 'Duct inlet' }).tap(); // tap-to-place target choice with the view still in sight
+  await expect(page.getByRole('radio', { name: /^Duct inlet/ })).toBeChecked();
+  await page.getByRole('button', { name: /^Back to bench/ }).tap();
+  await expect(sheet).toHaveCount(0);
+  await expect(host).toHaveCSS('position', 'static');
+});
+
 test('apparatus cues: progress, designated mount, a wrong mount and a repeated install stay intents the server judges', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'pointer path; touch path above');
   await open(page, 'assembly-refused');

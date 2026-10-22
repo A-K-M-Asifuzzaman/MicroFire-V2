@@ -86,3 +86,37 @@ The owner authorised up to 300 credits for this milestone; the first batch was c
 - **Ledger rows:** the two text-to-3D jobs ran concurrently, so their rows' `spent` fields overlap. The `reconcile:M4-batch-1` ledger row records the true per-job split. Paid jobs now run sequentially.
 - **Suit fix:** the retexture produced a clear visor with a generated face. The visor region was restored from the original texture before use.
 - **Spending stopped at 70.** The prototypes did not need more models (Design B is illustrated).
+
+## Reconciliation (2026-10-22, read-only; no paid calls)
+
+**Live balance: 2,713** (free balance endpoint, checked twice: once through `tools/meshy/meshy.mjs balance`, once through the Meshy connector). Monthly credits 2,713, permanent 0, monthly reset 2026-11-11.
+
+**2,813 → 2,713 (−100)** is fully explained by two charged events:
+
+| When | Job | Tasks | Credits | Accepted? | Used where |
+|---|---|---|---|---|---|
+| 2026-10-17 | `chamber-housing-v1` (text-to-3D + refine) | preview `01a148d3-b0fd-73bf-a24c-a41174f0d5d3`, refine `01a148d4-e29d-70f1-93e4-43ff2fd98741` | 30 | Yes, desktop tier only | Open gantry around the apparatus in the 3D bench and tour |
+| 2026-10-21 | `hero-chamber-v1` (text-to-3D + refine) | preview `01a15f3f-5d2a-7304-98fb-4a44b238fcbd`, refine `01a15f40-bafd-74af-a79e-b060aa58323d` | 30 | Yes, prototype only | Design A homepage (`/design/a`); not used in the training bay |
+| 2026-10-21 | `orbital-arch-v1` (text-to-3D + refine) | preview `01a15f3f-70a6-726d-a5b8-d2647c3672a3`, refine `01a15f40-cc45-7338-954f-48359a9d5548` | 30 | Yes, prototype only | Design A homepage colonnade; not used in the training bay |
+| 2026-10-21 | `astronaut-v1-suit` (retexture) | `01a15f42-5c1e-70f2-a823-52534d70a9c5` | 10 | Yes, after visor compositing | Since 2026-10-22 the astronaut in the training bay, tour and arrival still |
+
+The **70-credit art-direction cost was charged**, not proposed (2,783 → 2,713).
+
+- **API check.** The three M4 tasks are still returned by the Meshy API. The 2026-10-17 and earlier task ids now return "not found", which looks like the API's retention window. For those rows, the balance-before and balance-after readings recorded at run time are the evidence.
+- **Rejected or retired assets:**
+  - `lab-viewport-v1` (30, 2026-10-16) was rejected.
+  - `lab-wall-v1` (30) was retired in the 2026-10-17 visual rebuild.
+  - `pix-v1` was superseded by `pix-v2`.
+  - All of these were charged and are in the totals.
+
+**Ledger totals since the first paid call (3,100):**
+
+| Item | Credits |
+|---|---|
+| M1.5 pilot | 90 |
+| M2 batch 1 | 197 |
+| Chamber pilot | 30 |
+| M4 batch 1 | 70 |
+| **Total** | **387** |
+
+3,100 − 387 = 2,713, which matches the live balance.

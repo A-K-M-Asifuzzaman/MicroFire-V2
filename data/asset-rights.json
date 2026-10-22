@@ -357,10 +357,10 @@
     {
       "path": "apps/web/public/media/m2/lab-arrival.jpg",
       "title": "M2 arrival backdrop — rendered still of the training bay",
-      "source": "MicroFire's own real-time render of its M2 3D bench (Bay view, Three.js, 2026-10-21): procedural apparatus, procedural room and illustrative painted planet, with the project's Meshy assets already recorded in this ledger (astronaut, chamber housing, workstation)",
+      "source": "MicroFire's own real-time render of its M2 3D bench (tour Bay view, Three.js, re-rendered 2026-10-22 by tests/visual/arrival-still.mjs): procedural apparatus, procedural room and illustrative painted planet, with the project's Meshy assets already recorded in this ledger (re-textured astronaut suit, chamber housing, workstation)",
       "license": "MicroFire project original render; contains only assets owned by the project account holder (Meshy paid-plan outputs listed above) and procedural geometry; no third-party imagery, logos or text",
-      "processing": "Headless Chromium (ANGLE Metal) capture at device scale 2.5, 2240 × 1260 JPEG q84 (185 KB); darkened by a CSS gradient in the arrival sequence and labelled \"Illustrative training bay, rendered from the 3D bench\"",
-      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-21",
+      "processing": "Headless Chromium (ANGLE Metal) capture at device scale 2, 2240 × 1260 JPEG q72 (156 KB); darkened by a CSS gradient in the arrival sequence and labelled \"Illustrative training bay, rendered from the 3D bench\"",
+      "reviewedBy": "Claude (frontend) visual + rights QA, 2026-10-21; re-render QA 2026-10-22",
       "approved": true,
       "coordination": "Proposed by Claude in feat/m2-claude-gameplay; Sol (rights-ledger owner) to confirm and carry into the migrated ledger",
       "part": "M2 arrival backdrop — lab-arrival.jpg"
