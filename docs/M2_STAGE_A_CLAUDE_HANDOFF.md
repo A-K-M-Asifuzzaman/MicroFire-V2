@@ -1,5 +1,7 @@
 # M2 Stage A backend — Claude integration handoff
 
+Latest backend finalization and actual-Claude compatibility findings: [M2_BACKEND_FINALIZATION.md](M2_BACKEND_FINALIZATION.md). It resolves JSON parsing/fault labels and the exact-optional output mismatch, and tightens invalid checkpoint admission without changing the frozen wire contract. Use the finalization delivery's exact ending SHA after independent Astra review.
+
 Backend implementation only; independent Astra Stage A review is pending. Approved planning baseline: **11ec4caa772b71e112b5fc176baacdd6853f8173**, accepted M1.5 ancestor **b6d15a47ec25f57350896f1dc63dc59192f57b00**. Deployment commit **322f2c2 is excluded**. Use the exact final implementation SHA in Sol's accompanying Stage A report/delivery; verify it with `git rev-parse HEAD`. Do not use Claude's historical frontend branch head as the integration base.
 
 The implementation branch is `codex/m2-stage-a-backend` in `MicroFire-V2-m2-stage-a`. The planning worktree remains intact. No dependency/lockfile, scientific admission, feature registry or frontend presentation change is included. All five public missions remain unavailable. This is the working backend for the local `bass-b20-training-v1` episode spanning Station Arrival and Assembly; later missions, a numerical combustion simulator and generative Ask are outside this delivery.

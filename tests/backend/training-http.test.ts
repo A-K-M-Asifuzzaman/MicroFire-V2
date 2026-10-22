@@ -1,14 +1,16 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {spawn,type ChildProcess} from 'node:child_process';
-import {randomBytes,randomUUID} from 'node:crypto';
+import {randomBytes,randomUUID,createHmac} from 'node:crypto';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
-import {requestIdentity,ActionResponseSchema,StartResponseSchema,type Snapshot,type TrainingAction,canonicalJson} from '@microfire/shared';
+import {requestIdentity,ActionResponseSchema,StartResponseSchema,type Snapshot,type TrainingAction,type CheckpointPayload,canonicalJson} from '@microfire/shared';
 import {sourceActions,initialActions,diagnoseActions,repairActions,finishActions} from '../unit/training-helpers';
 
 type Server={url:string;child:ChildProcess;env:NodeJS.ProcessEnv;stop:()=>Promise<void>};
-async function server(port:number,enabled=true,settings?:NodeJS.ProcessEnv):Promise<Server>{
+async function server(requestedPort:number,enabled=true,settings?:NodeJS.ProcessEnv):Promise<Server>{
+  const offset=Number(process.env.MICROFIRE_HTTP_TEST_PORT_OFFSET??0),port=requestedPort+offset;
+  assert(Number.isSafeInteger(offset)&&offset>=0&&port<=65535,'Invalid isolated test port offset');
   const url=`http://127.0.0.1:${port}`;
   try{await fetch(url+'/api/health');throw Error('Refusing an occupied test port');}catch(e){if(e instanceof Error&&e.message==='Refusing an occupied test port')throw e;}
   const env:NodeJS.ProcessEnv={...process.env,NEXT_TELEMETRY_DISABLED:'1',MICROFIRE_LOCAL_GAME_PREVIEW:enabled?'1':'0',MICROFIRE_PREVIEW_ORIGIN:url,MICROFIRE_PREVIEW_ACCESS_TOKEN:randomBytes(32).toString('base64url'),MICROFIRE_PREVIEW_SIGNING_KEY:randomBytes(32).toString('base64url'),MICROFIRE_PREVIEW_REALM_ID:randomUUID(),MICROFIRE_PREVIEW_KEY_ID:'isolated-http-test',...settings};
@@ -144,4 +146,52 @@ test('production HTTP: signing-key rotation preserves raw recovery and refuses t
   try{const c=client(first);await c.auth();token=(await c.start()).snapshot.checkpoint;}finally{await first.stop();}
   const rotated=await server(3255,true,{...first.env,MICROFIRE_PREVIEW_KEY_ID:'rotated-test-key',MICROFIRE_PREVIEW_SIGNING_KEY:randomBytes(32).toString('base64url')});
   try{const c=client(rotated);await c.auth();const r={runtimeId:c.getRuntime(),checkpoint:token};const response=await c.raw('resume',{...r,commandId:await requestIdentity('resume',r)});assert.equal(response.status,400);assert.equal((await response.json()).error.code,'CHECKPOINT_KEY_UNAVAILABLE');assert(token.length>0);}finally{await rotated.stop();}
+});
+
+test('production HTTP: signed restore rejects impossible phases, chronology and claimed achievements',async()=>{
+  const first=await server(3260);let fresh:Snapshot,complete:Snapshot;
+  try{const c=client(first);await c.auth();fresh=(await c.start()).snapshot;complete=await c.advance(fresh,[...initialActions,...diagnoseActions,...repairActions,...finishActions]);}finally{await first.stop();}
+  const restarted=await server(3260,true,first.env);
+  try{
+    const c=client(restarted);await c.auth();
+    const resume=async(checkpoint:string)=>{const body={runtimeId:c.getRuntime(),checkpoint};return c.raw('resume',{...body,commandId:await requestIdentity('resume',body)});};
+    const decode=(s:Snapshot):CheckpointPayload=>JSON.parse(Buffer.from(s.checkpoint.split('.')[0]!,'base64url').toString());
+    const resign=(p:CheckpointPayload)=>{const raw=Buffer.from(canonicalJson(p));return raw.toString('base64url')+'.'+createHmac('sha256',Buffer.from(first.env.MICROFIRE_PREVIEW_SIGNING_KEY!,'base64url')).update('microfire-m2-checkpoint-v1\0').update(raw).digest('base64url');};
+    assert.equal((await resume(complete.checkpoint)).status,200);
+    const early=decode(complete);early.sessionId=randomUUID();early.state.passport.entries[1]!.createdAt=new Date(Date.parse(early.training.repair!.at)-1).toISOString();
+    const station=decode(fresh);station.sessionId=randomUUID();station.training.diagnosticRevision=0;
+    const installed=decode(fresh);installed.sessionId=randomUUID();installed.state.setup=structuredClone(complete.state.setup);
+    const diagnosed=decode(fresh);diagnosed.sessionId=randomUUID();diagnosed.training.diagnosis=structuredClone(complete.training.diagnosis);
+    const repaired=decode(fresh);repaired.sessionId=randomUUID();repaired.training.repair=structuredClone(complete.training.repair);
+    const qualified=decode(fresh);qualified.sessionId=randomUUID();qualified.state.setup.qualifiedRevision=0;
+    for(const p of [early,station,installed,diagnosed,repaired,qualified]){
+      const response=await resume(resign(p));assert.equal(response.status,400);assert.equal((await response.json()).error.code,'CHECKPOINT_UNTRUSTED');
+    }
+    const unsigned=decode(complete);unsigned.state.setup.qualifiedRevision=null;
+    const tampered=Buffer.from(canonicalJson(unsigned)).toString('base64url')+'.'+complete.checkpoint.split('.')[1];assert.equal((await resume(tampered)).status,400);
+    const good=StartResponseSchema.parse(await (await c.raw('session/'+complete.sessionId)).json()).data;assert.equal(good.checkpoint,complete.checkpoint);assert.equal(good.progress.completedChecks,5);
+  }finally{await restarted.stop();}
+});
+
+test('production HTTP: distinct sessions retain separate heads through invalid identities and concurrent edits',async()=>{
+  const s=await server(3261);
+  try{
+    const c=client(s);await c.auth();let a=(await c.start()).snapshot;const b=(await c.start()).snapshot;
+    a=await c.advance(a,[...sourceActions,initialActions[4]!]);
+    const duplicate=await c.action(a,initialActions[4]!);assert(!duplicate.result.ok);assert.equal(duplicate.result.code,'ALREADY_INSTALLED');assert.equal(duplicate.snapshot.checkpoint,a.checkpoint);
+    const body=await c.actionBody(a,initialActions[5]!);
+    for(const value of [
+      {...body,sessionId:'constructor'},
+      {...body,commandId:undefined},
+      {...body,action:{type:'GAME',action:{type:'INSTALL_PART',partId:'__proto__',anchorId:'duct-inlet',orientation:'correct'}}},
+      {...body,action:{type:'GAME',action:{type:'INSTALL_PART',partId:'fan',anchorId:'__proto__',orientation:'correct'}},commandId:'missing'}
+    ])assert.equal((await c.raw('action',value)).status,400);
+    assert.equal((await c.raw('action',{...body,sessionId:b.sessionId})).status,409);
+    const competing=await c.actionBody(a,initialActions[6]!);
+    const responses=await Promise.all([c.raw('action',body),c.raw('action',competing)]);assert.deepEqual(responses.map(r=>r.status).sort(),[200,409]);
+    const one=StartResponseSchema.parse(await (await c.raw('session/'+a.sessionId)).json()).data;
+    const two=StartResponseSchema.parse(await (await c.raw('session/'+b.sessionId)).json()).data;
+    assert.equal(one.revision,a.revision+1);assert.equal(one.state.setup.installedParts.length,2);assert.equal(two.checkpoint,b.checkpoint);assert.equal(two.revision,0);
+    await c.raw('revoke',{});assert.equal((await c.raw('session/'+a.sessionId)).status,403);assert.equal((await c.raw('session/'+b.sessionId)).status,403);
+  }finally{await s.stop();}
 });

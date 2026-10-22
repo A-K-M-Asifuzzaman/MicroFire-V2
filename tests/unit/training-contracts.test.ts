@@ -82,4 +82,15 @@ describe('M2 frozen shared contracts and identities',()=>{
   it('preserves invalid-note precedence and exact valid Unicode content',()=>{
     expect(noteIssue('')).toBe('blank');expect(noteIssue(' x ')).toBe('outer-whitespace');expect(noteIssue('\ud800 ')).toBe('lone-surrogate');expect(noteIssue('x\ry')).toBe('control-character');expect(noteIssue('x'.repeat(501))).toBe('too-long');expect(noteIssue('a\tb\nc界')).toBe(null);
   });
+  it('preserves frozen absent optional response fields without accepting null or losing their types',()=>{
+    const source=read('PASSPORT_REVIEW_RESPONSE');
+    const accepted=ActionResponseSchema.parse({...source,data:{...source.data,feedback:undefined}});
+    expect(accepted.data).not.toHaveProperty('feedback');
+    expect(ActionResponseSchema.safeParse({...source,data:{...source.data,feedback:null}}).success).toBe(false);
+    const refusal=read('QUALIFICATION_REPAIR_REQUIRED_RESPONSE');
+    expect(ActionResponseSchema.parse({...refusal,data:{...refusal.data,faults:undefined}}).data).not.toHaveProperty('faults');
+    const error={apiVersion:'1',error:{code:'STALE_SESSION',message:'Read the current head.',retryable:false,noteIssue:undefined,context:{runtimeId:'33333333-3333-4333-8333-333333333333',currentRevision:undefined}}};
+    const parsed=HttpFailureSchema.parse(error);expect(parsed.error).not.toHaveProperty('noteIssue');expect(parsed.error.context).not.toHaveProperty('currentRevision');
+    expect(HttpFailureSchema.safeParse({...error,error:{...error.error,noteIssue:null}}).success).toBe(false);
+  });
 });

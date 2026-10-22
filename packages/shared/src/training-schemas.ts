@@ -3,7 +3,7 @@ import { GameActionSchema, GameStateSchema, PartIdSchema } from './game';
 import { CitationSchema } from './science';
 import { learningDefinitions } from './equipment';
 import { partDefinitions } from './apparatus';
-import type { CorePreviewAction, NoteIssue } from './training';
+import type { ActionResponse, CorePreviewAction, HttpFailure, NoteIssue } from './training';
 
 export const PreviewIdSchema = z.literal('bass-b20-training-v1');
 export const SafeCounterSchema = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
@@ -60,7 +60,7 @@ export const TrainingCaseSchema = z.strictObject({state:GameStateSchema,training
   if(t.firstWrongDiagnosis&&t.lastWrongDiagnosis)fail(t.firstWrongDiagnosis.at<=t.lastWrongDiagnosis.at,'Wrong diagnosis chronology');
   if(!t.fault)fail(!t.diagnosis&&!t.pendingRepair&&!t.repair&&t.diagnosisCounts.length===0&&!t.firstWrongDiagnosis&&!t.lastWrongDiagnosis,'Metadata before authored fault');
   if(t.fault)fail(t.fault.introducedRevision>=12&&t.fault.introducedRevision%2===0&&t.fault.introducedRevision<=r&&Date.parse(t.fault.introducedAt)<=stateTime,'Future or impossible introduction');
-  if(t.diagnosticRevision!==null)fail(t.diagnosticRevision<=r,'Future diagnostic');
+  if(t.diagnosticRevision!==null)fail(t.diagnosticRevision<=r&&(s.activeMission==='bass-assembly'||s.completedMissions.includes('bass-assembly')),'Future or pre-Assembly diagnostic');
   if(t.diagnosis){
     fail(t.fault&&t.fault.introducedRevision<=t.diagnosis.faultyRevision&&t.diagnosis.faultyRevision<=r&&t.diagnosticRevision!==null&&t.diagnosticRevision>=t.diagnosis.faultyRevision,'Future or orphan diagnosis');
     fail(t.fault&&t.fault.introducedAt<=t.diagnosis.at&&Date.parse(t.diagnosis.at)<=stateTime,'Diagnosis chronology');
@@ -80,7 +80,7 @@ export const TrainingCaseSchema = z.strictObject({state:GameStateSchema,training
     fail(e.status==='current'&&e.scenario==='research'&&e.observationType==='observed'&&e.evidenceLevel==='direct'&&e.corrections.length===0,'Invalid research provenance');
     fail(e.learnerNotes.length<=4&&e.learnerNotes.every(n=>noteIssue(n)===null),'Invalid notes');
     fail(PreviewTimeSchema.safeParse(e.createdAt).success&&Date.parse(e.createdAt)<=stateTime,'Future or noncanonical source timestamp');
-    if(e.missionId==='bass-assembly')fail(t.repair&&!t.pendingRepair&&s.setup.qualifiedRevision===r&&healthy&&e.setupRevision===r,'Observation before repaired qualification');
+    if(e.missionId==='bass-assembly')fail(t.repair&&t.repair.at<=e.createdAt&&!t.pendingRepair&&s.setup.qualifiedRevision===r&&healthy&&e.setupRevision===r,'Observation before repaired qualification');
     else fail(e.setupRevision===null&&e.learnerNotes.length===0,'Invalid Station source entry');
   }
   for(const message of errors)ctx.addIssue({code:'custom',message});
@@ -131,12 +131,15 @@ const feedback=z.strictObject({correct:z.boolean(),hint:z.string().min(1).max(50
 const displayFault=z.strictObject({partId:PartIdSchema,code:FaultCodeSchema,message:z.string().max(500),repair:z.string().max(500)});
 export const StartResponseSchema=wire(SnapshotSchema);
 export const ResumeResponseSchema=StartResponseSchema;
-export const ActionResponseSchema=wire(z.discriminatedUnion('ok',[z.strictObject({ok:z.literal(true),snapshot:SnapshotSchema,feedback:feedback.optional()}),z.strictObject({ok:z.literal(false),code:TrainingResultCodeSchema,message:z.string().min(1).max(500),faults:z.array(displayFault).max(10).optional(),snapshot:SnapshotSchema})]));
+export const ActionResponseSchema=wire(z.discriminatedUnion('ok',[z.strictObject({ok:z.literal(true),snapshot:SnapshotSchema,feedback:feedback.optional()}),z.strictObject({ok:z.literal(false),code:TrainingResultCodeSchema,message:z.string().min(1).max(500),faults:z.array(displayFault).max(10).optional(),snapshot:SnapshotSchema})])).transform(({apiVersion,data:d}):ActionResponse=>({apiVersion,data:d.ok
+  ?{ok:true,snapshot:d.snapshot,...(d.feedback===undefined?{}:{feedback:d.feedback})}
+  :{ok:false,code:d.code,message:d.message,snapshot:d.snapshot,...(d.faults===undefined?{}:{faults:d.faults})}}));
 export const CapabilityResponseSchema=wire(z.strictObject({enabled:z.literal(true),authorization:z.literal('operator-token-required'),previewId:PreviewIdSchema,runtimeId:PreviewUuidSchema,grant:z.discriminatedUnion('status',[z.strictObject({status:z.literal('required')}),z.strictObject({status:z.literal('valid'),expiresAt:PreviewTimeSchema})])}));
 export const AuthorizeResponseSchema=wire(z.strictObject({authorized:z.literal(true),expiresAt:PreviewTimeSchema,runtimeId:PreviewUuidSchema}));
 export const RevokeResponseSchema=wire(z.strictObject({authorized:z.literal(false)}));
 export const NoteIssueSchema=z.enum(['blank','outer-whitespace','lone-surrogate','control-character','too-long','too-many-bytes']);
-export const HttpFailureSchema=z.strictObject({apiVersion:z.literal('1'),error:z.strictObject({code:z.enum(['INVALID_REQUEST','NOT_FOUND','PAYLOAD_TOO_LARGE','UNSUPPORTED_MEDIA_TYPE','RATE_LIMITED','INTERNAL_ERROR','PREVIEW_UNAUTHORIZED','SESSION_NOT_FOUND','STALE_SESSION','COMMAND_ID_REUSED','CHECKPOINT_UNTRUSTED','CHECKPOINT_VERSION_UNSUPPORTED','CHECKPOINT_KEY_UNAVAILABLE','DATASET_MISMATCH','PREVIEW_CAPACITY','RUNTIME_CHANGED','CASE_ID_REUSED']),message:z.string().min(1).max(500),retryable:z.boolean(),noteIssue:NoteIssueSchema.optional(),context:z.strictObject({runtimeId:PreviewUuidSchema,currentRevision:SafeCounterSchema.optional()}).optional()})});
+export const HttpFailureSchema=z.strictObject({apiVersion:z.literal('1'),error:z.strictObject({code:z.enum(['INVALID_REQUEST','NOT_FOUND','PAYLOAD_TOO_LARGE','UNSUPPORTED_MEDIA_TYPE','RATE_LIMITED','INTERNAL_ERROR','PREVIEW_UNAUTHORIZED','SESSION_NOT_FOUND','STALE_SESSION','COMMAND_ID_REUSED','CHECKPOINT_UNTRUSTED','CHECKPOINT_VERSION_UNSUPPORTED','CHECKPOINT_KEY_UNAVAILABLE','DATASET_MISMATCH','PREVIEW_CAPACITY','RUNTIME_CHANGED','CASE_ID_REUSED']),message:z.string().min(1).max(500),retryable:z.boolean(),noteIssue:NoteIssueSchema.optional(),context:z.strictObject({runtimeId:PreviewUuidSchema,currentRevision:SafeCounterSchema.optional()}).optional()})}).transform(({apiVersion,error:{noteIssue,context,...required}}):HttpFailure=>({apiVersion,error:{...required,
+  ...(noteIssue===undefined?{}:{noteIssue}),...(context===undefined?{}:{context:{runtimeId:context.runtimeId,...(context.currentRevision===undefined?{}:{currentRevision:context.currentRevision})}})}}));
 export const LocalSlotSchema=z.strictObject({storageVersion:z.literal(1),epoch:PreviewUuidSchema,generation:SafeCounterSchema,head:z.strictObject({sessionId:PreviewUuidSchema,revision:SafeCounterSchema,checkpoint:CheckpointTokenSchema}).nullable()});
 export const LocalSaveResultSchema=z.union([z.strictObject({ok:z.literal(true),epoch:PreviewUuidSchema,generation:SafeCounterSchema,savedOnDevice:z.literal(true)}),z.strictObject({ok:z.literal(false),code:z.enum(['LOCAL_NEWER','LOCAL_GENERATION_CHANGED','LOCAL_SAME_REVISION_CONFLICT','LOCAL_DIFFERENT_CASE','LOCAL_NEEDS_REVIEW','LOCAL_STORAGE_UNAVAILABLE','LOCAL_READ_ONLY','LOCAL_LOCK_BUSY']),savedOnDevice:z.literal(false)}),z.strictObject({ok:z.literal(false),code:z.literal('LOCAL_WRITE_FAILED'),cause:z.enum(['quota','permission','serialization','read-back-mismatch','read-back-unavailable']),writeOutcome:z.enum(['not-written','unknown']),savedOnDevice:z.literal(false)})]);
 
