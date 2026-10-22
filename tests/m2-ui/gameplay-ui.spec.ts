@@ -66,6 +66,29 @@ test('touch placement: tapping a part opens the bottom sheet with reachable moun
   await expect(page.locator('.m2-intents')).toContainText('Install Fan at Duct inlet');
 });
 
+test('apparatus cues: progress, designated mount, a wrong mount and a repeated install stay intents the server judges', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'pointer path; touch path above');
+  await open(page, 'assembly-refused');
+  const status = page.getByRole('region', { name: /Assembly/ });
+  await expect(status).toContainText('1 of 10 fitted');
+  await expect(status).toContainText('Suggested next by mounting order: Fan');
+  await page.getByRole('group', { name: 'Parts tray' }).getByRole('button', { name: /^Fan/ }).click();
+  await expect(status).toContainText('designated mount: Duct inlet');
+  // The part spec's own mount is listed first and badged in the panel and on the schematic; every mount stays choosable.
+  await expect(page.locator('.m2-mounts label').first()).toContainText('Duct inletDesignated mount');
+  await expect(page.getByRole('button', { name: /Duct inlet: .*designated mount/ })).toHaveAttribute('data-designated', 'true');
+  await page.getByRole('radio', { name: 'Honeycomb slot' }).check();
+  const install = page.getByRole('button', { name: 'Install fan' });
+  await install.click();
+  const log = intentLog(page);
+  await expect(log).toContainText('Install Fan at Honeycomb slot');
+  expect(JSON.parse(await log.locator('pre').last().textContent() ?? '{}')).toMatchObject({ action: { action: { type: 'INSTALL_PART', partId: 'fan', anchorId: 'duct-honeycomb-slot' } } });
+  await expect(status).toContainText('1 of 10 fitted'); // nothing was fitted locally
+  await install.click(); // a repeated action is a second intent, never a local success
+  await expect(log.locator('pre')).toHaveCount(2);
+  await expect(page.getByRole('group', { name: 'Parts tray' }).getByRole('button', { name: /^Fan/ })).toContainText('Not fitted');
+});
+
 test('fault: authored-training labels, flagged fan, no findings before a check', async ({ page }) => {
   await open(page, 'fault');
   await expect(page.getByText('Authored training fault — not a NASA incident.').first()).toBeVisible();

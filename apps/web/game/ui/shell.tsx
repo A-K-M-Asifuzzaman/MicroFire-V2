@@ -12,7 +12,7 @@ import { PassportPanel } from './passport';
 import { PixGuide, reaction } from './pix';
 import { useSoundCues } from './sound';
 import { QualificationPanel, RepairPanel } from './repair';
-import { PartsTray, PlacementPanel, Schematic } from './schematic';
+import { AssemblyStatus, PartsTray, PlacementPanel, Schematic } from './schematic';
 import { ArrivalCinematic, SourceTerminal } from './station';
 import './game.css';
 
@@ -86,6 +86,7 @@ function Mission({ s, intro: replay }: { s: Snapshot; intro: boolean }) {
             ? <Bench3D s={s} faultMoment={faultMoment} onUnavailable={() => setWebglLost(true)} />
             : <Schematic s={s} />}
           {webglLost && view === '3d' && <p className="m2-notice" data-tone="info" role="status">The 3D bench is not available on this device (WebGL unavailable or lost). The schematic shows the same state; nothing was reset.</p>}
+          <AssemblyStatus s={s} />
           <div className="m2-workbench">
             <PartsTray s={s} />
             <PlacementPanel s={s} />

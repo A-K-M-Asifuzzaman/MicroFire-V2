@@ -106,11 +106,12 @@ export function Schematic({ s }: { s: Snapshot }) {
         const flagged = occupant && (occupant.authoredFault || occupant.findings.length > 0);
         const pending = parts.some((p) => p.pendingRepair && p.spec.anchorId === anchorId);
         const target = choosing && selection.anchorId === anchorId;
+        const designated = choosing && selectedPart!.spec.anchorId === anchorId;
         const name = anchorLabel(data, anchorId);
         return <button key={anchorId} type="button" className="m2-hotspot" style={{ left: `${x / W * 100}%`, top: `${y / H * 100}%` }}
-          data-occupied={!!occupant} data-flagged={!!flagged} data-pending={pending} data-target={target} data-choosing={choosing}
+          data-occupied={!!occupant} data-flagged={!!flagged} data-pending={pending} data-target={target} data-choosing={choosing} data-designated={designated}
           aria-pressed={choosing ? target : undefined}
-          aria-label={`${name}: ${occupant ? `${occupant.spec.label} fitted, ${orientationLabels[occupant.installed!.orientation].toLowerCase()}` : pending ? 'empty, repair pending' : 'empty mount'}${choosing ? `. Choose as the mount for ${selectedPart!.spec.label}` : ''}`}
+          aria-label={`${name}: ${occupant ? `${occupant.spec.label} fitted, ${orientationLabels[occupant.installed!.orientation].toLowerCase()}` : pending ? 'empty, repair pending' : 'empty mount'}${designated ? ', designated mount' : ''}${choosing ? `. Choose as the mount for ${selectedPart!.spec.label}` : ''}`}
           onClick={() => (choosing ? select({ anchorId }) : occupant ? select({ partId: occupant.spec.id, anchorId: null }) : undefined)}>
           <span className="m2-hotspot-label">{name}</span>
         </button>;
@@ -120,14 +121,35 @@ export function Schematic({ s }: { s: Snapshot }) {
   </figure>;
 }
 
+/** The first loose part whose public mounting-order prerequisites are all fitted. A hint only; the server decides. */
+const suggested = (parts: RigPart[]) => parts.find((p) => !p.installed && p.spec.requires.every((r) => parts.find((q) => q.spec.id === r)?.installed));
+
+/** Assembly progress, the server's current task and the selected part, in one strip under the bench (never over it). */
+export function AssemblyStatus({ s }: { s: Snapshot }) {
+  const { data, selection } = useGame();
+  const parts = rig(s, data.parts), fitted = parts.filter((p) => p.installed).length;
+  const sel = parts.find((p) => p.spec.id === selection.partId), next = suggested(parts);
+  return <section className="m2-status" aria-labelledby="m2-status-h">
+    <div className="m2-status-progress">
+      <h3 id="m2-status-h" className="m2-h">Assembly <span className="m2-count">{fitted} of {parts.length} fitted</span></h3>
+      <progress max={parts.length} value={fitted} aria-label={`${fitted} of ${parts.length} parts fitted (server-confirmed)`} />
+    </div>
+    <p className="m2-status-task"><b>Current task.</b> {s.progress.nextInstruction}</p>
+    <p className="m2-status-sel" aria-live="polite">{sel
+      ? <><b>{sel.spec.label}</b> {sel.installed ? `fitted at ${anchorLabel(data, sel.installed.anchorId)}` : `selected · designated mount: ${sel.spec.anchorLabel}. Choose a mount, then Install.`}</>
+      : next && allowsCore(s, 'INSTALL_PART') ? <>Suggested next by mounting order: <b>{next.spec.label}</b>. Select it in the tray or on the bench.</> : 'Select a part in the tray or on the bench to inspect it.'}</p>
+  </section>;
+}
+
 /** Parts tray: every part is a button; status text never relies on colour. */
 export function PartsTray({ s }: { s: Snapshot }) {
   const { data, selection, select } = useGame();
+  const parts = rig(s, data.parts), next = allowsCore(s, 'INSTALL_PART') ? suggested(parts) : undefined;
   return <div className="m2-tray" role="group" aria-label="Parts tray">
-    {rig(s, data.parts).map((p) => {
-      const status = p.installed ? (p.authoredFault || p.findings.length ? 'Fitted · flagged' : 'Fitted') : p.pendingRepair ? 'Removed for repair' : 'Not fitted';
+    {parts.map((p) => {
+      const status = p.installed ? (p.authoredFault || p.findings.length ? 'Fitted · flagged' : 'Fitted') : p.pendingRepair ? 'Removed for repair' : p === next ? 'Not fitted · suggested next' : 'Not fitted';
       return <button key={p.spec.id} type="button" className="m2-part" aria-pressed={selection.partId === p.spec.id}
-        data-state={p.installed ? 'fitted' : p.pendingRepair ? 'pending' : 'loose'} data-flagged={p.authoredFault || p.findings.length > 0}
+        data-state={p.installed ? 'fitted' : p.pendingRepair ? 'pending' : 'loose'} data-flagged={p.authoredFault || p.findings.length > 0} data-next={p === next}
         onClick={() => select({ partId: selection.partId === p.spec.id ? null : p.spec.id, anchorId: null, orientation: 'correct' })}>
         <span className="m2-part-name">{p.spec.label}</span><span className="m2-part-state">{status}</span>
       </button>;
@@ -160,8 +182,10 @@ export function PlacementPanel({ s }: { s: Snapshot }) {
     </> : <>
       <fieldset className="m2-choices">
         <legend>Mount</legend>
-        <div className="m2-mounts">{data.parts.map((p) => <label key={p.anchorId}>
-          <input type="radio" name="m2-mount" value={p.anchorId} checked={selection.anchorId === p.anchorId} onChange={() => select({ anchorId: p.anchorId })} />{p.anchorLabel}
+        {/* The part spec's own mount is listed first and badged; every mount stays choosable and the server judges the install. */}
+        <div className="m2-mounts">{[...data.parts].sort((a, b) => Number(b.id === part.spec.id) - Number(a.id === part.spec.id)).map((p) => <label key={p.anchorId} data-designated={p.id === part.spec.id}>
+          <input type="radio" name="m2-mount" value={p.anchorId} checked={selection.anchorId === p.anchorId} onChange={() => select({ anchorId: p.anchorId })} />
+          <span>{p.anchorLabel}{p.id === part.spec.id && <span className="m2-designated">Designated mount</span>}</span>
         </label>)}</div>
       </fieldset>
       <fieldset className="m2-choices m2-orient">

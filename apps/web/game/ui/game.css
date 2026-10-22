@@ -237,6 +237,8 @@
 .m2-hotspot[data-occupied="true"] { border-color: rgb(127 214 209 / .65); background: transparent; }
 .m2-hotspot[data-occupied="true"]::after { background: transparent; }
 .m2-hotspot[data-choosing="true"]:not([data-occupied="true"]) { border-color: var(--m2-cyan); box-shadow: 0 0 0 6px rgb(115 187 217 / .14); animation: m2-pulse 1.6s ease-in-out infinite; }
+.m2-hotspot[data-designated="true"]:not([data-target="true"]) { border-color: var(--m2-teal); border-style: dashed; box-shadow: 0 0 0 8px rgb(127 214 209 / .18); }
+.m2-hotspot[data-designated="true"]:not([data-target="true"])::after { background: var(--m2-teal); }
 .m2-hotspot[data-target="true"] { border-color: var(--flame); box-shadow: 0 0 0 6px rgb(255 135 56 / .22); animation: none; }
 .m2-hotspot[data-target="true"]::after { background: var(--flame); }
 .m2-hotspot[data-flagged="true"] { border-color: var(--m2-amber); box-shadow: 0 0 0 6px rgb(226 176 74 / .2); }
@@ -255,6 +257,23 @@
 .m2-part-state { font: 500 .7rem/1.2 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--frost-dim); }
 .m2-part[data-state="fitted"] .m2-part-state { color: var(--m2-teal); }
 .m2-part[data-flagged="true"] .m2-part-state, .m2-part[data-state="pending"] .m2-part-state { color: var(--m2-amber); }
+.m2-part[data-next="true"] { border-style: dashed; border-color: rgb(127 214 209 / .6); }
+.m2-part[data-next="true"] .m2-part-state { color: var(--m2-teal); }
+.m2-part[data-state="fitted"] { background: rgb(127 214 209 / .05); }
+.m2-part:focus-visible { outline: 2px solid var(--flame); outline-offset: 2px; }
+/* Assembly strip: progress, the server's current task, the selected part. Sits under the bench, never over it. */
+.m2-status { display: grid; grid-template-columns: minmax(180px, 240px) 1fr; gap: 6px 22px; align-items: center; padding: 12px 16px; border: 1px solid var(--m2-line); border-radius: var(--radius); background: var(--m2-card); }
+.m2-status .m2-h { margin: 0 0 6px; }
+.m2-status progress { width: 100%; height: 8px; appearance: none; border: 0; border-radius: 99px; overflow: hidden; background: rgb(255 255 255 / .08); }
+.m2-status progress::-webkit-progress-bar { background: rgb(255 255 255 / .08); }
+.m2-status progress::-webkit-progress-value { background: var(--m2-teal); border-radius: 99px; }
+.m2-status progress::-moz-progress-bar { background: var(--m2-teal); }
+.m2-status-task, .m2-status-sel { margin: 0; font-size: var(--step--1); max-width: none; }
+.m2-status-sel { grid-column: 2; color: var(--frost-dim); }
+.m2-status-sel b { color: var(--frost); }
+.m2-status-progress { grid-row: span 2; }
+.m2-designated { display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 99px; border: 1px solid rgb(127 214 209 / .55); color: var(--m2-teal); font: 600 .66rem/1.5 var(--mono); letter-spacing: .04em; vertical-align: 1px; }
+.m2-choices label[data-designated="true"] { background: rgb(127 214 209 / .06); }
 .m2-placement, .m2-panel-hint { background: var(--m2-card); border: 1px solid var(--m2-line); border-radius: var(--radius); padding: 16px 18px; }
 .m2-placement-head { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
 .m2-close { min-width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid var(--m2-line); background: transparent; color: var(--frost); font-size: 1.4rem; cursor: pointer; }
@@ -381,9 +400,13 @@
   .m2-pix { grid-template-columns: 64px 1fr; }
   .m2-pix .m2-pix-stage { width: 64px; height: 64px; }
   /* Part details become a bottom sheet so mount/orientation/Install stay reachable without precision dragging. */
-  .m2-placement[data-sheet="true"] { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; max-height: 72vh; overflow: auto; border-radius: 18px 18px 0 0;
+  .m2-placement[data-sheet="true"] { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; max-height: 58vh; overflow: auto; border-radius: 18px 18px 0 0;
     box-shadow: 0 -12px 40px rgb(0 0 0 / .55); padding-bottom: calc(18px + env(safe-area-inset-bottom)); background: #0d1824; }
   .m2-mounts { grid-template-columns: 1fr; }
+  .m2-choices label { min-height: 44px; padding: 2px 8px; }
+  .m2-status { grid-template-columns: 1fr; }
+  .m2-status-progress { grid-row: auto; }
+  .m2-status-sel { grid-column: auto; }
   .m2-bench { aspect-ratio: 4 / 5; }
   .m2-bench-bar { grid-template-columns: 1fr; }
   .m2-bench-help { justify-self: start; }

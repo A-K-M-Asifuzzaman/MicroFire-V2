@@ -8,6 +8,7 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import type { PartSpec } from '../contract';
+import { buildPart, DUCT_LIFT, H, INSPECT, L, mats } from './apparatus';
 import { addEnvironment, DESK, type EnvCue, type EnvOptions, type EnvProgress } from './bench-environment';
 
 export type BenchState = {
@@ -43,7 +44,7 @@ export type BenchApi = { update(s: BenchState): void; faultMoment(): void; react
 /** Artistic environment (Meshy). Absent → the bench renders exactly as before. */
 export type BenchEnvironment = EnvOptions | null;
 
-const L = 1.7, H = 0.76, hx = L / 2, hy = H / 2;
+const { hx, hy } = { hx: L / 2, hy: H / 2 };
 export const ANCHORS3D: Record<string, [number, number, number]> = {
   'msg-work-volume-mount': [0, -hy - 0.24, 0], 'duct-inlet': [-hx - 0.16, 0, 0], 'duct-honeycomb-slot': [-hx + 0.24, 0, 0],
   'test-section-n2-port': [-0.18, -hy, 0], 'top-mounting-rail': [0.04, hy, 0], 'front-window-igniter-lever': [0.34, -0.14, hy + 0.06],
@@ -51,113 +52,6 @@ export const ANCHORS3D: Record<string, [number, number, number]> = {
   'duct-exit': [hx + 0.06, 0, 0]
 };
 const C = { cyan: new THREE.Color('#73bbd9'), amber: new THREE.Color('#e2b04a'), flame: new THREE.Color('#ff8738'), teal: new THREE.Color('#7fd6d1') };
-
-function mats() {
-  return {
-    metal: new THREE.MeshStandardMaterial({ color: '#c3d0dc', metalness: 0.85, roughness: 0.25 }),
-    dark: new THREE.MeshStandardMaterial({ color: '#22344a', metalness: 0.55, roughness: 0.42 }),
-    copper: new THREE.MeshStandardMaterial({ color: '#e08a48', metalness: 0.8, roughness: 0.28 }),
-    sample: new THREE.MeshStandardMaterial({ color: '#dfe9ef', metalness: 0, roughness: 0.15, transparent: true, opacity: 0.85 }),
-    glass: new THREE.MeshPhysicalMaterial({ color: '#9fd8ef', metalness: 0, roughness: 0.08, transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide }),
-    cone: new THREE.MeshBasicMaterial({ color: C.cyan, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide }),
-    accent: new THREE.MeshStandardMaterial({ color: '#0b111a', emissive: C.cyan, emissiveIntensity: 1.4 }),
-    coil: new THREE.MeshStandardMaterial({ color: '#3a2214', emissive: C.flame, emissiveIntensity: 0.6, metalness: 0.4, roughness: 0.5 })
-  };
-}
-type Mats = ReturnType<typeof mats>;
-
-function arrow(m: Mats, len = 0.36) {
-  const g = new THREE.Group();
-  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, len, 12), m.accent); shaft.rotation.z = -Math.PI / 2; shaft.position.x = len / 2;
-  const head = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.11, 16), m.accent); head.rotation.z = -Math.PI / 2; head.position.x = len + 0.04;
-  g.add(shaft, head); return g;
-}
-function viewCone(m: Mats, length: number, radius: number) {
-  const cone = new THREE.Mesh(new THREE.ConeGeometry(radius, length, 32, 1, true), m.cone.clone());
-  cone.rotation.z = Math.PI / 2; cone.position.x = -length / 2; // apex at origin, opening along -x
-  return cone;
-}
-
-/** Each part is built facing its "standard orientation"; reversed rotates the whole group by 180° about Y. */
-function buildPart(id: string, m: Mats): THREE.Group {
-  const g = new THREE.Group(); g.name = id;
-  const add = (o: THREE.Object3D) => { g.add(o); return o; };
-  switch (id) {
-    case 'flow-duct': {
-      const box = new THREE.BoxGeometry(L, H, H);
-      add(new THREE.Mesh(box, m.glass));
-      add(new THREE.LineSegments(new THREE.EdgesGeometry(box), new THREE.LineBasicMaterial({ color: '#73bbd9', transparent: true, opacity: 0.75 })));
-      const win = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.5), new THREE.MeshPhysicalMaterial({ color: '#bfe7f5', transparent: true, opacity: 0.18, roughness: 0, depthWrite: false }));
-      win.position.set(0.36, 0, hy + 0.002); add(win);
-      const frame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(0.62, 0.5)), new THREE.LineBasicMaterial({ color: '#e9eef2', transparent: true, opacity: 0.5 }));
-      frame.position.copy(win.position); add(frame);
-      for (const y of [-hy, hy]) for (const z of [-hy, hy]) { const r = new THREE.Mesh(new THREE.BoxGeometry(L + 0.02, 0.03, 0.03), m.metal); r.position.set(0, y, z); add(r); }
-      const base = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.06, 0.6), m.dark); base.position.set(0, -hy - 0.24, 0); add(base);
-      for (const x of [-0.3, 0.3]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.22, 16), m.metal); post.position.set(x, -hy - 0.12, 0); add(post); }
-      break;
-    }
-    case 'fan': {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.04, 16, 48), m.dark); ring.rotation.y = Math.PI / 2; add(ring);
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.12, 24), m.metal); hub.rotation.z = Math.PI / 2; add(hub);
-      const blades = new THREE.Group(); blades.name = 'blades';
-      for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.22, 0.08), m.metal); b.position.y = 0.15; b.rotation.y = 0.5; const p = new THREE.Group(); p.add(b); p.rotation.x = (i / 6) * Math.PI * 2; blades.add(p); }
-      add(blades);
-      const a = arrow(m); a.position.x = 0.08; a.name = 'marker'; add(a); // standard: points +x, into the duct
-      break;
-    }
-    case 'flow-straightener': {
-      const cell = new THREE.CylinderGeometry(0.045, 0.045, 0.1, 6, 1, true);
-      const inst = new THREE.InstancedMesh(cell, m.metal, 36); const d = new THREE.Object3D(); let n = 0;
-      for (let r = 0; r < 6; r++) for (let q = 0; q < 6; q++) { d.position.set(0, -0.26 + r * 0.1 + (q % 2) * 0.05, -0.26 + q * 0.1); d.rotation.set(0, 0, Math.PI / 2); d.updateMatrix(); inst.setMatrixAt(n++, d.matrix); }
-      add(inst); const frame = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.7, 0.7), m.glass); add(frame);
-      break;
-    }
-    case 'nitrogen-nozzle': {
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 0.14, 24), m.metal); body.position.y = 0.02; add(body);
-      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.1, 24), m.metal); tip.position.y = 0.14; add(tip);
-      const a = arrow(m, 0.2); a.rotation.z = Math.PI / 2; a.position.y = 0.16; a.name = 'marker'; add(a);
-      break;
-    }
-    case 'sample-holder': {
-      const rail = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.04, 0.12), m.metal); add(rail);
-      const card = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.008, 0.2), m.sample); card.position.y = -0.2; card.rotation.z = 0; add(card);
-      const clip = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.2, 0.05), m.dark); clip.position.y = -0.1; add(clip);
-      const a = arrow(m, 0.26); a.rotation.y = Math.PI; a.position.set(0.14, -0.3, 0); a.name = 'marker'; add(a); // standard: opposed to the duct flow (-x)
-      break;
-    }
-    case 'igniter': {
-      const lever = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.34, 12), m.metal); lever.rotation.z = 0.7; lever.position.set(0.05, -0.05, 0); add(lever);
-      const coil = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.012, 8, 24), m.coil); coil.position.set(-0.08, 0.1, 0); add(coil);
-      break;
-    }
-    case 'still-camera': case 'video-camera': {
-      const body = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.16, 0.18), m.dark); add(body);
-      const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.1, 24), m.metal); lens.rotation.z = Math.PI / 2; lens.position.x = -0.15; add(lens);
-      const cone = viewCone(m, 0.75, 0.24); cone.position.x -= 0.2; cone.name = 'cone'; add(cone);
-      if (id === 'still-camera') g.rotation.z = Math.PI / 2; // looks down through the top window (-y after rotation)
-      else { g.rotation.y = -Math.PI / 4; const mirror = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), new THREE.MeshStandardMaterial({ color: '#cfe6ff', metalness: 1, roughness: 0.05 })); mirror.position.set(-0.4, 0, 0); mirror.rotation.y = Math.PI / 4; add(mirror); }
-      break;
-    }
-    case 'radiometer': {
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.16, 24), m.dark); body.rotation.z = Math.PI / 2; add(body);
-      const cone = viewCone(m, 0.9, 0.22); cone.position.x -= 0.08; cone.name = 'cone'; add(cone); // standard: views upstream (-x)
-      break;
-    }
-    case 'exit-plate': {
-      const tex = (() => {
-        const cv = document.createElement('canvas'); cv.width = cv.height = 128; const x = cv.getContext('2d')!;
-        x.fillStyle = '#b9733f'; x.fillRect(0, 0, 128, 128); x.fillStyle = '#06090e';
-        for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) { x.beginPath(); x.arc(8 + i * 16, 8 + j * 16, 4.5, 0, Math.PI * 2); x.fill(); }
-        const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t;
-      })();
-      const plate = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.72, 0.72), new THREE.MeshStandardMaterial({ map: tex, metalness: 0.7, roughness: 0.4 })); add(plate);
-      const screen = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.72, 0.72), new THREE.MeshStandardMaterial({ color: '#c9a14a', metalness: 0.9, roughness: 0.3, transparent: true, opacity: 0.5 })); screen.position.x = 0.05; add(screen);
-      break;
-    }
-  }
-  g.traverse((o) => { o.userData.partId = id; });
-  return g;
-}
 
 export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, parts: readonly PartSpec[], cb: BenchCallbacks, motionOn: boolean, environment: BenchEnvironment = null): Promise<BenchApi | null> {
   let renderer: THREE.WebGLRenderer;
@@ -212,19 +106,20 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     for (const o of [mat, edge, catcher]) { o.rotation.x = -Math.PI / 2; o.position.y = -hy - 0.284; scene.add(o); }
     catcher.position.y += 0.002;
     floor.visible = false; // the cyan contact glow was for the empty void; on the plate it read as a pale veil
-    m.glass.envMapIntensity = 0.35; m.glass.opacity = 0.07; m.glass.color.set('#7fc4e0'); // keep the duct glass from veiling the parts inside it
-    m.metal.color.set('#a7b4c2'); m.metal.roughness = 0.32; // satin rather than mirror: highlights stay below the bloom threshold
+    m.glass.opacity = 0.08; // the duct glass reads by its edges and reflections, never as a veil over the parts inside
     const hero = new THREE.SpotLight('#fff2e2', 34, 16, 0.26, 0.55, 1); hero.position.set(2.2, 6.5, 3.2); hero.target.position.set(0, 0, 0); scene.add(hero, hero.target);
     // Every light costs every lit shader (software rasterisers pay ~0.5 s per program), so existing lights are re-purposed:
     // the rim becomes a teal back light and the warm fill becomes the igniter accent.
-    rim.color.copy(C.teal); rim.intensity = 26; rim.distance = 8; rim.position.set(-0.6, 1.8, -2.6);
+    rim.color.copy(C.teal); rim.intensity = 14; rim.distance = 8; rim.position.set(-0.6, 1.8, -2.6);
     warm.distance = 2.2; warm.decay = 1.6; warm.position.set(0.3, -0.05, 0.75); warm.intensity = 0;
     if (!lite) {
       renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      // A soft, cool front fill so bevels, edges and material boundaries on the apparatus stay readable (full tier only).
+      const fill = new THREE.DirectionalLight('#dbe8ff', 0.9); fill.position.set(-1.5, 1.2, 4); scene.add(fill);
       hero.castShadow = true; hero.shadow.mapSize.set(1024, 1024); hero.shadow.bias = -0.0004; hero.shadow.camera.near = 3; hero.shadow.camera.far = 12; hero.shadow.radius = 4;
       composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
-      composer.addPass(new UnrealBloomPass(new THREE.Vector2(512, 512), 0.6, 0.5, 2.0)); // threshold 2 (linear HDR): only the deliberately over-range light sources bloom
+      composer.addPass(new UnrealBloomPass(new THREE.Vector2(512, 512), 0.32, 0.4, 2.2)); // threshold 2 (linear HDR): only the deliberately over-range light sources bloom
       composer.addPass(new OutputPass());
     }
     scene.environmentIntensity = 0.7; renderer.toneMappingExposure = 1.0;
@@ -240,8 +135,6 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     }
   });
   for (const g of groups.values()) g.traverse((o) => { if (o instanceof THREE.Mesh && !(o.material as THREE.Material).transparent) o.castShadow = true; });
-  // Under the lab key light the 36 straightener cells summed into a white blow-out: satin finish there (material only).
-  if (env) groups.get('flow-straightener')?.traverse((o) => { if (o instanceof THREE.Mesh && o.material instanceof THREE.MeshStandardMaterial && !o.material.transparent) o.material.roughness = 0.6; });
   let flaggedMats: THREE.MeshStandardMaterial[] = [];
   // Install feedback: a confirmed fit flashes its mount ring once (presentation of a server-confirmed change).
   const flash = new Map<string, number>();
@@ -267,7 +160,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   // Ghost: preview of the selected loose part; draggable onto a mount. Purely visual until the server answers.
   let ghost: THREE.Group | null = null, ghostId: string | null = null;
   const ghostHome = new THREE.Vector3(0, 1.0, 0.75), ghostPos = ghostHome.clone();
-  const ghostMat = new THREE.MeshStandardMaterial({ color: '#9fd8ef', emissive: C.cyan, emissiveIntensity: 0.6, transparent: true, opacity: 0.55, depthWrite: false });
+  const ghostMat = new THREE.MeshStandardMaterial({ color: '#9fd8ef', emissive: C.cyan, emissiveIntensity: 0.22, transparent: true, opacity: 0.42, depthWrite: false });
   const setGhost = (id: string | null) => {
     if (ghostId === id) return;
     if (ghost) { scene.remove(ghost); ghost = null; }
@@ -290,8 +183,8 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   const orbit = { theta: HERO.theta, phi: HERO.phi, r: HERO.r, tTheta: HERO.theta, tPhi: HERO.phi, tR: HERO.r, target: new THREE.Vector3(...HERO.target), tTarget: new THREE.Vector3(...HERO.target) };
   let view: BenchView = 'work', viewFocus: THREE.Vector3 | null = null;
   const fitR = (r: number) => r * (camera.aspect < 0.9 ? 1.6 : camera.aspect < 1.3 ? 1.2 : 1);
-  const setView = (v: BenchView, focus: THREE.Vector3 | null = null) => {
-    const shot = VIEWS[v] ?? HERO; view = VIEWS[v] ? v : 'work'; viewFocus = focus;
+  const setView = (v: BenchView, focus: THREE.Vector3 | null = null, framing?: { theta: number; phi: number; r: number }) => {
+    const shot = { ...(VIEWS[v] ?? HERO), ...(framing ?? {}) }; view = VIEWS[v] ? v : 'work'; viewFocus = focus;
     orbit.tR = fitR(shot.r); orbit.tTheta = shot.theta; orbit.tPhi = shot.phi;
     if (focus) orbit.tTarget.copy(focus); else orbit.tTarget.set(...shot.target);
   };
@@ -304,7 +197,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   /** Flagged part first, otherwise the selected fitted part (what Inspect and the arm's lamp look at). */
   const focusPoint = (s: BenchState | null) => {
     const at = s?.selectedPart && s.installed[s.selectedPart] ? ANCHORS3D[s.installed[s.selectedPart]!.anchorId] : undefined;
-    return flaggedPoint(s) ?? (at ? new THREE.Vector3(...at) : null);
+    return flaggedPoint(s) ?? (at ? new THREE.Vector3(...at).add(new THREE.Vector3(0, s!.selectedPart === 'flow-duct' ? DUCT_LIFT : 0, 0)) : null);
   };
   if (env && motionOn) { hold = Infinity; orbit.r = 29; orbit.theta = 0.42; orbit.phi = 1.1; orbit.target.set(-4.5, 0.5, -2); } // opening crane: high three-quarter view of the bay, then down onto the bench
   let lastInput = 0, drift = 0;
@@ -332,7 +225,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
   };
   const label = (partId?: string, anchorId?: string) => {
     if (partId) { const p = parts.find((x) => x.id === partId); return p ? `${p.label}${state?.installed[partId] ? ' · fitted' : ''}` : partId; }
-    if (anchorId) { const p = parts.find((x) => x.anchorId === anchorId); return p ? `${p.anchorLabel}${state?.choosing ? ' · drop or click to choose' : ''}` : anchorId; }
+    if (anchorId) { const p = parts.find((x) => x.anchorId === anchorId); return p ? `${p.anchorLabel}${state?.choosing ? `${p.id === state.selectedPart ? ' · designated mount' : ''} · drop or click to choose` : ''}` : anchorId; }
     return '';
   };
 
@@ -399,7 +292,7 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       if (!el) { el = document.createElement('span'); el.className = 'm2-callout'; el.textContent = parts.find((p) => p.id === id)?.label ?? id; calloutLayer.appendChild(el); callouts.set(id, el); }
       el.dataset.tone = tone;
       const [x, y, z] = ANCHORS3D[state.installed[id]!.anchorId] ?? [0, 0, 0];
-      proj.set(x, y + (id === 'flow-duct' ? hy + 0.15 : 0.12), z).project(camera);
+      proj.set(x, y + (id === 'flow-duct' ? DUCT_LIFT + hy + 0.12 : 0.12), z).project(camera);
       const hidden = proj.z > 1 || Math.abs(proj.x) > 1.05 || Math.abs(proj.y) > 1.05 || orbit.r > 9;
       el.style.opacity = hidden ? '0' : '1';
       el.style.transform = `translate(${((proj.x + 1) / 2) * r.width}px, ${((1 - proj.y) / 2) * r.height}px) translate(-50%, calc(-100% - 14px))`; // leader line ends on the part
@@ -441,26 +334,31 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
     if (env?.update(1 / 60, motion, t)) busy = true;
     if (motion) { const blades = groups.get('fan')?.getObjectByName('blades'); if (blades && state?.installed.fan) { blades.rotation.x = t * 1.6; busy = true; } }
     if (ghost) {
-      if (!drag) { const tgt = state?.pendingTarget ? new THREE.Vector3(...ANCHORS3D[state.pendingTarget]!) : ghostHome; ghostPos.lerp(tgt, motion ? 0.12 : 1); if (ghostPos.distanceTo(tgt) > 1e-3) busy = true; }
-      ghost.position.copy(ghostPos); ghost.position.y += motion && !state?.pendingTarget ? Math.sin(t * 2) * 0.03 : 0;
+      // Placement preview: the ghost sits at the chosen mount (or the one awaiting the server), otherwise it hovers in front.
+      const at = state?.pendingTarget ?? (state?.choosing ? state.selectedAnchor : null);
+      if (!drag) { const tgt = at ? new THREE.Vector3(...ANCHORS3D[at]!) : ghostHome; ghostPos.lerp(tgt, motion ? 0.12 : 1); if (ghostPos.distanceTo(tgt) > 1e-3) busy = true; }
+      if (ghostId === 'flow-duct') ghost.scale.setScalar(at ? 1 : 0.35);
+      ghost.position.copy(ghostPos); ghost.position.y += motion && !at ? Math.sin(t * 2) * 0.03 : 0;
       ghost.rotation.y = state?.orientation === 'reversed' ? Math.PI : 0;
-      ghostMat.opacity = state?.pendingTarget ? 0.35 + Math.sin(t * 6) * 0.15 : 0.55;
+      ghostMat.opacity = state?.pendingTarget ? 0.3 + Math.sin(t * 6) * 0.12 : 0.42;
       if (motion) busy = true;
     }
     for (const [id, a] of anchorObjs) {
       const mat = a.ring.material as THREE.MeshBasicMaterial;
       const target = id === highlighted || id === state?.selectedAnchor;
       const occupied = Object.values(state?.installed ?? {}).some((v) => v.anchorId === id);
-      const want = state?.choosing ? (target ? 1 : occupied ? 0.12 : 0.55) : id === state?.pendingTarget ? 0.8 : 0;
+      // The public part spec names each part's mount; that mount is marked teal. The server still decides every install.
+      const designated = !!state?.choosing && parts.find((p) => p.id === state?.selectedPart)?.anchorId === id;
+      const want = state?.choosing ? (target || designated ? 1 : occupied ? 0.12 : 0.4) : id === state?.pendingTarget ? 0.8 : 0;
       const f = flash.get(id) ?? 0;
-      mat.opacity = Math.max(step(mat.opacity, want), f); mat.color.copy(target ? C.flame : f > 0 ? C.teal : C.cyan);
+      mat.opacity = Math.max(step(mat.opacity, want), f); mat.color.copy(target ? C.flame : f > 0 || designated ? C.teal : C.cyan);
       if (f > 0) { a.ring.scale.setScalar(1 + (1 - f) * 2.2); const nf = motion ? f - 0.025 : 0; if (nf > 0) flash.set(id, nf); else flash.delete(id); busy = true; }
-      else if (state?.choosing && motion) { a.ring.scale.setScalar(1 + (target ? 0.25 : 0.08) * Math.sin(t * 4)); busy = true; } else a.ring.scale.setScalar(1);
+      else if (state?.choosing && motion) { a.ring.scale.setScalar((designated ? 1.35 : 1) + (target || designated ? 0.25 : 0.08) * Math.sin(t * 4)); busy = true; } else a.ring.scale.setScalar(designated ? 1.35 : 1);
     }
     // Flagged parts (server findings or the authored fault record only) pulse amber; narrower in the lab so the peak never blooms.
-    if (flaggedMats.length) { const [mid, amp] = env ? [0.6, 0.25] : [0.75, 0.45]; const k = motion ? mid + amp * Math.sin(t * 3) : 0.9; for (const mm of flaggedMats) mm.emissiveIntensity = k; if (motion) busy = true; }
+    if (flaggedMats.length) { const [mid, amp] = env ? [0.1, 0.07] : [0.12, 0.08]; const k = motion ? mid + amp * Math.sin(t * 3) : 0.14; /* a glow over the material, never a flat yellow fill */ for (const mm of flaggedMats) mm.emissiveIntensity = k; if (motion) busy = true; }
     for (const [id, g] of groups) g.scale.setScalar(step(g.scale.x, id === state?.selectedPart ? 1.06 : 1));
-    if (fault > 0) { alarm.intensity = 9 * fault * (0.6 + 0.4 * Math.sin(t * 9)); fault = Math.max(0, fault - (motion ? 0.006 : 1)); busy = true; } else alarm.intensity = state?.flagged.length ? 2.2 : 0;
+    if (fault > 0) { alarm.intensity = 9 * fault * (0.6 + 0.4 * Math.sin(t * 9)); fault = Math.max(0, fault - (motion ? 0.006 : 1)); busy = true; } else alarm.intensity = state?.flagged.length ? 0.6 : 0; // a low steady amber cue; the part keeps its own material
     if (sweep > 0) {
       const x = -hx + (1 - sweep) * L; scan.position.x = x; scanWide.position.x = x;
       (scan.material as THREE.MeshBasicMaterial).opacity = 0.9 * Math.sin(sweep * Math.PI); (scanWide.material as THREE.MeshBasicMaterial).opacity = 0.25 * Math.sin(sweep * Math.PI);
@@ -525,7 +423,11 @@ export async function startBench(canvas: HTMLCanvasElement, host: HTMLElement, p
       kick();
     },
     react(cue) { env?.react(cue); kick(); },
-    view(v) { hold = 0; lastInput = performance.now(); setView(v, v === 'inspect' ? focusPoint(state) : null); kick(); },
+    view(v) {
+      hold = 0; lastInput = performance.now();
+      const sel = state?.selectedPart, framing = v === 'inspect' && sel && state?.installed[sel] && !state.flagged.length ? INSPECT[sel] : undefined;
+      setView(v, v === 'inspect' ? focusPoint(state) : null, framing); kick();
+    },
     resize() { size(); kick(); },
     setMotion(on) { motion = on; kick(); },
     stop() {
