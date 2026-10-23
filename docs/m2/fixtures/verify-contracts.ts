@@ -115,6 +115,7 @@ function verify(t:string,key=exampleKey) {
 function noteIssue(text:unknown):NoteIssue|null {
   if(typeof text!=='string'||!text.trim())return 'blank';
   if(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/u.test(text))return 'lone-surrogate';
+  // eslint-disable-next-line no-control-regex -- The frozen note policy deliberately rejects these controls.
   if(/[\u0000-\u0008\u000B-\u001F\u007F-\u009F]/u.test(text))return 'control-character';
   if(text!==text.trim())return 'outer-whitespace';
   if(text.length>500)return 'too-long';
@@ -192,6 +193,7 @@ const resumeRequest:ResumeRequest=identified('resume',{runtimeId,checkpoint:(exa
 
 proof('01 typed diagnostic success and source consistency',()=>checkSnapshot(diagnosticSuccess.data.snapshot));
 proof('02 missing/malformed/inconsistent diagnostic rejected',()=>{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Intentional invalid-state mutation in the historical planning oracle.
   for(const mutate of [(s:any)=>{delete s.diagnostic},(s:any)=>{s.diagnostic.findings=[]},(s:any)=>{s.diagnostic.qualified=true},(s:any)=>{s.diagnostic.checkedSetupRevision=11},(s:any)=>{s.diagnostic.findings[0].symptom.category='historical-nasa-observation'},(s:any)=>{s.diagnostic.findings[0].purpose.citations[0].locator.page=112}]){const s=structuredClone(ds);mutate(s);assert.throws(()=>checkSnapshot(s));}
 });
 proof('03 typed diagnostic refusal and stale restore',()=>{assert(!diagnosticError.data.ok);assert.equal(diagnosticError.data.code,'DIAGNOSTIC_STALE');assert.equal(diagnostic(roundTrip(a)).status,'stale');});
@@ -232,6 +234,7 @@ proof('11 absent/expired/revoked/restarted grants deny',()=>{
   const allowed=(grant:string,now:number)=>{const g=grants.get(grant);return !!g&&g.runtime===runtime&&now<g.expires;};
   assert(!allowed('public-proof-grant',0));grants.set('public-proof-grant',{runtime,expires:3600});assert(allowed('public-proof-grant',3599));assert(!allowed('public-proof-grant',3600));grants.delete('public-proof-grant');assert(!allowed('public-proof-grant',1));grants.set('public-proof-grant',{runtime,expires:3600});runtime=realmId;assert(!allowed('public-proof-grant',1));
 });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Intentional invalid-state mutation in the historical planning oracle.
 proof('12 key rotation, MAC tamper and scope fields',()=>{const t=token(payload(a,19,pendingACommand));verify(t);assert.throws(()=>verify(t,Buffer.alloc(32,8)));assert.throws(()=>verify(t.slice(0,-1)+(t.endsWith('a')?'b':'a')));for(const field of ['realmId','origin','rulesVersion']){const p=payload(a,19,pendingACommand) as any;p[field]='different';assert.notEqual(token(p),t);}assert.equal(verify(t).expiresAt,null);});
 proof('13 request intent key ordering and different payload detection',()=>{assert(identity('action',wrongRequest));assert(identity('start',startRequest));assert(identity('resume',resumeRequest));assert.equal(digest({b:2,a:1}),digest({a:1,b:2}));assert(!identity('action',{...wrongRequest,expectedRevision:6}));assert(!identity('start',{...startRequest,mode:'normal'}));});
 proof('14 start retry cannot allocate a second same-runtime case',()=>{
@@ -246,7 +249,7 @@ proof('15 action retry precedence, old replay and refusal',()=>{
   const request=identified('action',{runtimeId,sessionId,expectedRevision:18,action:{type:'GAME' as const,action:install('fan')}});let head=18,applications=0,last='';
   const deliver=(r:ActionRequest,authorized=true)=>{assert(authorized,'PREVIEW_UNAUTHORIZED');assert(identity('action',r),'COMMAND_ID_REUSED');if(r.commandId===last&&head===r.expectedRevision+1)return head;assert.equal(r.expectedRevision,head,'STALE_SESSION');head++;applications++;last=r.commandId;return head;};
   assert.equal(deliver(request),19);assert.equal(deliver(request),19);assert.equal(applications,1);assert.throws(()=>deliver(request,false),/PREVIEW_UNAUTHORIZED/);assert.throws(()=>deliver({...request,action:{type:'RUN_DIAGNOSTIC'}}),/COMMAND_ID_REUSED/);
-  const next=identified('action',{...(({commandId,...r})=>r)(request),expectedRevision:19});deliver(next);assert.throws(()=>deliver(request),/STALE_SESSION/);assert.equal(applications,2);assert.equal(refusal.state,duct.state);
+  const next=identified('action',{...(({commandId:discarded,...r})=>{void discarded;return r;})(request),expectedRevision:19});deliver(next);assert.throws(()=>deliver(request),/STALE_SESSION/);assert.equal(applications,2);assert.equal(refusal.state,duct.state);
 },'monotonic revision/receipt oracle, no gameplay coordinator');
 proof('16 resume duplicate/equal-token/newer-head policy',()=>{
   let head:{revision:number;checkpoint:string}|null=null,creations=0;
@@ -286,7 +289,7 @@ examples.RESUME_AFTER_RESTART_REQUEST=identified('resume',{runtimeId:restartId,c
 examples.RESUME_AFTER_RESTART_RESPONSE={apiVersion:'1',data:{...(examples.PENDING_REPAIR_A as StartResponse).data,runtimeId:restartId}};
 let noteFilled=passportCase;
 for(let i=0;i<4;i++)noteFilled=noteActionExpected(noteFilled,{type:'ADD_LEARNER_NOTE',text:'界'.repeat(500)});
-let complete=core(noteFilled,{type:'COMPLETE_MISSION',missionId:'bass-assembly'});
+const complete=core(noteFilled,{type:'COMPLETE_MISSION',missionId:'bass-assembly'});
 const entry=complete.state.passport.entries.find(e=>e.missionId==='bass-assembly')!;
 const codes=['MISSING','WRONG_ANCHOR','MISSING_PREREQUISITE','REVERSED'] as const;
 const wrongCells=partDefinitions.flatMap(p=>codes.filter(c=>!(p.id==='fan'&&c==='REVERSED')).map(faultCode=>({partId:p.id,faultCode,count:Math.floor((Number.MAX_SAFE_INTEGER-100)/39)})));
@@ -296,6 +299,7 @@ const maxResume=identified('resume',{runtimeId,checkpoint:token(representative)}
 const mathematicalToken=Buffer.alloc(20480).toString('base64url')+'.'+Buffer.alloc(32).toString('base64url');
 const boundaryResume=identified('resume',{runtimeId,checkpoint:mathematicalToken});
 proof('19 payload/request boundaries and legal Unicode notes',()=>{assert(entry.learnerNotes.every(n=>n.length===500&&Buffer.byteLength(JSON.stringify(n))===1502));assert(bytes(representative)<20480);assert(bytes(maxResume)<32768);assert.equal(mathematicalToken.length,27351);for(const n of [20479,20480,20481])assert.equal(n<=20480,n!==20481);const body=canonical(boundaryResume);for(const n of [32767,32768,32769]){const padded=body+' '.repeat(n-Buffer.byteLength(body));assert.equal(Buffer.byteLength(padded),n);assert.equal(n<=32768,n!==32769);}assert.throws(()=>canonical('x\ud800x'));},'serialization/boundary arithmetic, not streaming runtime parser');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Intentional invalid-state mutation in the historical planning oracle.
 proof('20 canonical scientific invariants and examples',()=>{validatePassport(complete.state.passport);assert.equal(catalog.experiments.length,1);assert.equal(catalog.experiments[0]!.conditions.oxygenPct.value,17.4);for(const e of complete.state.passport.entries)for(const l of catalog.experiments[0]!.limitations)assert(e.limitations.includes(l));for(const v of Object.values(examples)){const d=(v as any).data;if(d?.snapshot)checkSnapshot(d.snapshot);else if(d?.state)checkSnapshot(d);}});
 proof('21 R1 all labels and fifteen reachable diagnostic strings',()=>{
   assert.equal(equipmentDefinitions.length,10);let symptoms=0;
@@ -309,6 +313,7 @@ proof('22 R2 source/training/learner separation and action provenance',()=>{
   for(const c of [passportCase,completedCase,complete])for(const e of c.state.passport.entries)assert.deepEqual(e.corrections,[]);
   const old=structuredClone(passportCase);old.state.passport.entries[0]!.corrections=[{previous:'NASA source',revised:'Training fan repaired',reason:'prefix is not provenance',at}];assert.throws(()=>passportPresentation(old));
   const forged=structuredClone(passportCase);forged.training.repair!.removedAtRevision=17;assert.throws(()=>passportPresentation(forged));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Intentional invalid-state mutation in the historical planning oracle.
   const falseStamp=structuredClone(examples.PASSPORT_REVIEW_RESPONSE) as ActionResponse;assert(falseStamp.data.ok);(falseStamp.data.snapshot.passportPresentation.trainingHistory as any).evidenceLevel='direct';assert.throws(()=>checkSnapshot(falseStamp.data.snapshot));
   assert.equal(passportPresentation(complete).learnerConclusions.notes.length,4);assert.equal(passportPresentation(complete).learnerConclusions.scientificValidation,'not-assessed');
 });
