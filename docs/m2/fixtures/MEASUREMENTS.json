@@ -1,0 +1,19 @@
+{
+  "diagnosticResponseBytes": 15280,
+  "scope": "planning serialization only; no M2 runtime implemented",
+  "canonicalCheckpointBytes": 13415,
+  "signedTokenBytes": 17931,
+  "resumeBodyBytes": 18078,
+  "largestPendingHistoryBytes": 3228,
+  "maxTokenBytes": 27351,
+  "maxResumeBodyBytes": 27498,
+  "localSlotAtMaxTokenBytes": 27552,
+  "legalNoteBytes": 1502,
+  "legacyInvalidSurrogateNoteBytes": 2048,
+  "sourcePassportBytes": 7915,
+  "idempotencyReceiptBytes": 136,
+  "addedEnvelopeBytes": 583,
+  "fixtureCount": 33,
+  "ordinaryCompleteResponseBytes": 12366,
+  "fullCompleteResponseBytes": 39965
+}

@@ -145,6 +145,11 @@ describe('integration-review regressions', () => {
 });
 
 describe('later missions', () => {
+  it('preserves the original prediction once the result is recorded for that setup', () => {
+    const observed = play(initial(), [...station, ...assembly, ...detective.slice(0, 3)]);
+    expect(step(observed, { type: 'PREDICT_OUTCOME', experimentId: 'bass2-b20', prediction: 'I knew it would burn the entire sample.' })).toMatchObject({ ok: false, code: 'INVALID_ACTION', state: observed });
+    expect(observed.predictions[0]!.prediction).toBe('The flame will go out early.');
+  });
   it('requires a prediction for the current setup before revealing the documented result', () => {
     const s = play(initial(), [...station, ...assembly, detective[0]!]);
     expect(step(s, detective[2]!)).toMatchObject({ ok: false, code: 'PREDICTION_REQUIRED' });
@@ -184,6 +189,7 @@ describe('property: random play never fabricates or duplicates evidence', () => 
       install('video-camera'), install('fan'), { type: 'QUALIFY_INSTRUMENT' }, { type: 'CLASSIFY_CLAIM', claimId: 'trial-b20-thickness', kind: 'observed', evidenceLevel: 'direct' },
       ...script];
     let state = initial(), maxEntries = 0, qualified = 0, next = 0;
+    const storage = memory();
     for (let i = 0; i < 2000; i++) {
       const scripted = rand(4) > 0;
       const result = step(state, scripted ? script[next % script.length]! : disrupt[rand(disrupt.length)]!);
@@ -194,18 +200,20 @@ describe('property: random play never fabricates or duplicates evidence', () => 
       maxEntries = Math.max(maxEntries, state.passport.entries.length);
       if (state.setup.qualifiedRevision !== null) qualified++;
       expect(GameStateSchema.safeParse(state).success).toBe(true);
+      expect(saveProgress(storage, state)).toEqual({ ok: true });
+      expect(loadProgress(storage, state.mode, state.datasetVersion)).toMatchObject({ status: 'loaded', state });
       expect(() => validatePassport(state.passport)).not.toThrow();
       if (state.setup.qualifiedRevision !== null) expect(diagnose(state.setup.installedParts).qualified).toBe(true);
     }
     expect(disrupt.every((a) => GameActionSchema.safeParse(a).success)).toBe(true);
     expect(maxEntries).toBeGreaterThan(1);
     expect(qualified).toBeGreaterThan(0);
-  });
+  }, 15_000);
 });
 
 describe('save, load and recovery', () => {
   it('round-trips a full v2 campaign and keeps demo saves separate', () => {
-    const storage = memory(), full = play(initial(), [...station, ...assembly]);
+    const storage = memory(), full = play(initial(), [...station, ...assembly, ...detective, ...trial, ...lunar]);
     expect(saveProgress(storage, full).ok).toBe(true);
     expect(saveProgress(storage, createGameState(catalog.datasetVersion, 'demo', at)).ok).toBe(true);
     expect(loadProgress(storage, 'normal', catalog.datasetVersion)).toEqual({ status: 'loaded', state: full, migratedFrom: null });

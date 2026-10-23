@@ -1,4 +1,5 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
+import { isDeepStrictEqual } from 'node:util';
 import { AskResponseSchema } from '@microfire/shared';
 import { RANKING_VERSION, RETRIEVAL_VERSION, answerQuestion, catalog, rankEvidence, verifyAnswerStatements } from '@microfire/science';
 import gold from '../data/evals/science-gold.json';
@@ -11,8 +12,9 @@ for (const c of gold.ask) {
   const expect = c.expect as Expect;
   const request = { question: c.question, targetConditions: ('targetConditions' in c ? c.targetConditions : {}) as Record<string, never> };
   const a = AskResponseSchema.parse({ apiVersion: '1', data: answerQuestion(request) }).data;
-  if (JSON.stringify(a) === JSON.stringify(answerQuestion(request))) deterministic++;
   const problems: string[] = [];
+  if (isDeepStrictEqual(a, answerQuestion(request))) deterministic++;
+  else problems.push('non-repeatable answer');
   if (a.abstained !== expect.abstained) problems.push(`abstained=${a.abstained}`);
   if (a.abstained && expect.abstained) abstainTP++;
   if (a.abstained && !expect.abstained) abstainFP++;
@@ -82,5 +84,5 @@ ${rankRows.join('\n')}
 `;
 mkdirSync('docs/evals', { recursive: true });
 writeFileSync('docs/evals/report.md', report);
-console.log(`Ask ${askPass}/${n}, rank ${rankPass}/${gold.rank.length}, faithful ${faithful}/${answered}, forbidden ${forbidden}. Wrote docs/evals/report.md`);
+console.log(`Ask ${askPass}/${n}, rank ${rankPass}/${gold.rank.length}, faithful ${faithful}/${answered}, forbidden ${forbidden}, repeatable ${deterministic}/${n}. Wrote docs/evals/report.md`);
 if (askPass !== n || rankPass !== gold.rank.length) process.exitCode = 1;

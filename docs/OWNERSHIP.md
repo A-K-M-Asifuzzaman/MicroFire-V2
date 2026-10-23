@@ -14,7 +14,7 @@ The API exception takes precedence over Claude's broad `app` ownership. A domain
 
 ## Claude entry checklist after contract review/merge
 
-1. Verify remote and clean feature worktree; read the supplied CLAUDE/master/design/quality specifications and latest ten design references. Branch from current `origin/main`, which carries the Phase One backend.
+1. Verify remote and clean feature worktree; read the supplied CLAUDE/master/design/quality specifications and latest ten design references. Base M1 on feat/astra-defect-fixes (exact verified SHA in the Astra fix report); origin/main alone omits local backend corrections.
 2. Run npm ci, npm run check and browser checks. Inspect the tiny foundation UI as an integration surface, not approved final art direction.
 3. Import contracts from `@microfire/shared`. Search, source detail, rank, gaps, citation verification, export and Ask are implemented (see API_CONTRACTS.md). Render `coverage` and limitations on every research surface. Show Ask abstentions (200, `abstained: true`) and compare 404s ("needs another validated record") truthfully; don't fabricate fallback answers or comparison tables.
 4. Build P1 research surfaces first with the backend owner. Preserve the B20 calibrated oxygen correction and unknown pressure. Source cells and mockup numbers have different authority.
@@ -32,14 +32,16 @@ No request has been sent to another chat/agent. Phase Zero was executed solo as 
 ## Worktrees and integration (current)
 
 - `MicroFire-V2/` is the primary checkout and holds the repository's `.git`; never delete it.
-- Codex works in `../MicroFire-V2-codex` on `feat/phase-one-science`.
-- Claude should add its own worktree from current `origin/main`. Inspect `git worktree list` and `git branch --all` first, and never reuse or overwrite another agent's checkout:
+- Historical science worktree: ../MicroFire-V2-codex / feat/phase-one-science; preserve its six pending reason edits. Integration worktree: ../MicroFire-V2-astra-fixes / feat/astra-defect-fixes, based on 1c1af90.
+- Claude should add its own worktree from the verified integration branch below. Inspect `git worktree list` and `git branch --all` first, and never reuse or overwrite another agent's checkout:
 
 ```sh
 git fetch origin
-git worktree add -b feat/p1-ui ../MicroFire-V2-claude origin/main
+git worktree add -b feat/p1-ui ../MicroFire-V2-claude feat/astra-defect-fixes
 ```
 
 In each checkout, verify the sole origin, then run Node 24 `npm ci` and `npm run check`. Dev ports: Claude 3101, Codex 3102. Browser suites share port 3217, so run them one at a time and check it is free (`lsof -nP -iTCP:3217 -sTCP:LISTEN`). Set PLAYWRIGHT_BROWSERS_PATH to the approved cache `MicroFire-V2/.cache/ms-playwright`.
 
-Integration, per owner direction (2026-10-11): both agents push verified work to `origin/main` so each can track the other. Rebase on `origin/main`, rerun `npm run check` and the browser suite, then fast-forward push. Never force-push. Shared files (`packages/shared`, config, lockfile, `tests/e2e`, feature states, this document) still need the other agent's review before consumers depend on a change. No deployment without separate owner approval.
+Current owner direction (2026-10-14) supersedes the historical direct-main workflow: commit fixes on feat/astra-defect-fixes; do not push directly to main or deploy. Review/integrate through a feature branch after checks. The owner explicitly authorized these five contract corrections and the six reviewed registry reasons. Feature availability is unchanged. Claude still reviews actual consumer adoption; this is not a claim of Claude's signoff.
+
+Dependency handoff: Sol makes no package/lockfile changes in this correction. Claude owns the next frontend dependency proposal (Three.js/R3F) and package/lockfile edits in its own branch; Sol must not edit those files concurrently. Pin a single jointly reviewed dependency update and rerun install, audit, build, unit and browser checks before merge. No dependency upgrade, paid asset job, or availability promotion is implied by this assignment. This document records the handoff; no other chat was messaged.

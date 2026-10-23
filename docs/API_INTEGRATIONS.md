@@ -1,5 +1,7 @@
 # External integration requirements — zero calls to paid services
 
+Current Phase One backend uses a deterministic catalog template (`p1-grounded-template-v2`) with no provider adapters or network ingestion in runtime. A paid/model provider has not been selected, enabled or tested. The original Phase Zero discovery requirements below remain prerequisites for any future adapter, including provider failure/timeout testing, provenance, rights, shared rate protection and explicit spending approval.
+
 Phase Zero implements **no external provider adapters**. Runtime uses the bundled source fixture. Public GitHub reference reads and one public NASA PDF download were the only data acquisition. No account login, billing/balance inspection, LLM call or Meshy generation was made.
 
 | Integration | Authority / endpoint | Requirements before implementation |

@@ -30,14 +30,17 @@
     { "id": "quarantined-b16", "question": "What happened in B16?", "expect": { "abstained": true, "code": "quarantined-record" } },
     { "id": "quarantined-b19", "question": "Compare B19 and B20 blowoff.", "expect": { "abstained": true, "code": "quarantined-record" } },
     { "id": "quarantined-f2", "question": "Summarize test F2.", "expect": { "abstained": true, "code": "quarantined-record" } },
-    { "id": "absent-test", "question": "Describe test B77.", "expect": { "abstained": true, "code": "no-relevant-evidence" } }
+    { "id": "absent-test", "question": "Describe test B77.", "expect": { "abstained": true, "code": "no-relevant-evidence" } },
+    { "id": "absent-long-test", "question": "What happened with PMMA in B999?", "expect": { "abstained": true, "code": "no-relevant-evidence" } },
+    { "id": "zero-target-match", "question": "What happened in B20?", "targetConditions": { "material": "cotton", "pressureKpa": 101 }, "expect": { "abstained": false, "categories": ["unknown-or-gap"], "textIncludes": ["does not match any requested target conditions"] } }
   ],
   "rank": [
-    { "id": "rank-pmma-o2", "question": "PMMA flame", "targetConditions": { "material": "PMMA", "oxygenPct": 17.4 }, "expectTop": "bass2-b20", "expectLevel": "direct" },
-    { "id": "rank-pmma-gravity", "question": "PMMA film", "targetConditions": { "material": "PMMA", "gravity": "microgravity" }, "expectTop": "bass2-b20", "expectLevel": "analogous" },
+    { "id": "rank-pmma-o2", "question": "The B20 observation log reports that the flame burned the entire sample.", "targetConditions": { "material": "PMMA", "oxygenPct": 17.4 }, "expectTop": "bass2-b20", "expectLevel": "direct" },
+    { "id": "rank-pmma-gravity", "question": "The B20 observation log reports that the flame burned the entire sample.", "targetConditions": { "material": "PMMA", "gravity": "microgravity" }, "expectTop": "bass2-b20", "expectLevel": "analogous" },
     { "id": "rank-air-oxygen", "question": "flame at air oxygen", "targetConditions": { "oxygenPct": 21 }, "expectTop": "bass2-b20", "expectLevel": "gap" },
     { "id": "rank-cotton", "question": "cotton fabric", "targetConditions": { "material": "cotton" }, "expectTop": null },
-    { "id": "rank-opposed", "question": "opposed flow film", "targetConditions": {}, "expectTop": "bass2-b20", "expectLevel": "analogous" },
+    { "id": "rank-opposed", "question": "opposed flow film", "targetConditions": {}, "expectTop": "bass2-b20", "expectLevel": "gap" },
+    { "id": "rank-unmeasured-temperature", "question": "What is the flame temperature in B20?", "targetConditions": { "material": "PMMA" }, "expectTop": "bass2-b20", "expectLevel": "gap" },
     { "id": "rank-nothing", "question": "regolith dust", "targetConditions": {}, "expectTop": null }
   ]
 }

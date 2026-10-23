@@ -12,9 +12,10 @@
     "@microfire/game-core": "0.1.0",
     "@microfire/science": "0.1.0",
     "@microfire/shared": "0.1.0",
-    "next": "16.4.0",
+    "next": "16.4.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "server-only": "0.0.1"
+    "server-only": "0.0.1",
+    "three": "0.186.1"
   }
 }

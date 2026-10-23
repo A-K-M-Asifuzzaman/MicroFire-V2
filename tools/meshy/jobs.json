@@ -1,0 +1,316 @@
+{
+ "note": "Planned Meshy jobs. Nothing here runs without `run <id> --approved-cap N` after explicit owner approval. Estimates from https://docs.meshy.ai/en/api/pricing (2026-10-15): text-to-3D preview meshy-7.1 = 20, refine 2K/4K = 10.",
+ "jobs": [
+  {
+   "id": "pix-v1",
+   "batch": "M1.5 pilot",
+   "purpose": "PIX research companion: hero portrait on Ask PIX and the PIX station in the home observatory (replacing the procedural placeholder).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Original compact floating research robot companion for a microgravity combustion science observatory. Rounded hard-surface capsule head with a wide dark glass visor showing two soft cyan optical sensors, a short antenna topped by a small amber flame-shaped light, slim floating torso with a thin hover ring underneath, no legs, two tiny folded manipulator fins. Premium stylized semi-realistic hard-surface design, navy and charcoal shell panels, subtle ivory seams, restrained amber accent lights, scientific cyan details. Clean readable silhouette, centered, single object, no base, no floor, no text, no logos, no insignia.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "navy and charcoal painted metal shell with fine panel seams, satin ivory trim, dark glossy glass visor, emissive cyan sensor eyes, small amber light on the antenna tip, subtle realistic wear, physically based materials"
+   }
+  },
+  {
+   "id": "pix-v2",
+   "batch": "M1.5 pilot (approved redo after pix-v1 failed QA)",
+   "purpose": "PIX companion from MicroFire's own concept art (tools/meshy/concepts/pix-v2-concept.png, drawn in-house from components/pix-avatar.tsx).",
+   "estimateCredits": 30,
+   "image": {
+    "file": "concepts/pix-v2-concept.png",
+    "ai_model": "meshy-7.1",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "should_texture": true,
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "glossy ivory white plastic shell, dark navy glass visor with glowing cyan eyes and smile, navy side pods with small orange lights, orange flame-shaped light on antenna tip, clean premium product finish",
+    "target_formats": [
+     "glb"
+    ],
+    "moderation": true
+   }
+  },
+  {
+   "id": "console-v1",
+   "batch": "M1.5 pilot",
+   "purpose": "Modular research workstation prop for the observatory stations (instanced up to 5×). Screens stay blank so MicroFire renders its own honest display content.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Modular science workstation console for a futuristic space station laboratory: compact angled desk unit with one large tilted blank display panel, small side instrument modules, cable channels and rounded edges. Hard-surface semi-realistic design, charcoal and navy metal, thin cyan edge light strips, small amber status lights. The display screen is blank and dark with no text, numbers or graphs. Single object, no floor, no logos, no text.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 12000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "charcoal and navy brushed metal, satin black blank glass screen, thin glowing cyan edge strips, tiny amber status lights, clean industrial space-lab finish, physically based materials"
+   }
+  },
+  {
+   "id": "lab-wall-v1",
+   "batch": "M2 premium assets (owner-authorized 600, first allowance 300)",
+   "purpose": "Training-bay architecture: modular wall section instanced around the 3D bench to give the lab a strong architectural identity (artistic, not NASA hardware).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Modular wall section for a futuristic space-station science laboratory, about three metres tall and two metres wide, gently curved, with recessed vertical light channels, a recessed shelf niche holding a few sealed sample canisters, cable conduits and handrails, flat back side, single wall module, no floor. Premium stylized semi-realistic hard-surface design for an original orbital science-laboratory game: ivory-white composite panels, deep navy and charcoal structure, thin glowing cyan light strips, a few small warm amber status lights, clean bevels and readable shapes. No text, no numbers, no logos, no flags, no insignia.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ]
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "ivory white satin composite panels, deep navy and charcoal painted metal, thin emissive cyan light strips, small warm amber status lights, subtle realistic wear and panel seams, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "lab-viewport-v1",
+   "batch": "M2 premium assets (owner-authorized 600, first allowance 300)",
+   "purpose": "Cinematic backdrop: large observation viewport module behind the bench; MicroFire renders its own Earth through the opening (artistic).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Large round observation window module for an orbital laboratory: a thick circular frame with bolted segments and inner dark tinted glass, set into a rectangular wall panel with soft rim lighting, sturdy and elegant, single wall module, flat back, no floor. Premium stylized semi-realistic hard-surface design for an original orbital science-laboratory game: ivory-white composite panels, deep navy and charcoal structure, thin glowing cyan light strips, a few small warm amber status lights, clean bevels and readable shapes. No text, no numbers, no logos, no flags, no insignia.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ]
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "ivory white satin composite panels, deep navy and charcoal painted metal, thin emissive cyan light strips, small warm amber status lights, subtle realistic wear and panel seams, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "training-bench-v1",
+   "batch": "M2 premium assets (owner-authorized 600, first allowance 300)",
+   "purpose": "Dedicated BASS-II training workstation: an artistic workbench whose empty, flat central work area hosts MicroFire's procedural, source-labelled apparatus. The bench itself is decorative, not the NASA glovebox.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Scientific training workbench for a futuristic space laboratory: sturdy rectangular table with a flat completely empty central work surface, a raised open rectangular frame canopy above it with an under-canopy light bar, side tool rails, small drawers and foot rests, nothing placed on the work surface, single object, no floor. Premium stylized semi-realistic hard-surface design for an original orbital science-laboratory game: ivory-white composite panels, deep navy and charcoal structure, thin glowing cyan light strips, a few small warm amber status lights, clean bevels and readable shapes. No text, no numbers, no logos, no flags, no insignia.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ]
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "ivory white satin composite panels, deep navy and charcoal painted metal, thin emissive cyan light strips, small warm amber status lights, subtle realistic wear and panel seams, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "astronaut-v1",
+   "batch": "M2 premium assets (owner-authorized 600, first allowance 300)",
+   "purpose": "Original astronaut scientist character for the training bay (rigged and animated: idle, wave, look around, fist pump). Artistic interpretation, not a NASA suit replica.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Original friendly astronaut scientist character, full body standing in A-pose, slightly stylised proportions with a large rounded helmet and a dark reflective visor so no face is visible, soft-shell ivory-white suit with navy panels and orange accent stripes, small glowing cyan chest status light, compact rounded life-support backpack, chunky gloves and boots, appealing game character silhouette. Premium stylized semi-realistic hard-surface design for an original orbital science-laboratory game: ivory-white composite panels, deep navy and charcoal structure, thin glowing cyan light strips, a few small warm amber status lights, clean bevels and readable shapes. No text, no numbers, no logos, no flags, no insignia.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ],
+    "pose_mode": "a-pose"
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "ivory white satin composite panels, deep navy and charcoal painted metal, thin emissive cyan light strips, small warm amber status lights, subtle realistic wear and panel seams, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "storage-cabinet-v1",
+   "batch": "M2 premium assets (owner-authorized 600, first allowance 300)",
+   "purpose": "Environment prop: laboratory storage cabinet set along the bay walls for depth and scale.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Laboratory equipment storage cabinet for a space station: tall rounded cabinet with two sliding transparent doors showing neat empty shelves, a lower drawer bank, side handrail and small status light panel, single object, no floor. Premium stylized semi-realistic hard-surface design for an original orbital science-laboratory game: ivory-white composite panels, deep navy and charcoal structure, thin glowing cyan light strips, a few small warm amber status lights, clean bevels and readable shapes. No text, no numbers, no logos, no flags, no insignia.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 10000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ]
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "ivory white satin composite panels, deep navy and charcoal painted metal, thin emissive cyan light strips, small warm amber status lights, subtle realistic wear and panel seams, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "tool-cart-v1",
+   "batch": "M2 premium assets (owner-authorized 600, first allowance 300)",
+   "purpose": "Environment prop: inspection tool cart beside the bench (training-station accessory, artistic).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Compact inspection tool cart for a space laboratory: rounded two-level mobile cart with a magnetic tool tray, a small handheld inspection light, a tablet holder with a blank dark screen, tidy cable reels and soft bumpers, single object, no floor. Premium stylized semi-realistic hard-surface design for an original orbital science-laboratory game: ivory-white composite panels, deep navy and charcoal structure, thin glowing cyan light strips, a few small warm amber status lights, clean bevels and readable shapes. No text, no numbers, no logos, no flags, no insignia.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 10000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ]
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "ivory white satin composite panels, deep navy and charcoal painted metal, thin emissive cyan light strips, small warm amber status lights, subtle realistic wear and panel seams, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "chamber-housing-v1",
+   "batch": "M2 premium chamber pilot (owner-authorized ONE generation, cap 30)",
+   "purpose": "Artistic open gantry housing framing the procedural, source-labelled BASS-II training apparatus. Decorative only: it never replaces, hides or defines any scientific part or mount.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Open skeletal gantry frame enclosure for a laboratory experiment: four slim corner pillars joined by top and bottom rectangular rails, a low base plinth ring, completely open on all four sides and the top, hollow empty interior with nothing inside, no panels, no glass, no walls, single object. Premium hard-surface sci-fi orbital lab design: dark titanium and midnight-navy metal, layered mechanical joints and brackets, thin cyan light strips along the rails, small amber status lights on the pillars. No text, no logos.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ]
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "dark brushed titanium metal frame, midnight navy painted pillar panels, thin emissive cyan light strips on the rails, small warm amber status lights, subtle realistic wear and machined edges, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "hero-chamber-v1",
+   "batch": "M4 art-direction prototypes, batch 1 (owner allowance 300; batch cap 100)",
+   "purpose": "Design A hero centrepiece: an artistic exhibit housing around MicroFire's own illustrated 3D flame. Decorative and labelled illustrative; not a NASA apparatus and never used for any scientific part or mount.",
+   "estimateCredits": 30,
+   "preview": {
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 30000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ],
+    "prompt": "Vertical cylindrical science exhibit chamber for observing a small flame: a heavy machined titanium base pedestal with stepped rings and bolted flanges, a matching heavy top cap with an instrument crown, connected by six slender structural ribs, large open window apertures between the ribs so the hollow interior is fully visible and empty, no glass, small sensor pods and cable harnesses on the ribs, coolant pipes curling around the base. Premium realistic hard-surface design, dark graphite titanium with brushed steel details. Single object, centred, no text, no logos."
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "dark graphite titanium and brushed steel, machined edges, subtle anodised bronze bolts, thin emissive teal instrument lights on the ribs, warm amber indicator lights on the base, realistic micro scratches, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "orbital-arch-v1",
+   "batch": "M4 art-direction prototypes, batch 1 (owner allowance 300; batch cap 100)",
+   "purpose": "Design A architecture: one curved structural bulkhead arch of an orbital research module, repeated around the hero chamber for layered mechanical depth. Decorative and illustrative only.",
+   "estimateCredits": 30,
+   "preview": {
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 30000,
+    "moderation": true,
+    "target_formats": [
+     "glb"
+    ],
+    "prompt": "One curved structural arch segment of a space station interior: a thick ribbed titanium frame shaped like a tall rounded doorway arch, open in the middle, layered mechanical panels, recessed conduits and cable trays running along the arch, small vent grilles, bolted plates and brackets, slim recessed light channels along the inner edge. Premium realistic hard-surface orbital architecture. Single object, standing upright, no floor, no text, no logos."
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "dark titanium and graphite painted metal panels, brushed steel brackets, black cable bundles, thin emissive teal light channels on the inner edge, a few warm orange warning stripes, realistic wear, physically based materials, no text, no logos",
+    "target_formats": [
+     "glb"
+    ]
+   }
+  },
+  {
+   "id": "astronaut-v1-suit",
+   "batch": "M4 art-direction prototypes, batch 1 (owner allowance 300; batch cap 100)",
+   "purpose": "Character improvement: new suit textures for the existing astronaut with its original UVs kept, so they drop into the already rigged and animated model (no re-rig, no re-animation). Illustrative character.",
+   "estimateCredits": 10,
+   "retexture": {
+    "ai_model": "latest",
+    "enable_original_uv": true,
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "text_style_prompt": "Modern spacesuit: off-white fabric body with deep navy blue panels on the chest, shoulders, upper arms and thighs, bright safety-orange accent stripes on the arms and legs, dark graphite gloves and boots, brushed silver helmet ring and connectors, gold reflective visor, clean realistic fabric texture with subtle seams, no text, no logos, no flags, no insignia",
+    "model_file": "incoming/astronaut-v1/astronaut-v1.glb"
+   },
+   "note": "First attempt (input_task_id of the 2026-10-16 task) was rejected at creation with HTTP 404; no task, 0 credits. Re-sent once with the original GLB."
+  }
+ ]
+}

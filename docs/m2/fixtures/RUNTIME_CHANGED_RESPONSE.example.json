@@ -1,0 +1,11 @@
+{
+  "apiVersion": "1",
+  "error": {
+    "code": "RUNTIME_CHANGED",
+    "message": "The local server restarted. Reauthorize and resume your saved checkpoint.",
+    "retryable": false,
+    "context": {
+      "runtimeId": "66666666-6666-4666-8666-666666666666"
+    }
+  }
+}

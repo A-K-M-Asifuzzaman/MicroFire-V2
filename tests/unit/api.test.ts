@@ -1,7 +1,7 @@
 import { expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { createGetHandler, createMemoryLimiter, createPostHandler, readApi } from '../../apps/web/lib/api';
-import { ApiErrorSchema, AskResponseSchema, CitationVerifyResponseSchema, ExperimentsResponseSchema, ExportResponseSchema, GapsResponseSchema, HealthResponseSchema, RankResponseSchema, SourceDetailResponseSchema } from '@microfire/shared';
+import { ApiErrorSchema, AskResponseSchema, CitationVerifyResponseSchema, ExperimentsResponseSchema, ExportResponseSchema, FeaturesResponseSchema, GapsResponseSchema, HealthResponseSchema, RankResponseSchema, SourceDetailResponseSchema } from '@microfire/shared';
 const request = (body: string, type = 'application/json') => new Request('http://localhost/api/ask', { method: 'POST', headers: { 'Content-Type': type }, body });
 it('validates pagination, rejects unknown/duplicate filters and distinguishes missing records', async () => {
   const response = readApi(['experiments'], new URL('http://localhost/api/experiments?limit=1'));
@@ -57,6 +57,30 @@ it('bounds GET traffic separately from POST', async () => {
   expect(get(['health'], url).headers.get('retry-after')).toBe('60');
   time += 60_000;
   expect(HealthResponseSchema.parse(await get(['health'], url).json()).data.phase).toBe('one');
+});
+it('fails closed with a safe JSON error if the limiter fails', async () => {
+  const broken = { take() { throw new Error('private limiter connection detail'); } };
+  for (const run of [() => createGetHandler(broken)(['health'], new URL('http://localhost/api/health')), () => createPostHandler(Date.now, broken)(['ask'], request('{"question":"What happened in B20?","targetConditions":{}}'))]) {
+    const response = await run();
+    expect(response.status).toBe(500);
+    expect(ApiErrorSchema.parse(await response.json()).error.message).not.toContain('private limiter');
+    expect(response.headers.get('content-security-policy')).toContain("default-src 'none'");
+  }
+});
+it('bounds displayed target text while matching the full ranking request', async () => {
+  const rank = await post('evidence/rank', { question: 'B20', targetConditions: { material: 'x'.repeat(4000) } });
+  expect(rank.status).toBe(200);
+  expect(RankResponseSchema.parse(await rank.json()).data.items[0]!.mismatches[0]).toContain('truncated');
+});
+it('abstains safely when a valid question would exceed the answer size contract', async () => {
+  const ask = await post('ask', { question: `${'x'.repeat(3900)} B20`, targetConditions: {} });
+  expect(ask.status).toBe(200);
+  expect(AskResponseSchema.parse(await ask.json()).data).toMatchObject({ abstained: true, code: 'unsupported-intent', reason: expect.stringMatching(/response size/) });
+});
+it('does not promote backend-implemented features or missions without UI verification', async () => {
+  const registry = FeaturesResponseSchema.parse(await readApi(['feature-status'], new URL('http://localhost')).json()).data;
+  expect(Object.fromEntries(registry.filter((f) => ['dashboard', 'atlas', 'experiment', 'gaps', 'ask', 'methodology'].includes(f.id)).map((f) => [f.id, f.state]))).toEqual({ dashboard: 'coming_soon', atlas: 'preview', experiment: 'preview', gaps: 'coming_soon', ask: 'coming_soon', methodology: 'preview' });
+  expect(registry.some((f) => ['available', 'locked'].includes(f.state))).toBe(false);
 });
 it('bounds repeated POST traffic and recovers after the window', async () => {
   let time = 100_000; const post = createPostHandler(() => time);

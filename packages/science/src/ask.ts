@@ -1,9 +1,10 @@
-import type { AnswerStatement, Catalog, Citation, Experiment, TargetConditions } from '@microfire/shared';
+import type { AnswerStatement, Catalog, Citation, Experiment, StatementType, TargetConditions } from '@microfire/shared';
+import { TextSchema } from '@microfire/shared';
 import { catalog } from './catalog';
 import { FIELD_LABELS, TARGET_FIELDS, contentTokens, tokenize, sameCitation, coverage, formatCondition, indexExperiment, isCatalogCitation, matchTarget, rankEvidence } from './evidence';
 import { isQuarantinedTestId } from './quarantine';
 
-export const RETRIEVAL_VERSION = 'p1-grounded-template-v1';
+export const RETRIEVAL_VERSION = 'p1-grounded-template-v2';
 
 /**
  * Deterministic grounded answering. No language model or provider is called: answers are assembled only from
@@ -26,7 +27,10 @@ const CAUSAL = /\b(caus\w*|because|effect of|affect\w*|impact\w*|faster|slower|h
 // Generic combustion words cannot by themselves make a record relevant (e.g. "how did cotton burn?" must not return PMMA evidence).
 // ponytail: fixed word list, replace with an evaluated material/program vocabulary when the corpus grows.
 const GENERIC = new Set(contentTokens('flame flames fire fires burn burned burning combustion sample samples spread ignite ignition extinguish extinction'));
-const TEST_ID = /\b([bf]\d{1,2}|gmt\d{2,3}-t\d{1,2}[ab]?)\b/gi;
+const TEST_ID = /\b([bf]\d+|gmt\d+-t\d+[ab]?)\b/gi;
+const CLAIM_CATEGORIES: Record<StatementType, AnswerStatement['category']> = {
+  observed: 'direct-observation', derived: 'supported-derivation', interpretation: 'scientific-interpretation', hypothesis: 'unknown-or-gap', unknown: 'unknown-or-gap'
+};
 
 type Abstain = { abstained: true; code: 'unsupported-intent' | 'no-relevant-evidence' | 'quarantined-record' | 'citation-verification-failed'; reason: string; citations: Citation[]; datasetVersion: string; retrievalVersion: string };
 type Answered = { abstained: false; answer: string; statements: AnswerStatement[]; claimIds: string[]; citations: Citation[]; limitations: string[]; datasetVersion: string; retrievalVersion: string };
@@ -35,7 +39,8 @@ export function verifyAnswerStatements(statements: AnswerStatement[], dataset: C
   const claims = dataset.experiments.flatMap((e) => e.claims);
   return statements.every((s) => (s.category === 'unknown-or-gap' || s.citations.length > 0) &&
     s.citations.every((c) => isCatalogCitation(c, dataset)) &&
-    (s.claimId === null || claims.some((c) => c.id === s.claimId && s.citations.every((x) => c.citations.some((y) => sameCitation(y, x))))));
+    (s.claimId === null || claims.some((c) => c.id === s.claimId && s.category === CLAIM_CATEGORIES[c.kind] &&
+      (s.category === 'unknown-or-gap' || c.origin === 'research') && s.citations.every((x) => c.citations.some((y) => sameCitation(y, x))))));
 }
 
 export function answerQuestion(request: { question: string; targetConditions: TargetConditions }, dataset: Catalog = catalog, compose: (e: Experiment[], question: string, t: TargetConditions) => AnswerStatement[] = composeStatements): Abstain | Answered {
@@ -44,11 +49,13 @@ export function answerQuestion(request: { question: string; targetConditions: Ta
   const question = request.question;
   for (const rule of UNSUPPORTED) if (rule.pattern.test(question)) return abstain('unsupported-intent', rule.reason);
 
-  const mentioned = [...question.matchAll(TEST_ID)].map((m) => m[1]!.toLowerCase());
+  const mentioned = [...new Set([...question.matchAll(TEST_ID)].map((m) => m[1]!.toLowerCase()))];
   const unknownTests = mentioned.filter((t) => !dataset.experiments.some((e) => e.testId.toLowerCase() === t));
+  const testSummary = (tests: string[]) => tests.slice(0, 10).map((t) => t.toUpperCase().slice(0, 100) + (t.length > 100 ? '…' : '')).join(', ') +
+    (tests.length > 10 ? ` (and ${tests.length - 10} other distinct references)` : '');
   if (unknownTests.some(isQuarantinedTestId))
-    return abstain('quarantined-record', `${unknownTests.filter(isQuarantinedTestId).map((t) => t.toUpperCase()).join(', ')} is a legacy candidate quarantined pending primary-source review; it is not validated evidence and is not used in answers.`);
-  if (unknownTests.length) return abstain('no-relevant-evidence', `${unknownTests.map((t) => t.toUpperCase()).join(', ')} is not in the validated catalog. Not found here is not the same as never studied.`);
+    return abstain('quarantined-record', `${testSummary(unknownTests.filter(isQuarantinedTestId))} is a legacy candidate quarantined pending primary-source review; it is not validated evidence and is not used in answers.`);
+  if (unknownTests.length) return abstain('no-relevant-evidence', `${testSummary(unknownTests)} is not in the validated catalog. Not found here is not the same as never studied.`);
 
   const terms = contentTokens(question);
   const ranked = rankEvidence({ question, targetConditions: request.targetConditions, limit: 3 }, dataset);
@@ -72,9 +79,12 @@ export function answerQuestion(request: { question: string; targetConditions: Ta
     'direct-observation': 'Direct observation', 'supported-derivation': 'Supported derivation', 'scientific-interpretation': 'Scientific interpretation',
     'analogous-or-mechanistic': 'Analogous or mechanistic evidence', 'unknown-or-gap': 'Unknown or research gap'
   };
+  const answer = statements.map((s) => `${headings[s.category]}: ${s.text}`).join('\n');
+  if (!TextSchema.safeParse(answer).success || statements.some((s) => !TextSchema.safeParse(s.text).success))
+    return abstain('unsupported-intent', 'The requested explanation exceeds the bounded response size. Narrow the question or target conditions, or inspect the experiment dossier directly.');
   return {
     abstained: false, statements, claimIds, citations,
-    answer: statements.map((s) => `${headings[s.category]}: ${s.text}`).join('\n'),
+    answer,
     limitations: [...new Set([...records.flatMap((e) => e.limitations), coverage(dataset).statement, 'Generated from a fixed template over validated records; no language model wrote this answer.'])],
     ...base
   };
@@ -91,7 +101,7 @@ function composeStatements(records: Experiment[], question: string, target: Targ
     const index = indexExperiment(e);
     for (const t of terms) if (index.vocab.has(t)) unmatched.delete(t);
     for (const claim of e.claims) {
-      const category = claim.kind === 'observed' ? 'direct-observation' : claim.kind === 'derived' ? 'supported-derivation' : claim.kind === 'interpretation' ? 'scientific-interpretation' : 'unknown-or-gap';
+      const category = claim.origin === 'research' ? CLAIM_CATEGORIES[claim.kind] : 'unknown-or-gap';
       out.push({ category, text: `${e.testId}: ${claim.text}`, claimId: claim.id, citations: claim.citations });
     }
     const asked = new Set([...terms.flatMap((t) => index.fieldTokens.get(t) ?? []), ...TARGET_FIELDS.filter((f) => target[f] !== undefined)]);
@@ -104,6 +114,7 @@ function composeStatements(records: Experiment[], question: string, target: Targ
     const requested = TARGET_FIELDS.filter((f) => target[f] !== undefined);
     if (requested.length) {
       const matched = requested.filter((f) => matchTarget(e, f, target[f]!).result === 'match');
+      if (!matched.length) out.push({ category: 'unknown-or-gap', text: `${e.testId} does not match any requested target conditions: ${requested.map((f) => matchTarget(e, f, target[f]!).detail).join('; ')}. Its observations describe the source run, not the requested conditions.`, claimId: null, citations: [] });
       if (matched.length && matched.length < requested.length) {
         const cites = matched.flatMap((f) => { const c = e.conditions[f]; return c.status === 'known' ? [c.citation] : []; });
         out.push({ category: 'analogous-or-mechanistic', text: `${e.testId} is analogous, not direct, evidence for your target: it matches ${matched.map((f) => FIELD_LABELS[f].toLowerCase()).join(', ')} but not ${requested.filter((f) => !matched.includes(f)).map((f) => FIELD_LABELS[f].toLowerCase()).join(', ')}.`, claimId: null, citations: cites.slice(0, 1) });

@@ -2,7 +2,7 @@ import type { Catalog, Citation, Coverage, EvidenceLevel, Experiment, Source, Ta
 import { catalog, catalogSha256, citationUrl } from './catalog';
 import { quarantineLedger, isQuarantinedId } from './quarantine';
 
-export const RANKING_VERSION = 'p1-conditions-lexical-v1';
+export const RANKING_VERSION = 'p1-claim-support-v2';
 /** Retrieval tolerances decide relevance only. They do not assert scientific equivalence of conditions. */
 export const NUMERIC_TOLERANCE = { oxygenPct: 0.5, pressureKpa: 2, flowCmS: 1 } as const;
 export const TARGET_FIELDS = ['gravity', 'material', 'geometry', 'oxygenPct', 'pressureKpa', 'flowCmS'] as const;
@@ -68,7 +68,8 @@ export function matchTarget(e: Experiment, field: TargetField, target: string | 
   }
   const want = contentTokens(String(target)), have = new Set(contentTokens(String(c.value)));
   const ok = want.length > 0 && want.every((t) => have.has(t));
-  return { result: ok ? 'match' : 'mismatch', detail: `${field}: target "${target}", recorded "${c.value}"` };
+  const displayedTarget = String(target).length > 200 ? `${String(target).slice(0, 200)}… (truncated for display)` : String(target);
+  return { result: ok ? 'match' : 'mismatch', detail: `${field}: target "${displayedTarget}", recorded "${c.value}"` };
 }
 
 // ---------- coverage / search ----------
@@ -92,6 +93,8 @@ export function searchExperiments(query: { q?: string | undefined; program?: str
 }
 
 // ---------- ranking ----------
+// Fail closed on free-form paraphrases: retrieval tokens drop negation and cannot prove entailment.
+const claimText = (text: string) => text.normalize('NFKC').toLowerCase().trim().replace(/[.?]+$/, '').replace(/\s+/g, ' ');
 export function rankEvidence(request: { question: string; targetConditions: TargetConditions; limit: number }, dataset: Catalog = catalog) {
   const question = contentTokens(request.question);
   const requested = TARGET_FIELDS.filter((f) => request.targetConditions[f] !== undefined);
@@ -106,16 +109,30 @@ export function rankEvidence(request: { question: string; targetConditions: Targ
     }
     const conditionShare = requested.length ? matchedFields.length / requested.length : 0;
     const relevanceScore = Math.round((requested.length ? 0.7 * conditionShare + 0.3 * lexical : lexical) * 1000) / 1000;
-    const evidenceLevel: EvidenceLevel = requested.length
-      ? matchedFields.length === requested.length ? 'direct' : matchedFields.length ? 'analogous' : 'gap'
-      : lexical > 0 ? 'analogous' : 'gap';
+    const claim = e.claims.find((c) => c.origin === 'research' && ['observed', 'derived', 'interpretation'].includes(c.kind) &&
+      claimText(c.text) === claimText(request.question) && c.citations.length > 0 && c.citations.every((citation) =>
+        e.sourceIds.includes(citation.sourceId) && dataset.sources.some((s) => s.id === citation.sourceId) && isCatalogCitation(citation, dataset)));
+    const kind = claim?.kind;
+    const support = { kind: kind === 'observed' || kind === 'derived' || kind === 'interpretation' ? kind : 'unsupported' as const,
+      claimId: claim?.id ?? null, citations: claim?.citations ?? [] };
+    const exactConditions = requested.every((field) => {
+      const c = e.conditions[field], target = request.targetConditions[field]!;
+      return c.status === 'known' && c.basis === 'recorded' &&
+        (typeof target === 'number' ? c.value === target : eqi(String(c.value), target));
+    });
+    const evidenceLevel: EvidenceLevel = !claim || (requested.length > 0 && matchedFields.length === 0) ? 'gap'
+      : claim.kind === 'observed' && exactConditions ? 'direct'
+      : claim.kind === 'interpretation' ? 'mechanistic' : 'analogous';
+    reasons.push(claim
+      ? `Canonical source statement ${claim.id} is classified as ${claim.kind}. Derivations and interpretations are not measured observations. Direct requires observed support and exact recorded targets; unspecified conditions describe the source run only.`
+      : 'No exact cited observation, derivation or interpretation supports this question. Matching metadata or retrieval scores do not establish that the requested outcome was measured.');
     if (hits.length) reasons.push(`Question terms found in the record: ${hits.join(', ')}`);
     reasons.push(requested.length
       ? `Score = 0.7 × ${matchedFields.length}/${requested.length} conditions matched + 0.3 × ${hits.length}/${question.length || 0} question terms (${RANKING_VERSION}).`
-      : `No target conditions given; score = ${hits.length}/${question.length || 0} question terms found, so applicability cannot exceed analogous (${RANKING_VERSION}).`);
+      : `No target conditions given; score = ${hits.length}/${question.length || 0} question terms found; claim support is checked separately (${RANKING_VERSION}).`);
     const limitations = [...e.limitations, 'Score is retrieval relevance, not fire risk, safety or scientific confidence.'];
     if (dataset.experiments.length < 2) limitations.push(`Ranked within a validated catalog of ${dataset.experiments.length} experiment; ordering across studies is not yet meaningful.`);
-    return { experimentId: e.id, evidenceLevel, relevanceScore, matchedFields, mismatches, missingFields, reasons, limitations };
+    return { experimentId: e.id, evidenceLevel, support, relevanceScore, matchedFields, mismatches, missingFields, reasons, limitations };
   }).filter((i) => i.relevanceScore > 0)
     .sort((a, b) => b.relevanceScore - a.relevanceScore || a.experimentId.localeCompare(b.experimentId))
     .slice(0, request.limit);
@@ -160,6 +177,7 @@ export function verifyCitations(request: { subject: VerifySubject; citations: Ci
   const subject = request.subject;
   let expected: Citation[];
   const issues: string[] = [];
+  if (!request.citations.length) issues.push('At least one recorded citation is required.');
   if (subject.type === 'claim') {
     const claim = dataset.experiments.flatMap((e) => e.claims).find((c) => c.id === subject.claimId);
     if (!claim) return { verdict: 'unknown-subject' as const, issues: [isQuarantinedId(subject.claimId) ? 'Claim belongs to a quarantined legacy record.' : 'Claim is not in the validated catalog.'], resolvedUrls: [], scope };

@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "code": "LOCAL_WRITE_FAILED",
+  "cause": "read-back-mismatch",
+  "writeOutcome": "unknown",
+  "savedOnDevice": false
+}

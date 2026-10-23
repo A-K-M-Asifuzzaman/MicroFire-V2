@@ -1,4 +1,4 @@
-# Implementation status — Phase Zero
+# Implementation status — Phase One backend review
 
 Source of truth: `packages/shared/src/features.ts`. API: GET /api/feature-status. No dates or completed features are invented.
 
@@ -10,4 +10,6 @@ Source of truth: `packages/shared/src/features.ts`. API: GET /api/feature-status
 | Available | None promoted to full product readiness |
 | Locked | None: unfinished missions must not be progression-locked |
 
-The foundation's internal APIs and save adapter are tested as described in PHASE_ZERO_REPORT.md. Feature readiness promotion requires functionality, error/recovery behavior, science validation and browser evidence in the registry. See OWNERSHIP.md before changing a shared status.
+Phase One backend search, source lookup, ranking, restricted comparison, gaps, citation lineage, exports and deterministic Ask exist over B20 only. Pure five-mission rules and v2 save migration exist; no mission UI is implemented or promoted. Current tests and limitations are recorded in PHASE_ONE_BACKEND_REVIEW.md. Backend coverage is not frontend integration, independent science validation or public-release approval.
+
+Claude's six proposed explanation edits were reviewed separately in FEATURE_REGISTRY_REVIEW.md and remain pending per the owner. No registry state, implementation flag or verification receipt was changed in this review. Feature readiness promotion requires functionality, error/recovery behavior, science validation and browser evidence in the registry. See OWNERSHIP.md before changing a shared status.

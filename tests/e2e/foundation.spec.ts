@@ -10,7 +10,7 @@ test('offline source journey, keyboard access, corrected science and screenshots
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
   await page.screenshot({ path: `docs/qa/screenshots/home-${info.project.name}.png`, fullPage: true });
-  await page.getByRole('link', { name: 'Inspect the scientific fixture' }).click();
+  await page.getByRole('link', { name: 'Explore the Experiment Atlas' }).click();
   await page.getByRole('link', { name: 'B20 — opposed-flow PMMA film' }).click();
   await expect(page.getByRole('heading', { name: 'Documented observation' })).toBeVisible();
   await expect(page.getByText('17.4 vol%', { exact: false }).first()).toBeVisible();

@@ -10,6 +10,7 @@ export const PassportEntrySchema = z.strictObject({
   claimIds: z.array(IdSchema).min(1).max(20), observationType: StatementTypeSchema,
   evidenceLevel: EvidenceLevelSchema, conclusion: TextSchema,
   citations: z.array(CitationSchema).min(1).max(20), limitations: z.array(TextSchema).min(1).max(20),
+  learnerNotes: z.array(TextSchema).max(400).default([]),
   corrections: z.array(z.strictObject({ previous: TextSchema, revised: TextSchema, reason: TextSchema, at: z.iso.datetime() })).max(100),
   setupRevision: z.number().int().nonnegative().nullable(), status: z.enum(['current', 'invalidated']),
   scenario: z.enum(['research', 'fictional-scenario']), createdAt: z.iso.datetime()
@@ -75,6 +76,7 @@ export const GameActionSchema = z.discriminatedUnion('type', [
   z.strictObject({ type: z.literal('CLASSIFY_CLAIM'), claimId: IdSchema, kind: StatementTypeSchema, evidenceLevel: EvidenceLevelSchema }),
   z.strictObject({ type: z.literal('RECORD_DECISION'), verdict: z.enum(['insufficient-evidence', 'safe', 'unsafe']) }),
   z.strictObject({ type: z.literal('PROPOSE_NEXT_TEST'), question: TextSchema, limitations: z.array(TextSchema).min(1).max(20) }),
+  z.strictObject({ type: z.literal('REMOVE_PROPOSAL'), index: z.number().int().min(0).max(19) }),
   z.strictObject({ type: z.literal('COMPLETE_MISSION'), missionId: MissionIdSchema })
 ]);
 export type GameState = z.infer<typeof GameStateSchema>;

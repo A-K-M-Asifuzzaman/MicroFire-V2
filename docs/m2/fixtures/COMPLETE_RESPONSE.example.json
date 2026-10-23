@@ -1,0 +1,316 @@
+{
+  "apiVersion": "1",
+  "data": {
+    "ok": true,
+    "snapshot": {
+      "state": {
+        "datasetVersion": "p0-bass-b20-v1",
+        "mode": "demo",
+        "guidance": "guided",
+        "activeMission": null,
+        "completedMissions": [
+          "station-arrival",
+          "bass-assembly"
+        ],
+        "inspectedExperimentIds": [
+          "bass2-b20"
+        ],
+        "passport": {
+          "schemaVersion": 1,
+          "purpose": "educational-research-record",
+          "entries": [
+            {
+              "id": "station-arrival-bass2-b20-burned-entire-sample",
+              "missionId": "station-arrival",
+              "experimentIds": [
+                "bass2-b20"
+              ],
+              "claimIds": [
+                "bass2-b20-burned-entire-sample"
+              ],
+              "observationType": "observed",
+              "evidenceLevel": "direct",
+              "conclusion": "The B20 observation log reports that the flame burned the entire sample.",
+              "citations": [
+                {
+                  "sourceId": "nasa-bass-ii-20210011385",
+                  "locator": {
+                    "kind": "pdf",
+                    "page": 112,
+                    "printedPage": "104",
+                    "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                  }
+                }
+              ],
+              "limitations": [
+                "One BASS-II test, not a catalog of NASA combustion research.",
+                "This record cannot establish lunar fire safety or isolate airflow causation.",
+                "Air display mixes velocities and a potentiometer setting; pot 0.5 is not 0.5 cm/s.",
+                "Pressure and measurement uncertainty are not established for this individual row."
+              ],
+              "learnerNotes": [],
+              "corrections": [],
+              "setupRevision": null,
+              "status": "current",
+              "scenario": "research",
+              "createdAt": "2026-10-16T10:00:00.000Z"
+            },
+            {
+              "id": "bass-assembly-bass2-b20-r16",
+              "missionId": "bass-assembly",
+              "experimentIds": [
+                "bass2-b20"
+              ],
+              "claimIds": [
+                "bass2-b20-burned-entire-sample"
+              ],
+              "observationType": "observed",
+              "evidenceLevel": "direct",
+              "conclusion": "The B20 observation log reports that the flame burned the entire sample.",
+              "citations": [
+                {
+                  "sourceId": "nasa-bass-ii-20210011385",
+                  "locator": {
+                    "kind": "pdf",
+                    "page": 112,
+                    "printedPage": "104",
+                    "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                  }
+                }
+              ],
+              "limitations": [
+                "One BASS-II test, not a catalog of NASA combustion research.",
+                "This record cannot establish lunar fire safety or isolate airflow causation.",
+                "Air display mixes velocities and a potentiometer setting; pot 0.5 is not 0.5 cm/s.",
+                "Pressure and measurement uncertainty are not established for this individual row."
+              ],
+              "learnerNotes": [],
+              "corrections": [],
+              "setupRevision": 16,
+              "status": "current",
+              "scenario": "research",
+              "createdAt": "2026-10-16T10:00:00.000Z"
+            }
+          ]
+        },
+        "updatedAt": "2026-10-16T10:00:00.000Z",
+        "schemaVersion": 2,
+        "setup": {
+          "revision": 16,
+          "installedParts": [
+            {
+              "partId": "flow-duct",
+              "anchorId": "msg-work-volume-mount",
+              "orientation": "correct"
+            },
+            {
+              "partId": "flow-straightener",
+              "anchorId": "duct-honeycomb-slot",
+              "orientation": "correct"
+            },
+            {
+              "partId": "nitrogen-nozzle",
+              "anchorId": "test-section-n2-port",
+              "orientation": "correct"
+            },
+            {
+              "partId": "sample-holder",
+              "anchorId": "top-mounting-rail",
+              "orientation": "correct"
+            },
+            {
+              "partId": "igniter",
+              "anchorId": "front-window-igniter-lever",
+              "orientation": "correct"
+            },
+            {
+              "partId": "still-camera",
+              "anchorId": "top-window",
+              "orientation": "correct"
+            },
+            {
+              "partId": "video-camera",
+              "anchorId": "front-window-mirror",
+              "orientation": "correct"
+            },
+            {
+              "partId": "radiometer",
+              "anchorId": "downstream-top-back-corner",
+              "orientation": "correct"
+            },
+            {
+              "partId": "exit-plate",
+              "anchorId": "duct-exit",
+              "orientation": "correct"
+            },
+            {
+              "partId": "fan",
+              "anchorId": "duct-inlet",
+              "orientation": "correct"
+            }
+          ],
+          "qualifiedRevision": 16
+        },
+        "predictions": [],
+        "classifications": [],
+        "decision": null,
+        "proposals": []
+      },
+      "training": {
+        "scenarioVersion": "bass-b20-training-v1",
+        "fault": {
+          "id": "training-fan-reversed-v1",
+          "origin": "authored-training",
+          "introducedAt": "2026-10-16T10:00:00.000Z",
+          "introducedRevision": 12
+        },
+        "diagnosticRevision": 12,
+        "diagnosis": {
+          "at": "2026-10-16T10:00:00.000Z",
+          "faultyRevision": 12
+        },
+        "pendingRepair": null,
+        "repair": {
+          "faultId": "training-fan-reversed-v1",
+          "partId": "fan",
+          "removedAtRevision": 13,
+          "removedAt": "2026-10-16T10:00:00.000Z",
+          "reinstalledAtRevision": 16,
+          "at": "2026-10-16T10:00:00.000Z"
+        },
+        "diagnosisCounts": [
+          {
+            "partId": "fan",
+            "faultCode": "REVERSED",
+            "count": 1
+          }
+        ],
+        "firstWrongDiagnosis": null,
+        "lastWrongDiagnosis": null
+      },
+      "previewId": "bass-b20-training-v1",
+      "runtimeId": "33333333-3333-4333-8333-333333333333",
+      "sessionId": "11111111-1111-4111-8111-111111111111",
+      "revision": 23,
+      "checkpoint": "eyJjYXRhbG9nU2hhMjU2IjoiMWY5ZDQ4ODM3OTFkYTczZTI1NmFmMDllYjM5OTQ4MDViNTNjM2EzOTRlZmYzZGIwZjBkMDY2ZmM1NTg3NzlkYyIsImNoZWNrcG9pbnRWZXJzaW9uIjoxLCJleHBpcmVzQXQiOm51bGwsImlzc3VlZEF0IjoiMjAyNi0xMC0xNlQxMDowMDowMC4wMDBaIiwia2V5SWQiOiJwdWJsaWMtZXhhbXBsZS1rZXktcjIiLCJsYXN0Q29tbWFuZCI6eyJjb21tYW5kSWQiOiJjZjY1YjAxMDg4Yzk2NmVhZDNhNGNkMGExNjkzNTM3Njk0YTU3MTc0OGUwMDI3M2QxZjk3ZmYzYTMyYTZjMjJhIiwiZW5kcG9pbnQiOiJhY3Rpb24iLCJleHBlY3RlZFJldmlzaW9uIjoyMn0sIm9yaWdpbiI6Imh0dHA6Ly8xMjcuMC4wLjE6MzEwMiIsInByZXZpZXdJZCI6ImJhc3MtYjIwLXRyYWluaW5nLXYxIiwicmVhbG1JZCI6IjQ0NDQ0NDQ0LTQ0NDQtNDQ0NC04NDQ0LTQ0NDQ0NDQ0NDQ0NCIsInJldmlzaW9uIjoyMywicnVsZXNWZXJzaW9uIjoibTItdHJhaW5pbmctcjMiLCJzZXNzaW9uSWQiOiIxMTExMTExMS0xMTExLTQxMTEtODExMS0xMTExMTExMTExMTEiLCJzdGF0ZSI6eyJhY3RpdmVNaXNzaW9uIjpudWxsLCJjbGFzc2lmaWNhdGlvbnMiOltdLCJjb21wbGV0ZWRNaXNzaW9ucyI6WyJzdGF0aW9uLWFycml2YWwiLCJiYXNzLWFzc2VtYmx5Il0sImRhdGFzZXRWZXJzaW9uIjoicDAtYmFzcy1iMjAtdjEiLCJkZWNpc2lvbiI6bnVsbCwiZ3VpZGFuY2UiOiJndWlkZWQiLCJpbnNwZWN0ZWRFeHBlcmltZW50SWRzIjpbImJhc3MyLWIyMCJdLCJtb2RlIjoiZGVtbyIsInBhc3Nwb3J0Ijp7ImVudHJpZXMiOlt7ImNpdGF0aW9ucyI6W3sibG9jYXRvciI6eyJraW5kIjoicGRmIiwicGFnZSI6MTEyLCJwcmludGVkUGFnZSI6IjEwNCIsInNlY3Rpb24iOiJUYWJsZSBBLjEsIEIyMCAoYXMtcnVuIDUwKSwgMjAxNC0wNy0wMiJ9LCJzb3VyY2VJZCI6Im5hc2EtYmFzcy1paS0yMDIxMDAxMTM4NSJ9XSwiY2xhaW1JZHMiOlsiYmFzczItYjIwLWJ1cm5lZC1lbnRpcmUtc2FtcGxlIl0sImNvbmNsdXNpb24iOiJUaGUgQjIwIG9ic2VydmF0aW9uIGxvZyByZXBvcnRzIHRoYXQgdGhlIGZsYW1lIGJ1cm5lZCB0aGUgZW50aXJlIHNhbXBsZS4iLCJjb3JyZWN0aW9ucyI6W10sImNyZWF0ZWRBdCI6IjIwMjYtMTAtMTZUMTA6MDA6MDAuMDAwWiIsImV2aWRlbmNlTGV2ZWwiOiJkaXJlY3QiLCJleHBlcmltZW50SWRzIjpbImJhc3MyLWIyMCJdLCJpZCI6InN0YXRpb24tYXJyaXZhbC1iYXNzMi1iMjAtYnVybmVkLWVudGlyZS1zYW1wbGUiLCJsZWFybmVyTm90ZXMiOltdLCJsaW1pdGF0aW9ucyI6WyJPbmUgQkFTUy1JSSB0ZXN0LCBub3QgYSBjYXRhbG9nIG9mIE5BU0EgY29tYnVzdGlvbiByZXNlYXJjaC4iLCJUaGlzIHJlY29yZCBjYW5ub3QgZXN0YWJsaXNoIGx1bmFyIGZpcmUgc2FmZXR5IG9yIGlzb2xhdGUgYWlyZmxvdyBjYXVzYXRpb24uIiwiQWlyIGRpc3BsYXkgbWl4ZXMgdmVsb2NpdGllcyBhbmQgYSBwb3RlbnRpb21ldGVyIHNldHRpbmc7IHBvdCAwLjUgaXMgbm90IDAuNSBjbS9zLiIsIlByZXNzdXJlIGFuZCBtZWFzdXJlbWVudCB1bmNlcnRhaW50eSBhcmUgbm90IGVzdGFibGlzaGVkIGZvciB0aGlzIGluZGl2aWR1YWwgcm93LiJdLCJtaXNzaW9uSWQiOiJzdGF0aW9uLWFycml2YWwiLCJvYnNlcnZhdGlvblR5cGUiOiJvYnNlcnZlZCIsInNjZW5hcmlvIjoicmVzZWFyY2giLCJzZXR1cFJldmlzaW9uIjpudWxsLCJzdGF0dXMiOiJjdXJyZW50In0seyJjaXRhdGlvbnMiOlt7ImxvY2F0b3IiOnsia2luZCI6InBkZiIsInBhZ2UiOjExMiwicHJpbnRlZFBhZ2UiOiIxMDQiLCJzZWN0aW9uIjoiVGFibGUgQS4xLCBCMjAgKGFzLXJ1biA1MCksIDIwMTQtMDctMDIifSwic291cmNlSWQiOiJuYXNhLWJhc3MtaWktMjAyMTAwMTEzODUifV0sImNsYWltSWRzIjpbImJhc3MyLWIyMC1idXJuZWQtZW50aXJlLXNhbXBsZSJdLCJjb25jbHVzaW9uIjoiVGhlIEIyMCBvYnNlcnZhdGlvbiBsb2cgcmVwb3J0cyB0aGF0IHRoZSBmbGFtZSBidXJuZWQgdGhlIGVudGlyZSBzYW1wbGUuIiwiY29ycmVjdGlvbnMiOltdLCJjcmVhdGVkQXQiOiIyMDI2LTEwLTE2VDEwOjAwOjAwLjAwMFoiLCJldmlkZW5jZUxldmVsIjoiZGlyZWN0IiwiZXhwZXJpbWVudElkcyI6WyJiYXNzMi1iMjAiXSwiaWQiOiJiYXNzLWFzc2VtYmx5LWJhc3MyLWIyMC1yMTYiLCJsZWFybmVyTm90ZXMiOltdLCJsaW1pdGF0aW9ucyI6WyJPbmUgQkFTUy1JSSB0ZXN0LCBub3QgYSBjYXRhbG9nIG9mIE5BU0EgY29tYnVzdGlvbiByZXNlYXJjaC4iLCJUaGlzIHJlY29yZCBjYW5ub3QgZXN0YWJsaXNoIGx1bmFyIGZpcmUgc2FmZXR5IG9yIGlzb2xhdGUgYWlyZmxvdyBjYXVzYXRpb24uIiwiQWlyIGRpc3BsYXkgbWl4ZXMgdmVsb2NpdGllcyBhbmQgYSBwb3RlbnRpb21ldGVyIHNldHRpbmc7IHBvdCAwLjUgaXMgbm90IDAuNSBjbS9zLiIsIlByZXNzdXJlIGFuZCBtZWFzdXJlbWVudCB1bmNlcnRhaW50eSBhcmUgbm90IGVzdGFibGlzaGVkIGZvciB0aGlzIGluZGl2aWR1YWwgcm93LiJdLCJtaXNzaW9uSWQiOiJiYXNzLWFzc2VtYmx5Iiwib2JzZXJ2YXRpb25UeXBlIjoib2JzZXJ2ZWQiLCJzY2VuYXJpbyI6InJlc2VhcmNoIiwic2V0dXBSZXZpc2lvbiI6MTYsInN0YXR1cyI6ImN1cnJlbnQifV0sInB1cnBvc2UiOiJlZHVjYXRpb25hbC1yZXNlYXJjaC1yZWNvcmQiLCJzY2hlbWFWZXJzaW9uIjoxfSwicHJlZGljdGlvbnMiOltdLCJwcm9wb3NhbHMiOltdLCJzY2hlbWFWZXJzaW9uIjoyLCJzZXR1cCI6eyJpbnN0YWxsZWRQYXJ0cyI6W3siYW5jaG9ySWQiOiJtc2ctd29yay12b2x1bWUtbW91bnQiLCJvcmllbnRhdGlvbiI6ImNvcnJlY3QiLCJwYXJ0SWQiOiJmbG93LWR1Y3QifSx7ImFuY2hvcklkIjoiZHVjdC1ob25leWNvbWItc2xvdCIsIm9yaWVudGF0aW9uIjoiY29ycmVjdCIsInBhcnRJZCI6ImZsb3ctc3RyYWlnaHRlbmVyIn0seyJhbmNob3JJZCI6InRlc3Qtc2VjdGlvbi1uMi1wb3J0Iiwib3JpZW50YXRpb24iOiJjb3JyZWN0IiwicGFydElkIjoibml0cm9nZW4tbm96emxlIn0seyJhbmNob3JJZCI6InRvcC1tb3VudGluZy1yYWlsIiwib3JpZW50YXRpb24iOiJjb3JyZWN0IiwicGFydElkIjoic2FtcGxlLWhvbGRlciJ9LHsiYW5jaG9ySWQiOiJmcm9udC13aW5kb3ctaWduaXRlci1sZXZlciIsIm9yaWVudGF0aW9uIjoiY29ycmVjdCIsInBhcnRJZCI6Imlnbml0ZXIifSx7ImFuY2hvcklkIjoidG9wLXdpbmRvdyIsIm9yaWVudGF0aW9uIjoiY29ycmVjdCIsInBhcnRJZCI6InN0aWxsLWNhbWVyYSJ9LHsiYW5jaG9ySWQiOiJmcm9udC13aW5kb3ctbWlycm9yIiwib3JpZW50YXRpb24iOiJjb3JyZWN0IiwicGFydElkIjoidmlkZW8tY2FtZXJhIn0seyJhbmNob3JJZCI6ImRvd25zdHJlYW0tdG9wLWJhY2stY29ybmVyIiwib3JpZW50YXRpb24iOiJjb3JyZWN0IiwicGFydElkIjoicmFkaW9tZXRlciJ9LHsiYW5jaG9ySWQiOiJkdWN0LWV4aXQiLCJvcmllbnRhdGlvbiI6ImNvcnJlY3QiLCJwYXJ0SWQiOiJleGl0LXBsYXRlIn0seyJhbmNob3JJZCI6ImR1Y3QtaW5sZXQiLCJvcmllbnRhdGlvbiI6ImNvcnJlY3QiLCJwYXJ0SWQiOiJmYW4ifV0sInF1YWxpZmllZFJldmlzaW9uIjoxNiwicmV2aXNpb24iOjE2fSwidXBkYXRlZEF0IjoiMjAyNi0xMC0xNlQxMDowMDowMC4wMDBaIn0sInRyYWluaW5nIjp7ImRpYWdub3NpcyI6eyJhdCI6IjIwMjYtMTAtMTZUMTA6MDA6MDAuMDAwWiIsImZhdWx0eVJldmlzaW9uIjoxMn0sImRpYWdub3Npc0NvdW50cyI6W3siY291bnQiOjEsImZhdWx0Q29kZSI6IlJFVkVSU0VEIiwicGFydElkIjoiZmFuIn1dLCJkaWFnbm9zdGljUmV2aXNpb24iOjEyLCJmYXVsdCI6eyJpZCI6InRyYWluaW5nLWZhbi1yZXZlcnNlZC12MSIsImludHJvZHVjZWRBdCI6IjIwMjYtMTAtMTZUMTA6MDA6MDAuMDAwWiIsImludHJvZHVjZWRSZXZpc2lvbiI6MTIsIm9yaWdpbiI6ImF1dGhvcmVkLXRyYWluaW5nIn0sImZpcnN0V3JvbmdEaWFnbm9zaXMiOm51bGwsImxhc3RXcm9uZ0RpYWdub3NpcyI6bnVsbCwicGVuZGluZ1JlcGFpciI6bnVsbCwicmVwYWlyIjp7ImF0IjoiMjAyNi0xMC0xNlQxMDowMDowMC4wMDBaIiwiZmF1bHRJZCI6InRyYWluaW5nLWZhbi1yZXZlcnNlZC12MSIsInBhcnRJZCI6ImZhbiIsInJlaW5zdGFsbGVkQXRSZXZpc2lvbiI6MTYsInJlbW92ZWRBdCI6IjIwMjYtMTAtMTZUMTA6MDA6MDAuMDAwWiIsInJlbW92ZWRBdFJldmlzaW9uIjoxM30sInNjZW5hcmlvVmVyc2lvbiI6ImJhc3MtYjIwLXRyYWluaW5nLXYxIn19.xf_moBRDxwhFtso4i7Kk-5nSKLDKmmsPHUb4Mqz2PtQ",
+      "checkpointBudget": {
+        "payloadBytes": 4260,
+        "limitBytes": 20480,
+        "remainingBytes": 16220,
+        "warningAtBytes": 16384,
+        "optionalUpdatesRequireFinalizationCheck": true
+      },
+      "passportPresentation": {
+        "sourceEvidence": {
+          "origin": "research",
+          "passportEntryIds": [
+            "station-arrival-bass2-b20-burned-entire-sample",
+            "bass-assembly-bass2-b20-r16"
+          ],
+          "correctionPolicy": "none"
+        },
+        "trainingHistory": {
+          "origin": "authored-training",
+          "evidenceLevel": "not-applicable",
+          "historicalNASAEvent": false,
+          "corrections": [
+            {
+              "id": "training-fan-reversed-v1-repair",
+              "origin": "authored-training",
+              "evidenceLevel": "not-applicable",
+              "historicalNASAEvent": false,
+              "templateId": "fan-repair-v1",
+              "faultId": "training-fan-reversed-v1",
+              "partId": "fan",
+              "introducedSetupRevision": 12,
+              "diagnosedSetupRevision": 12,
+              "removedSetupRevision": 13,
+              "reinstalledSetupRevision": 16,
+              "qualifiedSetupRevision": 16,
+              "at": "2026-10-16T10:00:00.000Z",
+              "previous": "The training fan was reversed at setup revision 12.",
+              "revised": "The training fan was removed at setup revision 13 and reinstalled correctly at setup revision 16; the training apparatus passed its configuration check at setup revision 16.",
+              "reason": "Authored training exercise; this is not a historical NASA incident or a correction to the B20 observation."
+            }
+          ]
+        },
+        "learnerConclusions": {
+          "origin": "learner-authored",
+          "scientificValidation": "not-assessed",
+          "notes": []
+        }
+      },
+      "diagnostic": {
+        "status": "stale",
+        "checkedSetupRevision": 12,
+        "currentSetupRevision": 16
+      },
+      "progress": {
+        "step": "complete",
+        "checks": [
+          {
+            "id": "source-collected",
+            "label": "Collect the B20 source observation",
+            "done": true
+          },
+          {
+            "id": "apparatus-qualified",
+            "label": "Qualify the current apparatus",
+            "done": true
+          },
+          {
+            "id": "fault-diagnosed-and-repaired",
+            "label": "Diagnose and repair the training fault",
+            "done": true
+          },
+          {
+            "id": "b20-lineage-matched",
+            "label": "Review the source-backed B20 result",
+            "done": true
+          },
+          {
+            "id": "episode-completed",
+            "label": "Complete the training episode",
+            "done": true
+          }
+        ],
+        "completedChecks": 5,
+        "totalChecks": 5,
+        "allowedMissions": [
+          "station-arrival",
+          "bass-assembly"
+        ],
+        "allowedActionTypes": [],
+        "allowedCoreActionTypes": [],
+        "diagnosisReady": false,
+        "repairReady": false,
+        "qualificationReady": false,
+        "nextInstruction": "The training episode is complete. Save or download your case."
+      },
+      "evidenceReview": {
+        "status": "lineage-verified",
+        "scope": "structure-and-citation-lineage-only",
+        "certification": false,
+        "catalogSha256": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+        "entries": [
+          {
+            "entryId": "station-arrival-bass2-b20-burned-entire-sample",
+            "status": "lineage-verified",
+            "issues": []
+          },
+          {
+            "entryId": "bass-assembly-bass2-b20-r16",
+            "status": "lineage-verified",
+            "issues": []
+          }
+        ]
+      },
+      "access": {
+        "scope": "local-gameplay-preview",
+        "expiresAt": "2026-10-16T11:00:00.000Z",
+        "publicAvailabilityChanged": false,
+        "scientificApproval": false
+      }
+    }
+  }
+}
