@@ -23,6 +23,8 @@ export type FilmOptions = {
   onBeat(b: Beat): void; onEnd(): void;
   /** Model download progress, 0–1 (files finished / files expected). */
   onProgress?(fraction: number): void;
+  /** Aborted when this playback is skipped, replaced or unmounted: a start still loading disposes its renderer and returns null. */
+  signal?: AbortSignal;
   /** Evidence only: hold the film at this time (seconds). */
   freezeAt?: number;
 };
@@ -371,26 +373,34 @@ const MODEL_FILES = 8;
 /** Give up only when no file has finished for this long; a slow but moving connection still gets the film. */
 const STALL_MS = 15000;
 
-/** Astronaut and PIX through one manager, so the page can show real progress. Null if either fails or the download stalls. */
-async function loadModels(onProgress?: (f: number) => void) {
+/**
+ * Astronaut and PIX through one manager, so the page can show real progress. Null if either fails, the download
+ * stalls or the playback is aborted. The film's own loader: nothing here is shared with the homepage's model cache,
+ * so disposing the film never frees geometry the observatory still draws.
+ */
+async function loadModels(onProgress: ((f: number) => void) | undefined, signal: AbortSignal | undefined) {
   const mgr = new THREE.LoadingManager(), loader = new GLTFLoader(mgr);
-  let last = performance.now(), timer = 0;
-  mgr.onProgress = (_u, done, total) => { last = performance.now(); onProgress?.(done / Math.max(total, MODEL_FILES)); };
+  let last = performance.now(), timer = 0, onAbort = () => {};
+  mgr.onProgress = (_u, done, total) => { last = performance.now(); if (!signal?.aborted) onProgress?.(done / Math.max(total, MODEL_FILES)); };
   const stalled = new Promise<null>((r) => { timer = window.setInterval(() => { if (performance.now() - last > STALL_MS) r(null); }, 500); });
+  const aborted = new Promise<null>((r) => { onAbort = () => r(null); signal?.addEventListener('abort', onAbort, { once: true }); });
+  // ponytail: an aborted download still finishes in the background (into the HTTP cache); GLTFLoader exposes no per-request abort.
   const both = Promise.all([loader.loadAsync('/models/astronaut-suit/astronaut.gltf'), loader.loadAsync('/models/pix/pix.gltf')]).then(([a, p]) => ({ astro: a, pixModel: p.scene }), () => null);
-  const got = await Promise.race([both, stalled]);
-  clearInterval(timer);
-  return got;
+  const got = await Promise.race([both, stalled, aborted]);
+  clearInterval(timer); signal?.removeEventListener('abort', onAbort);
+  return signal?.aborted ? null : got;
 }
 
 export async function startFilm(o: FilmOptions): Promise<FilmApi | null> {
+  if (o.signal?.aborted) return null;
   let renderer: THREE.WebGLRenderer;
   try { renderer = new THREE.WebGLRenderer({ canvas: o.canvas, antialias: true, powerPreference: 'high-performance' }); } catch { return null; }
   const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info');
   // Software rasterisers cannot hold 60 fps here: the visitor goes straight to the site instead.
   if (/swiftshader|llvmpipe|softpipe|software/i.test(dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '')) { renderer.dispose(); renderer.forceContextLoss(); return null; }
-  const models = await loadModels(o.onProgress);
-  if (!models) { renderer.dispose(); renderer.forceContextLoss(); return null; } // failed or stalled: direct entry
+  const models = await loadModels(o.onProgress, o.signal);
+  // Failed, stalled or aborted (skipped, replaced, unmounted): release this run's context now, never hand it on.
+  if (!models) { renderer.dispose(); renderer.forceContextLoss(); return null; }
   const { astro, pixModel } = models;
 
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, o.mobile ? 2 : 1.75));

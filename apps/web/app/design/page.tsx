@@ -1,8 +1,10 @@
+import { requireReviewRoute } from '../../lib/review-routes';
 import Link from 'next/link';
 
 export const metadata = { title: 'Choose a direction' };
 /** Review index: two complete alternatives on the same real content. Neither replaces the current site yet. */
-export default function Page() {
+export default async function Page() {
+  await requireReviewRoute('MICROFIRE_DESIGN_REVIEW'); // pages check too: a client-router request can render a page without its layout
   const cell = { display: 'grid', gap: 6, padding: 24, borderRadius: 10, textDecoration: 'none', color: '#111', background: '#fff', border: '1px solid #ddd' } as const;
   return <div style={{ minHeight: '100svh', padding: '8vh 24px', background: '#f3f4f6', font: '16px/1.5 system-ui, sans-serif', color: '#111' }}>
     <div style={{ maxWidth: 820, margin: '0 auto', display: 'grid', gap: 18 }}>

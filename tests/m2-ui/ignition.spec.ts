@@ -161,6 +161,190 @@ test('no retained WebGL context: after the film, the page holds no more contexts
   expect(await page.evaluate(() => (window as unknown as { __gl: number }).__gl)).toBeLessThanOrEqual(without);
 });
 
+// ---- Lifecycle ownership (Astra P2: a Skip/Replay race leaked a detached film renderer) ----
+/**
+ * Real resource instrumentation: every WebGL context (created inside the film or not, lost or live), every
+ * requestAnimationFrame call (so surviving render loops are counted per frame), every AudioContext and every
+ * unhandled rejection.
+ */
+const instrument = () => {
+  type Rec = { canvas: HTMLCanvasElement; lost: boolean; film: boolean };
+  const w = window as unknown as { __ctx: Rec[]; __raf: number; __rafOrig: typeof requestAnimationFrame; __ac: AudioContext[]; __rej: string[] };
+  w.__ctx = []; w.__raf = 0; w.__ac = []; w.__rej = [];
+  const orig = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement & { __r?: Rec }, t: string, ...r: unknown[]) {
+    const c = (orig as (...a: unknown[]) => unknown).call(this, t, ...r);
+    if (c && /webgl/.test(t) && !this.__r) { const rec: Rec = { canvas: this, lost: false, film: !!this.closest('#ignition') }; this.__r = rec; w.__ctx.push(rec); this.addEventListener('webglcontextlost', () => { rec.lost = true; }); }
+    return c;
+  } as typeof orig;
+  w.__rafOrig = window.requestAnimationFrame.bind(window);
+  window.requestAnimationFrame = (cb) => { w.__raf++; return w.__rafOrig(cb); };
+  const A = window.AudioContext;
+  if (A) window.AudioContext = class extends A { constructor(...a: ConstructorParameters<typeof AudioContext>) { super(...a); w.__ac.push(this); } };
+  window.addEventListener('unhandledrejection', (e) => { w.__rej.push(String(e.reason)); });
+};
+type Probe = { liveFilm: number; detachedLiveFilm: number; openAudio: number; rejections: string[]; run: string | undefined };
+const probeState = (page: Page) => page.evaluate((): Probe => {
+  const w = window as unknown as { __ctx: { canvas: HTMLCanvasElement; lost: boolean; film: boolean }[]; __ac: AudioContext[]; __rej: string[] };
+  const live = w.__ctx.filter((x) => x.film && !x.lost);
+  return { liveFilm: live.length, detachedLiveFilm: live.filter((x) => !x.canvas.isConnected).length, openAudio: w.__ac.filter((a) => a.state !== 'closed').length, rejections: w.__rej, run: document.documentElement.dataset.ignitionRun };
+});
+/** Animation loops alive right now: app requestAnimationFrame calls per frame, over 60 frames (our counter uses the original). */
+const loopsPerFrame = (page: Page) => page.evaluate(() => new Promise<number>((done) => {
+  const w = window as unknown as { __raf: number; __rafOrig: typeof requestAnimationFrame };
+  const start = w.__raf; let frames = 0;
+  const tick = () => { if (++frames < 60) w.__rafOrig(tick); else done((w.__raf - start) / frames); };
+  w.__rafOrig(tick);
+}));
+/** Holds the first astronaut.gltf request (the film's model load) until released. */
+const holdFirstModelLoad = async (page: Page) => {
+  let release!: () => void, arrived = false; const gate = new Promise<void>((r) => { release = r; });
+  let first = true;
+  await page.route('**/models/astronaut-suit/astronaut.gltf', async (r) => { if (first) { first = false; arrived = true; await gate; } await r.continue().catch(() => {}); });
+  return { release: () => release(), arrived: async () => { await expect.poll(() => arrived, { timeout: 15000 }).toBe(true); } };
+};
+/** Loops of a homepage that never played the film: the reference the race must return to. */
+const baselineLoops = async (browser: import('@playwright/test').Browser) => {
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, storageState: 'tests/ignition-seen.json' });
+  const p = await ctx.newPage(); await p.addInitScript(instrument); await p.goto('/'); await p.waitForTimeout(3000);
+  const n = await loopsPerFrame(p); await ctx.close(); return n;
+};
+
+test('race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives', async ({ page, browser }, info) => {
+  test.skip(info.project.name !== 'desktop', 'GPU lifecycle: desktop project');
+  test.setTimeout(150000);
+  const base = await baselineLoops(browser);
+  await page.addInitScript(instrument);
+  for (let i = 1; i <= 3; i++) {
+    await page.unroute('**/models/astronaut-suit/astronaut.gltf');
+    const hold = await holdFirstModelLoad(page);
+    await page.goto('/?intro=1');
+    await hold.arrived(); // run 1 now owns a renderer and waits for its models
+    expect((await probeState(page)).liveFilm, 'run 1 renderer exists while loading').toBe(1);
+    await skip(page).click(); await closed(page);
+    // Skip invalidates run 1 at once: its pending start disposes its renderer without waiting for the download.
+    await expect.poll(async () => (await probeState(page)).liveFilm, { message: 'run 1 released on Skip' }).toBe(0);
+    await page.getByRole('button', { name: 'Replay intro' }).click();
+    await page.waitForTimeout(500);
+    hold.release(); // the old request completes now; it must not revive run 1 or touch run 2
+    if (!(await reach(page, 'earth'))) test.skip(true, 'software graphics: no film here');
+    const during = await probeState(page);
+    expect(during.run, 'replay is a new lifecycle').toBe('2');
+    expect(during.liveFilm, 'only run 2 owns a film renderer').toBe(1);
+    expect(during.detachedLiveFilm, 'no detached film renderer').toBe(0);
+    expect(await page.locator('html').getAttribute('data-ignition-beats'), 'run 2 beat log starts clean').toMatch(/^earth/);
+    await skip(page).click(); await closed(page); // Skip still works immediately
+    await page.waitForTimeout(8500); // beyond the old film's full running time: a stale onEnd/close timer would act here
+    const after = await probeState(page);
+    expect(after.liveFilm, `iteration ${i}: film WebGL contexts left`).toBe(0);
+    expect(after.openAudio).toBe(0);
+    expect(after.rejections).toEqual([]);
+    await expect(page.locator('html')).toHaveAttribute('data-ignition', 'off');
+    await expect(film(page)).not.toHaveAttribute('open', '');
+    expect(await loopsPerFrame(page), `iteration ${i}: animation loops vs a homepage without the film (${base})`).toBeLessThanOrEqual(base + 0.25);
+  }
+  await page.getByRole('link', { name: /Open the B20 record/ }).click(); // the homepage stays interactive
+  await expect(page).toHaveURL(/experiments\/bass2-b20/);
+});
+
+test('race: after a stale load is released, the replay still plays its whole story and ends itself (no stale end or close timer cuts it)', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'GPU lifecycle: desktop project');
+  test.setTimeout(60000);
+  await page.addInitScript(instrument);
+  const hold = await holdFirstModelLoad(page);
+  await page.goto('/?intro=1');
+  await hold.arrived();
+  await skip(page).click(); await closed(page);
+  await page.getByRole('button', { name: 'Replay intro' }).click();
+  hold.release();
+  test.skip(!(await reach(page, 'earth')), 'software graphics: no film here');
+  await expect(page.getByRole('button', { name: 'Enter observatory' })).toBeVisible({ timeout: 15000 });
+  await closed(page);
+  expect(await page.locator('html').getAttribute('data-ignition-beats')).toBe('earth,cabin,alert,pix,explain,holo,title,exit');
+  await expect(page.locator('#main')).toBeFocused();
+  const s = await probeState(page);
+  expect(s.liveFilm).toBe(0); expect(s.rejections).toEqual([]);
+});
+
+test('race: a replay started inside the Skip crossfade keeps the dialog (the old fade timer cannot close the new run)', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'GPU lifecycle: desktop project');
+  await page.addInitScript(instrument);
+  await page.goto('/?intro=1');
+  test.skip(!(await reach(page, 'earth')), 'software graphics: no film here');
+  // Skip, then a replay request 50 ms later, inside the 280 ms crossfade (dispatched: the Replay button is behind the modal).
+  await page.evaluate(async () => { document.getElementById('ignition-skip')!.click(); await new Promise((r) => setTimeout(r, 50)); document.dispatchEvent(new Event('ignition:replay')); });
+  await page.waitForTimeout(900); // well past the old 280 ms finish
+  await expect(film(page)).toHaveAttribute('open', '');
+  await expect(page.locator('html')).toHaveAttribute('data-ignition', 'play');
+  expect((await probeState(page)).run).toBe('2');
+  await expect(film(page)).not.toHaveAttribute('data-leaving', '');
+  expect(await reach(page, 'earth,cabin')).toBe(true);
+  expect((await probeState(page)).liveFilm, 'the faded run released its renderer').toBe(1);
+  await page.keyboard.press('Escape'); await closed(page);
+  expect((await probeState(page)).liveFilm).toBe(0);
+});
+
+test('rapid Skip/Replay ×8 (during loading and during play): one owner at a time, nothing left behind, Replay still works', async ({ page, browser }, info) => {
+  test.skip(info.project.name !== 'desktop', 'GPU lifecycle: desktop project');
+  test.setTimeout(120000);
+  const base = await baselineLoops(browser);
+  await page.addInitScript(instrument);
+  await page.goto('/?intro=0'); // homepage without the film; every run below comes from Replay
+  await expect(page.locator('#home-title')).toBeVisible();
+  for (let i = 0; i < 8; i++) {
+    await page.getByRole('button', { name: 'Replay intro' }).click();
+    await page.waitForTimeout([0, 60, 150, 400, 900, 1600, 30, 2500][i]!); // loading, first frame and mid-story
+    expect((await probeState(page)).liveFilm, `cycle ${i}: at most one live film renderer`).toBeLessThanOrEqual(1);
+    await page.keyboard.press('Escape'); await closed(page);
+  }
+  await page.waitForTimeout(1000);
+  const s = await probeState(page);
+  expect(s.liveFilm).toBe(0); expect(s.openAudio).toBe(0); expect(s.rejections).toEqual([]);
+  expect(Number(s.run)).toBe(8);
+  expect(await loopsPerFrame(page)).toBeLessThanOrEqual(base + 0.25);
+  await page.getByRole('button', { name: 'Replay intro' }).click(); // and it still plays
+  if (await reach(page, 'earth')) { await page.keyboard.press('Escape'); }
+  await closed(page);
+});
+
+test('loading-time navigation away (unmount) releases the pending run and does not replay on return', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'GPU lifecycle: desktop project');
+  test.setTimeout(60000);
+  await page.addInitScript(instrument);
+  await page.goto('/atlas?intro=0');
+  await page.getByRole('link', { name: /MicroFire, the Living Science Observatory — home/ }).click(); // client navigation to /
+  await expect(page.locator('#home-title')).toBeVisible();
+  const hold = await holdFirstModelLoad(page);
+  await page.getByRole('button', { name: 'Replay intro' }).click();
+  await hold.arrived();
+  expect((await probeState(page)).liveFilm).toBe(1);
+  await page.goBack(); // Back to /atlas while the film is loading: the film component unmounts
+  await expect(page).toHaveURL(/\/atlas/);
+  await expect.poll(async () => (await probeState(page)).liveFilm, { message: 'unmount released the renderer' }).toBe(0);
+  hold.release(); await page.waitForTimeout(1500);
+  const s = await probeState(page);
+  expect(s.liveFilm).toBe(0); expect(s.rejections).toEqual([]);
+  await expect(page.locator('html')).toHaveAttribute('data-ignition', 'off');
+  await page.goForward(); await expect(page.locator('#home-title')).toBeVisible();
+  await expect(film(page)).not.toHaveAttribute('open', ''); // no surprise replay
+});
+
+test('sound state: turning sound on, then Skip and Replay, starts the new run muted and closes the old audio', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'desktop path');
+  await page.addInitScript(instrument);
+  await page.goto('/?intro=1');
+  test.skip(!(await reach(page, 'earth')), 'software graphics: no film here');
+  await page.getByRole('button', { name: 'Sound off' }).click();
+  await expect(page.getByRole('button', { name: 'Sound on' })).toHaveAttribute('aria-pressed', 'true');
+  expect((await probeState(page)).openAudio).toBe(1);
+  await page.keyboard.press('Escape'); await closed(page);
+  await expect.poll(async () => (await probeState(page)).openAudio).toBe(0);
+  await page.getByRole('button', { name: 'Replay intro' }).click();
+  await expect(page.getByRole('button', { name: 'Sound off' })).toHaveAttribute('aria-pressed', 'false');
+  if (await reach(page, 'earth')) expect((await probeState(page)).openAudio, 'the replay is muted: no new audio').toBe(0);
+  await page.keyboard.press('Escape'); await closed(page);
+});
+
 test('phones: controls are large, nothing overflows, and Skip stays reachable', async ({ page }, info) => {
   test.skip(info.project.name !== 'mobile', 'phone layout');
   await page.goto('/');

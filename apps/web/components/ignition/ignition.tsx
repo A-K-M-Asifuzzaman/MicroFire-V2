@@ -21,21 +21,35 @@ const CAPTIONS: Partial<Record<Beat, { who?: string; text: string; alert?: boole
 export function Ignition() {
   const dialog = useRef<HTMLDialogElement>(null);
   const host = useRef<HTMLDivElement>(null);
-  const film = useRef<FilmApi | null>(null);
   const [beat, setBeat] = useState<Beat | 'loading' | null>(null);
   const [progress, setProgress] = useState(0);
   const [sound, setSound] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const ended = useRef(false);
+  // Playback ownership. Each play() is a new Run with a monotonic id. Only `live` (the playing run) may change the UI,
+  // the dialog or the page phase; Skip, a replay and unmount take ownership away at once, so any later async completion
+  // of that run (module import, model load, a frame callback) sees it is stale and only releases its own resources.
+  // `fading` is the one run still crossfading out after a close; play() and unmount end it immediately.
+  const gen = useRef(0);
+  const live = useRef<Run | null>(null);
+  const fading = useRef<{ run: Run; timer: number } | null>(null);
+
+  /** Stops the run that is fading out (its renderer, loop and audio) and cancels its pending UI reset. */
+  const endFade = useCallback(() => {
+    const f = fading.current; if (!f) return;
+    fading.current = null; clearTimeout(f.timer); f.run.api?.stop();
+  }, []);
 
   // 'fail': the film could not load here (slow or broken download). Not marked seen, so the next visit tries again.
   const close = useCallback((how: 'end' | 'skip' | 'fail') => {
-    if (ended.current) return; ended.current = true;
+    const run = live.current; if (!run) return; // nothing playing, or already closing: a second Skip is a no-op
+    live.current = null; run.abort.abort();      // ownership ends now; a start still loading disposes itself
     const h = document.documentElement, d = dialog.current;
     ignition.set('handoff');
     try { if (how === 'fail') localStorage.removeItem(IGNITION_KEY); else localStorage.setItem(IGNITION_KEY, 'seen'); } catch { /* best effort */ }
+    endFade();
     const finish = () => {
-      film.current?.stop(); film.current = null;
+      if (fading.current?.run !== run) return; // superseded by a replay, which already ended this fade
+      endFade();
       if (d?.open) d.close();
       h.dataset.ignition = 'off'; ignition.set('off'); setBeat(null); setLeaving(false); performance.mark('ignition:closed');
       host.current?.replaceChildren();
@@ -46,13 +60,19 @@ export function Ignition() {
     setLeaving(true);
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (how === 'end' && !reduce) flyWordmark();
-    setTimeout(finish, reduce ? 0 : how === 'skip' ? 280 : 650);
-  }, []);
+    fading.current = { run, timer: window.setTimeout(finish, reduce ? 0 : how === 'skip' ? 280 : 650) };
+  }, [endFade]);
 
   const play = useCallback(async () => {
     const d = dialog.current, el = host.current;
     if (!d || !el) return;
-    ended.current = false; setLeaving(false); setBeat('loading'); setProgress(0); ignition.set('play'); delete document.documentElement.dataset.ignitionBeats;
+    // A new, distinct lifecycle: the previous run (playing or fading) is released before this one exists.
+    const prev = live.current; live.current = null; prev?.abort.abort(); prev?.api?.stop(); endFade();
+    const run: Run = { id: ++gen.current, abort: new AbortController(), api: null };
+    live.current = run;
+    const mine = () => live.current === run;
+    document.documentElement.dataset.ignitionRun = String(run.id);
+    setLeaving(false); setBeat('loading'); setProgress(0); setSound(false); ignition.set('play'); delete document.documentElement.dataset.ignitionBeats;
     try { sessionStorage.setItem('microfire.home.intro', '1'); } catch { /* the observatory's own fly-in is replaced by the film */ }
     if (!d.open) try { d.showModal(); } catch { d.setAttribute('open', ''); }
     const canvas = document.createElement('canvas'); canvas.setAttribute('aria-hidden', 'true'); el.replaceChildren(canvas);
@@ -61,29 +81,30 @@ export function Ignition() {
     if (!capableGpu()) { close('skip'); return; }
     try {
       const { startFilm } = await import('./film');
-      if (ended.current) return;
+      if (!mine()) return;
       const api = await startFilm({
-        canvas, host: el, mobile: matchMedia('(max-width: 760px), (orientation: portrait) and (max-width: 1024px)').matches,
+        canvas, host: el, signal: run.abort.signal, mobile: matchMedia('(max-width: 760px), (orientation: portrait) and (max-width: 1024px)').matches,
         onBeat: (b) => {
+          if (!mine()) return;
           setBeat(b); if (b === 'holo') ignition.set('handoff'); if (b === 'earth') performance.mark('ignition:first-frame');
           const h = document.documentElement; h.dataset.ignitionBeats = h.dataset.ignitionBeats ? `${h.dataset.ignitionBeats},${b}` : b; // every beat, even if two land in one frame
         },
-        onEnd: () => close('end'),
-        onProgress: setProgress,
+        onEnd: () => { if (mine()) close('end'); },
+        onProgress: (f) => { if (mine()) setProgress(f); },
         ...(freeze !== null && !Number.isNaN(Number(freeze)) ? { freezeAt: Number(freeze) } : {})
       });
-      if (ended.current) { api?.stop(); return; }
+      if (!mine()) { api?.stop(); return; } // stale: release, never adopt
       if (!api) { close('fail'); return; } // no WebGL, software graphics, or the download failed or stalled: straight to the site
-      film.current = api;
-    } catch { close('fail'); }
-  }, [close]);
+      run.api = api;
+    } catch { if (mine()) close('fail'); }
+  }, [close, endFade]);
 
   useEffect(() => {
     const h = document.documentElement;
     h.dataset.ignitionLive = '1';
     const onSkip = () => close('skip');
     document.addEventListener('ignition:skip', onSkip);
-    const onResize = () => film.current?.resize();
+    const onResize = () => live.current?.api?.resize();
     window.addEventListener('resize', onResize);
     // The gate script already decided on this load; it may also have been skipped before hydration.
     if (h.dataset.ignition === 'play') void play();
@@ -91,11 +112,16 @@ export function Ignition() {
     document.addEventListener('ignition:replay', onReplay);
     return () => {
       document.removeEventListener('ignition:skip', onSkip); document.removeEventListener('ignition:replay', onReplay); window.removeEventListener('resize', onResize);
-      film.current?.stop(); film.current = null; delete h.dataset.ignitionLive;
+      // Unmount (navigation, Strict Mode's double mount): invalidate everything this instance started.
+      const run = live.current; live.current = null; run?.abort.abort(); run?.api?.stop(); endFade();
+      delete h.dataset.ignitionLive;
+      // A real unmount mid-film (Back) must not leave the page phase at 'play'. Strict Mode remounts synchronously and
+      // must keep the gate's decision, so the reset waits a task and applies only if no instance came back.
+      if (run) setTimeout(() => { if (!h.dataset.ignitionLive && h.dataset.ignition === 'play') { h.dataset.ignition = 'off'; ignition.set('off'); } });
     };
-  }, [close, play]);
+  }, [close, play, endFade]);
 
-  const toggleSound = () => { const next = !sound; setSound(next); film.current?.setSound(next); };
+  const toggleSound = () => { const next = !sound; setSound(next); live.current?.api?.setSound(next); };
   const cap = beat && beat !== 'loading' ? CAPTIONS[beat] ?? (beat === 'title' || beat === 'exit' ? CAPTIONS.holo : undefined) : undefined;
   const title = beat === 'title' || beat === 'exit';
 
@@ -131,6 +157,9 @@ export function Ignition() {
     <script src="/ignition-gate.js" />
   </>;
 }
+
+/** One playback: its id, the signal that cancels its start, and its film once (and only if) it still owns the page. */
+type Run = { id: number; abort: AbortController; api: FilmApi | null };
 
 /** One throwaway context: WebGL present and not a software rasteriser. The context is released immediately. */
 function capableGpu() {

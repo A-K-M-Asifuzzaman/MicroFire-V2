@@ -6,9 +6,11 @@ import type { ActionRequest, DomainResult, HttpFailure, LocalSaveResult, Snapsho
 import { b20Data } from '../../game/contract/b20';
 import { partSpecs } from '../../game/contract/parts';
 import { FixtureGallery, type Scenario } from '../../game/ui/fixture-gallery';
+import { requireReviewRoute } from '../../lib/review-routes';
 
-// Developer fixture gallery for the M2 gameplay frontend. Off unless MICROFIRE_M2_FIXTURE_GALLERY=1 at runtime;
-// it reads the approved docs/m2 examples from disk (never bundled) and is not linked from any public page.
+// Developer fixture gallery for the M2 gameplay frontend. Off unless MICROFIRE_M2_FIXTURE_GALLERY=1 on a loopback,
+// non-hosted server (lib/review-routes.ts); it reads the approved docs/m2 examples from disk (never bundled) and is
+// not linked from any public page.
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'M2 fixture gallery', robots: { index: false, follow: false } };
 
@@ -20,7 +22,8 @@ function dir() {
 }
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ scenario?: string; intro?: string }> }) {
-  const d = process.env.MICROFIRE_M2_FIXTURE_GALLERY === '1' ? dir() : null;
+  await requireReviewRoute('MICROFIRE_M2_FIXTURE_GALLERY');
+  const d = dir();
   if (!d) notFound();
   const read = <T,>(name: string): T => JSON.parse(readFileSync(path.join(d, `${name}.example.json`), 'utf8')) as T;
   const snap = (name: string): Snapshot => { const x = read<{ data: Snapshot | DomainResult }>(name).data; return 'snapshot' in x ? x.snapshot : x; };
