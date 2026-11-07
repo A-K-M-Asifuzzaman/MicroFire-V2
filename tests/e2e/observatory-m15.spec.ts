@@ -121,13 +121,14 @@ test('fix F: missing records and routes return real 404s; real pages and the API
 });
 
 test('route-level loading: no regular page downloads the 3D engine; only the training bay does', async ({ page }) => {
-  const scripts: string[] = [];
+  test.setTimeout(120_000); // fetches and inspects every script on eight routes (slow on shared CI runners)
+  const scripts: string[] = [], seen = new Map<string, Promise<string>>();
   page.on('response', (r) => { if (r.url().endsWith('.js')) scripts.push(r.url()); });
   const threeIn = async (path: string) => {
     scripts.length = 0;
     await page.goto(path, { waitUntil: 'networkidle' });
     await page.waitForTimeout(1200);
-    const bodies = await Promise.all(scripts.map((u) => page.request.get(u).then((r) => r.text())));
+    const bodies = await Promise.all(scripts.map((u) => { if (!seen.has(u)) seen.set(u, page.request.get(u).then((r) => r.text())); return seen.get(u)!; }));
     return bodies.some((b) => b.includes('WebGLRenderer'));
   };
   // Design B: the homepage flame is a small raw-WebGL shader and PIX is an illustration, so neither needs three.js.
@@ -205,6 +206,7 @@ test('fix C: keyboard navigation from the mobile menu lands on the destination h
 });
 
 test('fix E: no automated axe violations (WCAG 2.x A/AA) on core routes', async ({ page }, info) => {
+  test.setTimeout(120_000); // a full axe scan on 13 routes (about 33 s on shared CI runners)
   await scienceBackedPosts(page);
   const results: Record<string, string[]> = {};
   for (const path of ['/', '/atlas', '/experiments/bass2-b20', '/ask', '/dashboard', '/gaps', '/compare', '/passport', '/sources', '/methodology', '/missions', '/missions/bass-assembly', '/roadmap']) {
