@@ -12,8 +12,8 @@ const explanations = {
 
 export type LensRecord = { href: string; title: string; flowDirection: string | null; initialFlow: string | null; locator: string };
 
-/** `onMotionChange` lets a host scene follow the same pause control (one motion switch for the whole view). */
-export function GravityLens({ record, onGravityChange, onMotionChange }: { record: LensRecord; onGravityChange?: (g: number) => void; onMotionChange?: (on: boolean) => void }) {
+/** `onMotionChange` lets a host scene follow the same pause control; `decor` is drawn inside the stage behind the flame. */
+export function GravityLens({ record, onGravityChange, onMotionChange, decor }: { record: LensRecord; onGravityChange?: (g: number) => void; onMotionChange?: (on: boolean) => void; decor?: React.ReactNode }) {
   const [g, setG] = useState(0);
   const [renderer, setRenderer] = useState<'svg' | 'webgl' | 'unavailable' | 'lost'>('svg');
   const [animated, setAnimated] = useState(false);
@@ -66,6 +66,7 @@ export function GravityLens({ record, onGravityChange, onMotionChange }: { recor
   const buoyant = g, diffusive = 1 - g;
   return <figure ref={figure} className="lens" data-renderer={renderer === 'webgl' ? 'webgl' : 'svg'} data-gravity={mode} aria-labelledby={`${id}-cap`} style={{ margin: 0 }}>
     <div className="lens-stage">
+      {decor}
       <canvas ref={canvas} aria-hidden="true" />
       <svg viewBox="0 0 400 400" role="img" aria-label={`${explanations[mode].title}: ${mode === 'earth' ? 'a tall teardrop flame' : mode === 'micro' ? 'a rounded, dim blue flame' : 'an intermediate flame shape'}.`}>
         <defs>
