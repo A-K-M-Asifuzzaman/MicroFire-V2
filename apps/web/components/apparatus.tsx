@@ -37,51 +37,51 @@ export function Apparatus({ items, sources }: { items: ApparatusItem[]; sources:
     <figure className="apparatus-figure">
       <svg viewBox="0 0 680 310" role="img" aria-label="Schematic side view of the BASS-II flow duct with numbered parts; only the duct's outer proportions are sourced.">
         <defs>
-          <marker id="app-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10z" fill="#73bbd9" /></marker>
-          <pattern id="app-honey" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 4h8M4 0v8" stroke="#73bbd9" strokeWidth=".8" opacity=".6" /></pattern>
+          <marker id="app-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10z" fill="#2ee6a6" /></marker>
+          <pattern id="app-honey" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 4h8M4 0v8" stroke="#2ee6a6" strokeWidth=".8" opacity=".6" /></pattern>
         </defs>
         {/* Duct: 17 cm × 7.6 cm side proportion (510 × 228 units). */}
         <g className="part" data-active={is('flow-duct')} onClick={() => select('flow-duct')}>
-          <rect x="85" y="36" width="510" height="228" rx="4" fill="rgb(115 187 217 / .05)" stroke="#5d7f97" strokeWidth="2" />
+          <rect x="85" y="36" width="510" height="228" rx="4" fill="rgb(201 205 255 / .07)" stroke="#c9cdff" strokeWidth="2" />
         </g>
-        <g stroke="#6f8293" strokeWidth="1" fill="#6f8293" fontFamily="ui-monospace, monospace" fontSize="10">
+        <g stroke="#c9cdff" strokeWidth="1" fill="#c9cdff" fontFamily="var(--f-atkinson), sans-serif" fontSize="10">
           <path d="M85 280h510M85 274v12M595 274v12" fill="none" /><text x="470" y="298" textAnchor="middle" stroke="none">17 cm · sourced</text>
           <path d="M650 36v228M644 36h12M644 264h12" fill="none" /><text x="664" y="154" stroke="none" transform="rotate(90 664 154)" textAnchor="middle">7.6 cm · sourced</text>
         </g>
-        <g stroke="#73bbd9" strokeWidth="1.6" fill="none" markerEnd="url(#app-arrow)" opacity=".7">
+        <g stroke="#2ee6a6" strokeWidth="1.6" fill="none" markerEnd="url(#app-arrow)" opacity=".7">
           <path className="flow-dash" d="M140 90H240" /><path className="flow-dash" d="M140 210H240" /><path className="flow-dash" d="M490 90H580" /><path className="flow-dash" d="M490 210H580" />
         </g>
         <g className="part" data-active={is('fan')} onClick={() => select('fan')}>
-          <circle cx="58" cy="150" r="26" fill="#0e1a26" stroke="#5d7f97" strokeWidth="2" />
-          <path d="M58 150l14-12M58 150l-14 12M58 150l12 14M58 150l-12-14" stroke="#9fb6c8" strokeWidth="3" strokeLinecap="round" />
+          <circle cx="58" cy="150" r="26" fill="#1b1c9e" stroke="#c9cdff" strokeWidth="2" />
+          <path d="M58 150l14-12M58 150l-14 12M58 150l12 14M58 150l-12-14" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
         </g>
         <g className="part" data-active={is('flow-straightener')} onClick={() => select('flow-straightener')}>
-          <rect x="104" y="48" width="22" height="204" fill="url(#app-honey)" stroke="#5d7f97" />
+          <rect x="104" y="48" width="22" height="204" fill="url(#app-honey)" stroke="#c9cdff" />
         </g>
         <g className="part" data-active={is('sample-holder')} onClick={() => select('sample-holder')}>
-          <rect x="250" y="44" width="240" height="8" fill="#34495c" stroke="#5d7f97" />
-          <path d="M268 52v92M472 52v92" stroke="#5d7f97" strokeWidth="2" />
-          <rect x="262" y="144" width="216" height="10" rx="2" fill="#c9d4dd" />
-          <rect x="380" y="144" width="98" height="10" rx="2" fill="#2b2420" />
-          <ellipse cx="384" cy="149" rx="16" ry="20" fill="#ff8738" opacity=".75" />
+          <rect x="250" y="44" width="240" height="8" fill="#2a2bd6" stroke="#c9cdff" />
+          <path d="M268 52v92M472 52v92" stroke="#c9cdff" strokeWidth="2" />
+          <rect x="262" y="144" width="216" height="10" rx="2" fill="#ffffff" />
+          <rect x="380" y="144" width="98" height="10" rx="2" fill="#4a4a7a" />
+          <ellipse cx="384" cy="149" rx="16" ry="20" fill="#ffb020" opacity=".75" />
         </g>
         <g className="part" data-active={is('igniter')} onClick={() => select('igniter')}>
-          <path d="M470 168c4-6 8 6 12 0s8 6 12 0" stroke="#ffb057" strokeWidth="2" fill="none" /><path d="M494 168l20 40" stroke="#5d7f97" strokeWidth="2" />
+          <path d="M470 168c4-6 8 6 12 0s8 6 12 0" stroke="#ff5a5f" strokeWidth="2" fill="none" /><path d="M494 168l20 40" stroke="#c9cdff" strokeWidth="2" />
         </g>
         <g className="part" data-active={is('nitrogen-nozzle')} onClick={() => select('nitrogen-nozzle')}>
-          <polygon points="520,70 540,70 534,92 526,92" fill="#22344a" stroke="#5d7f97" />
+          <polygon points="520,70 540,70 534,92 526,92" fill="#2a2bd6" stroke="#c9cdff" />
         </g>
         <g className="part" data-active={is('still-camera')} onClick={() => select('still-camera')}>
-          <rect x="352" y="0" width="34" height="22" rx="3" fill="#22344a" stroke="#5d7f97" /><circle cx="369" cy="24" r="6" fill="#0e1a26" stroke="#5d7f97" />
+          <rect x="352" y="0" width="34" height="22" rx="3" fill="#2a2bd6" stroke="#c9cdff" /><circle cx="369" cy="24" r="6" fill="#1b1c9e" stroke="#c9cdff" />
         </g>
         <g className="part" data-active={is('radiometer')} onClick={() => select('radiometer')}>
-          <rect x="566" y="42" width="20" height="16" rx="2" fill="#22344a" stroke="#5d7f97" />
+          <rect x="566" y="42" width="20" height="16" rx="2" fill="#2a2bd6" stroke="#c9cdff" />
         </g>
         <g className="part" data-active={is('exit-plate')} onClick={() => select('exit-plate')}>
-          <rect x="590" y="40" width="10" height="220" fill="none" stroke="#b07a4a" strokeWidth="2" strokeDasharray="3 4" />
+          <rect x="590" y="40" width="10" height="220" fill="none" stroke="#ffb020" strokeWidth="2" strokeDasharray="3 4" />
         </g>
         <g className="part" data-active={is('video-camera')} onClick={() => select('video-camera')}>
-          <rect x="284" y="270" width="34" height="18" rx="3" fill="#22344a" stroke="#5d7f97" />
+          <rect x="284" y="270" width="34" height="18" rx="3" fill="#2a2bd6" stroke="#c9cdff" />
         </g>
         {items.map((item) => { const p = spots[item.id]; return p ? <g key={item.id} className="hotspot" data-active={is(item.id)} onClick={() => select(item.id)} style={{ cursor: 'pointer' }} aria-hidden="true">
           <circle cx={p[0]} cy={p[1]} r="11" /><text x={p[0]} y={p[1] + 4} textAnchor="middle">{item.n}</text>

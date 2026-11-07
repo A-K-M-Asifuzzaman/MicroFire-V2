@@ -25,7 +25,7 @@ test('S1/S2: visible, hidden and accessible copy never overclaims; the still-air
     for (const claim of overclaims) expect(text, `${route} ${claim}`).not.toMatch(claim);
   }
   await page.goto('/');
-  await expect(page.locator('.obs-head .lede')).toContainText('in still air');
+  await expect(page.locator('.home-copy .lede')).toContainText('in still air');
   await expect(page.getByText('See what this catalog does and does not document.')).toBeVisible();
   await expect(page.getByText('Two teaching views · still-air illustration')).toBeAttached();
   await expect(page.getByRole('heading', { name: 'Still-air microgravity illustration' })).toBeVisible();

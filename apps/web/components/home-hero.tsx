@@ -41,14 +41,14 @@ export function HomeHero({ record, testId, stations, trail, children }: { record
         <div className="home-copy">
           {children}
           <div className="actions">
-            <Link className="btn btn-primary" href={BAY_TOUR} onMouseEnter={peek(true)} onMouseLeave={peek(false)} onFocus={peek(true)} onBlur={peek(false)}>Enter the training bay</Link>
+            <Link className="btn btn-primary" href={BAY_TOUR} prefetch={false} onMouseEnter={peek(true)} onMouseLeave={peek(false)} onFocus={peek(true)} onBlur={peek(false)}>Enter the training bay</Link>
             <Link className="btn" href={record.href}>Open the {testId} record</Link>
             <Link className="text-link" href="/atlas">Explore the Experiment Atlas</Link>
           </div>
           <div className="home-guide">
             <div className="home-pix" aria-hidden="true"><PixAvatar mood={say.mood} state={say.mood === 'gap' ? 'abstained' : 'idle'} /></div>
             <div className="home-balloon" data-mood={say.tone}>
-              <p aria-live="polite" key={say.text}>{say.node}{' '}{say.mood === 'bay' && bay ? <Link href={BAY_TOUR}>Take the tour</Link> : <Link href="/ask">Ask me more</Link>}</p>
+              <p aria-live="polite" key={say.text}>{say.node}{' '}{say.mood === 'bay' && bay ? <Link href={BAY_TOUR} prefetch={false}>Take the tour</Link> : <Link href="/ask">Ask me more</Link>}</p>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@ export function HomeHero({ record, testId, stations, trail, children }: { record
           <b>{s.title}</b><span>{s.description}</span>
         </Link>
       </li>)}</ol>
-      <p className="home-status">The flame above is an educational illustration. Every station works without 3D graphics.</p>
+      <p className="home-status">The flame above is for teaching, not a measurement. Every station works without 3D graphics.</p>
     </nav>
   </div>;
 }

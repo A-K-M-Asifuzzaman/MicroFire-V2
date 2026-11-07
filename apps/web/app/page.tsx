@@ -39,7 +39,7 @@ export default function Home() {
       trail={<nav className="wrap home-trail" aria-label="Your route through MicroFire">
         <h2>Your route through MicroFire</h2>
         <ol>{steps.map((s, i) => <li key={s.title}>
-          <Link className="sticker" href={s.href} data-locked={!!s.locked}>
+          <Link className="sticker" href={s.href} prefetch={s.href !== BAY_TOUR} data-locked={!!s.locked}>
             <span className="sticker-num" aria-hidden="true">{i + 1}</span>
             <b>{s.title}</b><span>{s.what}</span>{s.locked && <em>{s.locked}</em>}
           </Link>

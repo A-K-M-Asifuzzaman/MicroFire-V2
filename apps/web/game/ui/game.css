@@ -619,3 +619,115 @@
 /* The arrival title joins the display face. */
 .m2-arrival-title { font-family: var(--display); font-weight: 800; font-variation-settings: 'wdth' 85; letter-spacing: -.01em; }
 .m2 .eyebrow { font: 800 .98rem/1.2 var(--display); font-variation-settings: 'wdth' 88; letter-spacing: 0; text-transform: none; color: var(--signal); }
+
+/* =====================================================================================================================
+   Design B (team decision 2026-11-07): the bay joins the site's Field Journal. Paper plates with a 3px ink outline and a
+   hard offset shadow; ink text; sun = the action and the selection; mint = confirmed; coral = refused; the 3D bench
+   stays a dark porthole. Tokens that doubled as text colours get readable inks below (mint/amber text never on white).
+   ===================================================================================================================== */
+.m2 {
+  --graphite: var(--ink); --plate: var(--paper); --plate-hi: var(--cloud); --edge: var(--ink); --edge-hi: var(--ink); --under: var(--ink);
+  --bone: var(--ink); --bone-dim: var(--ink-3); --heat: var(--sun); --heat-ink: var(--ink); --heat-under: var(--ink); --signal: var(--mint); --coral: var(--coral-ink);
+  --m2-cyan: var(--ultra); --m2-teal: var(--mint-ink); --m2-amber: var(--sun-ink); --m2-violet: var(--violet-ink); --m2-card: var(--paper); --m2-line: var(--ink);
+  --fg: var(--ink); --muted: var(--ink-3); --line: rgb(21 21 61 / .18); --raised: var(--paper); --focus: var(--ultra); --cyan-text: var(--mint-ink);
+  --k-gap: var(--sun-ink); --k-observed: var(--mint-ink); --accent-text: var(--ultra); --teal-ink: var(--mint-ink);
+  color: var(--ink);
+}
+.m2 :focus-visible { outline-color: var(--ultra); }
+.m2 .m2-h1 span, .m2 .eyebrow, .m2-tour-card dt, .m2-bench-help summary, .m2-load-steps li[data-state="now"], .m2-tour-parts .eyebrow { color: var(--ultra); }
+.m2-designated { color: var(--mint-ink); border-color: var(--ink); background: var(--mint-soft); }
+.m2-feedback[data-kind="accepted"]::before, .m2-checks li[data-done="true"] span[aria-hidden], .m2-rail li[data-state="done"] .m2-rail-dot { color: var(--mint-ink); }
+.m2-access[data-low="true"], .m2-tag[data-tone="amber"], .m2-save[data-state="problem"] .m2-save-pill { color: var(--sun-ink); }
+/* Plates and stickers */
+.m2 :where(.m2-status, .m2-placement, .m2-panel-hint, .m2-board, .m2-repair, .m2-qualify, .m2-gate, .m2-dossier, .m2-passport, .m2-terminal, .m2-card, .m2-side > section, .m2-side > aside) {
+  background: var(--paper); border: 3px solid var(--ink); border-radius: 22px; box-shadow: var(--pop); }
+.m2-tour-card { background: var(--paper); border: 3px solid var(--ink); border-radius: 20px; box-shadow: var(--pop-sm); }
+.m2 .btn, .m2-viewbar button, .m2-view, .m2-sound button, .m2-close, .m2-tour-parts button { border: 3px solid var(--ink); background: var(--paper); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.m2 .btn:hover:not(:disabled), .m2-viewbar button:hover, .m2-view:hover:not(:disabled), .m2-sound button:hover:not(:disabled), .m2-close:hover, .m2-tour-parts button:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink); border-color: var(--ink); }
+.m2 .btn:active:not(:disabled), .m2-viewbar button:active, .m2-view:active:not(:disabled), .m2-close:active, .m2-tour-parts button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.m2 .btn-primary, .m2 .btn-primary:hover:not(:disabled) { background: var(--sun); border-color: var(--ink); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+.m2-viewbar button[aria-pressed="true"], .m2-view[aria-pressed="true"], .m2-sound button[aria-pressed="true"] { background: var(--mint); border-color: var(--ink); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.m2-guide-btn { border-color: var(--ink); color: var(--ink); background: var(--mint-soft); }
+.m2-part, .m2-tour-parts button { border: 3px solid var(--ink); background: var(--paper); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+.m2-part:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); border-color: var(--ink); }
+.m2-part:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.m2-num { background: var(--sun); border: 3px solid var(--ink); color: var(--ink); }
+.m2-part[data-state="fitted"] { background: var(--mint-soft); border-color: var(--ink); }
+.m2-part[data-state="fitted"] .m2-num { background: var(--mint); border-color: var(--ink); color: var(--ink); }
+.m2-part[data-next="true"] { border-style: dashed; border-color: var(--ink); }
+.m2-part[data-flagged="true"] { background: var(--sun-soft); border-color: var(--ink); }
+.m2-part[data-flagged="true"] .m2-num { background: var(--coral); border-color: var(--ink); color: var(--ink); }
+.m2-part[aria-pressed="true"], .m2-tour-parts button[aria-pressed="true"] { background: var(--sun); border-color: var(--ink); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+.m2-part[aria-pressed="true"] .m2-num, .m2-tour-parts button[aria-pressed="true"] .m2-num { background: var(--paper); border-color: var(--ink); color: var(--ink); }
+.m2-part[aria-pressed="true"] .m2-part-state { color: var(--ink); }
+/* Journey rail */
+.m2-rail-dot { border: 3px solid var(--ink); background: var(--paper); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.m2-rail li[data-state="done"] .m2-rail-dot { background: var(--mint); border-color: var(--ink); color: var(--ink); }
+.m2-rail li[data-state="now"] .m2-rail-dot, .m2-stage[data-fault="true"] .m2-rail li[data-state="now"] .m2-rail-dot { background: var(--sun); border-color: var(--ink); color: var(--ink); box-shadow: 2px 2px 0 var(--ink), 0 0 0 6px rgb(255 176 32 / .3); }
+.m2-rail li[data-state="done"]::before, .m2-rail li[data-state="now"]::before { background: var(--ink); }
+/* The 3D bench: a dark porthole with an ink frame (Design B lab) */
+.m2-view-host .m2-bench, .m2-tour .m2-bench { border: 4px solid var(--ink); border-radius: 32px; box-shadow: 9px 9px 0 var(--ink); background: radial-gradient(70% 70% at 50% 40%, #23246b, #0b0c26 72%); overflow: hidden; }
+.m2-view-host .m2-schematic-art { border: 4px solid var(--ink); border-radius: 32px; box-shadow: 9px 9px 0 var(--ink); background: radial-gradient(70% 80% at 50% 40%, #23246b, #0b0c26 75%); }
+.m2-callout { color: var(--ink); background: var(--paper); border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.m2-callout[data-tone="cyan"] { background: var(--mint-soft); border-color: var(--ink); }
+.m2-callout[data-tone="amber"] { color: var(--ink); background: var(--sun-soft); border-color: var(--ink); }
+.m2-bench-tip { background: var(--paper); color: var(--ink); border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.m2-bench-env { background: var(--paper); color: var(--ink); border: 2px solid var(--ink); }
+.m2-bench-loading, .m2-bench-loading.m2-load-steps li { color: #fff; }
+.m2-bench-loading.m2-load-steps li[data-state="now"] { color: var(--sun); }
+.m2-bench-label, .m2-tour .m2-bench-label { font: 400 .85rem/1.5 var(--body); color: var(--ink-3); }
+.m2-fault-banner { color: var(--ink); background: var(--sun-soft); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.m2-status progress { border: 2px solid var(--ink); }
+.m2-status progress::-webkit-progress-value { background: var(--mint); }
+.m2-status progress::-moz-progress-bar { background: var(--mint); }
+.m2-status-task b { color: var(--ultra); }
+/* Placement and verdicts */
+.m2-choices label:has(input:checked) { border-color: var(--ink); background: var(--sun-soft); }
+.m2-choices label[data-designated="true"] { border-color: var(--mint-ink); background: var(--mint-soft); }
+.m2-choices label[data-designated="true"]:has(input:checked) { border-color: var(--ink); }
+.m2-choices input { accent-color: var(--ultra); }
+.m2-feedback { border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.m2-feedback[data-kind="refused"] { background: #ffe1e1; border-color: var(--ink); }
+.m2-feedback[data-kind="refused"]::before, .m2-feedback[data-kind="refused"] b { color: var(--coral-ink); }
+.m2-feedback[data-kind="accepted"] { background: var(--mint-soft); border-color: var(--ink); }
+.m2-banner { background: var(--ultra-soft); border: 3px solid var(--ink); }
+.m2-banner[data-tone="warn"] { background: var(--sun-soft); border-color: var(--ink); }
+.m2-banner[data-tone="bad"] { background: #ffe1e1; border-color: var(--ink); }
+.m2-notice { background: var(--ultra-soft); border-left: 6px solid var(--ultra); }
+.m2-notice[data-tone="warn"] { background: var(--sun-soft); border-left-color: var(--sun-ink); }
+.m2-fixture-banner { background: #efe9ff; border-color: var(--violet-ink); }
+.m2-field select, .m2-field input, .m2-field textarea { border: 2.5px solid var(--ink); background: var(--paper); color: var(--ink); }
+.m2-conditions > div { background: var(--cloud); }
+.m2-save-pill { background: var(--paper); border: 2px solid var(--ink); font-family: var(--body); }
+.m2-board { border-color: var(--ink); }
+/* PIX narrator: Design B's balloon */
+.m2-pix-line { color: var(--ink); background: var(--paper); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.m2-pix-line::after { background: inherit; border-left: 3px solid var(--ink); border-bottom: 3px solid var(--ink); left: -10px; }
+.m2-pix-line::before { background: var(--ultra); }
+.m2-pix[data-pose="alarm"] .m2-pix-line, .m2-pix[data-pose="concern"] .m2-pix-line { background: var(--sun-soft); border-color: var(--ink); }
+.m2-pix[data-pose="alarm"] .m2-pix-line::after, .m2-pix[data-pose="concern"] .m2-pix-line::after { background: var(--sun-soft); }
+.m2-pix[data-pose="reveal"] .m2-pix-line, .m2-pix[data-pose="cheer"] .m2-pix-line { background: var(--mint-soft); border-color: var(--ink); }
+.m2-pix[data-pose="reveal"] .m2-pix-line::after, .m2-pix[data-pose="cheer"] .m2-pix-line::after { background: var(--mint-soft); }
+.m2-pix[data-pose="alarm"] .m2-pix-line::before, .m2-pix[data-pose="concern"] .m2-pix-line::before { background: var(--sun-ink); }
+/* Arrival: an ultramarine title card over the bay's own render (white text on a dark photo, never ink). */
+.m2-arrival { background: var(--ultra-deep); color: #fff; }
+.m2-arrival :where(h1, h2, p, span, .m2-arrival-title, .m2-arrival-sub, .m2-arrival-card, .m2-arrival-note) { color: #fff; }
+.m2-arrival-card { font: 800 .95rem/1 var(--display); letter-spacing: 0; text-transform: none; color: var(--sun) !important; }
+.m2-arrival-note { font: 600 .8rem/1.3 var(--body); }
+.m2-arrival-title { text-shadow: 4px 4px 0 var(--ink); }
+.m2-arrival-bay span { background: linear-gradient(180deg, transparent, var(--mint), transparent); }
+@media (max-width: 760px) {
+  .m2-stage[data-placing="true"] .m2-view-host { background: var(--ultra); border-bottom: 3px solid var(--ink); }
+  .m2-placement[data-sheet="true"] { background: var(--paper); border: 3px solid var(--ink); border-bottom: 0; box-shadow: 0 -6px 0 rgb(21 21 61 / .25); }
+}
+.m2-arrival .eyebrow, .m2-arrival-card { color: var(--sun) !important; }
+.m2-part .m2-part-state { color: var(--ink-2); }
+.m2-part[data-state="fitted"] .m2-part-state { color: var(--mint-ink); }
+.m2-part[data-flagged="true"] .m2-part-state { color: var(--coral-ink); }
+.m2-part[data-state="pending"] .m2-part-state { color: var(--sun-ink); }
+.m2-flag { color: var(--ink); background: var(--sun-soft); border-color: var(--ink); }
+.m2-gallery-nav .eyebrow { color: var(--violet-ink); }
+/* Diagnostic labels read in ink colours on paper (role colour lives in the dt marker, not the text). */
+.m2-finding [data-cat="symptom"] dt { color: var(--sun-ink); }
+.m2-finding [data-cat="purpose"] dt { color: var(--mint-ink); }
+.m2-field > span { color: var(--ultra); }

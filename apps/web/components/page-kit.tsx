@@ -19,20 +19,31 @@ export const locatorText = (e: Experiment) => {
 };
 
 /** Cinematic page opening on the observatory surface; the reading surface (`Sheet`) follows it. */
-export function PageHero({ eyebrow, title, lede, crumbs, status, visual, compact = false }: {
+export function PageHero({ eyebrow, title, lede, crumbs, status, visual, compact = false, mark, stamp }: {
   eyebrow: string; title: string; lede?: string; crumbs?: React.ReactNode; status?: { feature: Feature; built?: boolean }; visual?: React.ReactNode;
   /** Research density: a short title row so the tool itself starts in the first viewport. */
   compact?: boolean;
+  /** Design B field card: a big record mark (e.g. a test ID) and a stamp, with the visual beside it. */
+  mark?: string; stamp?: string;
 }) {
+  const text = <div className="reveal">
+    {crumbs && <nav aria-label="Breadcrumb" className="crumbs">{crumbs}</nav>}
+    <p className="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    {lede && <p className="lede">{lede}</p>}
+    {status && <StatusLine feature={status.feature} built={status.built ?? false} />}
+  </div>;
+  if (mark) return <header className="page-hero field">
+    <div className="wrap solo"><div className="field-card">
+      {stamp && <p className="field-stamp">{stamp}</p>}
+      <p className="field-mark" aria-hidden="true">{mark}</p>
+      {text}
+      {visual && <div className="field-visual">{visual}</div>}
+    </div></div>
+  </header>;
   return <header className={`page-hero${compact ? ' compact' : ''}`}>
     <div className={`wrap${visual ? '' : ' solo'}`}>
-      <div className="reveal">
-        {crumbs && <nav aria-label="Breadcrumb" className="crumbs">{crumbs}</nav>}
-        <p className="eyebrow">{eyebrow}</p>
-        <h1>{title}</h1>
-        {lede && <p className="lede">{lede}</p>}
-        {status && <StatusLine feature={status.feature} built={status.built ?? false} />}
-      </div>
+      {text}
       {visual && <div className="hero-visual reveal"><div>{visual}</div></div>}
     </div>
   </header>;

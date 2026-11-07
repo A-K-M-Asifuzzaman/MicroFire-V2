@@ -1,57 +1,60 @@
-/* Operation Ignition: the opening film's frame. Hidden unless the gate opened it; never in the layout. */
-.ign { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #010205; color: #eef4f8; overflow: hidden;
-  font-family: var(--sans, system-ui, sans-serif); opacity: 1; transition: opacity .6s cubic-bezier(.4, 0, .2, 1); }
+/* Operation Ignition: the opening film's frame, in Design B. The 3D story stays in space (dark by nature); everything
+   the visitor reads or presses is a Field Journal sticker: ink outlines, hard offset shadows, Bricolage + Atkinson.
+   Hidden unless the gate opened it; never in the layout. */
+.ign { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0b0c26; color: #fff; overflow: hidden;
+  font-family: var(--body, system-ui, sans-serif); opacity: 1; transition: opacity .6s cubic-bezier(.4, 0, .2, 1); }
 .ign:not([open]) { display: none; }
-.ign::backdrop { background: #010205; }
+.ign::backdrop { background: #0b0c26; }
 .ign[data-leaving] { opacity: 0; pointer-events: none; }
 .ign[data-leaving]::backdrop { background: transparent; }
 .ign-film { position: absolute; inset: 0; }
 .ign-film canvas { width: 100%; height: 100%; display: block; }
-/* One soft exterior→interior dissolve through the window glow (a single fade, not a strobe). */
-.ign-veil { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(60% 60% at 58% 45%, rgb(200 245 255 / .9), rgb(40 120 160 / .55) 60%, rgb(2 6 12 / .9)); }
+/* One soft exterior→interior dissolve through the window glow (a single fade, not a strobe); the exit hands over to ultramarine. */
+.ign-veil { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(60% 60% at 58% 45%, rgb(214 255 240 / .9), rgb(46 230 166 / .45) 60%, rgb(11 12 38 / .9)); }
 .ign[data-beat="cabin"] .ign-veil { animation: ign-dissolve .55s ease-out 1; }
-.ign[data-beat="exit"] .ign-veil { background: #0b111a; animation: ign-to-site .5s ease-in forwards; }
+.ign[data-beat="exit"] .ign-veil { background: #2a2bd6; animation: ign-to-site .5s ease-in forwards; }
 @keyframes ign-dissolve { 0% { opacity: .75; } 100% { opacity: 0; } }
-@keyframes ign-to-site { to { opacity: .85; } }
-.ign-loading { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 16px; pointer-events: none; }
-.ign-loading p { margin: 0; max-width: none; font: 600 .82rem/1 var(--mono, monospace); letter-spacing: .5em; text-transform: uppercase; color: rgb(238 244 248 / .45); }
-.ign-loading p + progress + p { letter-spacing: .06em; text-transform: none; font-variant-numeric: tabular-nums; color: rgb(238 244 248 / .72); }
-.ign-loading progress { appearance: none; width: min(260px, 64vw); height: 3px; border: 0; border-radius: 3px; overflow: hidden; background: rgb(238 244 248 / .16); }
-.ign-loading progress::-webkit-progress-bar { background: rgb(238 244 248 / .16); }
-.ign-loading progress::-webkit-progress-value { background: #ff8738; transition: width .3s ease-out; }
-.ign-loading progress::-moz-progress-bar { background: #ff8738; }
+@keyframes ign-to-site { to { opacity: .9; } }
 
-/* Captions: large, high-contrast, bottom centre, never over the subject's face. */
-.ign-caption { position: absolute; left: 50%; bottom: clamp(70px, 12vh, 120px); transform: translateX(-50%); width: min(92vw, 820px); margin: 0; text-align: center;
-  font: 500 clamp(1.05rem, .8rem + 1.1vw, 1.6rem)/1.35 var(--sans, system-ui); text-shadow: 0 2px 18px rgb(0 0 0 / .9), 0 0 2px #000; animation: ign-in .45s ease-out both; }
-.ign-caption b { color: #7fe6f2; font-weight: 700; }
-@keyframes ign-in { from { opacity: 0; transform: translate(-50%, 8px); } }
-.ign-alert { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); margin: 0; padding: 10px 18px; border-radius: 999px; border: 2px solid #ff9a4a; background: rgb(40 10 2 / .72);
-  font: 700 clamp(.85rem, .7rem + .5vw, 1.1rem)/1 var(--mono, monospace); letter-spacing: .14em; color: #ffd0a6; white-space: nowrap; animation: ign-alert 1.2s ease-out both; }
-@keyframes ign-alert { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: .9; } }
+/* Loading: the wordmark, a sticker progress bar and the percentage. */
+.ign-loading { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 16px; pointer-events: none; }
+.ign-loading p { margin: 0; max-width: none; font: 800 1.6rem/1 var(--display, sans-serif); font-variation-settings: 'wdth' 85; color: #fff; text-shadow: 3px 3px 0 #15153d; }
+.ign-loading p + progress + p { font: 700 .95rem/1 var(--body, sans-serif); font-variant-numeric: tabular-nums; text-shadow: none; color: rgb(255 255 255 / .85); }
+.ign-loading progress { appearance: none; width: min(280px, 64vw); height: 16px; border: 3px solid #fff; border-radius: 999px; overflow: hidden; background: rgb(255 255 255 / .12); }
+.ign-loading progress::-webkit-progress-bar { background: rgb(255 255 255 / .12); }
+.ign-loading progress::-webkit-progress-value { background: #ffb020; transition: width .3s ease-out; }
+.ign-loading progress::-moz-progress-bar { background: #ffb020; }
+
+/* Captions: a paper balloon at the bottom centre, never over the subject's face. */
+.ign-caption { position: absolute; left: 50%; bottom: clamp(74px, 12vh, 120px); transform: translateX(-50%); width: fit-content; max-width: min(92vw, 760px); margin: 0; text-align: center;
+  padding: 12px 20px; border-radius: 22px; background: #fff; color: #15153d; border: 3px solid #15153d; box-shadow: 5px 5px 0 #15153d;
+  font: 700 clamp(1rem, .82rem + .9vw, 1.45rem)/1.35 var(--body, system-ui); animation: ign-in .45s cubic-bezier(.3, 1.4, .5, 1) both; }
+.ign-caption b { color: #2a2bd6; font: 800 1em var(--display, sans-serif); }
+@keyframes ign-in { from { opacity: 0; transform: translate(-50%, 10px) scale(.95); } }
+.ign-alert { position: absolute; left: 50%; top: 18%; transform: translateX(-50%) rotate(-2deg); margin: 0; padding: 10px 20px; border-radius: 14px; border: 3px solid #15153d; background: #ff5a5f;
+  box-shadow: 5px 5px 0 #15153d; font: 800 clamp(.95rem, .78rem + .6vw, 1.25rem)/1 var(--display, sans-serif); color: #15153d; white-space: nowrap; animation: ign-alert 1.2s ease-out both; }
+@keyframes ign-alert { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: .95; } }
 
 /* Title reveal over the hologram, then the wordmark flies to the header brand. */
-.ign-title { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; pointer-events: none; animation: ign-title .7s cubic-bezier(.2, .7, .2, 1) both; }
-.ign-word { margin: 0; font: 800 clamp(2.6rem, 1.2rem + 6vw, 6.2rem)/1 var(--sans, system-ui); letter-spacing: .16em; color: #f1fbff; text-shadow: 0 0 34px rgb(95 224 255 / .55); }
-.ign-sub { margin: .7em 0 0; font: 600 clamp(.72rem, .6rem + .4vw, .95rem)/1.2 var(--mono, monospace); letter-spacing: .32em; text-transform: uppercase; color: #9fe9f5; }
-.ign-line { margin: 1.1em 0 0; font: 400 clamp(.95rem, .8rem + .5vw, 1.2rem)/1.4 var(--sans, system-ui); color: rgb(238 244 248 / .85); }
-@keyframes ign-title { from { opacity: 0; letter-spacing: .3em; } }
+.ign-title { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; text-align: center; pointer-events: none; animation: ign-title .7s cubic-bezier(.3, 1.4, .5, 1) both; }
+.ign-word { margin: 0; font: 800 clamp(3.4rem, 1.4rem + 8vw, 8rem)/.9 var(--display, system-ui); font-variation-settings: 'wdth' 85; letter-spacing: -.02em; color: #fff; text-shadow: 5px 5px 0 #15153d; }
+.ign-sub { margin: .6em 0 0; padding: 5px 14px; border-radius: 999px; background: #2ee6a6; color: #15153d; border: 3px solid #15153d; font: 800 clamp(.85rem, .7rem + .4vw, 1.05rem)/1.2 var(--display, sans-serif); rotate: -2deg; }
+.ign-line { margin: 1em 0 0; font: 700 clamp(1rem, .85rem + .5vw, 1.25rem)/1.4 var(--body, system-ui); color: #fff; text-shadow: 2px 2px 0 #15153d; }
+@keyframes ign-title { from { opacity: 0; transform: scale(.92); } }
 
-.ign-note { position: absolute; left: 20px; bottom: 18px; margin: 0; font: 500 .74rem/1.3 var(--mono, monospace); letter-spacing: .04em; color: rgb(238 244 248 / .62); }
-.ign-controls { position: absolute; right: 18px; top: 18px; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-.ign-btn { min-height: 44px; min-width: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid rgb(238 244 248 / .45); background: rgb(4 8 14 / .55); color: #eef4f8;
-  font: 600 .92rem/1 var(--sans, system-ui); cursor: pointer; backdrop-filter: blur(6px); }
-.ign-btn:hover { border-color: #eef4f8; background: rgb(20 30 40 / .7); }
-.ign-btn:focus-visible { outline: 3px solid #ff8738; outline-offset: 3px; }
-.ign-btn[aria-pressed="true"] { border-color: #7fe6f2; color: #bff6ff; }
-.ign-enter { background: #ff8738; border-color: #ff8738; color: #1a0b03; }
-.ign-enter:hover { background: #ff9d5c; border-color: #ff9d5c; }
-.ign-replay { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid rgb(238 244 248 / .3); background: rgb(4 8 14 / .5); color: rgb(238 244 248 / .85); font: 600 .82rem/1 var(--sans, system-ui); cursor: pointer; }
-.ign-replay:hover { color: #fff; border-color: rgb(238 244 248 / .7); }
+.ign-note { position: absolute; left: 20px; bottom: 18px; margin: 0; padding: 4px 12px; border-radius: 999px; background: #fff; color: #15153d; border: 2px solid #15153d; font: 700 .78rem/1.3 var(--body, sans-serif); }
+.ign-controls { position: absolute; right: 18px; top: 18px; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.ign-btn { min-height: 46px; min-width: 44px; padding: 0 18px; border-radius: 999px; border: 3px solid #15153d; background: #fff; color: #15153d; box-shadow: 3px 3px 0 #15153d;
+  font: 800 .95rem/1 var(--display, system-ui); cursor: pointer; transition: transform .15s cubic-bezier(.2, .7, .2, 1), box-shadow .15s; }
+.ign-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 #15153d; }
+.ign-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #15153d; }
+.ign-btn:focus-visible { outline: 3px solid #ffb020; outline-offset: 3px; }
+.ign-btn[aria-pressed="true"] { background: #2ee6a6; }
+.ign-enter { background: #ffb020; }
 @media (max-width: 760px) {
   .ign-controls { top: auto; bottom: 16px; right: 12px; left: 12px; justify-content: space-between; }
-  .ign-note { left: 0; right: 0; bottom: auto; top: 14px; text-align: center; }
-  .ign-caption { bottom: 132px; }
+  .ign-note { left: 50%; bottom: auto; top: 14px; transform: translateX(-50%); white-space: nowrap; }
+  .ign-caption { bottom: 136px; }
   .ign-alert { top: 12%; }
 }
 @media (prefers-reduced-motion: reduce) {

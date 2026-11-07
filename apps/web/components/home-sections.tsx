@@ -64,7 +64,7 @@ export function BayTeaser({ compact = false }: { compact?: boolean }) {
         <p className="lede">A cinematic 3D bay built around a schematic model of the BASS-II flow duct, with an open chamber gantry, a jointed inspection arm, an astronaut at the window and PIX as your guide. Tour it now. The mission&apos;s gameplay opens once its server integration is approved.</p>
         <ul className="bay-teaser-chips"><li>Real-time 3D</li><li>Full-screen inspection</li><li>Optional lab sound and narration</li></ul>
         <div className="actions">
-          <Link className="btn btn-primary" href={BAY_TOUR}>Tour the training bay</Link>
+          <Link className="btn btn-primary" href={BAY_TOUR} prefetch={false}>Tour the training bay</Link>
           {!compact && <Link className="text-link" href="/missions/bass-assembly">Mission briefing</Link>}
         </div>
         <p className="bay-teaser-note">Illustrative scene rendered from MicroFire&apos;s own 3D bench. Not NASA imagery.</p>
