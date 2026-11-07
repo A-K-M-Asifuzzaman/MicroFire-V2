@@ -14,7 +14,6 @@ import { useSoundCues } from './sound';
 import { QualificationPanel, RepairPanel } from './repair';
 import { AssemblyStatus, PartsTray, PlacementPanel, Schematic } from './schematic';
 import { ArrivalCinematic, SourceTerminal } from './station';
-import { m2Fonts } from './fonts';
 import './game.css';
 
 // The 3D bench is code-split and loads only when the learner asks for it (N8).
@@ -26,7 +25,7 @@ export function MissionShell({ banner, intro = false }: { banner?: React.ReactNo
   const { s: st } = useGame();
   const s = st.snapshot;
   const link = st.link.status;
-  return <div className={`m2 ${m2Fonts}`} data-mode={st.mode}>
+  return <div className="m2" data-mode={st.mode}>
     {banner}
     <header className="m2-top">
       <div className="m2-top-title">

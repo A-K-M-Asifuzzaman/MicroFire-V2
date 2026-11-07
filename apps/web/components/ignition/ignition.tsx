@@ -142,7 +142,7 @@ export function Ignition() {
       {cap?.alert && <p className="ign-alert" role="status"><span aria-hidden="true">▲</span> FIRE ANOMALY DETECTED</p>}
       {cap && !cap.alert && !title && <p className="ign-caption" key={beat} aria-live="polite">{cap.who && <b>{cap.who}: </b>}{cap.text}</p>}
       {title && <div className="ign-title" aria-hidden="true">
-        <p className="ign-word" id="ign-word">MICROFIRE</p>
+        <p className="ign-word" id="ign-word">MicroFire</p>
         <p className="ign-sub">The Living Science Observatory</p>
         <p className="ign-line">Explore the science of fire beyond Earth.</p>
       </div>}

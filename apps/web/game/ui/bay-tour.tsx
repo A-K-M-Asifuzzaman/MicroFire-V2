@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { PartSpec } from '../contract';
 import { onFullscreen } from './bench';
-import { m2Fonts } from './fonts';
 import { PixGuide } from './pix';
 import { ArrivalCinematic } from './station';
 import { useBay } from './use-bay';
@@ -25,7 +24,7 @@ export function BayTour({ parts }: { parts: PartSpec[] }) {
   const canFull = useSyncExternalStore(onFullscreen, () => document.fullscreenEnabled, () => false);
   const { host, ready, frame, off, env, envOff, sceneryReady, lab, tip, sel, part, pick, guide, setGuide, reaction: r, views, view } = useBay(parts, { greet: !intro });
 
-  return <div className={`m2 m2-tour ${m2Fonts}`}>
+  return <div className="m2 m2-tour">
     {intro && <ArrivalCinematic onDone={() => setIntro(false)} title="The BASS-II training bay" sub="Illustrative tour · schematic training model" />}
     <div className="m2-tour-grid">
       {off ? <figure className="m2-tour-still">

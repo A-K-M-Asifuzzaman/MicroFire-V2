@@ -40,8 +40,8 @@ export default async function Page({ params }: Props) {
   const lineage = e.claims.map((c) => ({ claim: c, verdict: verifyCitations({ subject: { type: 'claim', claimId: c.id }, citations: c.citations }).verdict }));
   return <>
     <PageHero crumbs={<><Link href="/atlas">Experiments</Link> / {e.program} / {e.testId}</>} eyebrow={`Experiment dossier · ${e.id}`} title={e.title}
-      status={{ feature: feature('/experiments/[id]')!, built: true }} visual={<Specimen experiment={e} />}
-      lede="A flame-spread test from a NASA summary report. Every value links to its page; what the report does not record is marked unknown." compact />
+      status={{ feature: feature('/experiments/[id]')!, built: true }} visual={<Specimen experiment={e} />} mark={e.testId} stamp="Real NASA test"
+      lede="A flame-spread test from a NASA summary report. Every value links to its page; what the report does not record is marked unknown." />
     <Sheet>
       <div className="dossier">
         <div>

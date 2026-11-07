@@ -11,7 +11,7 @@ async function scienceBackedPosts(page: Page) {
   await page.route('**/api/ask', (r) => r.fulfill(envelope(science('ask', r.request().postDataJSON()))));
   await page.route('**/api/evidence/rank', (r) => r.fulfill(envelope(science('rank', r.request().postDataJSON()))));
 }
-/** Counts real WebGL draw calls from any context (flame: WebGL1, observatory: WebGL2). */
+/** Counts real WebGL draw calls from any context. */
 const countDraws = () => {
   const w = window as unknown as { __draws: number };
   w.__draws = 0;
@@ -28,22 +28,20 @@ const drawsDuring = async (page: Page, ms: number) => {
   return (await page.evaluate(() => (window as unknown as { __draws: number }).__draws)) - before;
 };
 
-test('observatory: 3D scene, six real stations, focus link-up and honest labelling', async ({ page }, info) => {
+test('home: six real stations, focus link-up and honest labelling (Design B)', async ({ page }, info) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   await page.goto('/');
-  const hero = page.getByTestId('observatory');
-  await expect(hero).toHaveAttribute('data-scene', /active|static/);
-  await expect(page.getByTestId('scene-status')).toContainText('artistic interpretation');
   await expect(page.getByText('Gravity Lens · educational illustration, not NASA footage or data')).toBeVisible();
-  const stations = page.getByRole('navigation', { name: 'Observatory stations' }).getByRole('link');
+  await expect(page.locator('.home-window-tag')).toHaveText('Illustration');
+  const stations = page.getByRole('navigation', { name: 'Research stations' }).getByRole('link');
   await expect(stations).toHaveCount(6);
   const hrefs = await stations.evaluateAll((els) => els.map((e) => e.getAttribute('href')));
   expect(hrefs).toEqual(['/atlas', '/experiments/bass2-b20', '/dashboard', '/ask', '/gaps', '/missions']);
   await stations.nth(1).focus();
   await expect(stations.nth(1)).toHaveAttribute('data-focus', 'true');
-  await expect(page.locator('.station-marker').nth(1)).toHaveAttribute('data-focus', 'true');
+  await expect(page.locator('.home-balloon')).toHaveAttribute('data-mood', 'cite'); // PIX speaks for the focused station
   await page.getByRole('radio', { name: 'Earth 1 g' }).check();
   await expect(page.locator('figure.lens')).toHaveAttribute('data-gravity', 'earth');
   await page.waitForTimeout(800);
@@ -55,7 +53,7 @@ test('observatory: 3D scene, six real stations, focus link-up and honest labelli
   expect(errors).toEqual([]);
 });
 
-test('observatory falls back without WebGL and survives 3D context loss', async ({ browser }) => {
+test('home without WebGL: the static lens and every station still work', async ({ browser }) => {
   const noGl = await browser.newContext();
   const p = await noGl.newPage();
   await p.addInitScript(() => {
@@ -65,26 +63,16 @@ test('observatory falls back without WebGL and survives 3D context loss', async 
     } as typeof original;
   });
   await p.goto('http://127.0.0.1:3217/');
-  await expect(p.getByTestId('observatory')).toHaveAttribute('data-scene', 'unavailable');
-  await expect(p.getByTestId('scene-status')).toContainText('unavailable on this device');
-  await expect(p.getByRole('navigation', { name: 'Observatory stations' }).getByRole('link')).toHaveCount(6);
+  await expect(p.locator('figure.lens')).toHaveAttribute('data-renderer', 'svg');
+  await p.getByText('About this illustration').click();
+  await expect(p.getByTestId('lens-renderer')).toHaveText('WebGL unavailable · static illustration shown');
+  await expect(p.getByRole('navigation', { name: 'Research stations' }).getByRole('link')).toHaveCount(6);
+  await p.getByRole('radio', { name: 'Earth 1 g' }).check();
+  await expect(p.locator('figure.lens')).toHaveAttribute('data-gravity', 'earth');
   await noGl.close();
-
-  const ctx = await browser.newContext();
-  const page = await ctx.newPage();
-  await page.goto('http://127.0.0.1:3217/');
-  const hero = page.getByTestId('observatory');
-  await expect(hero).toHaveAttribute('data-scene', /active|static/);
-  await page.evaluate(() => { const c = document.querySelector<HTMLCanvasElement>('.obs-scene canvas')!; (window as unknown as { __lose3d: WEBGL_lose_context }).__lose3d = c.getContext('webgl2')!.getExtension('WEBGL_lose_context')!; (window as unknown as { __lose3d: WEBGL_lose_context }).__lose3d.loseContext(); });
-  await expect(hero).toHaveAttribute('data-scene', 'lost');
-  await expect(page.getByTestId('scene-status')).toContainText('Every station still works');
-  await expect(page.locator('figure.lens')).toHaveAttribute('data-renderer', 'webgl'); // the flame layer is independent
-  await page.evaluate(() => (window as unknown as { __lose3d: WEBGL_lose_context }).__lose3d.restoreContext());
-  await expect(hero).toHaveAttribute('data-scene', /active|static/);
-  await ctx.close();
 });
 
-test('fix A: an initially offscreen lens and observatory do not render continuously; visibility drives motion', async ({ browser }) => {
+test('fix A: an initially offscreen lens does not render continuously; visibility drives motion', async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 600 } });
   const page = await ctx.newPage();
   await page.addInitScript(countDraws);
@@ -132,20 +120,20 @@ test('fix F: missing records and routes return real 404s; real pages and the API
   expect((await request.get('/experiments/constructor')).headers()['content-type']).toContain('text/html');
 });
 
-test('route-level loading: research pages never download the 3D engine; only home and the PIX companion do', async ({ page }) => {
-  const scripts: string[] = [];
+test('route-level loading: no regular page downloads the 3D engine; only the training bay does', async ({ page }) => {
+  test.setTimeout(120_000); // fetches and inspects every script on eight routes (slow on shared CI runners)
+  const scripts: string[] = [], seen = new Map<string, Promise<string>>();
   page.on('response', (r) => { if (r.url().endsWith('.js')) scripts.push(r.url()); });
-  const threeIn = async (path: string, reveal?: string) => {
+  const threeIn = async (path: string) => {
     scripts.length = 0;
     await page.goto(path, { waitUntil: 'networkidle' });
-    if (reveal) await page.locator(reveal).first().evaluate((el) => el.scrollIntoView({ block: 'center' }));
     await page.waitForTimeout(1200);
-    const bodies = await Promise.all(scripts.map((u) => page.request.get(u).then((r) => r.text())));
+    const bodies = await Promise.all(scripts.map((u) => { if (!seen.has(u)) seen.set(u, page.request.get(u).then((r) => r.text())); return seen.get(u)!; }));
     return bodies.some((b) => b.includes('WebGLRenderer'));
   };
-  for (const path of ['/atlas', '/experiments/bass2-b20', '/dashboard', '/gaps', '/methodology']) expect(await threeIn(path), path).toBe(false);
-  expect(await threeIn('/')).toBe(true);
-  expect(await threeIn('/ask', '.pix-stage')).toBe(true); // the 3D PIX companion loads once the SVG PIX is on screen
+  // Design B: the homepage flame is a small raw-WebGL shader and PIX is an illustration, so neither needs three.js.
+  for (const path of ['/', '/atlas', '/experiments/bass2-b20', '/dashboard', '/gaps', '/ask', '/methodology']) expect(await threeIn(path), path).toBe(false);
+  expect(await threeIn('/missions/bass-assembly/tour')).toBe(true);
 });
 
 test('B20 exhibit: apparatus annotations separate sourced hardware, recorded conditions and unknowns', async ({ page }, info) => {
@@ -218,6 +206,7 @@ test('fix C: keyboard navigation from the mobile menu lands on the destination h
 });
 
 test('fix E: no automated axe violations (WCAG 2.x A/AA) on core routes', async ({ page }, info) => {
+  test.setTimeout(120_000); // a full axe scan on 13 routes (about 33 s on shared CI runners)
   await scienceBackedPosts(page);
   const results: Record<string, string[]> = {};
   for (const path of ['/', '/atlas', '/experiments/bass2-b20', '/ask', '/dashboard', '/gaps', '/compare', '/passport', '/sources', '/methodology', '/missions', '/missions/bass-assembly', '/roadmap']) {
@@ -233,36 +222,19 @@ test('fix E: no automated axe violations (WCAG 2.x A/AA) on core routes', async 
   expect(results).toEqual({});
 });
 
-test('themed cursor stays in the observatory and never gets in the way: selection, inputs, keyboard and clicks still work', async ({ page }, info) => {
-  test.skip(info.project.name !== 'desktop', 'mouse cursor only');
+test('native cursor and selection: text can be selected and every control still works', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'mouse');
   await page.goto('/');
-  await page.mouse.move(300, 300); await page.mouse.move(320, 310);
-  await expect(page.locator('html')).toHaveAttribute('data-cursor', 'fx');
-  expect(await page.locator('.cursor-fx').evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none');
-  // Text keeps a text cursor and can be selected.
-  const lede = page.locator('.obs-head .lede');
-  expect(await lede.evaluate((el) => getComputedStyle(el).cursor)).toBe('text');
+  await expect(page.locator('.cursor-fx')).toHaveCount(0);
+  const lede = page.locator('.home-copy .lede');
   await lede.click({ clickCount: 3 });
   expect((await page.evaluate(() => getSelection()?.toString() ?? '')).length).toBeGreaterThan(20);
-  // Controls still work through the overlay.
   await page.getByRole('radio', { name: 'Earth 1 g' }).check();
   await expect(page.locator('figure.lens')).toHaveAttribute('data-gravity', 'earth');
-  // Research pages keep the native cursor; typing and keyboard navigation are untouched.
   await page.goto('/ask');
-  await page.mouse.move(300, 300);
-  await expect(page.locator('html')).not.toHaveAttribute('data-cursor', 'fx');
-  await expect(page.locator('.cursor-fx')).toHaveCount(0);
   const box = page.locator('#pix-q');
-  await box.click(); await box.fill('Does the cursor block typing?');
-  await expect(box).toHaveValue('Does the cursor block typing?');
+  await box.click(); await box.fill('Does typing work?');
+  await expect(box).toHaveValue('Does typing work?');
   await page.getByRole('link', { name: 'Methodology' }).first().click();
   await expect(page).toHaveURL(/\/methodology$/);
-});
-
-test('reduced motion and touch never get the cursor effect', async ({ browser }) => {
-  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
-  const p = await ctx.newPage();
-  await p.goto('/'); await p.mouse.move(200, 200);
-  await expect(p.locator('html')).not.toHaveAttribute('data-cursor', 'fx');
-  await ctx.close();
 });
