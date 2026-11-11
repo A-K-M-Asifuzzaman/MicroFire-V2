@@ -1,6 +1,14 @@
 # MicroFire-V2 — The Living Science Observatory
 
-Phase Zero foundation for an independent, source-grounded combustion research platform and five-mission educational game. **This is not a completed research engine or playable game.**
+An independent, source-grounded website about fire in microgravity: research tools built on NASA evidence checked at the source (one admitted experiment, B20), a deterministic research guide (PIX, no AI model), and a five-mission educational game whose missions are not yet playable. Pre-release; not NASA-endorsed. **Reviewing the project? Start with [docs/REVIEW_GUIDE.md](docs/REVIEW_GUIDE.md).** Live preview: https://microfire-v2-preview.vercel.app
+
+**Current state (Nov 2026):**
+- **Design:** Design B ("Field Journal") across the whole site.
+- **Stack:** Next.js 16.4.1.
+- **Research tools:** Atlas, B20 dossier, Workstation, Ask PIX, Frontier, Compare and Passport are implemented for review.
+- **Training bay:** the BASS-II bay has an illustrative 3D tour and a gameplay frontend; it is not yet connected to its backend.
+
+The sections below describe the original Phase Zero foundation; the review guide covers everything since.
 
 ## Run
 
