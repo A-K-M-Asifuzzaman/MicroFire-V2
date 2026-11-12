@@ -24,7 +24,10 @@ const glideTo = async (sel, offset = -110, ms = 1400) => { const y = await page.
 
 let frames = [], recording = null;
 cdp.on('Page.screencastFrame', async ({ data, metadata, sessionId }) => { if (recording) frames.push({ data, t: metadata.timestamp }); await cdp.send('Page.screencastFrameAck', { sessionId }).catch(() => {}); });
+// ONLY=10-intel-transfer,11-intel-pix records just those segments (others are skipped).
+const ONLY = process.env.ONLY ? new Set(process.env.ONLY.split(',')) : null;
 async function segment(name, fn) {
+  if (ONLY && !ONLY.has(name)) return;
   frames = []; recording = name;
   await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: width, maxHeight: height, everyNthFrame: 1 });
   const t0 = Date.now();
@@ -119,8 +122,31 @@ await segment('09-passport', async () => {
   await glide(500, 1400); await pause(1800);
 });
 
+// 10. Evidence Workstation on scientific-intelligence-v1: does B20 transfer to a Moon habitat? (six-condition analysis)
+await segment('10-intel-transfer', async () => {
+  await page.goto(`${base}/dashboard`); await pause(1200);
+  await page.getByRole('button', { name: 'Would B20 transfer to a Moon habitat?' }).click();
+  await page.getByTestId('transfer-analysis').waitFor({ timeout: 20000 }).catch(() => {}); await pause(900);
+  await glideTo('[data-testid="intel-summary"]', -110, 1500); await pause(2600);
+  await glideTo('[data-testid="transfer-analysis"]', -100, 1600); await pause(3600);
+  await glide(420, 1400); await pause(2400);
+});
+// 11. Ask PIX on the intelligence API: cited answer with its source experiment, then an explicit abstention.
+await segment('11-intel-pix', async () => {
+  await page.goto(`${base}/ask`); await pause(1000);
+  await page.getByRole('button', { name: 'What does B20 establish about airflow?' }).click();
+  await page.getByTestId('pix-answer').waitFor({ timeout: 20000 }).catch(() => {}); await pause(700);
+  await glideTo('[data-testid="pix-answer"]', -110, 1400); await pause(2600);
+  await glideTo('[data-testid="pix-source"]', -160, 1200); await pause(2000);
+  await glide(-4000, 900);
+  await page.getByRole('button', { name: 'Can this certify a lunar habitat?' }).click();
+  await page.getByTestId('pix-abstention').waitFor({ timeout: 20000 }).catch(() => {}); await pause(500);
+  await glideTo('[data-testid="pix-abstention"]', -120, 1200); await pause(2800);
+});
+
 await browser.close();
 // One continuous backup cut of the whole route.
+if (ONLY) { console.log('partial recording: no full-route cut'); process.exit(0); }
 const clips = ['01-opening-film', '02-gravity-lens', '02b-home-sections', '03-atlas', '04-b20-dossier', '05-ask-pix', '06-workstation', '07-frontier', '08-missions-and-bay', '09-passport'];
 writeFileSync(path.join(out, 'concat.txt'), clips.map((c) => `file '${c}.mp4'`).join('\n') + '\n');
 execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', path.join(out, 'concat.txt'), '-c', 'copy', path.join(out, 'full-route.mp4')]);
