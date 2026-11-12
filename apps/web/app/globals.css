@@ -842,3 +842,23 @@ main > * { animation: fade .35s var(--ease) both; }
   .dossier { grid-template-columns: 1fr; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .8em; }
 }
+
+/* Evidence Transferability Analyzer (Frontier page) */
+.transfer { margin-bottom: clamp(36px, 5vw, 56px); }
+.transfer-head h2 { font-size: clamp(1.8rem, 1rem + 2vw, 2.6rem); line-height: 1.05; margin: 0 0 10px; max-width: 24ch; }
+.transfer-head .lede { max-width: 68ch; margin-bottom: 20px; }
+.transfer textarea { width: 100%; }
+.transfer-verdict { padding: 16px 20px; border-radius: 22px; border: var(--outline); box-shadow: var(--pop); background: var(--paper); }
+.transfer-verdict h3 { margin: 4px 0 6px; font: 800 clamp(1.3rem, 1rem + 1vw, 1.7rem)/1.1 var(--display); }
+.transfer-verdict p:last-child { margin: 0; }
+.transfer-verdict[data-tone="mint"] { background: var(--mint-soft); }
+.transfer-verdict[data-tone="sun"] { background: var(--sun-soft); }
+.transfer-verdict[data-tone="lav"] { background: #eceeff; }
+.transfer-verdict[data-tone="coral"] { background: #ffe3e4; }
+.transfer-support { margin: 6px 0 10px; }
+.transfer-chips { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.transfer-chips li { padding: 4px 12px; border-radius: 999px; border: 2px solid var(--ink); font: 700 .85rem var(--body); background: var(--paper); }
+.transfer-chips li[data-kind="match"] { background: var(--mint-soft); }
+.transfer-chips li[data-kind="differ"] { background: var(--sun-soft); }
+.transfer-chips li[data-kind="missing"] { background: #eceeff; }
+.frontier-sub { font-size: clamp(1.3rem, 1rem + 1vw, 1.7rem); margin: 0 0 16px; }
