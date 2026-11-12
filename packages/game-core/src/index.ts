@@ -310,3 +310,4 @@ export function discardSave(storage: SaveStorage, mode: SessionMode, confirmatio
 }
 
 export * from './training';
+export * from './campaign';
