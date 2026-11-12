@@ -1,6 +1,6 @@
 # Official release watch — current semantic state
 
-Last retained direct Resources fetch: 2026-11-12T22:42:43.416458+06:00. It still announced November 13 availability; no named qualifying-resource list was confirmed.
+Latest authorized Resources-tab inspection: November 13; result recorded at 02:06 Asia/Dhaka in `evidence/source-verification-20261113.json`. The rendered page still announced November 13 availability; no named qualifying-resource list was confirmed. No repeated polling followed.
 
 Last retained rendered guide/index inspection: 2026-11-12T23:00:47.992100+06:00. The index listed Participant FAQs, Team Formation and Space Apps Connect guides, with no current Project Submission Guide link. The conventional guide URL returned HTTP 200 with a Page Not Found body. A successful status alone is not publication; reject archived/staging/wrong-year guides.
 

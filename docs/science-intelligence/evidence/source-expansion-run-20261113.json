@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "b3bdbfb539d8a65d256cef5055eaa3dedab0b6cb",
+  "codeAndDataTreeClean": true,
+  "commands": {
+    "npm run check": "exit 0; 223 units; lint/types/data/science/security/build pass",
+    "node --import tsx --test tests/backend/intelligence-http.test.ts": "exit 0; 1 production HTTP test, 0 skipped",
+    "node --import tsx scripts/eval-intelligence.ts": "exit 0; 11/11 applicability, 5/5 citation cases",
+    "node --import tsx scripts/verify-candidates.ts": "exit 0; 7 review items; existing source PDFs not rehashed"
+  },
+  "independentScientificAcceptance": false,
+  "sha256": {
+    "data/investigations/library-v1.json": "d4163f7e9c553a9f9de74a67fc23700b1de99d3a8d79feaa9bf1727c125835d2",
+    "data/candidates/review-20261113.json": "9d2d0f00588ca296bf2b587052ec03543c86b7c05f55e9060a74c168c5e18c9d",
+    "data/fixtures/catalog.json": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+    "data/quarantine/legacy-ledger.json": "a2c0136d9fc8050671e14f081f75426b42bce9913b3a19a4e0ea988e9496d637",
+    "data/evals/intelligence-gold.json": "c8bf3df40f5f58aeb61214a2b199642c44e1427a34108e17f47720a11704869e",
+    "docs/evals/intelligence-report.json": "61cffac635e26eb6902e130f7d8046bc95b63f28e9b5d81113f8d115dcc34c39"
+  }
+}

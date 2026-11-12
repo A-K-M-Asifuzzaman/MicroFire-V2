@@ -1,0 +1,43 @@
+{
+  "inspectedAt": "2026-11-13T02:06:20.191274+06:00",
+  "authentication": "Public pages and public NTRS metadata/download; no API key used.",
+  "scope": "Rendered metadata/first table-page inspection only; no raw-archive ingestion or independent scientific admission.",
+  "investigations": [
+    {
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69",
+      "httpStatus": 200,
+      "identityAndLicense": "DOI: 10.60555/mbq8-0451\nResearch Area: Combustion Science\nSubResearch Area: Spacecraft Fire Safety\nLicense: CC0-1.0",
+      "firstExperimentalTablePage": "Experimental Table\nSelect Experimental Table\nFilter\nFLEX Test #\tFLEX Identifier\tTest Date\tTest GMT\tFuel\tAmbient pressure; mmHg\tO initial ambient composition; mole fraction\tN initial ambient composition; mole fraction\tCO initial ambient composition; mole fraction\tHe initial ambient composition; mole fraction\tDroplet initial diameter; mm\tVisible flame extinction diameter; mm\tBurning rate; mm\tBurn time; s\tTest end\n1\t20CAL08\t3/5/2009\t17:22:03\tMethanol\t757.7\t0.21\t0.79\t0\t0\t1.69\t0.89\t0.52\t4.3\tDisruption\n2\t20CAL10\t3/5/2009\t19:20:06\tMethanol\t762\t0.21\t0.79\t0\t0\t1.86\t0.94\t0.6\t5\tExtinction\n3\t20CAL12\t3/5/2009\t21:17:46\tMethanol\t764.2\t0.21\t0.79\t0\t0\t1.61\t0.92\t0.58\t3.2\tExtinction\n4\t30CAL02\t3/31/2009\t17:16:18\tMethanol\t760\t0.21\t0.79\t0\t0\t2.06\t\t0.6\t7.64\tExtinction\n5\t30CAL03\t3/31/2009\t19:00:48\tMethanol\t760\t0.21\t0.79\t0\t0\t1.92\t0.81\t0.48\t6.34\tExtinction\nItems per page:\n5\n1 \u2013 5 of 275"
+    },
+    {
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-20",
+      "httpStatus": 200,
+      "identityAndLicense": "DOI: 10.60555/vb93-3y72\nResearch Area: Combustion Science\nSubResearch Area: Flames of Gaseous Fuels\nLicense: CC0-1.0",
+      "firstExperimentalTablePage": "Experimental Table\nSelect Experimental Table\nFilter\nYear\tMonth\tDate\tBurner Size (mm)\tFuel Bottle\tOxygen Conc (percent)\tFlames Ignited\tNotes\n2019\tFeb\t8\t25\t100% C2H4\t21; 26.5; 40\t10\tOxygen Conc. (as diluted with nitrogen on a volume basis) was varied between tests where approximate concentrations for tests that ignited are listed. The chamber pressures were also varied but are not identified in this summary table.\n2019\tFeb\t20\t25\t100% C2H4\t26.5; 34\t8\tFlames Ignited is the number ignited on that day (neglecting the day change on ISS).\n2019\tFeb\t25\t25\t50% C2H4\t21; 26.5; 34; 40\t8\t\n2019\tMarch\t4\t25\t50% C2H4\t26.5; 40\t6\t\n2019\tMarch\t7\t25\t50% C2H4\t3400%\t6\t\nItems per page:\n5\n1 \u2013 5 of 19"
+    },
+    {
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+      "httpStatus": 200,
+      "identityAndLicense": "DOI: 10.60555/0t15-1z43\nResearch Area: Combustion Science\nSubResearch Area: Spacecraft Fire, Smoke Distribution\nRelated Investigation: PSI-99, PSI-100, PSI-26\nLicense: CC0-1.0",
+      "firstExperimentalTablePage": "Experimental Table\nSelect Experimental Table\nFilter\nSample Number\tMaterial\tSample Thickness (cm)\tSample Length (cm)\tSample Width (cm)\tAir Flow (cm/s)\tPercent O2\tIgnition Power (W)\tIgnition Time (s)\tBurn Time (s)\tFlow Direction\tCamera 1\tCamera 2\nS1\tSIBAL Fabric\t0.37\t40.6\t94\t20\t21.5 - 21.7\t182\t8\t420\tConcurrent\tS1C1\tS1C2\nS2\tSIBAL Fabric\t0.37\t40.6\t94\t20\t~ 21.5\t182\t8\t70\tOpposed\tS2C1\tS2C2\nF1C1/F1C2\tPre-test flow visulation data for sample 1\t\t\t\t\t\t\t\t\t\t\t\nF2C1/F2C2\tPre-test flow visulation data for sample 2\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\nItems per page:\n5\n1 \u2013 5 of 5"
+    }
+  ],
+  "newNtrsSource": {
+    "id": 20170008805,
+    "url": "https://ntrs.nasa.gov/citations/20170008805",
+    "title": "Results of Large-Scale Spacecraft Flammability Tests",
+    "distribution": "PUBLIC",
+    "rightsDetermination": "PUBLIC_USE_PERMITTED",
+    "documentUrl": "https://ntrs.nasa.gov/api/citations/20170008805/downloads/20170008805.pdf",
+    "sha256": "e38ec36f54817aa97e0c01a05f12b212521d6320ce3f4cb7a38bb7c837cfea8d",
+    "visuallyInspectedPdfPage": 29,
+    "figuresRedistributed": false
+  },
+  "challengeResources": {
+    "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=resources",
+    "httpStatus": 200,
+    "observedState": "Resources will be available on Friday, November 13.",
+    "namedQualifyingResource": null,
+    "qualification": "Not yet established by a published official resource list."
+  }
+}

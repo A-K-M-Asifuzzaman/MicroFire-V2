@@ -74,8 +74,21 @@
           "sha256": "7bd5fad64cabb3d780b473a36cfeee4645861e7924814ff7eac722709cced43a",
           "rightsDetermination": "PUBLIC_USE_PERMITTED"
         },
-        "dataset": null,
-        "datasetNote": "A complete dataset release is not mapped by this source-only entry.",
+        "dataset": {
+          "id": "nasa-psi-69-v5",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69",
+          "version": "5",
+          "doi": "10.60555/mbq8-0451",
+          "rightsStatement": "PSI investigation displays CC0-1.0; linked publications and media require their own rights review.",
+          "citation": {
+            "sourceId": "nasa-psi-69-v5",
+            "locator": {
+              "kind": "section",
+              "section": "PSI-69 Version 5, investigation identity, description and displayed dataset license"
+            }
+          }
+        },
+        "datasetNote": "Release metadata inspected on 2026-11-13. First-page experimental rows are methanol tests; no link from FLEX-062 in the cool-flame slide to a particular PSI row/raw file is established. The displayed burning-rate unit needs reconciliation; no PSI rows are admitted. Challenge-list qualification is unconfirmed.",
         "citation": {
           "sourceId": "nasa-flex-20205008449",
           "locator": {
@@ -179,6 +192,117 @@
           "Flow changes during the experiment; timing and duct geometry discrepancies remain unresolved.",
           "Publication metadata flags possible copyrighted material; no figures or PDF are redistributed.",
           "Source description only; citation lineage is not independent scientific approval."
+        ],
+        "scope": "source-description-not-admitted-run-evidence",
+        "admittedExperimentIds": []
+      },
+      {
+        "id": "acme-bre",
+        "program": "ACME BRE",
+        "title": "ACME Burning Rate Emulator (BRE)",
+        "focus": "Study sustained burning and extinction using gaseous burner mixtures to emulate condensed-fuel burning.",
+        "fuelPhase": "gas",
+        "platformContext": "ISS Combustion Integrated Rack",
+        "source": {
+          "id": "nasa-acme-20220015583",
+          "title": "ACME: Advanced Combustion via Microgravity Experiments",
+          "url": "https://ntrs.nasa.gov/citations/20220015583",
+          "documentUrl": "https://ntrs.nasa.gov/api/citations/20220015583/downloads/PS-03790%20ACME%20poster%2013thUSNCM%202023.pdf",
+          "sha256": "d808902f62d814c02ac06904ad5a4ac50cc252af7d0513bfb27bbcba6223c322",
+          "rightsDetermination": "GOV_PUBLIC_USE_PERMITTED"
+        },
+        "dataset": {
+          "id": "nasa-psi-20-v4",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-20",
+          "version": "4",
+          "doi": "10.60555/vb93-3y72",
+          "rightsStatement": "PSI investigation displays CC0-1.0; linked publications and media require their own rights review.",
+          "citation": {
+            "sourceId": "nasa-psi-20-v4",
+            "locator": {
+              "kind": "section",
+              "section": "PSI-20 Version 4, investigation identity, objectives and displayed dataset license"
+            }
+          }
+        },
+        "datasetNote": "Inspected on 2026-11-13. Table rows summarize days with multiple ignitions, not individual runs; pressure varies but is not identified by row. A displayed oxygen entry reads 3400%; it is unresolved and is not silently corrected. No day summary or nominal atmosphere is admitted as a run; challenge qualification is unconfirmed.",
+        "citation": {
+          "sourceId": "nasa-acme-20220015583",
+          "locator": {
+            "kind": "pdf",
+            "page": 1,
+            "printedPage": "unnumbered poster",
+            "section": "ACME poster, BRE investigation description"
+          }
+        },
+        "contextCitation": {
+          "sourceId": "nasa-acme-20220015583",
+          "locator": {
+            "kind": "section",
+            "section": "NTRS title and abstract, document 20220015583"
+          }
+        },
+        "limitations": [
+          "BRE is one ACME sub-investigation, not the entire ACME dataset.",
+          "Gaseous burner emulation is not direct combustion of a solid material.",
+          "Approximate multiple-test oxygen lists and missing pressure cannot define individual conditions.",
+          "Source description only; no raw archives, run admission or target safety inference."
+        ],
+        "scope": "source-description-not-admitted-run-evidence",
+        "admittedExperimentIds": []
+      },
+      {
+        "id": "saffire-i",
+        "program": "Saffire I",
+        "title": "Saffire-I large-scale fabric flame spread",
+        "focus": "Study concurrent and opposed flame spread over a large cotton-fiberglass sample in an uncrewed spacecraft.",
+        "fuelPhase": "solid",
+        "platformContext": "Cygnus resupply vehicle after departure from ISS; PSI project metadata needs reconciliation",
+        "source": {
+          "id": "nasa-saffire-i-ii-20170008805",
+          "title": "Results of Large-Scale Spacecraft Flammability Tests",
+          "url": "https://ntrs.nasa.gov/citations/20170008805",
+          "documentUrl": "https://ntrs.nasa.gov/api/citations/20170008805/downloads/20170008805.pdf",
+          "sha256": "e38ec36f54817aa97e0c01a05f12b212521d6320ce3f4cb7a38bb7c837cfea8d",
+          "rightsDetermination": "PUBLIC_USE_PERMITTED"
+        },
+        "dataset": {
+          "id": "nasa-psi-98-v4",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+          "version": "4",
+          "doi": "10.60555/0t15-1z43",
+          "rightsStatement": "PSI investigation displays CC0-1.0; linked publications and media require their own rights review.",
+          "citation": {
+            "sourceId": "nasa-psi-98-v4",
+            "locator": {
+              "kind": "section",
+              "section": "PSI-98 Version 4, investigation identity, displayed dataset license and S1/S2 experimental table"
+            }
+          }
+        },
+        "datasetNote": "Inspected on 2026-11-13. PSI thickness units and length/width assignments conflict with PDF Table I; platform/date fields also conflict with the Cygnus flight description. Preserve the original values for independent review. No PSI rows or paper observations are admitted; challenge qualification is unconfirmed.",
+        "citation": {
+          "sourceId": "nasa-saffire-i-ii-20170008805",
+          "locator": {
+            "kind": "pdf",
+            "page": 29,
+            "printedPage": "29",
+            "section": "Table I, samples 1-1 and 1-2; conditions, results and oxygen footnote i"
+          }
+        },
+        "contextCitation": {
+          "sourceId": "nasa-saffire-i-ii-20170008805",
+          "locator": {
+            "kind": "section",
+            "section": "NTRS title and abstract, document 20170008805"
+          }
+        },
+        "limitations": [
+          "S1/1-1 and S2/1-2 are review candidates, not validated catalog records.",
+          "The opposed-flow observation used previously burned fuel; it is not a pristine independent repeat.",
+          "Changing, derived oxygen ranges are not equivalent to B20 calibrated oxygen.",
+          "Metadata discrepancies and ignition-power disagreement need independent reconciliation.",
+          "Only source facts and links are included; no paper figures or videos are redistributed."
         ],
         "scope": "source-description-not-admitted-run-evidence",
         "admittedExperimentIds": []

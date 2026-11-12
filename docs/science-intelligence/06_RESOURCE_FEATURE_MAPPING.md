@@ -13,3 +13,16 @@ Status: owner-authorized local implementation; official qualifying-resource iden
 When the official list opens, record the exact listed URL/title, current-year guide wording, and whether the selected investigation is directly listed or reached through a listed PSI resource. Map actual source use, dataset identity/version, file/locator provenance and license to a feature. A portal link alone is not a claim of data ingestion. If qualification wording is ambiguous, report that ambiguity; do not invent organizer acceptance. Recheck completed hashes only if a new original/version changes the source evidence.
 
 Pre-existing code/assets/research remain at the accepted inventory baseline 6c9d29d. New engineering commits follow owner-report record 894c488 and retain their real timestamps. That record supersedes the indefinite local research-only pause; it does not promote experimental data, clear licenses or approve deployment/global awards.
+
+## November 13 relevant dataset expansion
+
+The single authorized Resources-tab inspection still showed the release placeholder; no qualifying challenge-list source is asserted. No API key was required for the selected public pages or NTRS metadata/PDF download. No unrelated NASA services or imagery APIs were added.
+
+| Verified resource | Current functional use | Admission boundary |
+|---|---|---|
+| PSI-69 Version 5, DOI 10.60555/mbq8-0451 | FLEX library dataset/rights/source locator, exact metadata citation verification | First-page methanol tests do not establish the FLEX-062 cool-flame/raw-file link; no new admitted record |
+| PSI-20 Version 4, DOI 10.60555/vb93-3y72 | Separate ACME BRE component library entry and dataset/citation link | Daily multiple-ignition summaries, missing individual pressure, and a displayed 3400% oxygen entry are not normalized into runs |
+| PSI-98 Version 4, DOI 10.60555/0t15-1z43 | Separate Saffire-I library entry and dataset/citation link | Conflicting thickness units, length/width labels and project metadata stay unresolved |
+| NTRS 20170008805, Table I page 29 | Exact source descriptor; three non-admitted Saffire review candidates | Preserves oxygen ranges, prior burn history, approximate/nonnumeric outcomes and ignition-power disagreement |
+
+See `12_NASA_SOURCE_PRIORITIZATION.md` and `evidence/source-verification-20261113.json`. All displayed PSI dataset licenses are CC0-1.0 declarations; that does not clear the linked papers, pictures or videos for redistribution.
