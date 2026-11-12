@@ -1,0 +1,39 @@
+{
+  "sourceCommit": "85550dded710402ec0ad750888af46366e625bcf",
+  "branch": "codex/campaign-security-remediation-20261113",
+  "codeTreeClean": true,
+  "recordedAt": "2026-11-13T04:10:29.506361+06:00",
+  "reviewSourceSha256": "724790fba56b14bbd32df2f9985a85e2f4adabebf7b699d1d0fe840bf459035e",
+  "sha256": {
+    "apps/web/lib/campaign-security.ts": "239cbecaf1000837c75cca83c02a7ff2983536b949c1aef1a7a759ebb956e9e5",
+    "apps/web/lib/campaign-service.ts": "c7b718c2c779b64703e64305d2814e89d8808e1a83f0cf90475592b305e614c1",
+    "apps/web/lib/campaign-http.ts": "a606652c9d3bff11647e924f3784e3c59d34d0149f80dd13272ed065b1243bf6",
+    "apps/web/lib/public-campaign.ts": "6e068f9af84486936dafea15c857e0a13b2b9bc567f72558159353db9e1a19be",
+    "apps/web/lib/public-campaign-vercel.ts": "7427287d383ecc9267bcb3dc66d2c64a4fccdf019868742dce27fde84eeb0aba",
+    "packages/shared/src/campaign-http.ts": "ea260394514aa7c4a3e9ca6bf338837ec70928a6f36a29765af9a7086ddf4bf1",
+    "packages/shared/src/public-campaign.ts": "270f11640f3b3c99d7cf6499e1e114aa9386839bb99e1bcd67a6adf9e0f25a21",
+    "data/migrations/campaign-public-v1.sql": "2d321ecc5ce0df4a0e31087236911fba950fe8c50e2be595ea5a13d0a156181a",
+    "tests/backend/campaign-security-http.test.ts": "77871425dd2cd6effabf3b8ac9f4f3fdf7313bd539b71646abb6711484ddb8f9",
+    "data/fixtures/catalog.json": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+    "data/quarantine/legacy-ledger.json": "a2c0136d9fc8050671e14f081f75426b42bce9913b3a19a4e0ea988e9496d637",
+    "apps/web/lib/game-preview-security.ts": "230bc136d9310286d85320ad0501dacedeaa204b7f897a4ca8611ebc681f5313",
+    "package-lock.json": "47ff7d139986f1194243e587dbddc83ced608c17a6bc8e48dc0b0de77c686396"
+  },
+  "results": {
+    "unitPassed": 266,
+    "unitFiles": 22,
+    "loopbackAcceptancePassed": 2,
+    "publicAcceptancePassed": 2,
+    "acceptanceSkipped": 0,
+    "actualNextUnmountedSmokePassed": 1,
+    "browserArtifactsScanned": 64,
+    "sourceExperiments": 1,
+    "legacyQuarantined": 55,
+    "runtimeAuditVulnerabilities": 0,
+    "developmentAuditModerate": 10
+  },
+  "independentSecurityApproval": false,
+  "publicMounted": false,
+  "loopbackMounted": false,
+  "deployed": false
+}
