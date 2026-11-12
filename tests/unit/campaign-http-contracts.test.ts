@@ -4,7 +4,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { CAMPAIGN_HTTP_BASE, CampaignHttpStartRequestSchema, CampaignHttpResumeRequestSchema,
   CampaignHttpSnapshotResponseSchema, CampaignHttpActionResponseSchema, CampaignHttpExportResponseSchema, campaignIdentity, CampaignCommandSchema, ResumeRequestSchema } from '@microfire/shared';
 import { CampaignService } from '../../apps/web/lib/campaign-service';
-import { PreviewAuthority, previewConfig } from '../../apps/web/lib/game-preview-security';
+import { CampaignAuthority, campaignConfig } from '../../apps/web/lib/campaign-security';
 import { review } from './campaign-helpers';
 
 it('separates the proposed campaign start/resume namespace and bounds from frozen M2', () => {
@@ -19,12 +19,13 @@ it('separates the proposed campaign start/resume namespace and bounds from froze
     expect(CampaignHttpResumeRequestSchema.safeParse({ runtimeId: request.runtimeId, checkpoint }).success).toBe(false);
 });
 it('parses actual private service snapshots, accepted/refused actions and exports without trusting client completion', async () => {
-  const config = previewConfig({ MICROFIRE_LOCAL_GAME_PREVIEW: '1', MICROFIRE_PREVIEW_ORIGIN: 'http://127.0.0.1:3421',
-    MICROFIRE_PREVIEW_ACCESS_TOKEN: randomBytes(32).toString('base64url'), MICROFIRE_PREVIEW_SIGNING_KEY: randomBytes(32).toString('base64url'),
-    MICROFIRE_PREVIEW_KEY_ID: 'contract-test', MICROFIRE_PREVIEW_REALM_ID: randomUUID() })!;
-  const authority = new PreviewAuthority(config), anonymous = new Request(config.origin, { method: 'POST', headers: { origin: config.origin, host: config.host } });
-  const cookie = authority.authorize(anonymous, config.accessToken.toString('base64url')).cookie!.split(';')[0]!;
-  const request = new Request(anonymous, { headers: { ...Object.fromEntries(anonymous.headers), cookie } });
+  const config = campaignConfig({ MICROFIRE_LOCAL_CAMPAIGN: '1', MICROFIRE_CAMPAIGN_ORIGIN: 'http://127.0.0.1:3421',
+    MICROFIRE_CAMPAIGN_ACCESS_TOKEN: randomBytes(32).toString('base64url'), MICROFIRE_CAMPAIGN_SIGNING_KEY: randomBytes(32).toString('base64url'),
+    MICROFIRE_CAMPAIGN_KEY_ID: 'contract-test', MICROFIRE_CAMPAIGN_REALM_ID: randomUUID() })!;
+  const authority = new CampaignAuthority(config), anonymous = new Request(config.origin, { method: 'POST', headers: { origin: config.origin, host: config.host, 'x-microfire-campaign': '1' } });
+  const grant = authority.authorize(anonymous, config.accessToken.toString('base64url'));
+  const cookie = grant.cookie!.split(';')[0]!;
+  const request = new Request(anonymous, { headers: { ...Object.fromEntries(anonymous.headers), cookie, 'x-microfire-campaign-csrf': grant.csrfToken } });
   const service = new CampaignService(authority), started = service.start(request, randomUUID());
   expect(CampaignHttpSnapshotResponseSchema.parse({ apiVersion: '1', data: started }).data.revision).toBe(0);
   const command = async (action: typeof review) => {

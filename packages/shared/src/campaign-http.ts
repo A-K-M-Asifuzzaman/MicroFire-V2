@@ -20,3 +20,7 @@ export const CampaignHttpActionResponseSchema = envelope(z.discriminatedUnion('o
   z.strictObject({ ok: z.literal(false), snapshot: CampaignSnapshotSchema, code: z.string().regex(/^[A-Z][A-Z0-9_]{0,99}$/), message: TextSchema })
 ]));
 export const CampaignHttpExportResponseSchema = envelope(CampaignExportSchema);
+
+// Separate from frozen M2 authorization: origin-held proof is required alongside the campaign cookie.
+export const CampaignAuthorizeResponseSchema = envelope(z.strictObject({ authorized: z.literal(true), expiresAt: PreviewTimeSchema,
+  runtimeId: PreviewUuidSchema, csrfToken: z.string().regex(/^[A-Za-z0-9_-]{43}$/) }));
