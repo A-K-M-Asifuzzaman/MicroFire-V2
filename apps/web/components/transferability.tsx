@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { FrontierResponseSchema, type TargetConditions } from '@microfire/shared';
 import { callApi, Failure, useLatestRequest } from './client-api';
-import { ConditionFields, targetsFrom, type Pending } from './tool-kit';
+import { ConditionFields, fieldLabels, targetsFrom, type Pending } from './tool-kit';
 
 type Data = ReturnType<typeof FrontierResponseSchema.parse>['data'];
 const VERDICT: Record<Data['classification'], { title: string; body: string; tone: string }> = {
@@ -24,7 +24,8 @@ const EXAMPLES = [
   { label: 'The recorded B20 observation', question: 'The B20 observation log reports that the flame burned the entire sample.', values: { oxygenPct: '17.4' } },
   { label: 'A lunar habitat question', question: 'Would a PMMA panel burn completely in a lunar habitat?', values: { material: 'PMMA', gravity: 'lunar', oxygenPct: '26', pressureKpa: '55' } },
 ] as const;
-const chip = (kind: 'match' | 'differ' | 'missing', text: string) => <li key={kind + text} data-kind={kind}><span aria-hidden="true">{kind === 'match' ? '✓' : kind === 'differ' ? '≠' : '?'}</span> {text}<span className="sr-only">{kind === 'match' ? ' (matches)' : kind === 'differ' ? ' (recorded at a different value)' : ' (not recorded)'}</span></li>;
+const pretty = (t: string) => t.replace(/^(\w+)/, (k) => fieldLabels[k]?.[0] ?? k);
+const chip = (kind: 'match' | 'differ' | 'missing', text: string) => <li key={kind + text} data-kind={kind} data-field={text.match(/^\w+/)?.[0]}><span aria-hidden="true">{kind === 'match' ? '✓' : kind === 'differ' ? '≠' : '?'}</span> {pretty(text)}<span className="sr-only">{kind === 'match' ? ' (matches)' : kind === 'differ' ? ' (recorded at a different value)' : ' (not recorded)'}</span></li>;
 
 export function TransferabilityAnalyzer({ sourceTitles }: { sourceTitles: Record<string, string> }) {
   const [state, setState] = useState<Pending<Data>>({ status: 'idle' });

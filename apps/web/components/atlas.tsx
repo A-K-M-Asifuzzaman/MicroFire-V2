@@ -36,7 +36,8 @@ export function RecordCard({ experiment, sources }: { experiment: Experiment; so
   </article>;
 }
 // ---------- Experiment Atlas ----------
-export type AtlasQuery = { q?: string | undefined; program?: string | undefined; material?: string | undefined; flowDirection?: string | undefined };
+export type AtlasQuery = { q?: string | undefined; program?: string | undefined; material?: string | undefined; flowDirection?: string | undefined;
+  gravity?: string | undefined; sourceId?: string | undefined; observation?: string | undefined; oxygenPct?: number | undefined; pressureKpa?: number | undefined; flowCmS?: number | undefined };
 export function Atlas({ initial, query, facets, sources }: {
   initial: { items: Experiment[]; total: number; coverage: Coverage }; query: AtlasQuery;
   facets: { program: string[]; material: string[]; flowDirection: string[] }; sources: SourceRef[];
@@ -83,6 +84,24 @@ export function Atlas({ initial, query, facets, sources }: {
         <legend>Filter this catalog <span>· one value each while one record is admitted</span></legend>
         {facet('program', 'Program')}{facet('material', 'Material')}{facet('flowDirection', 'Flow direction')}
       </fieldset>
+      <details className="disclose atlas-more" open={!!(query.sourceId || query.observation || query.gravity || query.oxygenPct !== undefined || query.pressureKpa !== undefined || query.flowCmS !== undefined)}>
+        <summary>More filters: NASA source, documented observation, measured conditions</summary>
+        <div className="filter-row atlas-more-grid">
+          <div className="field"><label htmlFor="atlas-sourceId">NASA source</label>
+            <select id="atlas-sourceId" name="sourceId" defaultValue={query.sourceId ?? ''}><option value="">Any</option>{sources.map((s) => <option key={s.id} value={s.id}>{s.title}</option>)}</select></div>
+          <div className="field"><label htmlFor="atlas-observation">Documented observation contains</label>
+            <input id="atlas-observation" name="observation" type="text" maxLength={200} defaultValue={query.observation} placeholder="e.g. burned entire sample" /></div>
+          <div className="field"><label htmlFor="atlas-gravity">Gravity</label>
+            <input id="atlas-gravity" name="gravity" type="text" maxLength={200} defaultValue={query.gravity} placeholder="e.g. microgravity" /></div>
+          <div className="field"><label htmlFor="atlas-oxygenPct">Oxygen, recorded (vol%)</label>
+            <input id="atlas-oxygenPct" name="oxygenPct" type="number" min={0} max={100} step="any" defaultValue={query.oxygenPct} /></div>
+          <div className="field"><label htmlFor="atlas-pressureKpa">Pressure, recorded (kPa)</label>
+            <input id="atlas-pressureKpa" name="pressureKpa" type="number" min={0} step="any" defaultValue={query.pressureKpa} /></div>
+          <div className="field"><label htmlFor="atlas-flowCmS">Airflow, recorded (cm/s)</label>
+            <input id="atlas-flowCmS" name="flowCmS" type="number" min={0} step="any" defaultValue={query.flowCmS} /></div>
+        </div>
+        <small>Measured filters match only values the NASA source recorded exactly. A record that did not record a condition never matches it: unknown is not assumed.</small>
+      </details>
     </form>
     <section aria-labelledby="atlas-results" aria-busy={state.status === 'loading'}>
       <h2 id="atlas-results" className="sr-only">Results</h2>

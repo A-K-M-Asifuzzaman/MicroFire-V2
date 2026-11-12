@@ -862,3 +862,6 @@ main > * { animation: fade .35s var(--ease) both; }
 .transfer-chips li[data-kind="differ"] { background: var(--sun-soft); }
 .transfer-chips li[data-kind="missing"] { background: #eceeff; }
 .frontier-sub { font-size: clamp(1.3rem, 1rem + 1vw, 1.7rem); margin: 0 0 16px; }
+.atlas-more { margin-top: 10px; }
+.atlas-more-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0 14px; margin-top: 12px; }
+.atlas-more small { display: block; margin-top: 4px; color: var(--ink-3); }
