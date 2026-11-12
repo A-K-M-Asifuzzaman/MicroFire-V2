@@ -1,0 +1,109 @@
+✖ production HTTP: preview defaults off and research routes retain their contracts (214.369666ms)
+✖ production HTTP: full mission, invalid assembly, mandatory diagnosis/repair, exact observation receipt, duplicate and lost-response recovery (609.376459ms)
+✖ production HTTP: restart requires reauthorization, resumes exact checkpoint and denies invalid signature (406.626584ms)
+✖ production HTTP: eight wrong diagnoses recover through real429/Retry-After and complete (403.949625ms)
+✖ production HTTP: rejects ambiguous JSON, invalid notes and altered command identity without corrupting the head (404.903042ms)
+✖ real Chromium uses the same canonical bytes and Web Crypto observation identity as Node (1524.388333ms)
+✖ production HTTP: four maximum legal notes preserve caveats and completion within all byte budgets (405.151ms)
+✖ production HTTP: research and preview POSTs share the same unchanged 30-request allowance (404.741417ms)
+✖ production HTTP: signing-key rotation preserves raw recovery and refuses the old checkpoint (403.507292ms)
+✖ production HTTP: signed restore rejects impossible phases, chronology and claimed achievements (404.83825ms)
+✖ production HTTP: distinct sessions retain separate heads through invalid identities and concurrent edits (403.785875ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 0
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5810.276291
+
+✖ failing tests:
+
+test at tests/backend/training-http.test.ts:1:4592
+✖ production HTTP: preview defaults off and research routes retain their contracts (214.369666ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:40:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at tests/backend/training-http.test.ts:1:5292
+✖ production HTTP: full mission, invalid assembly, mandatory diagnosis/repair, exact observation receipt, duplicate and lost-response recovery (609.376459ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:44:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:7470
+✖ production HTTP: restart requires reauthorization, resumes exact checkpoint and denies invalid signature (406.626584ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:63:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:9345
+✖ production HTTP: eight wrong diagnoses recover through real429/Retry-After and complete (403.949625ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:77:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:10202
+✖ production HTTP: rejects ambiguous JSON, invalid notes and altered command identity without corrupting the head (404.903042ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:86:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:12106
+✖ real Chromium uses the same canonical bytes and Web Crypto observation identity as Node (1524.388333ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:107:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:13998
+✖ production HTTP: four maximum legal notes preserve caveats and completion within all byte budgets (405.151ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:124:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:15131
+✖ production HTTP: research and preview POSTs share the same unchanged 30-request allowance (404.741417ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:134:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:15780
+✖ production HTTP: signing-key rotation preserves raw recovery and refuses the old checkpoint (403.507292ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:145:15)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:16557
+✖ production HTTP: signed restore rejects impossible phases, chronology and claimed achievements (404.83825ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:152:15)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/backend/training-http.test.ts:1:19073
+✖ production HTTP: distinct sessions retain separate heads through invalid identities and concurrent edits (403.785875ms)
+  Error: Isolated server exited before startup
+      at server (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:20:57)
+      at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/training-http.test.ts:177:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

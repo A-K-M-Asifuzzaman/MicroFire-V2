@@ -3,6 +3,7 @@ import {createHash,createHmac,randomBytes,randomUUID,timingSafeEqual} from 'node
 import {CheckpointPayloadSchema,canonicalJson,parsePreviewJson,type CheckpointPayload,type HttpCode} from '@microfire/shared';
 import {validateTrainingCase} from '@microfire/game-core';
 import {catalog,catalogSha256,validatePassport} from '@microfire/science';
+import {hostedEnvironment} from './review-policy';
 
 export class PreviewFailure extends Error {
   constructor(readonly status:number,readonly code:HttpCode,message:string){super(message);}
@@ -13,7 +14,7 @@ const decodeSecret=(s:string|undefined):Buffer|null=>{
   return value.length===32&&value.toString('base64url')===s?value:null;
 };
 export function previewConfig(env:NodeJS.ProcessEnv):PreviewConfig|null {
-  if(env.MICROFIRE_LOCAL_GAME_PREVIEW!=='1'||['VERCEL','NETLIFY','CF_PAGES','AWS_LAMBDA_FUNCTION_NAME','K_SERVICE','RENDER','FLY_APP_NAME'].some(k=>!!env[k]))return null;
+  if(env.MICROFIRE_LOCAL_GAME_PREVIEW!=='1'||hostedEnvironment(env))return null;
   const origin=env.MICROFIRE_PREVIEW_ORIGIN??'';
   if(!/^http:\/\/127\.0\.0\.1:[1-9]\d{0,4}$/.test(origin)||origin.length>64)return null;
   let url:URL;try{url=new URL(origin);}catch{return null;}if(url.origin!==origin||!url.port||Number(url.port)>65535)return null;
@@ -23,7 +24,7 @@ export function previewConfig(env:NodeJS.ProcessEnv):PreviewConfig|null {
   return {origin,host:url.host,port:url.port,realmId,keyId,accessToken,signingKey};
 }
 export function localPreviewRequest(request:Request,c:PreviewConfig):boolean {
-  // Next synthesizes a localhost Request.url; exact wire Host and Origin remain the authority.
+  // Headers narrow requests; only the server-configured operator credential grants authority.
   const h=request.headers,origin=h.get('origin');
   if(h.get('host')!==c.host||h.has('forwarded')||h.get('sec-fetch-site')==='cross-site')return false;
   if(request.method==='POST'?origin!==c.origin:origin!==null&&origin!==c.origin)return false;

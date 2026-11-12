@@ -5,6 +5,7 @@ import {canonicalJson,type CheckpointPayload} from '@microfire/shared';
 import {createTrainingCase,transitionTraining,validateTrainingCase} from '@microfire/game-core';
 import {catalog,catalogSha256} from '@microfire/science';
 import {previewConfig,localPreviewRequest,PreviewAuthority,CheckpointCodec,type PreviewConfig} from '../../apps/web/lib/game-preview-security';
+import {HOSTED_MARKERS} from '../../apps/web/lib/review-policy';
 import {trainingTime as at,advance,initialActions,episodeActions,sourceActions,diagnoseActions,repairActions,finishActions} from './training-helpers';
 export function testPreviewEnv():NodeJS.ProcessEnv{return {MICROFIRE_LOCAL_GAME_PREVIEW:'1',MICROFIRE_PREVIEW_ORIGIN:'http://127.0.0.1:3247',MICROFIRE_PREVIEW_ACCESS_TOKEN:randomBytes(32).toString('base64url'),MICROFIRE_PREVIEW_SIGNING_KEY:randomBytes(32).toString('base64url'),MICROFIRE_PREVIEW_REALM_ID:'44444444-4444-4444-8444-444444444444',MICROFIRE_PREVIEW_KEY_ID:'test-only-key'};}
 const request=(cookie?:string,headers:Record<string,string>={})=>new Request('http://127.0.0.1:3247/api/game/preview/action',{method:'POST',headers:{host:'127.0.0.1:3247',origin:'http://127.0.0.1:3247',...(cookie?{cookie}:{}),...headers}});
@@ -14,6 +15,7 @@ it('fails closed without every local setting, on hosted environments, reused/pub
   const env=testPreviewEnv();expect(previewConfig({})).toBe(null);expect(previewConfig(env)).not.toBe(null);
   for(const key of Object.keys(env)){const missing={...env};delete missing[key];expect(previewConfig(missing)).toBe(null);}
   for(const values of [{VERCEL:'1'},{MICROFIRE_PREVIEW_ORIGIN:'https://example.com'},{MICROFIRE_PREVIEW_ORIGIN:'http://127.0.0.1:99999'},{MICROFIRE_PREVIEW_ORIGIN:'http://localhost:3247'},{MICROFIRE_PREVIEW_SIGNING_KEY:env.MICROFIRE_PREVIEW_ACCESS_TOKEN},{MICROFIRE_PREVIEW_SIGNING_KEY:Buffer.alloc(32,7).toString('base64url')}])expect(previewConfig({...env,...values})).toBe(null);
+  for(const marker of HOSTED_MARKERS)for(const value of ['', '0', 'production'])expect(previewConfig({...env,[marker]:value}),marker).toBe(null);
 });
 it('requires exact Host/Origin, rejects forwarded/cross-site metadata and permits exact Next loopback forwarding',()=>{
   const c=previewConfig(testPreviewEnv())!;expect(localPreviewRequest(request(),c)).toBe(true);

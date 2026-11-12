@@ -1,0 +1,70 @@
+
+> microfire-v2@0.1.0 build
+> npm run build --workspace @microfire/web
+
+
+> @microfire/web@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.4.1 (webpack)
+✓ Running next.config.ts took 13ms
+
+  Creating an optimized production build ...
+⨯ Failed to find font override values for font `Big Shoulders`
+⨯ Failed to find font override values for font `Atkinson Hyperlegible Next`
+⨯ Failed to find font override values for font `Big Shoulders`
+⨯ Failed to find font override values for font `Atkinson Hyperlegible Next`
+✓ Compiled successfully in 4.2s
+  Running TypeScript ...
+  Finished TypeScript in 3.0s ...
+  Collecting page data using 10 workers ...
+  Generating static pages using 10 workers (0/25) ...
+  Generating static pages using 10 workers (6/25) 
+  Generating static pages using 10 workers (12/25) 
+  Generating static pages using 10 workers (18/25) 
+✓ Generating static pages using 10 workers (25/25) in 608ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├   /[...path]
+│ ├ ● /lab
+│ ├ ● /sources
+│ ├ ● /methodology
+│ └ ● [+4 more paths]
+├ ƒ /api/[...path]
+├ ○ /ask
+├ ƒ /atlas
+├ ○ /compare
+├ ○ /dashboard
+├ ƒ /design
+├ ƒ /design/a
+├ ƒ /design/a/b20
+├ ƒ /design/a/lab
+├ ƒ /design/b
+├ ƒ /design/b/b20
+├ ƒ /design/b/lab
+├   /experiments/[id]
+│ └ ● /experiments/bass2-b20
+├ ○ /gaps
+├ ○ /icon.svg
+├ ƒ /m2-fixtures
+├ ○ /missions
+├   /missions/[id]
+│ ├ ● /missions/station-arrival
+│ ├ ● /missions/bass-assembly
+│ ├ ● /missions/flame-detective
+│ └ ● [+2 more paths]
+├   /missions/[id]/tour
+│ └ ● /missions/bass-assembly/tour
+└ ○ /passport
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
