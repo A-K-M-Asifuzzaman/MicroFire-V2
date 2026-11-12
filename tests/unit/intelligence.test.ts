@@ -60,6 +60,27 @@ it('keeps retrieval tolerance, textual similarity and absent targets distinct fr
   const mismatch = analyzeTransfer({ ...request, targetConditions: { oxygenPct: 30 } }).records[0]!;
   expect(mismatch.dimensions.find(d => d.field === 'oxygenPct')!.status).toBe('conditions-differ');
 });
+it.each([
+  { field: 'material', target: 'cotton', source: 'PMMA' },
+  { field: 'geometry', target: 'sphere', source: '2 cm wide film' },
+  { field: 'flowCmS', target: 20, source: 5 }
+] as const)('retains the recorded $field mismatch and B20 confounders', ({ field, target, source }) => {
+  const r = analyzeTransfer({ ...request, targetConditions: { [field]: target } }).records[0]!;
+  expect(r.dimensions.find(d => d.field === field)).toMatchObject({ status: 'conditions-differ', source, target, basis: 'recorded', citations: catalog.experiments[0]!.claims[0]!.citations });
+  expect(r.confounders).toContainEqual(expect.stringContaining(`${field}:`));
+  expect(r.limitations).toEqual(expect.arrayContaining(catalog.experiments[0]!.limitations));
+  expect(r.limitations).toContain('Air display mixes velocities and a potentiometer setting; pot 0.5 is not 0.5 cm/s.');
+  expect(r.conclusion).toBe('insufficient-evidence');
+});
+it.each(['lunar', 'martian'])('detects a recorded gravity-regime mismatch for a synthetic %s target', gravity => {
+  // Synthetic recorded gravity tests the branch; B20 run acceleration remains unknown.
+  const dataset = structuredClone(catalog), e = dataset.experiments[0]!;
+  e.conditions.gravity = { status: 'known', value: 'microgravity', basis: 'recorded', citation: e.claims[0]!.citations[0]!, note: 'Synthetic unit fixture.' };
+  const r = analyzeTransfer({ ...request, targetConditions: { gravity } }, dataset).records[0]!;
+  expect(r.dimensions.find(d => d.field === 'gravity')).toMatchObject({ status: 'conditions-differ', source: 'microgravity', target: gravity });
+  expect(r.conclusion).toBe('insufficient-evidence');
+  expect(catalog.experiments[0]!.conditions.gravity.status).toBe('unknown');
+});
 it('describes equality only for fully recorded synthetic conditions, keeping derivations/context insufficient', () => {
   // Synthetic conditions exercise classification; they are never added to the NASA catalog.
   const dataset = structuredClone(catalog), e = dataset.experiments[0]!, citation = e.claims[0]!.citations[0]!;
