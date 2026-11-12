@@ -1,6 +1,7 @@
 import { spawn, type ChildProcess } from 'node:child_process';
 import { request as httpRequest } from 'node:http';
 import { connect } from 'node:net';
+import { randomBytes } from 'node:crypto';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
 
@@ -15,6 +16,7 @@ const REVIEW_PATHS = ['/design', '/design/a', '/design/a/lab', '/design/a/b20', 
 const PATH_VARIANTS = ['/%64esign', '/design%2Fa', '/%6d2-fixtures', '/design/a/%62%32%30', '/design.rsc', '/m2-fixtures.rsc', '/design/?_rsc=1',
   '/design//a', '/design/a/', '/DESIGN', '/m2-fixtures?scenario=fault', '/design/a/lab?_rsc=abc'] as const;
 const LEAKS = ['M2 fixture gallery', 'Choose a direction', 'Orbital observatory', 'Living science adventure', 'START_RESPONSE', 'Design review', 'MICROFIRE_DESIGN_REVIEW', 'MICROFIRE_M2_FIXTURE_GALLERY'];
+const reviewToken = randomBytes(32).toString('base64url');
 const FLAGS = { MICROFIRE_DESIGN_REVIEW: '1', MICROFIRE_M2_FIXTURE_GALLERY: '1' };
 const MARKERS = ['VERCEL', 'VERCEL_ENV', 'VERCEL_URL', 'VERCEL_REGION', 'VERCEL_DEPLOYMENT_ID', 'NOW_REGION', 'NETLIFY', 'CF_PAGES', 'AWS_LAMBDA_FUNCTION_NAME',
   'AWS_EXECUTION_ENV', 'LAMBDA_TASK_ROOT', 'K_SERVICE', 'GAE_SERVICE', 'RENDER', 'FLY_APP_NAME', 'RAILWAY_ENVIRONMENT', 'DYNO', 'WEBSITE_SITE_NAME'] as const;
@@ -34,7 +36,7 @@ const CONFIGS: Config[] = [
 
 type Reply = { status: number; csp: string | undefined; body: string; location: string | undefined };
 const once = (port: number, p: string, headers: Record<string, string>) => new Promise<Reply>((resolve, reject) => {
-  const req = httpRequest({ host: '127.0.0.1', port, path: p, headers, setHost: false }, (res) => {
+  const req = httpRequest({ host: '127.0.0.1', port, path: p, headers: { 'x-microfire-review-token': reviewToken, ...headers }, setHost: false }, (res) => {
     let body = ''; res.setEncoding('utf8'); res.on('data', (c) => { body += c; });
     res.on('end', () => resolve({ status: res.statusCode ?? 0, csp: res.headers['content-security-policy'] as string | undefined, body, location: res.headers.location }));
   });
@@ -57,7 +59,7 @@ const noHost = (port: number, p: string) => new Promise<{ status: number; body: 
 async function serve(port: number, extra: Record<string, string>) {
   const env: NodeJS.ProcessEnv = { ...process.env, NODE_ENV: 'production' };
   for (const k of [...MARKERS, 'MICROFIRE_DESIGN_REVIEW', 'MICROFIRE_M2_FIXTURE_GALLERY']) delete env[k];
-  Object.assign(env, extra);
+  Object.assign(env, { MICROFIRE_REVIEW_ACCESS_TOKEN: reviewToken }, extra);
   for (const m of MARKERS) expect(m in env, `only the configured marker is present: ${m}`).toBe(m in extra);
   const child = spawn(process.execPath, [path.resolve('node_modules/next/dist/bin/next'), 'start', '--hostname', '127.0.0.1', '--port', String(port)],
     { cwd: path.resolve('apps/web'), env, stdio: 'ignore' });
@@ -147,6 +149,7 @@ CONFIGS.forEach((c, i) => {
     try {
       child = await serve(port, FLAGS);
       await page.route('**/*', async (r) => { if (r.request().headers()['next-router-prefetch']) await r.abort(); else await r.continue(); });
+      await page.setExtraHTTPHeaders({ 'x-microfire-review-token': reviewToken });
       await page.goto(`http://127.0.0.1:${port}/design`);
       const lab = page.getByRole('link', { name: 'Laboratory', exact: true }).first();
       await expect(lab).toBeVisible();

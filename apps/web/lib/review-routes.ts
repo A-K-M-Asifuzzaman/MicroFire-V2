@@ -1,7 +1,7 @@
 import 'server-only';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { reviewRouteAllowed, type ReviewFlag } from './review-policy';
+import { reviewRouteAllowed, REVIEW_TOKEN_HEADER, type ReviewFlag } from './review-policy';
 
 /**
  * Second line of the review-route gate (the first is proxy.ts): call first in every review layout and page. A
@@ -9,5 +9,5 @@ import { reviewRouteAllowed, type ReviewFlag } from './review-policy';
  */
 export async function requireReviewRoute(flag: ReviewFlag) {
   const h = await headers();
-  if (!reviewRouteAllowed(flag, process.env, h.get('host'), h.get('x-forwarded-host'))) notFound();
+  if (!reviewRouteAllowed(flag, process.env, h.get('host'), h.get('x-forwarded-host'), h.get(REVIEW_TOKEN_HEADER))) notFound();
 }
