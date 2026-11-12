@@ -122,7 +122,7 @@ export function Workstation({ sources, claims, coverage }: { sources: SourceRef[
               <span className="score"><span aria-hidden="true">Retrieval relevance</span> <meter min={0} max={1} value={item.relevanceScore} aria-label={`Retrieval relevance ${item.relevanceScore.toFixed(2)} of 1, a word-and-condition match score, not evidence strength`}>{item.relevanceScore}</meter> <span aria-hidden="true">{item.relevanceScore.toFixed(2)}</span></span>
               <span>Ranking {state.data.rankingVersion} · scores are retrieval relevance, not fire risk, safety or scientific confidence.</span>
             </div>
-            <details className="disclose"><summary>Why this score</summary><ul>{item.reasons.map((r) => <li key={r}>{r}</li>)}</ul></details>
+            <details className="disclose" open><summary>Why it ranks here</summary><ul>{item.reasons.map((r) => <li key={r}>{r}</li>)}</ul></details>
           </article>;
         })}
         <CoverageNote coverage={state.data.coverage} />

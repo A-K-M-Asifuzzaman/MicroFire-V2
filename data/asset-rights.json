@@ -496,6 +496,56 @@
       "approved": true,
       "coordination": "Proposed by Claude in feat/m2-claude-gameplay (M4 art-direction prototypes); Sol (rights-ledger owner) to confirm and carry into the migrated ledger",
       "part": "astronaut suit — baseColor.webp"
+    },
+    {
+      "path": "apps/web/public/media/missions/station-arrival.webp",
+      "title": "Mission map illustration: station arrival",
+      "source": "Still rendered by tools/meshy/render-stills.mjs (three.js) from Meshy Text-to-3D (meshy-7.1) job m1-diorama-v1, preview task 01a1cef3-9bb7-7487-8723-a7f13f6ba600, refine task 01a1cef4-ce1b-7666-aea1-f44db2a163cb, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "800 x 600 transparent WebP still, 3/4 view; illustrative only, never evidence or a dimensioned reconstruction. Source GLB kept locally in tools/meshy/incoming (git-ignored).",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA (front, right, back, left, top) + rights QA, 2026-11-12; owner approved Batch 1 (cap 300)",
+      "approved": true,
+      "part": "station-arrival.webp"
+    },
+    {
+      "path": "apps/web/public/media/missions/bass-assembly.webp",
+      "title": "Mission map illustration: bass assembly",
+      "source": "Still rendered by tools/meshy/render-stills.mjs (three.js) from Meshy Text-to-3D (meshy-7.1) job m2-diorama-v1, preview task 01a1cef5-9ee1-7535-a6be-217524b5097a, refine task 01a1cef6-a9a2-710c-9435-5651599a87e9, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "800 x 600 transparent WebP still, 3/4 view; illustrative only, never evidence or a dimensioned reconstruction. Source GLB kept locally in tools/meshy/incoming (git-ignored).",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA (front, right, back, left, top) + rights QA, 2026-11-12; owner approved Batch 1 (cap 300)",
+      "approved": true,
+      "part": "bass-assembly.webp"
+    },
+    {
+      "path": "apps/web/public/media/missions/flame-detective.webp",
+      "title": "Mission map illustration: flame detective",
+      "source": "Still rendered by tools/meshy/render-stills.mjs (three.js) from Meshy Text-to-3D (meshy-7.1) job m3-diorama-v1, preview task 01a1cef7-6882-751f-b2b9-4fca88da02ad, refine task 01a1cef8-71cc-7336-92af-5fb5e3067fc3, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "800 x 600 transparent WebP still, 3/4 view; illustrative only, never evidence or a dimensioned reconstruction. Source GLB kept locally in tools/meshy/incoming (git-ignored). QA note: the chamber renders opaque and shows no flame; used only as a generic test-station illustration.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA (front, right, back, left, top) + rights QA, 2026-11-12; owner approved Batch 1 (cap 300)",
+      "approved": true,
+      "part": "flame-detective.webp"
+    },
+    {
+      "path": "apps/web/public/media/missions/claim-trial.webp",
+      "title": "Mission map illustration: claim trial",
+      "source": "Still rendered by tools/meshy/render-stills.mjs (three.js) from Meshy Text-to-3D (meshy-7.1) job m4-diorama-v1, preview task 01a1cef9-8e62-761d-a5e4-c2bd98441b73, refine task 01a1cefa-4506-732a-8c45-5640f206b220, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "800 x 600 transparent WebP still, 3/4 view; illustrative only, never evidence or a dimensioned reconstruction. Source GLB kept locally in tools/meshy/incoming (git-ignored).",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA (front, right, back, left, top) + rights QA, 2026-11-12; owner approved Batch 1 (cap 300)",
+      "approved": true,
+      "part": "claim-trial.webp"
+    },
+    {
+      "path": "apps/web/public/media/missions/lunar-habitat.webp",
+      "title": "Mission map illustration: lunar habitat",
+      "source": "Still rendered by tools/meshy/render-stills.mjs (three.js) from Meshy Text-to-3D (meshy-7.1) job m5-diorama-v1, preview task 01a1cefb-3a95-7561-bb1f-cc492574144a, refine task 01a1cefb-f018-7319-96ef-072f96c9aa86, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "800 x 600 transparent WebP still, 3/4 view; illustrative only, never evidence or a dimensioned reconstruction. Source GLB kept locally in tools/meshy/incoming (git-ignored). QA note: the ground is textured pale blue rather than grey regolith; the scene is fictional.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA (front, right, back, left, top) + rights QA, 2026-11-12; owner approved Batch 1 (cap 300)",
+      "approved": true,
+      "part": "lunar-habitat.webp"
     }
   ]
 }

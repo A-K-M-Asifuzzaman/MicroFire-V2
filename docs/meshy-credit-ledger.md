@@ -120,3 +120,29 @@ The **70-credit art-direction cost was charged**, not proposed (2,783 → 2,713)
 | **Total** | **387** |
 
 3,100 − 387 = 2,713, which matches the live balance.
+
+## November 2026 production (owner plan: cap 1,500 across three batches)
+
+**Owner approval (2026-11-12):** "Full plan, cap 1,500".
+- Batch 1: 300 credits, 10 models. These are 5 mission dioramas plus 5 hero props for Missions 01, 03, 04 and 05.
+- Batch 2: 900 credits, 30 environment props. Runs only after Batch 1 passes QA.
+- Batch 3: 300 credits for revisions, rigging and animation.
+- That leaves about 189 credits for the owner's other project, which shares the pool.
+
+No top-ups and no automatic retries. Each job runs once with `--approved-cap 30`, sequentially, with a balance floor of 1,389 for Batch 1.
+
+**Starting balance:** 1,689 (monthly 1,689, permanent 0), read live on 2026-11-12. The monthly credits reset at 2026-12-11T08:11:47Z.
+
+**Gap from the October ledger:** the earlier ledger ended at 2,713. The 1,024 difference was spent by the owner's separate portfolio project, which shares this Meshy account. None of that spend is MicroFire assets.
+
+### Batch 1 (meshy-7.1 text-to-3D preview 20 + PBR refine 10 = 30 each)
+
+Task IDs, balance before and balance after for every job are in `tools/meshy/ledger.jsonl`. Source GLBs and textures are kept locally in `tools/meshy/incoming/<job>/`, which is git-ignored. QA used five-view turnarounds rendered by `tools/meshy/render-stills.mjs`.
+
+| Job | Destination | Credits | QA | Integration status |
+|---|---|---|---|---|
+| `m1-diorama-v1` | Mission map + Mission 01 page | 30 | Accepted | Card and page still (`public/media/missions/station-arrival.webp`) |
+| `m2-diorama-v1` | Mission map + Mission 02 page | 30 | Accepted | Card and page still |
+| `m3-diorama-v1` | Mission map + Mission 03 page | 30 | Accepted with note: the chamber renders opaque, with no visible flame | Card and page still, generic illustration only |
+| `m4-diorama-v1` | Mission map + Mission 04 page | 30 | Accepted | Card and page still |
+| `m5-diorama-v1` | Mission map + Mission 05 page | 30 | Accepted with note: the ground is pale blue, not grey regolith (fictional scene) | Card and page still |

@@ -74,13 +74,21 @@ export function MethodologyPage() {
 }
 
 const briefs: Record<string, { scene: string; action: string; carries: string; glyph: React.ReactNode }> = {
-  'station-arrival': { scene: 'A small orbital research module and its observatory window.', action: 'Find your way around, inspect a real research question in its source, and learn the controls with PIX.', carries: 'Your mission objective and a first cited question.', glyph: <><ellipse cx="0" cy="-4" rx="18" ry="12" fill="none" stroke="#9fd8ef" strokeWidth="3" /><path d="M-22 14h44" stroke="#ff8738" strokeWidth="3" /></> },
-  'bass-assembly': { scene: 'An instrument bench with an engineering cutaway of the BASS-II flow duct.', action: 'Fit named parts in a workable order and repair a seeded but recoverable configuration fault.', carries: 'A qualified instrument and its correction log.', glyph: <><rect x="-22" y="-14" width="44" height="28" rx="6" fill="none" stroke="#ff8738" strokeWidth="3" /><circle cx="-8" cy="0" r="4" fill="#9fe3e3" /><circle cx="8" cy="0" r="4" fill="#9fe3e3" /></> },
-  'flame-detective': { scene: 'An investigation room built around source-specified evidence.', action: 'Make a falsifiable prediction, then reconcile it with the documented result and its uncertainty.', carries: 'Your prediction beside the recorded result, with citation.', glyph: <path d="M0-22c8 9 12 16 12 22a12 12 0 0 1-24 0c0-6 4-13 12-22z" fill="#ff8738" /> },
-  'claim-trial': { scene: 'A forensic evidence chamber.', action: 'Classify statements by evidence level, find missing controls and reject an unjustified claim.', carries: 'A reasoned evidence-level classification.', glyph: <g stroke="#9fd8ef" strokeWidth="3"><path d="M-18-10h36M-18 0h36M-18 10h36" /></g> },
-  'lunar-habitat': { scene: 'A fictional lunar research setting with incomplete direct evidence.', action: 'Weigh what is documented, extrapolated and unknown, then write a provisional recommendation. Never a safety verdict.', carries: 'A Passport case report with its limitations.', glyph: <path d="M-12-14a18 18 0 1 0 24 24 14 14 0 1 1-24-24z" fill="none" stroke="#9fd8ef" strokeWidth="3" /> }
+  'station-arrival': { scene: 'A small orbital research module and its observatory window.', action: 'Find your way around, inspect a real research question in its source, and learn the controls with PIX.', carries: 'Your mission objective and a first cited question.', glyph: <><ellipse cx="0" cy="-4" rx="18" ry="12" fill="none" stroke="var(--ultra)" strokeWidth="3" /><path d="M-22 14h44" stroke="var(--coral)" strokeWidth="3" /></> },
+  'bass-assembly': { scene: 'An instrument bench with an engineering cutaway of the BASS-II flow duct.', action: 'Fit named parts in a workable order and repair a seeded but recoverable configuration fault.', carries: 'A qualified instrument and its correction log.', glyph: <><rect x="-22" y="-14" width="44" height="28" rx="6" fill="none" stroke="var(--coral)" strokeWidth="3" /><circle cx="-8" cy="0" r="4" fill="var(--mint)" /><circle cx="8" cy="0" r="4" fill="var(--mint)" /></> },
+  'flame-detective': { scene: 'An investigation room built around source-specified evidence.', action: 'Make a falsifiable prediction, then reconcile it with the documented result and its uncertainty.', carries: 'Your prediction beside the recorded result, with citation.', glyph: <path d="M0-22c8 9 12 16 12 22a12 12 0 0 1-24 0c0-6 4-13 12-22z" fill="var(--sun)" stroke="var(--ink)" strokeWidth="3" /> },
+  'claim-trial': { scene: 'A forensic evidence chamber.', action: 'Classify statements by evidence level, find missing controls and reject an unjustified claim.', carries: 'A reasoned evidence-level classification.', glyph: <g stroke="var(--ultra)" strokeWidth="3"><path d="M-18-10h36M-18 0h36M-18 10h36" /></g> },
+  'lunar-habitat': { scene: 'A fictional lunar research setting with incomplete direct evidence.', action: 'Weigh what is documented, extrapolated and unknown, then write a provisional recommendation. Never a safety verdict.', carries: 'A Passport case report with its limitations.', glyph: <path d="M-12-14a18 18 0 1 0 24 24 14 14 0 1 1-24-24z" fill="none" stroke="var(--ultra)" strokeWidth="3" /> }
 };
-const nodes = [[160, 330], [440, 170], [720, 330], [1000, 170], [1280, 330]] as const;
+/** Missions with an illustrative diorama still (rendered from a QA-approved Meshy model; see data/asset-rights.json). */
+const MISSION_ART = new Set<string>(['station-arrival', 'bass-assembly', 'flame-detective', 'claim-trial', 'lunar-habitat']);
+function MissionArt({ id, glyph }: { id: string; glyph: React.ReactNode }) {
+  const has = MISSION_ART.has(id);
+  return <span className="mission-art" data-art={id} data-has-art={has || undefined} style={has ? { backgroundImage: `url(/media/missions/${id}.webp), radial-gradient(circle at 50% 62%, #fff 0, #dfe3ff 72%)` } : undefined} aria-hidden="true">
+    <svg viewBox="-40 -40 80 80">{glyph}</svg><span className="mission-art-tag">Illustration</span>
+  </span>;
+}
+
 export function MissionsPage() {
   const missions = missionDefinitions.map((m, i) => ({ ...m, n: i + 1, feature: feature(`/missions/${m.id}`)! }));
   return <div className="wrap page">
@@ -90,27 +98,17 @@ export function MissionsPage() {
       <p className="lede">An interactive research station is being built. Every decision will leave an evidence trail in your Passport.</p>
     </header>
     <StatusBlock f={feature('/missions')!} />
-    <BayTeaser compact />
-    <div className="mission-map">
-      <svg viewBox="0 0 1440 470" role="group" aria-label="Mission map: five locations, none playable yet">
-        <path d={`M${nodes.map(([x, y]) => `${x} ${y}`).join(' L')}`} fill="none" stroke="#2f5566" strokeWidth="14" strokeLinejoin="round" />
-        <path d={`M${nodes.map(([x, y]) => `${x} ${y}`).join(' L')}`} fill="none" stroke="#ff8738" strokeWidth="2" strokeDasharray="6 10" opacity=".7" />
-        {missions.map((m, i) => { const [x, y] = nodes[i]!; return <g key={m.id} className="mission-node">
-          <a href={`/missions/${m.id}`} aria-label={`Mission ${m.n}: ${m.feature.title}, ${featureLabels[m.feature.state]}`}>
-            <circle className="ring" cx={x} cy={y} r="78" fill="#10283a" stroke="#4f8ea6" strokeWidth="3" />
-            <circle cx={x} cy={y} r="62" fill="none" stroke="#73bbd9" strokeOpacity=".3" />
-            <g transform={`translate(${x} ${y})`}>{briefs[m.id]!.glyph}</g>
-            <text x={x} y={y + 118} textAnchor="middle">{`0${m.n}  ${m.feature.title.toUpperCase()}`}</text>
-            <text className="soon" x={x} y={y - 96} textAnchor="middle">{featureLabels[m.feature.state].toUpperCase()}</text>
-          </a>
-        </g>; })}
-      </svg>
-      <ol className="mission-list">{missions.map((m) => <li key={m.id} className="panel">
-        <p className="eyebrow" style={{ marginBottom: 4 }}>Mission 0{m.n} · {featureLabels[m.feature.state]}</p>
-        <h2 style={{ fontSize: 'var(--step-1)', margin: 0 }}><Link href={`/missions/${m.id}`}>{m.feature.title}</Link></h2>
-        <p className="meta" style={{ margin: '6px 0 0' }}>{briefs[m.id]!.action}</p>
-      </li>)}</ol>
-    </div>
+    <ol className="mission-route" aria-label="Mission map: five missions in order, none playable yet">{missions.map((m) => <li key={m.id}>
+      <Link className="mission-card" href={`/missions/${m.id}`} data-mission={m.id}>
+        <MissionArt id={m.id} glyph={briefs[m.id]!.glyph} />
+        <span className="sticker-num" aria-hidden="true">{m.n}</span>
+        <span className="mission-card-state">Mission 0{m.n} · {featureLabels[m.feature.state]}</span>
+        <b>{m.feature.title}</b>
+        <span>{briefs[m.id]!.action}</span>
+        {m.id === 'bass-assembly' && <em>3D bay tour open now</em>}
+      </Link>
+    </li>)}</ol>
+    <div style={{ marginTop: 48 }}><BayTeaser compact /></div>
     <div style={{ marginTop: 32 }}>
       <p className="eyebrow">Evidence Passport / persists between missions</p>
       <p className="path-steps">{['Explore', 'Assemble', 'Observe', 'Verify', 'Decide'].flatMap((s, i) => i ? [<span key={`a${i}`} aria-hidden="true">→</span>, <span key={s}>{s}</span>] : [<span key={s}>{s}</span>])}</p>
@@ -137,12 +135,15 @@ export function MissionPage({ id }: { id: string }) {
     </header>
     <StatusBlock f={f} />
     <div className="mission-brief">
+      <div className="stack">
+      <figure className="mission-figure"><MissionArt id={id} glyph={brief.glyph} /><figcaption>Illustrative concept of the planned scene, made for MicroFire. Not NASA imagery, not a measurement and not a playable level.</figcaption></figure>
       <dl className="brief-dl">
         <div><dt>Scene</dt><dd>{brief.scene}</dd></div>
         <div><dt>What you will do</dt><dd>{brief.action}</dd></div>
         <div><dt>Carries forward</dt><dd>{brief.carries}</dd></div>
         <div><dt>Unlocks after</dt><dd>{prev ? prev.title : 'Available as the first mission once released'}</dd></div>
       </dl>
+      </div>
       <div className="panel stack frame">
         <p className="eyebrow" style={{ margin: 0 }}>Not playable yet</p>
         {previewMissions.has(id)

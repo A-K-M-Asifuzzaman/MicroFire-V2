@@ -311,6 +311,806 @@
     "model_file": "incoming/astronaut-v1/astronaut-v1.glb"
    },
    "note": "First attempt (input_task_id of the 2026-10-16 task) was rejected at creation with HTTP 404; no task, 0 credits. Re-sent once with the original GLB."
+  },
+  {
+   "id": "m1-diorama-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission map card, Mission 01 (station arrival): illustrative orbital lab module.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Small isometric diorama on a round floating platform base with a thick rim, whole scene visible with margin: a cutaway slice of a cylindrical orbital science laboratory module, with a wall of experiment racks, one observation terminal with a glowing blank screen, yellow handrails, and a round window showing a blue planet. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 30000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m2-diorama-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission map card, Mission 02 (BASS-II workshop): schematic training workshop.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Small isometric diorama on a round floating platform base with a thick rim, whole scene visible with margin: a small training workshop with a sturdy workbench holding a clear rectangular flow duct apparatus with a small fan at one end and a copper plate at the other, a tool rack and a parts tray. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 30000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-diorama-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission map card, Mission 03 (flame detective): illustrative test viewing station.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Small isometric diorama on a round floating platform base with a thick rim, whole scene visible with margin: a test viewing station with a sealed glass cube combustion chamber holding a thin flat sample strip and one small round blue flame inside, two side-by-side comparison screens, and a control desk with dials. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 30000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-diorama-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission map card, Mission 04 (evidence court): illustrative evidence court.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Small isometric diorama on a round floating platform base with a thick rim, whole scene visible with margin: a small round evidence hall with a raised reading podium in the centre, three short pedestals each holding one glowing paper document card, and an archive cabinet with many small drawers behind. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 30000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-diorama-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission map card, Mission 05 (lunar habitat, fictional): illustrative habitat.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Small isometric diorama on a round floating platform base with a thick rim, whole scene visible with margin: a patch of grey cratered lunar surface with a small inflatable habitat dome module, a short airlock tunnel, an external ventilation unit with vents, and a little antenna mast. Clearly fictional and friendly. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 30000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m1-science-rack-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission 01 hero prop: orbital lab experiment rack (illustrative).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a tall orbital laboratory experiment rack with a front glovebox window and two round glove ports, rows of sliding drawers, a small status panel with indicator lights, and handrails on both sides. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-sample-carousel-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission 03 hero prop: sample carousel (illustrative).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a rotating sample carousel under a clear glass dome, holding eight small upright test-strip holders arranged in a circle on a turntable, with a chunky base with a selector dial and a small display. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-evidence-lectern-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission 04 hero prop: evidence lectern (illustrative).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a reading lectern with a slanted top holding an open folder of documents, a small hovering holographic card above it, a brass reading lamp, and a stamp tray on the side. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-ventilation-unit-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission 05 hero prop: habitat ventilation and oxygen unit (fictional).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a wall-mounted habitat life support unit with two round ventilation fans behind grilles, three round pressure gauges, a row of chunky switches, and flexible ducts leaving from the top. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-airlock-v1",
+   "batch": "MicroFire Nov batch 1 (missions)",
+   "purpose": "Mission 05 hero prop: habitat airlock module (fictional).",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a short cylindrical habitat airlock module with a round hatch door with a big hand wheel, a small round window, warning stripes around the frame, and a control box beside the hatch. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 20000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m1-airlock-hatch-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 01 environment prop, decorative only (station entry). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a round orbital station airlock hatch set in a short square bulkhead frame, with a big hand wheel, hinges and a small porthole. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m1-corridor-segment-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 01 environment prop, decorative only (modular corridor). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a short modular square corridor segment of an orbital station, open at both ends, with padded wall panels, yellow handrails and soft ceiling light strips. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m1-research-console-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 01 environment prop, decorative only (research terminal hotspot). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a compact wall-mounted research console with a tilted blank screen, a small keyboard tray, foot restraint bar below and two cable bundles. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m1-evidence-scanner-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 01 environment prop, decorative only (evidence scanning hotspot). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a document and sample scanning station: a flat glass scanning bed under a hinged lid, a small arm-mounted camera above, and a status light strip. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m1-storage-module-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 01 environment prop, decorative only (equipment storage). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a stack of four orbital station stowage lockers with latched doors, strap anchors and labelled-blank tag slots. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m1-stowage-bags-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 01 environment prop, decorative only (set dressing). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a cluster of three soft padded cargo stowage bags strapped together with buckles and handles. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m2-diagnostic-housing-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 02 environment prop, decorative only (diagnostic housing). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a rugged instrument electronics box with a hinged front panel, ventilation slots, two round connectors and a small status display. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m2-specimen-case-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 02 environment prop, decorative only (specimen container). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: an open protective specimen carrying case with foam inserts holding four thin flat sample cards, latches and a carry handle. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m2-inspection-scope-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 02 environment prop, decorative only (inspection instrument). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a handheld inspection scope with a pistol grip, a flexible neck, a small round lens head with ring light and a tiny screen. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m2-tool-wall-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 02 environment prop, decorative only (set dressing). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a pegboard tool wall panel holding wrenches, screwdrivers, pliers and a torque driver, with a small parts shelf. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m2-parts-rack-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 02 environment prop, decorative only (set dressing). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a small rolling parts rack with three trays of labelled-blank bins holding screws, connectors and small brackets. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m2-cable-reel-console-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 02 environment prop, decorative only (set dressing). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a low workshop utility console with a cable reel on the side, a power strip, two switches and a coiled cable. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-camera-housing-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 03 environment prop, decorative only (camera and measurement housing). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a scientific camera in a boxy protective housing on a short adjustable mount, with a large lens hood and cooling fins. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-optical-bench-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 03 environment prop, decorative only (optical instrument). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a small optical bench rail with two lenses in holders, a filter wheel and a little light source at one end. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-observation-console-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 03 environment prop, decorative only (observation station). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: an experiment observation console with two side-by-side blank screens, a row of chunky dials and a small joystick. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-inspection-microscope-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 03 environment prop, decorative only (specimen inspection). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a sturdy benchtop inspection microscope with a wide stage, a ring light and a side focus knob. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-gauge-panel-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 03 environment prop, decorative only (measurement panel). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a wall panel of four round analogue gauges and two small bar meters in a framed housing. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-viewing-window-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 03 environment prop, decorative only (observation window). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a thick rectangular observation window in a bolted frame with a small sliding shutter and a light above it. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-archive-unit-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 04 environment prop, decorative only (research archive). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a tall research archive cabinet with many small square drawers, a rolling ladder rail and a small reading shelf. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-evidence-podium-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 04 environment prop, decorative only (evidence podium). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a short round evidence display podium with a glass dome cover over an empty display plate and a soft ring light. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-comparison-console-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 04 environment prop, decorative only (comparison console). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a scientific comparison console with two large blank screens side by side on a curved desk with sliders between them. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-document-board-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 04 environment prop, decorative only (source document display). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a freestanding display board on a stand holding three blank paper document sheets pinned with clips, with string lines between them. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-filing-cart-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 04 environment prop, decorative only (set dressing). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a small rolling filing cart holding hanging folders and a stack of document boxes. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-review-desk-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 04 environment prop, decorative only (review desk). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a raised curved review desk with three seats behind it, a small bell and blank nameplate slots, like a friendly science review panel. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-habitat-module-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 05 environment prop, decorative only (habitat exterior (modular)). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a single cylindrical lunar habitat module lying on its side on short landing legs, with a round window, external pipes and a docking ring at one end. Clearly fictional. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-corridor-module-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 05 environment prop, decorative only (habitat corridor). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a short pressurised habitat corridor module, open at both ends, with ribbed walls, floor grating and ceiling light strips. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-life-support-housing-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 05 environment prop, decorative only (life-support housing). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a large life support equipment housing cabinet with removable panels, two tanks on the side and a filter cartridge slot. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-utility-robot-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 05 environment prop, decorative only (utility robot). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a friendly small wheeled utility robot with a boxy body, one articulated gripper arm, a round head with two camera eyes and a tool tray. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-inspection-drone-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 05 environment prop, decorative only (inspection drone). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a small hovering inspection drone with four ducted fans, a round camera eye and a little spotlight. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-research-workstation-v1",
+   "batch": "MicroFire Nov batch 2 (mission environment props)",
+   "purpose": "Mission 05 environment prop, decorative only (research workstation). Never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a compact habitat research workstation desk with a blank screen, a sample drawer, a fold-out seat and overhead storage. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
   }
  ]
 }

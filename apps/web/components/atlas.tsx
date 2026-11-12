@@ -30,7 +30,7 @@ export function RecordCard({ experiment, sources }: { experiment: Experiment; so
         <div><dt>Pressure</dt><dd data-unknown={pressure === 'Unknown' ? '' : undefined}>{pressure === 'Unknown' ? 'Not recorded' : pressure}</dd></div>
       </dl>
       <div>
-        <p className="meta" style={{ margin: 0 }}>Source: {sources.find((s) => experiment.sourceIds.includes(s.id))?.title ?? experiment.sourceIds[0]}. Page-level citations are in the dossier.</p>
+        {(() => { const src = sources.find((s) => experiment.sourceIds.includes(s.id)); return <p className="meta" style={{ margin: 0 }}>Source: {src ? <a href={src.url} rel="noopener noreferrer" target="_blank">{src.title} (NASA NTRS)<span aria-hidden="true"> ↗</span></a> : experiment.sourceIds[0]}. Page-level citations are in the dossier.</p>; })()}
       </div>
     </div>
   </article>;
