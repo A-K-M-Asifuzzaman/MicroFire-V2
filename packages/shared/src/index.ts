@@ -9,3 +9,6 @@ export * from './canonical';
 export * from './training-schemas';
 export * from './local-save';
 export * from './campaign';
+
+export * from './intelligence';
+export * from './campaign-http';
