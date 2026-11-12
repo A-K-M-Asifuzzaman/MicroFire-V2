@@ -1,0 +1,13 @@
+
+> microfire-v2@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 /Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion
+
+
+ Test Files  15 passed (15)
+      Tests  192 passed (192)
+   Start at  16:10:04
+   Duration  2.86s (tests 70%, transform 15%, import 14%)
+

@@ -1,0 +1,47 @@
+✖ Claude actual transport/controller consume real backend responses, recover lost acknowledgement and complete (42.181ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 288.406292
+
+✖ failing tests:
+
+test at tests/backend/claude-http.test.ts:1:750
+✖ Claude actual transport/controller consume real backend responses, recover lost acknowledgement and complete (42.181ms)
+  AssertionError [ERR_ASSERTION]: Consumer source must be pinned and clean.
+  + actual - expected
+  
+  + 'M .env.example\n' +
+  +   ' M apps/web/lib/review-policy.ts\n' +
+  +   ' M apps/web/lib/review-routes.ts\n' +
+  +   ' M apps/web/proxy.ts\n' +
+  +   ' M packages/game-core/src/index.ts\n' +
+  +   ' M packages/shared/src/index.ts\n' +
+  +   ' M tests/m2-ui/review-routes.spec.ts\n' +
+  +   ' M tests/unit/review-routes.test.ts\n' +
+  +   '?? apps/web/lib/campaign-service.ts\n' +
+  +   '?? packages/game-core/src/campaign.ts\n' +
+  +   '?? packages/shared/src/campaign.ts\n' +
+  +   '?? scripts/local-review.ts\n' +
+  +   '?? tests/backend/review-http.test.ts\n' +
+  +   '?? tests/unit/campaign-helpers.ts\n' +
+  +   '?? tests/unit/campaign-service.test.ts\n' +
+  +   '?? tests/unit/campaign.test.ts'
+  - ''
+  
+      at TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/claude-http.test.ts:14:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'M .env.example\n M apps/web/lib/review-policy.ts\n M apps/web/lib/review-routes.ts\n M apps/web/proxy.ts\n M packages/game-core/src/index.ts\n M packages/shared/src/index.ts\n M tests/m2-ui/review-routes.spec.ts\n M tests/unit/review-routes.test.ts\n?? apps/web/lib/campaign-service.ts\n?? packages/game-core/src/campaign.ts\n?? packages/shared/src/campaign.ts\n?? scripts/local-review.ts\n?? tests/backend/review-http.test.ts\n?? tests/unit/campaign-helpers.ts\n?? tests/unit/campaign-service.test.ts\n?? tests/unit/campaign.test.ts',
+    expected: '',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

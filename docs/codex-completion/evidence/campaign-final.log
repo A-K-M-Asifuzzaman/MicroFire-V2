@@ -1,0 +1,34 @@
+
+ RUN  v5.0.3 /Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion
+
+ ❯ tests/unit/campaign.test.ts (8 tests | 1 failed) 11657ms
+   × reserves completion after repeated mistaken reviews without erasing history 3573ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/campaign.test.ts > reserves completion after repeated mistaken reviews without erasing history
+AssertionError: {"code":"CAMPAIGN_LIMIT_REACHED","action":{"type":"TRAINING","action":{"type":"GAME","action":{"type":"REMOVE_PART","partId":"exit-plate"}}}}: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ advance tests/unit/campaign.test.ts:13:84
+     11|   for (const action of actions) {
+     12|     const result = transitionCampaign(record, action, catalog, at);
+     13|     expect(result.ok, JSON.stringify(result.ok ? {} : {code:result.cod…
+       |                                                                                    ^
+     14|     if (!result.ok) throw Error(result.code);
+     15|     record = result.record;
+ ❯ tests/unit/campaign.test.ts:95:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 11 passed (12)
+   Start at  16:20:14
+   Duration  12.48s (tests 94%, transform 4%, import 2%)
+
