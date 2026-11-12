@@ -66,7 +66,6 @@ async function startServer(port: number) {
   } catch (error) { await stop(); throw error; }
 }
 
-type Mode = 'keyboard' | 'touch' | 'no-webgl' | '3d';
 for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).entries()) test(`real M2 UI: ${mode} completes, exports and resumes a server-confirmed case`, { timeout: 180000 }, async () => {
   const server = await startServer(3390 + index);
   let browser: Browser | undefined;
