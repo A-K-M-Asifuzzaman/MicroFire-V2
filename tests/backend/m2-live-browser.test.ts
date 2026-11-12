@@ -223,6 +223,7 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
       await activePage.screenshot({ path: path.join(artifacts, mode + '-failure.png'), fullPage: false }).catch(() => undefined);
       writeFileSync(path.join(artifacts, mode + '-failure.html'), (await activePage.content()).replaceAll(server.approvalToken, '[redacted]'));
     }
-    throw Error(message, { cause: message });
+    // eslint-disable-next-line preserve-caught-error -- The original cause may contain the operator credential.
+    throw Error(message);
   } finally { await browser?.close(); await server.stop(); }
 });
