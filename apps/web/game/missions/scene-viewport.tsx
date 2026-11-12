@@ -2,7 +2,7 @@
 // Shared mission viewport: an optional 3D room (Meshy props) with real <button> hotspots projected over it, or a 2D
 // plan of the same buttons without WebGL. Purely presentational; the parent decides which station is next from
 // engine snapshot facts and what each station does.
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { Prop, StationScene } from './station-scene';
 
 export type Spot = { id: string; label: string; what: string };
@@ -27,6 +27,21 @@ export function SceneViewport({ layout, spots, next, open, onToggle, loading }: 
   const canvas = useRef<HTMLCanvasElement>(null), sceneRef = useRef<StationScene | null>(null);
   const [pos, setPos] = useState<Record<string, { x: number; y: number; visible: boolean }>>({});
   const [ready, setReady] = useState(false), [failed, setFailed] = useState(false);
+  // Projected labels can collide as the camera drifts or the viewport narrows: measure the real boxes and push any
+  // overlapping label below the ones above it, so every hotspot stays a separate, clickable button.
+  const btn = useRef<Record<string, HTMLButtonElement | null>>({});
+  useLayoutEffect(() => {
+    const boxes = spots.flatMap((sp) => { const el = btn.current[sp.id], p = pos[sp.id];
+      return el && p?.visible ? [{ id: sp.id, l: p.x - el.offsetWidth / 2, r: p.x + el.offsetWidth / 2, t: p.y - el.offsetHeight, h: el.offsetHeight }] : []; }).sort((a, b) => a.t - b.t);
+    const placed: { l: number; r: number; t: number; b: number }[] = [], out: Record<string, number> = {};
+    for (const bx of boxes) {
+      let t = bx.t;
+      for (let guard = 0; guard < 12; guard++) { const hit = placed.find((q) => bx.l < q.r && q.l < bx.r && t < q.b && q.t < t + bx.h); if (!hit) break; t = hit.b + 4; }
+      placed.push({ l: bx.l, r: bx.r, t, b: t + bx.h }); out[bx.id] = Math.round(t - bx.t);
+    }
+    // Written straight to the element (no re-render); CSS applies it with `translate`.
+    for (const sp of spots) btn.current[sp.id]?.style.setProperty('--dy', `${out[sp.id] ?? 0}px`);
+  }, [pos, spots, open, next]);
   useEffect(() => {
     if (flat || !canvas.current) return;
     let live = true, scene: StationScene | null = null;
@@ -46,7 +61,7 @@ export function SceneViewport({ layout, spots, next, open, onToggle, loading }: 
     {!twoD && <canvas ref={canvas} aria-hidden="true" />}
     {twoD && <p className="mf-fallback-note">{flat ? 'The 3D room is not available on this device. Every station still works below.' : 'The 3D room could not start. Every station still works below.'}</p>}
     {!twoD && !ready && <p className="mf-loading" role="status">{loading}</p>}
-    <div className={twoD ? 'mf-plan' : 'mf-spots'} role="group" aria-label="Station hotspots">{spots.map((sp) => <button key={sp.id} type="button" className="mf-spot" data-next={sp.id === next} aria-expanded={open === sp.id} aria-controls="mf-panel"
+    <div className={twoD ? 'mf-plan' : 'mf-spots'} role="group" aria-label="Station hotspots">{spots.map((sp) => <button key={sp.id} ref={(el) => { btn.current[sp.id] = el; }} type="button" className="mf-spot" data-next={sp.id === next} aria-expanded={open === sp.id} aria-controls="mf-panel"
       style={!twoD && pos[sp.id] ? { left: pos[sp.id]!.x, top: pos[sp.id]!.y, visibility: pos[sp.id]!.visible ? undefined : 'hidden' } : undefined}
       onClick={() => onToggle(sp.id)}><span className="mf-spot-dot" aria-hidden="true" /><b>{sp.label}</b><span>{sp.what}</span></button>)}</div>
     <span className="mf-tag">Illustration · fixture states</span>

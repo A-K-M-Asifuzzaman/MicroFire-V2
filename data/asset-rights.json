@@ -1946,6 +1946,256 @@
       "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
       "approved": true,
       "part": "habitat-module — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-holder/baseColor_1.webp",
+      "title": "Mission 03 scene prop: sample holder (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-holder-v1, preview task 01a1d127-833a-7686-b234-a6b60c99c4d2, refine task 01a1d128-3f63-75e1-8c77-dde9cbd40247, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "sample-holder — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-holder/metallicRoughness_1.webp",
+      "title": "Mission 03 scene prop: sample holder (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-holder-v1, preview task 01a1d127-833a-7686-b234-a6b60c99c4d2, refine task 01a1d128-3f63-75e1-8c77-dde9cbd40247, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "sample-holder — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-holder/normal_1.webp",
+      "title": "Mission 03 scene prop: sample holder (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-holder-v1, preview task 01a1d127-833a-7686-b234-a6b60c99c4d2, refine task 01a1d128-3f63-75e1-8c77-dde9cbd40247, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "sample-holder — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-holder/sample-holder.bin",
+      "title": "Mission 03 scene prop: sample holder (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-holder-v1, preview task 01a1d127-833a-7686-b234-a6b60c99c4d2, refine task 01a1d128-3f63-75e1-8c77-dde9cbd40247, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "sample-holder — sample-holder.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-holder/sample-holder.gltf",
+      "title": "Mission 03 scene prop: sample holder (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-holder-v1, preview task 01a1d127-833a-7686-b234-a6b60c99c4d2, refine task 01a1d128-3f63-75e1-8c77-dde9cbd40247, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "sample-holder — sample-holder.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/prediction-board/baseColor_1.webp",
+      "title": "Mission 03 scene prop: prediction board (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-prediction-board-v1, preview task 01a1d129-00ab-7008-8226-dfd6d4977f2e, refine task 01a1d12a-3303-70ad-93f9-846c84b3adad, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "prediction-board — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/prediction-board/metallicRoughness_1.webp",
+      "title": "Mission 03 scene prop: prediction board (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-prediction-board-v1, preview task 01a1d129-00ab-7008-8226-dfd6d4977f2e, refine task 01a1d12a-3303-70ad-93f9-846c84b3adad, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "prediction-board — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/prediction-board/normal_1.webp",
+      "title": "Mission 03 scene prop: prediction board (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-prediction-board-v1, preview task 01a1d129-00ab-7008-8226-dfd6d4977f2e, refine task 01a1d12a-3303-70ad-93f9-846c84b3adad, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "prediction-board — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/prediction-board/prediction-board.bin",
+      "title": "Mission 03 scene prop: prediction board (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-prediction-board-v1, preview task 01a1d129-00ab-7008-8226-dfd6d4977f2e, refine task 01a1d12a-3303-70ad-93f9-846c84b3adad, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "prediction-board — prediction-board.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/prediction-board/prediction-board.gltf",
+      "title": "Mission 03 scene prop: prediction board (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-prediction-board-v1, preview task 01a1d129-00ab-7008-8226-dfd6d4977f2e, refine task 01a1d12a-3303-70ad-93f9-846c84b3adad, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "prediction-board — prediction-board.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/evidence-table/baseColor_1.webp",
+      "title": "Mission 04 scene prop: evidence table (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-evidence-table-v1, preview task 01a1d12b-2464-7782-82e6-a0b1bd76241a, refine task 01a1d12c-0660-7405-b919-070a0b20431a, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "evidence-table — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/evidence-table/evidence-table.bin",
+      "title": "Mission 04 scene prop: evidence table (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-evidence-table-v1, preview task 01a1d12b-2464-7782-82e6-a0b1bd76241a, refine task 01a1d12c-0660-7405-b919-070a0b20431a, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "evidence-table — evidence-table.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/evidence-table/evidence-table.gltf",
+      "title": "Mission 04 scene prop: evidence table (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-evidence-table-v1, preview task 01a1d12b-2464-7782-82e6-a0b1bd76241a, refine task 01a1d12c-0660-7405-b919-070a0b20431a, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "evidence-table — evidence-table.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/evidence-table/metallicRoughness_1.webp",
+      "title": "Mission 04 scene prop: evidence table (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-evidence-table-v1, preview task 01a1d12b-2464-7782-82e6-a0b1bd76241a, refine task 01a1d12c-0660-7405-b919-070a0b20431a, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "evidence-table — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/evidence-table/normal_1.webp",
+      "title": "Mission 04 scene prop: evidence table (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-evidence-table-v1, preview task 01a1d12b-2464-7782-82e6-a0b1bd76241a, refine task 01a1d12c-0660-7405-b919-070a0b20431a, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "evidence-table — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/claim-card-stand/baseColor_1.webp",
+      "title": "Mission 04 scene prop: claim card stand (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-claim-card-stand-v1, preview task 01a1d12c-c7f3-735c-bbee-ce16d3604b56, refine task 01a1d12d-82c6-71d9-9f8a-43d831313495, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "claim-card-stand — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/claim-card-stand/claim-card-stand.bin",
+      "title": "Mission 04 scene prop: claim card stand (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-claim-card-stand-v1, preview task 01a1d12c-c7f3-735c-bbee-ce16d3604b56, refine task 01a1d12d-82c6-71d9-9f8a-43d831313495, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "claim-card-stand — claim-card-stand.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/claim-card-stand/claim-card-stand.gltf",
+      "title": "Mission 04 scene prop: claim card stand (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-claim-card-stand-v1, preview task 01a1d12c-c7f3-735c-bbee-ce16d3604b56, refine task 01a1d12d-82c6-71d9-9f8a-43d831313495, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "claim-card-stand — claim-card-stand.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/claim-card-stand/metallicRoughness_1.webp",
+      "title": "Mission 04 scene prop: claim card stand (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-claim-card-stand-v1, preview task 01a1d12c-c7f3-735c-bbee-ce16d3604b56, refine task 01a1d12d-82c6-71d9-9f8a-43d831313495, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "claim-card-stand — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m4/claim-card-stand/normal_1.webp",
+      "title": "Mission 04 scene prop: claim card stand (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m4-claim-card-stand-v1, preview task 01a1d12c-c7f3-735c-bbee-ce16d3604b56, refine task 01a1d12d-82c6-71d9-9f8a-43d831313495, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "claim-card-stand — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/oxygen-rack/baseColor_1.webp",
+      "title": "Mission 05 scene prop: oxygen rack (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-oxygen-rack-v1, preview task 01a1d132-b7c9-767a-b5ba-e090282879da, refine task 01a1d133-9e55-7636-bf9e-c78923f984b1, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "oxygen-rack — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/oxygen-rack/metallicRoughness_1.webp",
+      "title": "Mission 05 scene prop: oxygen rack (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-oxygen-rack-v1, preview task 01a1d132-b7c9-767a-b5ba-e090282879da, refine task 01a1d133-9e55-7636-bf9e-c78923f984b1, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "oxygen-rack — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/oxygen-rack/normal_1.webp",
+      "title": "Mission 05 scene prop: oxygen rack (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-oxygen-rack-v1, preview task 01a1d132-b7c9-767a-b5ba-e090282879da, refine task 01a1d133-9e55-7636-bf9e-c78923f984b1, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "oxygen-rack — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/oxygen-rack/oxygen-rack.bin",
+      "title": "Mission 05 scene prop: oxygen rack (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-oxygen-rack-v1, preview task 01a1d132-b7c9-767a-b5ba-e090282879da, refine task 01a1d133-9e55-7636-bf9e-c78923f984b1, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "oxygen-rack — oxygen-rack.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/oxygen-rack/oxygen-rack.gltf",
+      "title": "Mission 05 scene prop: oxygen rack (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-oxygen-rack-v1, preview task 01a1d132-b7c9-767a-b5ba-e090282879da, refine task 01a1d133-9e55-7636-bf9e-c78923f984b1, 2026-11-13; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
+      "approved": true,
+      "part": "oxygen-rack — oxygen-rack.gltf"
     }
   ]
 }

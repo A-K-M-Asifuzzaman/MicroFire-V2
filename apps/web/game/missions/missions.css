@@ -16,7 +16,7 @@
 
 /* Hotspots: projected over the 3D view; a grid plan without WebGL. Always real buttons. */
 .mf-spots { position: absolute; inset: 0; pointer-events: none; }
-.mf-spots .mf-spot { position: absolute; transform: translate(-50%, -100%); pointer-events: auto; }
+.mf-spots .mf-spot { position: absolute; transform: translate(-50%, -100%); translate: 0 var(--dy, 0px); pointer-events: auto; }
 .mf-plan { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
 .mf-spot { display: grid; gap: 2px; justify-items: start; max-width: 210px; padding: 8px 12px 8px 30px; border-radius: 16px; border: 3px solid var(--ink); background: var(--paper);
   box-shadow: 3px 3px 0 var(--ink); text-align: left; font: 400 .8rem/1.3 var(--body); color: var(--ink-3); cursor: pointer; position: relative; transition: transform .15s var(--spring); }

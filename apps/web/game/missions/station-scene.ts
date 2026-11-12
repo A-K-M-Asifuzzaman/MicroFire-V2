@@ -21,22 +21,26 @@ export const STATION_PROPS: Prop[] = [
 
 // Mission 03: an observation lab around the test chamber. Positions in metres, same module shell.
 export const DETECTIVE_PROPS: Prop[] = [
-  { url: `${M3}/observation-console/observation-console.gltf`, height: 1.0, at: [-1.4, 0, -0.5], turn: 1.0, hotspot: 'select', labelY: 1.2 },
-  { url: `${M3}/gauge-panel/gauge-panel.gltf`, height: 0.9, at: [-1.9, 1.1, -2.1], turn: 1.3, hotspot: 'predict', labelY: 0.9 },
-  { url: `${M3}/viewing-window/viewing-window.gltf`, height: 1.3, at: [0.2, 0.5, -3.6], turn: 0, hotspot: 'reveal', labelY: 0.85 },
+  { url: `${M3}/observation-console/observation-console.gltf`, height: 1.0, at: [-1.4, 0, -0.5], turn: 1.0, hotspot: 'select', labelY: 0.75 },
+  { url: `${M3}/prediction-board/prediction-board.gltf`, height: 1.3, at: [-1.2, 0, -2.2], turn: 0.7, hotspot: 'predict', labelY: 1.35 },
+  { url: `${M3}/gauge-panel/gauge-panel.gltf`, height: 0.9, at: [-1.95, 1.1, -1.4], turn: 1.4 },
+  { url: `${M3}/sample-holder/sample-holder.gltf`, height: 0.45, at: [1.25, 0.78, -1.75], turn: -0.9 },
+  { url: `${M3}/viewing-window/viewing-window.gltf`, height: 1.3, at: [0.2, 0.5, -3.6], turn: 0, hotspot: 'reveal', labelY: 0.2 },
   { url: `${M3}/inspection-microscope/inspection-microscope.gltf`, height: 1.0, at: [1.5, 0, -1.6], turn: -1.2, hotspot: 'explain', labelY: 1.1 },
-  { url: `${M3}/sample-carousel/sample-carousel.gltf`, height: 0.8, at: [0.9, 0, -2.6], turn: -0.5, hotspot: 'report', labelY: 0.95 },
+  { url: `${M3}/sample-carousel/sample-carousel.gltf`, height: 0.8, at: [0.9, 0, -2.6], turn: -0.5, hotspot: 'report', labelY: 0.35 },
   { url: `${M3}/camera-housing/camera-housing.gltf`, height: 0.7, at: [-0.4, 0, -2.4], turn: 0.6 },
   { url: `${M3}/optical-bench/optical-bench.gltf`, height: 0.6, at: [1.7, 0, 0.3], turn: -1.5 },
 ];
 // Mission 04: an evidence hall. Statements on the board, sources in the archive, appraisal at the review desk.
 export const TRIAL_PROPS: Prop[] = [
   { url: `${M4}/document-board/document-board.gltf`, height: 1.5, at: [-1.4, 0, -1.2], turn: 0.9, hotspot: 'statements', labelY: 1.0 },
-  { url: `${M4}/archive-unit/archive-unit.gltf`, height: 1.9, at: [-1.55, 0, -0.5], turn: 1.3, hotspot: 'archive', labelY: 0.85 },
+  { url: `${M4}/archive-unit/archive-unit.gltf`, height: 1.9, at: [-1.55, 0, -0.5], turn: 1.3, hotspot: 'archive', labelY: 0.45 },
   { url: `${M4}/review-desk/review-desk.gltf`, height: 1.1, at: [0.3, 0, -2.6], turn: 0, hotspot: 'appraise', labelY: 1.15 },
   { url: `${M4}/evidence-lectern/evidence-lectern.gltf`, height: 1.2, at: [1.5, 0, -1.0], turn: -1.2, hotspot: 'report', labelY: 1.0 },
   { url: `${M4}/comparison-console/comparison-console.gltf`, height: 0.8, at: [1.7, 0, -0.3], turn: -1.4 },
-  { url: `${M4}/evidence-podium/evidence-podium.gltf`, height: 0.9, at: [-0.4, 0, -1.6], turn: 0.3 },
+  { url: `${M4}/evidence-table/evidence-table.gltf`, height: 0.95, at: [-0.2, 0, -1.4], turn: 0.15 },
+  { url: `${M4}/claim-card-stand/claim-card-stand.gltf`, height: 0.35, at: [-0.2, 0.62, -1.4], turn: 0.15 },
+  { url: `${M4}/evidence-podium/evidence-podium.gltf`, height: 0.8, at: [-1.0, 0, -2.8], turn: 0.3 },
   { url: `${M4}/filing-cart/filing-cart.gltf`, height: 0.9, at: [1.0, 0, -3.0], turn: -0.6 },
 ];
 // Mission 05: a FICTIONAL lunar habitat research room (scenario, not NASA evidence).
@@ -48,6 +52,7 @@ export const HABITAT_PROPS: Prop[] = [
   { url: `${M5}/ventilation-unit/ventilation-unit.gltf`, height: 1.2, at: [-1.8, 0.4, -2.4], turn: 1.3, hotspot: 'evidence', labelY: 1.0 },
   { url: `${M5}/inspection-drone/inspection-drone.gltf`, height: 0.4, at: [1.0, 1.7, -2.4], turn: -0.4 },
   { url: `${M5}/habitat-module/habitat-module.gltf`, height: 0.7, at: [1.6, 0, 0.6], turn: -1.5 },
+  { url: `${M5}/oxygen-rack/oxygen-rack.gltf`, height: 1.1, at: [1.7, 0, -2.5], turn: -1.2 },
 ];
 export type StationScene = { setActive(id: HotspotId | null): void; dispose(): void };
 

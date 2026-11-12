@@ -223,3 +223,21 @@ test('Claim Trial and Lunar Habitat: complete 2D alternative without WebGL; acce
     expect(r.violations.map((v) => `${v.id}: ${v.nodes.length}`), route).toEqual([]);
   }
 });
+
+test('3D hotspot labels never overlap while the camera drifts, in every mission room', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'collision layout checked once at desktop size');
+  for (const route of ['/m2-fixtures/missions/station-arrival', M3, M4, M5]) {
+    await page.goto(route);
+    const vp = page.locator('.mf-viewport');
+    await expect(vp).toHaveAttribute('data-ready', /true|false/);
+    if ((await vp.getAttribute('data-mode')) !== '3d') continue; // no WebGL here: the 2D plan is a grid and cannot overlap
+    await expect(vp).toHaveAttribute('data-ready', 'true', { timeout: 30000 });
+    for (let k = 0; k < 4; k++) {
+      await page.waitForTimeout(600);
+      const boxes = await page.locator('.mf-spots .mf-spot').evaluateAll((es) => es.filter((e) => getComputedStyle(e).visibility !== 'hidden').map((e) => { const r = e.getBoundingClientRect(); return [r.left, r.top, r.right, r.bottom]; }));
+      let overlaps = 0;
+      for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) { const a = boxes[i]!, c = boxes[j]!; if (a[0]! < c[2]! && c[0]! < a[2]! && a[1]! < c[3]! && c[1]! < a[3]!) overlaps++; }
+      expect(overlaps, route).toBe(0);
+    }
+  }
+});
