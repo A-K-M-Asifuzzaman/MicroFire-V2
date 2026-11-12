@@ -144,6 +144,25 @@ await segment('11-intel-pix', async () => {
   await glideTo('[data-testid="pix-abstention"]', -120, 1200); await pause(2800);
 });
 
+// 12. At a glance: one question, the whole evidence verdict in a single card (live intelligence API).
+await segment('12-intel-glance', async () => {
+  await page.goto(`${base}/dashboard`); await pause(1000);
+  await page.getByRole('button', { name: 'Would B20 transfer to a Moon habitat?' }).click();
+  await page.getByTestId('at-a-glance').waitFor({ timeout: 20000 }).catch(() => {}); await pause(600);
+  await glideTo('[data-testid="at-a-glance"]', -90, 1200); await pause(5200);
+});
+// 13. Citation Checker: the declared NASA locator verifies; a wrong page is flagged by the backend.
+await segment('13-citation-check', async () => {
+  await page.goto(`${base}/investigations/bass-ii`); await pause(1000);
+  const checker = page.getByTestId('citation-checker');
+  await glideTo('[data-testid="citation-checker"]', -100, 1000); await pause(500);
+  await checker.getByRole('button', { name: 'Check this reference' }).click();
+  await checker.getByTestId('checker-result').waitFor({ timeout: 15000 }).catch(() => {}); await pause(2200);
+  await checker.getByLabel('PDF page').fill('13'); await pause(500);
+  await checker.getByRole('button', { name: 'Check this reference' }).click();
+  await page.waitForTimeout(400); await pause(2600);
+});
+
 await browser.close();
 // One continuous backup cut of the whole route.
 if (ONLY) { console.log('partial recording: no full-route cut'); process.exit(0); }
