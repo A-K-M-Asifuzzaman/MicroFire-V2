@@ -127,6 +127,7 @@ test('public real PostgreSQL/HTTPS: visitor isolation, CSRF, full progression, m
   const server = await testServer(origin => createPublicCampaignHandler({ ...env, MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN: origin }, database.pool), true);
   const call = (path: string, body?: unknown, headers: Record<string, string> = {}) => wire(server.origin, publicBase + path, body, headers);
   try {
+    await assert.rejects(database.pool.query('CREATE TABLE unauthorized_should_not_exist(id int)'), /permission denied/);
     assert.equal((await call('/session')).status, 403);
     const bootstrap = await call('/session', {}); assert.equal(bootstrap.status, 200);
     const a = PublicCampaignBootstrapResponseSchema.parse(bootstrap.body).data, headers = { cookie: cookie(bootstrap), 'x-microfire-csrf': a.csrfToken };
