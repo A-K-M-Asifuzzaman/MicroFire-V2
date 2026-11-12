@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "status": "quarantined-pending-independent-review",
+  "sources": [
+    {
+      "id": "saffire-i-ii",
+      "url": "https://ntrs.nasa.gov/api/citations/20170008805/downloads/20170008805.pdf",
+      "sha256": "e38ec36f54817aa97e0c01a05f12b212521d6320ce3f4cb7a38bb7c837cfea8d",
+      "bytes": 5091642,
+      "inspectedAt": "2026-11-13",
+      "inspection": "New public PDF downloaded and hashed; Table I, PDF/printed page 29, rendered and visually inspected. Narrative pages 12, 14, 16 and 21 checked against extracted text. NTRS reports PUBLIC_USE_PERMITTED. Independent science review pending."
+    }
+  ],
+  "records": [
+    {
+      "id": "candidate-saffire-i-1-1",
+      "program": "Saffire I",
+      "testId": "1-1",
+      "kind": "experiment-candidate",
+      "sourceId": "saffire-i-ii",
+      "locators": [
+        {
+          "page": 29,
+          "printedPage": "29",
+          "section": "Table I, sample 1-1; both panels and footnote i"
+        },
+        {
+          "page": 14,
+          "printedPage": "14",
+          "section": "Saffire-I Description; planned duration and remaining fuel"
+        },
+        {
+          "page": 16,
+          "printedPage": "16",
+          "section": "SIBAL Fabric Results; fan shutdown and extinction"
+        },
+        {
+          "page": 21,
+          "printedPage": "21",
+          "section": "SIBAL Fabric Results; comparison confounders"
+        }
+      ],
+      "raw": {
+        "material": "Cotton-Fiberglass",
+        "widthCm": 40.6,
+        "lengthCm": 94,
+        "thicknessMm": 0.37,
+        "flowCmS": 20,
+        "flowDirection": "Concurrent",
+        "oxygenSourceText": "21.7 to 21.5",
+        "oxygenBasis": "Derived from measured CO2 production, referenced to initial ISS O2 reading (Table I footnote i)",
+        "ignitionPowerW": 182,
+        "ignitionTimeS": 8,
+        "burnDurationS": 420,
+        "burnLengthSourceText": "~84 cm",
+        "spreadRateMmS": 1.8
+      },
+      "statement": "The source reports a finite-duration concurrent fabric burn; the narrative says it ended when airflow was stopped. It is not an intrinsic extinction-time measurement.",
+      "missing": [
+        "Per-run pressure",
+        "Measured run acceleration",
+        "Uncertainty for each listed quantity",
+        "Original raw-file identity and sensor calibration linkage"
+      ],
+      "issues": [
+        "PSI-98 S1 lists thickness 0.37 cm whereas Table I states 0.37 mm; no silent conversion or correction.",
+        "PSI-98 S1 labels length 40.6 and width 94 cm, opposite the paper's width/length assignment.",
+        "PDF page 8 lists ignition power 165 W whereas Table I lists 182 W; retain both locators for reconciliation.",
+        "Oxygen is a derived changing range, not a calibrated BASS vol% measurement.",
+        "The compared small-width tests also differ in oxygen and edge entrainment; no one-variable scale/airflow inference."
+      ]
+    },
+    {
+      "id": "candidate-saffire-i-1-2",
+      "program": "Saffire I",
+      "testId": "1-2",
+      "kind": "experiment-candidate",
+      "sourceId": "saffire-i-ii",
+      "locators": [
+        {
+          "page": 29,
+          "printedPage": "29",
+          "section": "Table I, sample 1-2; both panels and footnote i"
+        },
+        {
+          "page": 14,
+          "printedPage": "14",
+          "section": "Saffire-I Description; contingency test after prior burn"
+        },
+        {
+          "page": 16,
+          "printedPage": "16",
+          "section": "SIBAL Fabric Results; remaining fuel"
+        }
+      ],
+      "raw": {
+        "material": "Cotton-Fiberglass",
+        "widthCm": 40.6,
+        "lengthSourceText": "~10 cm",
+        "thicknessMm": 0.37,
+        "flowCmS": 20,
+        "flowDirection": "Opposed",
+        "oxygenSourceText": "~21.5",
+        "oxygenBasis": "Table I footnote i; derived, ISS-referenced",
+        "burnDurationS": 70,
+        "burnLengthSourceText": "~10 cm",
+        "spreadRateMmS": 1.3
+      },
+      "statement": "The opposed-flow test used fuel remaining after the concurrent test; it is not an independent repeat on a pristine 94 cm sample.",
+      "missing": [
+        "Per-run pressure",
+        "Measured run acceleration",
+        "Uncertainty for each listed quantity",
+        "Original raw-file identity and sensor calibration linkage"
+      ],
+      "issues": [
+        "PSI-98 S2 still lists the full 94 cm dimension; the paper gives approximately 10 cm remaining for sample 1-2.",
+        "Previous burn history and declining oxygen confound a direct concurrent-versus-opposed causal comparison.",
+        "Approximate oxygen and length must retain approximation markers.",
+        "PSI thickness-unit and width/length discrepancies also affect S2."
+      ]
+    },
+    {
+      "id": "candidate-saffire-ii-2-1",
+      "program": "Saffire II",
+      "testId": "2-1",
+      "kind": "experiment-candidate",
+      "sourceId": "saffire-i-ii",
+      "locators": [
+        {
+          "page": 29,
+          "printedPage": "29",
+          "section": "Table I, sample 2-1; both panels and footnote i"
+        },
+        {
+          "page": 12,
+          "printedPage": "12",
+          "section": "Saffire-2 Silicone Results; collective observation"
+        },
+        {
+          "page": 13,
+          "printedPage": "13",
+          "section": "Saffire-2 Silicone Results; unresolved mechanisms"
+        }
+      ],
+      "raw": {
+        "material": "Silicone",
+        "widthCm": 5,
+        "lengthCm": 29,
+        "thicknessMm": 0.27,
+        "flowCmS": 20,
+        "flowDirection": "Concurrent",
+        "oxygenSourceText": "~22.1",
+        "oxygenBasis": "Table I footnote i; derived, ISS-referenced",
+        "ignitionPowerW": 80,
+        "ignitionTimeS": 9.2,
+        "burnDurationSourceText": "Insignificant",
+        "burnLengthSourceText": "~0",
+        "spreadRateSourceText": "n/a"
+      },
+      "statement": "The silicone results describe a small flame that extinguished after ignition power ended, without sustained spread; this is not a zero-second measured burn or a general nonflammability verdict.",
+      "missing": [
+        "Per-run pressure",
+        "Measured run acceleration",
+        "Uncertainty for each listed quantity",
+        "Original raw-file identity and sensor calibration linkage"
+      ],
+      "issues": [
+        "Do not coerce Insignificant, ~0 or n/a into exact numeric zeros.",
+        "The narrative discusses several silicone samples collectively; the individual outcome remains the Table I row.",
+        "PSI-98 is Saffire-I, not a dataset identity for this Saffire-II sample.",
+        "Potential silica deposition and cracking are unresolved mechanisms, not measured causes."
+      ]
+    }
+  ],
+  "psiDiscovery": {
+    "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+    "result": "PSI-98 Version 4, DOI 10.60555/0t15-1z43, CC0-1.0 inspected. S1/S2 rows provide cross-checks but contain thickness-unit and length/width conflicts with the paper. Project dates/platform also conflict with the flight narrative. No rows admitted or automatically normalized."
+  }
+}

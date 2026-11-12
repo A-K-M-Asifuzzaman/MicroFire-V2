@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { HttpsUrlSchema, IdSchema } from '@microfire/shared';
 import review from '../../../data/candidates/review-20261112.json';
+import november13Review from '../../../data/candidates/review-20261113.json';
 const source = z.strictObject({ id: IdSchema, url: HttpsUrlSchema.refine(s => new URL(s).hostname === 'ntrs.nasa.gov'), sha256: z.string().regex(/^[a-f0-9]{64}$/), bytes: z.number().int().positive().max(60000000), inspectedAt: z.iso.date(), inspection: z.string().min(1) });
 export const CandidateReviewSchema = z.strictObject({
   schemaVersion: z.literal(1), status: z.literal('quarantined-pending-independent-review'), sources: z.array(source).min(1),
@@ -15,3 +16,4 @@ export const CandidateReviewSchema = z.strictObject({
     ctx.addIssue({ code: 'custom', message: 'Candidate requires a source and experiment identity' });
 });
 export const candidateReview = CandidateReviewSchema.parse(review);
+export const candidateReviews = [candidateReview, CandidateReviewSchema.parse(november13Review)];

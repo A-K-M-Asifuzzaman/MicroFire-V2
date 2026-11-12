@@ -2,11 +2,11 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { candidateReview } from '@microfire/science';
+import { candidateReviews } from '@microfire/science';
 const directory = process.argv[2];
 if (!directory) throw Error('Usage: node --import tsx scripts/fetch-candidate-sources.ts <output-directory>');
 await mkdir(directory, { recursive: true });
-for (const source of candidateReview.sources) {
+for (const source of candidateReviews.flatMap(r => r.sources)) {
   const file = path.join(directory, source.id + '.pdf');
   const matches = (bytes: Buffer) => bytes.length === source.bytes && createHash('sha256').update(bytes).digest('hex') === source.sha256;
   let existing: Buffer | null = null;

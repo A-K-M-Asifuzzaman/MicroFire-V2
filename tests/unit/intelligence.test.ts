@@ -13,10 +13,10 @@ const post = (route: string[], body: unknown, handler = createPostHandler()) => 
   method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body)
 }));
 
-it('serves four source-only investigation descriptions without admitting their candidate runs', async () => {
+it('serves six source-only investigation descriptions without admitting their candidate runs', async () => {
   const result = createGetHandler()(['investigations'], new URL('http://localhost/api/investigations'));
   const data = InvestigationsResponseSchema.parse(await result.json()).data;
-  expect(data.items.map(i => i.id)).toEqual(['bass-ii', 'flex', 'acme', 'saffire-iv-v']);
+  expect(data.items.map(i => i.id)).toEqual(['bass-ii', 'flex', 'acme', 'saffire-iv-v', 'acme-bre', 'saffire-i']);
   expect(data.coverage).toMatchObject({ validatedExperiments: 1, quarantinedCandidates: 55 });
   expect(data.items.flatMap(i => i.admittedExperimentIds)).toEqual(['bass2-b20']);
   expect(data.items.find(i => i.id === 'bass-ii')!.dataset).toMatchObject({ version: '4', doi: '10.60555/4qc4-de67' });
@@ -26,6 +26,13 @@ it('serves four source-only investigation descriptions without admitting their c
   expect(data.items.find(i => i.id === 'saffire-iv-v')!.source.rightsDetermination).toBe('MAY_INCLUDE_COPYRIGHT_MATERIAL');
   expect(investigationLibrary('droplet').map(i => i.id)).toEqual(['flex']);
   expect(investigationLibrary('NASA certified')).toEqual([]);
+  for (const [id, doi] of [['flex', '10.60555/mbq8-0451'], ['acme-bre', '10.60555/vb93-3y72'], ['saffire-i', '10.60555/0t15-1z43']]) {
+    const entry = data.items.find(i => i.id === id)!;
+    expect(entry.dataset!.doi).toBe(doi);
+    expect(entry.admittedExperimentIds).toEqual([]);
+    expect(verifyInvestigationCitations(id!, [entry.dataset!.citation]).valid).toBe(true);
+  }
+  expect(data.items.find(i => i.id === 'saffire-i')!.limitations).toContain('Metadata discrepancies and ignition-power disagreement need independent reconciliation.');
   expect(catalog.experiments).toHaveLength(1);
 });
 it('validates investigation query/detail identifiers and exact metadata citations', async () => {
@@ -92,7 +99,7 @@ it('describes equality only for fully recorded synthetic conditions, keeping der
   expect(analyzeTransfer(request, dataset).records[0]!.dimensions.find(d => d.field === 'pressureKpa')!.status).toBe('context-only');
 });
 it('strict transfer HTTP refuses quarantined IDs, source-only IDs and malformed input without a fake fallback', async () => {
-  for (const id of ['bass2-b19', 'flex', 'candidate-flex-062']) expect((await post(['evidence', 'transfer'], { ...request, experimentIds: [id] })).status).toBe(404);
+  for (const id of ['bass2-b19', 'flex', 'candidate-flex-062', 'candidate-saffire-i-1-1', 'candidate-saffire-i-1-2', 'candidate-saffire-ii-2-1']) expect((await post(['evidence', 'transfer'], { ...request, experimentIds: [id] })).status).toBe(404);
   for (const body of [{ ...request, experimentIds: ['bass2-b20', 'bass2-b20'] }, { ...request, targetConditions: {} },
     { ...request, targetConditions: { oxygenPct: 101 } }, { ...request, targetConditions: { oxygenPct: null } }, { ...request, safe: true }])
     expect((await post(['evidence', 'transfer'], body)).status).toBe(400);

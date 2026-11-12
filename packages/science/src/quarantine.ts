@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Catalog } from '@microfire/shared';
-import { candidateReview } from './candidates';
+import { candidateReviews } from './candidates';
 import ledgerJson from '../../../data/quarantine/legacy-ledger.json';
 
 const LedgerSchema = z.strictObject({
@@ -14,8 +14,9 @@ const LedgerSchema = z.strictObject({
 }).refine((l) => new Set(l.records.map((r) => r.candidateId)).size === l.records.length, 'Duplicate quarantine IDs');
 
 export const quarantineLedger = LedgerSchema.parse(ledgerJson);
-const quarantinedIds = new Set([...quarantineLedger.records.flatMap((r) => [r.candidateId, r.upstreamRecordId.toLowerCase()]), ...candidateReview.records.map(r => r.id)]);
-const quarantinedTests = new Set([...quarantineLedger.records.map((r) => r.testId.toLowerCase()), ...candidateReview.records.flatMap(r => r.testId ? [r.testId.toLowerCase()] : [])]);
+const reviewRecords = candidateReviews.flatMap(r => r.records);
+const quarantinedIds = new Set([...quarantineLedger.records.flatMap((r) => [r.candidateId, r.upstreamRecordId.toLowerCase()]), ...reviewRecords.map(r => r.id.toLowerCase())]);
+const quarantinedTests = new Set([...quarantineLedger.records.map((r) => r.testId.toLowerCase()), ...reviewRecords.flatMap(r => r.testId ? [r.testId.toLowerCase()] : [])]);
 
 export const isQuarantinedId = (id: string) => quarantinedIds.has(id.toLowerCase());
 export const isQuarantinedTestId = (testId: string) => quarantinedTests.has(testId.toLowerCase());
