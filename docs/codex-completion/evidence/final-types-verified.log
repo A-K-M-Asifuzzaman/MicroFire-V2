@@ -1,0 +1,6 @@
+
+> microfire-v2@0.1.0 typecheck
+> tsc --noEmit && npm run typecheck --workspace @microfire/web
+
+tests/unit/campaign.test.ts(92,46): error TS2322: Type '{ incidentOrigin: "research"; type: "TRAINING"; action: { type: "GAME"; action: { type: "START_MISSION"; missionId: "station-arrival" | "bass-assembly" | "flame-detective" | "claim-trial" | "lunar-habitat"; } | ... 6 more ... | { ...; }; } | { ...; } | { ...; } | { ...; }; } | ... 5 more ... | { ...; }' is not assignable to type '{ type: "TRAINING"; action: { type: "GAME"; action: { type: "START_MISSION"; missionId: "station-arrival" | "bass-assembly" | "flame-detective" | "claim-trial" | "lunar-habitat"; } | ... 6 more ... | { ...; }; } | { ...; } | { ...; } | { ...; }; } | ... 5 more ... | { ...; }'.
+  Object literal may only specify known properties, and 'incidentOrigin' does not exist in type '{ type: "TRAINING"; action: { type: "GAME"; action: { type: "START_MISSION"; missionId: "station-arrival" | "bass-assembly" | "flame-detective" | "claim-trial" | "lunar-habitat"; } | ... 6 more ... | { ...; }; } | { ...; } | { ...; } | { ...; }; }'.

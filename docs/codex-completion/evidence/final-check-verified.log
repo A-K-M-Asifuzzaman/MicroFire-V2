@@ -1,0 +1,111 @@
+
+> microfire-v2@0.1.0 check
+> npm run lint && npm run typecheck && npm test && npm run validate:data && npm run eval:science && npm run security && npm run build
+
+
+> microfire-v2@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> microfire-v2@0.1.0 typecheck
+> tsc --noEmit && npm run typecheck --workspace @microfire/web
+
+
+> @microfire/web@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> microfire-v2@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 /Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion
+
+
+ Test Files  16 passed (16)
+      Tests  196 passed (196)
+   Start at  16:16:51
+   Duration  3.14s (tests 73%, transform 14%, import 13%)
+
+
+> microfire-v2@0.1.0 validate:data
+> node --import tsx scripts/validate-sources.ts
+
+Validated 1 source, 1 experiment; 55 legacy rows quarantined; local fixture SHA-256 matches. Remote links not rechecked.
+
+> microfire-v2@0.1.0 eval:science
+> node --import tsx scripts/eval-science.ts
+
+Ask 30/30, rank 7/7, faithful 13/13, forbidden 0, repeatable 30/30. Wrote docs/evals/report.md
+
+> microfire-v2@0.1.0 security
+> node scripts/security-check.mjs
+
+Basic secret/environment/provider/XSS/media-rights checks passed across 1006 files. Pattern checks are not a complete secret audit.
+
+> microfire-v2@0.1.0 build
+> npm run build --workspace @microfire/web
+
+
+> @microfire/web@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.4.1 (webpack)
+✓ Running next.config.ts took 15ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.5s
+  Running TypeScript ...
+  Finished TypeScript in 2.6s ...
+  Collecting page data using 10 workers ...
+  Generating static pages using 10 workers (0/25) ...
+  Generating static pages using 10 workers (6/25)
+  Generating static pages using 10 workers (12/25)
+  Generating static pages using 10 workers (18/25)
+✓ Generating static pages using 10 workers (25/25) in 563ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├   /[...path]
+│ ├ ● /lab
+│ ├ ● /sources
+│ ├ ● /methodology
+│ └ ● [+4 more paths]
+├ ƒ /api/[...path]
+├ ○ /ask
+├ ƒ /atlas
+├ ○ /compare
+├ ○ /dashboard
+├ ƒ /design
+├ ƒ /design/a
+├ ƒ /design/a/b20
+├ ƒ /design/a/lab
+├ ƒ /design/b
+├ ƒ /design/b/b20
+├ ƒ /design/b/lab
+├   /experiments/[id]
+│ └ ● /experiments/bass2-b20
+├ ○ /gaps
+├ ○ /icon.svg
+├ ƒ /m2-fixtures
+├ ○ /missions
+├   /missions/[id]
+│ ├ ● /missions/station-arrival
+│ ├ ● /missions/bass-assembly
+│ ├ ● /missions/flame-detective
+│ └ ● [+2 more paths]
+├   /missions/[id]/tour
+│ └ ● /missions/bass-assembly/tour
+└ ○ /passport
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand

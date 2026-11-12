@@ -11,3 +11,9 @@ Headers include nosniff, frame denial, same-origin/default CSP, restricted camer
 Saves are untrusted client-local data. Schema validation catches corruption, not deliberate valid-shape edits; local hashes/signatures would not authenticate a user. Passport validation verifies source lineage only and must never be used as proof of scientific correctness or protected achievement. Future server achievements require independent replay/revalidation. Multi-tab simultaneous save writes are last-writer-wins; server sync/conflict resolution is not implemented.
 
 Imported NASA facts retain source/rights metadata; do not assume every NASA image or third-party figure is public domain. Source snapshots and reference code must not execute automatically. Report suspected leaked credentials privately to the repository owner; rotate any real exposure before further use.
+
+## 2026-11-12 isolated candidate
+
+Review routes now additionally require a dedicated unpredictable server credential in x-microfire-review-token, enforced both before rendering and at every review page/layout. Use the loopback-only local-review launcher; keep credentials/flags absent in hosting. Host and hosting markers only narrow access and cannot authorize. Game-preview credentials/grants/signing are separate; its guard now denies presence of the complete hosted-marker list, including empty variables.
+
+The campaign server adapter has no installed HTTP route. Its new, separately versioned signed replay record requires local operator grants and preserves source/training/learner distinctions. It is not a public achievement service and has no durable anti-rollback ledger. Writable browser saves remain off: WebKit failed native lock/storage visibility and Firefox could not start; Chromium two-page checks are not cross-process acceptance. See docs/codex-completion/11_SECURITY_REVIEW_HANDOFF.md. No release or Astra acceptance is claimed.

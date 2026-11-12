@@ -1,0 +1,5 @@
+
+> microfire-v2@0.1.0 security
+> node scripts/security-check.mjs
+
+Basic secret/environment/provider/XSS/media-rights checks passed across 1025 files. Pattern checks are not a complete secret audit.

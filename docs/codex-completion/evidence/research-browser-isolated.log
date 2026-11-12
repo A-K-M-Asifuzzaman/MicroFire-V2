@@ -1,0 +1,184 @@
+[WebServer] (node:85907) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 110 tests using 2 workers
+
+(node:86011) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86010) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    1 [desktop] › tests/e2e/foundation.spec.ts:4:1 › offline source journey, keyboard access, corrected science and screenshots (1.7s)
+  ✓    3 [desktop] › tests/e2e/foundation.spec.ts:31:1 › API contracts, errors and no-service fallback (1.2s)
+  ✓    4 [desktop] › tests/e2e/foundation.spec.ts:53:1 › evidence works with JavaScript disabled and no WebGL (519ms)
+  ✓    2 [desktop] › tests/e2e/foundation.spec.ts:22:1 › every advertised route resolves and all missions remain unavailable (3.5s)
+  ✓    6 [desktop] › tests/e2e/m15-corrections.spec.ts:36:1 › S3: registry states are unchanged; built interfaces say what is true and keep the registry note (1.2s)
+  ✓    5 [desktop] › tests/e2e/m15-corrections.spec.ts:21:1 › S1/S2: visible, hidden and accessible copy never overclaims; the still-air scope is stated (1.3s)
+  ✓    8 [desktop] › tests/e2e/m15-corrections.spec.ts:71:1 › B20: selecting a part or condition explains it, links its source and highlights the matching evidence (732ms)
+(node:86284) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    9 [desktop] › tests/e2e/m15-corrections.spec.ts:100:1 › Frontier: each condition shows what was asked, what is documented and its status in plain labels (766ms)
+  ✓    7 [desktop] › tests/e2e/m15-corrections.spec.ts:49:1 › first viewport: home gravity toggle, Ask input and Atlas B20 action sit where Astra required (2.0s)
+(node:86308) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   11 [desktop] › tests/e2e/m15-corrections.spec.ts:131:1 › Ask: one companion, a persistent no-AI caption and examples grouped by what they show (443ms)
+(node:86312) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   10 [desktop] › tests/e2e/m15-corrections.spec.ts:117:1 › Workstation leads with the support verdict, in human labels, without turning a match into proof (973ms)
+  ✓   12 [desktop] › tests/e2e/m15-corrections.spec.ts:138:1 › navigation: unfinished destinations are tagged, Passport is reachable, the Lab hands off to the lens (616ms)
+  ✓   13 [desktop] › tests/e2e/m15-corrections.spec.ts:156:1 › reading surfaces are stable: no scroll-reveal fades or perpetual glints on caveats and evidence (528ms)
+  ✓   14 [desktop] › tests/e2e/observatory-http.spec.ts:190:3 › real HTTP: production rate limit › 30 POSTs accepted, then Ask and Passport report the budget honestly with no answer or verdict (784ms)
+  ✓   15 [desktop] › tests/e2e/observatory-http.spec.ts:41:3 › real HTTP: Ask, research tools and Passport trust › supported answers, abstentions and repeated/quarantined references (6 POSTs) (1.5s)
+  ✓   16 [desktop] › tests/e2e/observatory-http.spec.ts:213:35 › real HTTP: populated research views at mobile widths (F6) › no document overflow after results at 390 px (3 POSTs) (1.1s)
+  ✓   17 [desktop] › tests/e2e/observatory-http.spec.ts:56:3 › real HTTP: Ask, research tools and Passport trust › F2: retry resends the exact submitted question and conditions; suggestions carry visible conditions (2 POSTs) (920ms)
+  ✓   18 [desktop] › tests/e2e/observatory-http.spec.ts:213:35 › real HTTP: populated research views at mobile widths (F6) › no document overflow after results at 320 px (3 POSTs) (1.1s)
+  ✓   19 [desktop] › tests/e2e/observatory-http.spec.ts:82:3 › real HTTP: Ask, research tools and Passport trust › F3: a delayed older answer or error never replaces the newer abstention (2 POSTs) (1.9s)
+  ✓   20 [desktop] › tests/e2e/observatory-http.spec.ts:273:64 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-valid unknown reference "constructor" is rejected, inspectable and recoverable (3 POSTs) (1.0s)
+  ✓   22 [desktop] › tests/e2e/observatory-http.spec.ts:273:64 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-valid unknown reference "prototype" is rejected, inspectable and recoverable (1 POSTs) (642ms)
+  ✓   21 [desktop] › tests/e2e/observatory-http.spec.ts:122:3 › real HTTP: Ask, research tools and Passport trust › workstation, frontier and compare over real HTTP (4 POSTs) (890ms)
+  ✓   23 [desktop] › tests/e2e/observatory-http.spec.ts:273:64 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-valid unknown reference "bass2-b999" is rejected, inspectable and recoverable (1 POSTs) (656ms)
+  ✓   25 [desktop] › tests/e2e/observatory-http.spec.ts:293:65 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-invalid reference "__proto__" is malformed stored data with recovery intact (0 POSTs) (505ms)
+  ✓   24 [desktop] › tests/e2e/observatory-http.spec.ts:141:3 › real HTTP: Ask, research tools and Passport trust › F1: Passport shows canonical caveats only from the catalog; saved prose stays untrusted (4 POSTs) (1.2s)
+  ✓   26 [desktop] › tests/e2e/observatory-http.spec.ts:293:65 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-invalid reference "toString" is malformed stored data with recovery intact (0 POSTs) (609ms)
+  ✓   28 [desktop] › tests/e2e/observatory-http.spec.ts:293:65 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-invalid reference "hasOwnProperty" is malformed stored data with recovery intact (0 POSTs) (466ms)
+  ✓   29 [desktop] › tests/e2e/observatory-http.spec.ts:302:3 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › mixed valid and unknown references: B20 canon only from the catalog, unknown stays unverified (1 POST) (507ms)
+  ✓   27 [desktop] › tests/e2e/observatory-m15.spec.ts:31:1 › home: six real stations, focus link-up and honest labelling (Design B) (1.5s)
+  ✓   30 [desktop] › tests/e2e/observatory-http.spec.ts:315:3 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › valid B20 reference still validates with catalog caveats (1 POST) (599ms)
+  ✓   31 [desktop] › tests/e2e/observatory-m15.spec.ts:56:1 › home without WebGL: the static lens and every station still work (729ms)
+  ✓   32 [desktop] › tests/e2e/observatory-http.spec.ts:325:3 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › other research routes treat inherited names as unknown, never as records (0 POSTs) (1.0s)
+  ✓   34 [desktop] › tests/e2e/observatory-m15.spec.ts:98:1 › fix D: Retry waits for Retry-After and keeps the original request (2.8s)
+  ✓   35 [desktop] › tests/e2e/observatory-m15.spec.ts:114:1 › fix F: missing records and routes return real 404s; real pages and the API are unchanged (56ms)
+  ✓   33 [desktop] › tests/e2e/observatory-m15.spec.ts:75:1 › fix A: an initially offscreen lens does not render continuously; visibility drives motion (6.8s)
+  ✓   37 [desktop] › tests/e2e/observatory-m15.spec.ts:139:1 › B20 exhibit: apparatus annotations separate sourced hardware, recorded conditions and unknowns (659ms)
+(node:86967) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86968) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   38 [desktop] › tests/e2e/observatory-m15.spec.ts:160:1 › Atlas exhibit, corpus strip and Workstation chain rail stay honest (950ms)
+(node:86986) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   39 [desktop] › tests/e2e/observatory-m15.spec.ts:180:1 › PIX interface states follow the deterministic API (no new abilities) (717ms)
+  -   40 [desktop] › tests/e2e/observatory-m15.spec.ts:196:1 › fix C: keyboard navigation from the mobile menu lands on the destination heading
+(node:87415) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87485) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   36 [desktop] › tests/e2e/observatory-m15.spec.ts:123:1 › route-level loading: no regular page downloads the 3D engine; only the training bay does (15.9s)
+  ✓   42 [desktop] › tests/e2e/observatory-m15.spec.ts:225:1 › native cursor and selection: text can be selected and every control still works (1.5s)
+  ✓   43 [desktop] › tests/e2e/observatory.spec.ts:20:1 › research journey: home → atlas search → B20 dossier → source → export → Ask PIX (REAL) → methodology (3.1s)
+  ✓   44 [desktop] › tests/e2e/observatory.spec.ts:78:1 › navigation: active section indicators and the mobile menu (1.1s)
+  ✓   45 [desktop] › tests/e2e/observatory.spec.ts:97:1 › keyboard: skip link and Gravity Lens controls (1.3s)
+  ✓   46 [desktop] › tests/e2e/observatory.spec.ts:114:1 › reduced motion and missing WebGL keep a meaningful static lens (3.1s)
+(node:87904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87937) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87938) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87952) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   41 [desktop] › tests/e2e/observatory-m15.spec.ts:208:1 › fix E: no automated axe violations (WCAG 2.x A/AA) on core routes (23.8s)
+  ✓   47 [desktop] › tests/e2e/observatory.spec.ts:142:1 › Ask PIX: abstentions, quarantined references and failures are never shown as answers (3.5s)
+  ✓   48 [desktop] › tests/e2e/observatory.spec.ts:182:1 › atlas empty, loading failure and retry states (1.3s)
+(node:88021) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88066) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   49 [desktop] › tests/e2e/observatory.spec.ts:194:1 › workstation, frontier and comparison keep support, gaps and refusals explicit (2.9s)
+  ✓   50 [desktop] › tests/e2e/observatory.spec.ts:222:1 › F4: WebGL context loss restores the SVG flame; restoration re-enables WebGL with current controls (2.0s)
+  -   52 [desktop] › tests/e2e/observatory.spec.ts:254:1 › missions stay honestly unavailable and narrow screens never scroll sideways
+  ✓   53 [desktop] › tests/e2e/science-api.spec.ts:7:1 › research APIs serve truthful limited-data responses end to end (56ms)
+  ✓   54 [desktop] › tests/e2e/science-api.spec.ts:30:1 › quarantined legacy records stay unavailable over HTTP (20ms)
+  ✓   55 [desktop] › tests/e2e/science-api.spec.ts:40:1 › Astra regressions: bounded abstentions and outcome support over HTTP (28ms)
+  ✓   51 [desktop] › tests/e2e/observatory.spec.ts:243:1 › F5: switching reduced motion on after start stops the flicker, and off resumes it (639ms)
+(node:88135) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88139) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   57 [mobile] › tests/e2e/foundation.spec.ts:22:1 › every advertised route resolves and all missions remain unavailable (3.1s)
+  ✓   58 [mobile] › tests/e2e/foundation.spec.ts:31:1 › API contracts, errors and no-service fallback (45ms)
+  ✓   59 [mobile] › tests/e2e/foundation.spec.ts:53:1 › evidence works with JavaScript disabled and no WebGL (417ms)
+  ✓   56 [mobile] › tests/e2e/foundation.spec.ts:4:1 › offline source journey, keyboard access, corrected science and screenshots (4.5s)
+  ✓   60 [mobile] › tests/e2e/m15-corrections.spec.ts:21:1 › S1/S2: visible, hidden and accessible copy never overclaims; the still-air scope is stated (1.3s)
+  -   62 [mobile] › tests/e2e/m15-corrections.spec.ts:49:1 › first viewport: home gravity toggle, Ask input and Atlas B20 action sit where Astra required
+  ✓   61 [mobile] › tests/e2e/m15-corrections.spec.ts:36:1 › S3: registry states are unchanged; built interfaces say what is true and keep the registry note (1.6s)
+  ✓   63 [mobile] › tests/e2e/m15-corrections.spec.ts:71:1 › B20: selecting a part or condition explains it, links its source and highlights the matching evidence (1.3s)
+(node:88366) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   64 [mobile] › tests/e2e/m15-corrections.spec.ts:100:1 › Frontier: each condition shows what was asked, what is documented and its status in plain labels (1.1s)
+(node:88388) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88435) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   65 [mobile] › tests/e2e/m15-corrections.spec.ts:117:1 › Workstation leads with the support verdict, in human labels, without turning a match into proof (1.5s)
+  ✓   66 [mobile] › tests/e2e/m15-corrections.spec.ts:131:1 › Ask: one companion, a persistent no-AI caption and examples grouped by what they show (890ms)
+  ✓   68 [mobile] › tests/e2e/m15-corrections.spec.ts:156:1 › reading surfaces are stable: no scroll-reveal fades or perpetual glints on caveats and evidence (2.0s)
+  -   69 [mobile] › tests/e2e/observatory-http.spec.ts:41:3 › real HTTP: Ask, research tools and Passport trust › supported answers, abstentions and repeated/quarantined references (6 POSTs)
+  -   70 [mobile] › tests/e2e/observatory-http.spec.ts:56:3 › real HTTP: Ask, research tools and Passport trust › F2: retry resends the exact submitted question and conditions; suggestions carry visible conditions (2 POSTs)
+  ✓   67 [mobile] › tests/e2e/m15-corrections.spec.ts:138:1 › navigation: unfinished destinations are tagged, Passport is reachable, the Lab hands off to the lens (2.5s)
+  -   71 [mobile] › tests/e2e/observatory-http.spec.ts:82:3 › real HTTP: Ask, research tools and Passport trust › F3: a delayed older answer or error never replaces the newer abstention (2 POSTs)
+  -   72 [mobile] › tests/e2e/observatory-http.spec.ts:122:3 › real HTTP: Ask, research tools and Passport trust › workstation, frontier and compare over real HTTP (4 POSTs)
+  -   73 [mobile] › tests/e2e/observatory-http.spec.ts:141:3 › real HTTP: Ask, research tools and Passport trust › F1: Passport shows canonical caveats only from the catalog; saved prose stays untrusted (4 POSTs)
+  -   74 [mobile] › tests/e2e/observatory-http.spec.ts:213:35 › real HTTP: populated research views at mobile widths (F6) › no document overflow after results at 390 px (3 POSTs)
+  -   75 [mobile] › tests/e2e/observatory-http.spec.ts:190:3 › real HTTP: production rate limit › 30 POSTs accepted, then Ask and Passport report the budget honestly with no answer or verdict
+  -   76 [mobile] › tests/e2e/observatory-http.spec.ts:213:35 › real HTTP: populated research views at mobile widths (F6) › no document overflow after results at 320 px (3 POSTs)
+  -   77 [mobile] › tests/e2e/observatory-http.spec.ts:273:64 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-valid unknown reference "constructor" is rejected, inspectable and recoverable (3 POSTs)
+  -   78 [mobile] › tests/e2e/observatory-http.spec.ts:273:64 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-valid unknown reference "prototype" is rejected, inspectable and recoverable (1 POSTs)
+  -   79 [mobile] › tests/e2e/observatory-http.spec.ts:273:64 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-valid unknown reference "bass2-b999" is rejected, inspectable and recoverable (1 POSTs)
+  -   80 [mobile] › tests/e2e/observatory-http.spec.ts:293:65 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-invalid reference "__proto__" is malformed stored data with recovery intact (0 POSTs)
+  -   81 [mobile] › tests/e2e/observatory-http.spec.ts:293:65 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-invalid reference "toString" is malformed stored data with recovery intact (0 POSTs)
+  -   82 [mobile] › tests/e2e/observatory-http.spec.ts:293:65 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › schema-invalid reference "hasOwnProperty" is malformed stored data with recovery intact (0 POSTs)
+  -   83 [mobile] › tests/e2e/observatory-http.spec.ts:302:3 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › mixed valid and unknown references: B20 canon only from the catalog, unknown stays unverified (1 POST)
+  -   84 [mobile] › tests/e2e/observatory-http.spec.ts:315:3 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › valid B20 reference still validates with catalog caveats (1 POST)
+  -   85 [mobile] › tests/e2e/observatory-http.spec.ts:325:3 › real HTTP: Passport with unknown and inherited-name references (Astra final review) › other research routes treat inherited names as unknown, never as records (0 POSTs)
+  ✓   87 [mobile] › tests/e2e/observatory-m15.spec.ts:56:1 › home without WebGL: the static lens and every station still work (1.1s)
+  ✓   86 [mobile] › tests/e2e/observatory-m15.spec.ts:31:1 › home: six real stations, focus link-up and honest labelling (Design B) (1.9s)
+  ✓   89 [mobile] › tests/e2e/observatory-m15.spec.ts:98:1 › fix D: Retry waits for Retry-After and keeps the original request (3.3s)
+  ✓   90 [mobile] › tests/e2e/observatory-m15.spec.ts:114:1 › fix F: missing records and routes return real 404s; real pages and the API are unchanged (60ms)
+  ✓   88 [mobile] › tests/e2e/observatory-m15.spec.ts:75:1 › fix A: an initially offscreen lens does not render continuously; visibility drives motion (7.2s)
+  ✓   92 [mobile] › tests/e2e/observatory-m15.spec.ts:139:1 › B20 exhibit: apparatus annotations separate sourced hardware, recorded conditions and unknowns (1.1s)
+(node:88828) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88830) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   93 [mobile] › tests/e2e/observatory-m15.spec.ts:160:1 › Atlas exhibit, corpus strip and Workstation chain rail stay honest (1.5s)
+(node:88850) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88866) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   94 [mobile] › tests/e2e/observatory-m15.spec.ts:180:1 › PIX interface states follow the deterministic API (no new abilities) (992ms)
+  ✓   95 [mobile] › tests/e2e/observatory-m15.spec.ts:196:1 › fix C: keyboard navigation from the mobile menu lands on the destination heading (631ms)
+(node:89090) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89125) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   91 [mobile] › tests/e2e/observatory-m15.spec.ts:123:1 › route-level loading: no regular page downloads the 3D engine; only the training bay does (15.3s)
+  -   97 [mobile] › tests/e2e/observatory-m15.spec.ts:225:1 › native cursor and selection: text can be selected and every control still works
+  ✓   98 [mobile] › tests/e2e/observatory.spec.ts:20:1 › research journey: home → atlas search → B20 dossier → source → export → Ask PIX (REAL) → methodology (4.8s)
+  ✓   99 [mobile] › tests/e2e/observatory.spec.ts:78:1 › navigation: active section indicators and the mobile menu (1.1s)
+  ✓  100 [mobile] › tests/e2e/observatory.spec.ts:97:1 › keyboard: skip link and Gravity Lens controls (712ms)
+  ✓  101 [mobile] › tests/e2e/observatory.spec.ts:114:1 › reduced motion and missing WebGL keep a meaningful static lens (2.3s)
+(node:89536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89539) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89553) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89554) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   96 [mobile] › tests/e2e/observatory-m15.spec.ts:208:1 › fix E: no automated axe violations (WCAG 2.x A/AA) on core routes (19.8s)
+  ✓  102 [mobile] › tests/e2e/observatory.spec.ts:142:1 › Ask PIX: abstentions, quarantined references and failures are never shown as answers (2.6s)
+  ✓  103 [mobile] › tests/e2e/observatory.spec.ts:182:1 › atlas empty, loading failure and retry states (982ms)
+  -  104 [mobile] › tests/e2e/observatory.spec.ts:194:1 › workstation, frontier and comparison keep support, gaps and refusals explicit
+  ✓  106 [mobile] › tests/e2e/observatory.spec.ts:243:1 › F5: switching reduced motion on after start stops the flicker, and off resumes it (1.4s)
+  ✓  105 [mobile] › tests/e2e/observatory.spec.ts:222:1 › F4: WebGL context loss restores the SVG flame; restoration re-enables WebGL with current controls (2.6s)
+  ✓  108 [mobile] › tests/e2e/science-api.spec.ts:7:1 › research APIs serve truthful limited-data responses end to end (99ms)
+  ✓  109 [mobile] › tests/e2e/science-api.spec.ts:30:1 › quarantined legacy records stay unavailable over HTTP (25ms)
+  ✓  110 [mobile] › tests/e2e/science-api.spec.ts:40:1 › Astra regressions: bounded abstentions and outcome support over HTTP (35ms)
+  ✓  107 [mobile] › tests/e2e/observatory.spec.ts:254:1 › missions stay honestly unavailable and narrow screens never scroll sideways (3.0s)
+
+  22 skipped
+  88 passed (1.8m)

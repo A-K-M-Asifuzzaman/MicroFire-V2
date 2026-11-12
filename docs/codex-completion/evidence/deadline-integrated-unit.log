@@ -1,0 +1,8 @@
+
+ RUN  v5.0.3 /private/var/folders/gb/jr8j60jj3wngw7vjh6g_kg_m0000gn/T/microfire-m2-live-A8WQXb
+
+
+ Test Files  2 passed (2)
+      Tests  33 passed (33)
+   Start at  16:58:47
+   Duration  201ms (transform 46%, tests 28%, import 24%, worker 2%)

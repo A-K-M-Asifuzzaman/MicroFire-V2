@@ -1,0 +1,68 @@
+[WebServer] (node:93160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 52 tests using 1 worker
+
+(node:93224) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/m2-ui/ignition.spec.ts:36:1 › first visit: the film opens before paint with Skip focused, plays its story, then lands on the working homepage without a reload (9.3s)
+  ✓   2 [desktop] › tests/m2-ui/ignition.spec.ts:58:1 › Skip before the first frame closes it at once and marks it seen (684ms)
+  ✓   3 [desktop] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during Earth departure (click) reveals the same homepage (883ms)
+  ✓   4 [desktop] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during the emergency (escape) reveals the same homepage (4.0s)
+  ✓   5 [desktop] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during PIX activation (enter) reveals the same homepage (5.0s)
+  ✓   6 [desktop] › tests/m2-ui/ignition.spec.ts:77:1 › it never replays: not on client navigation back home, not after a refresh; Replay intro plays it on request (1.6s)
+  ✓   7 [desktop] › tests/m2-ui/ignition.spec.ts:93:1 › deep links and #fragments bypass the film (391ms)
+  ✓   8 [desktop] › tests/m2-ui/ignition.spec.ts:101:1 › reduced motion: no film, no Replay control, direct homepage (274ms)
+  ✓   9 [desktop] › tests/m2-ui/ignition.spec.ts:111:1 › no WebGL: the film bows out within a moment and the homepage is usable (245ms)
+  ✓  10 [desktop] › tests/m2-ui/ignition.spec.ts:118:1 › asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen (2.6s)
+  ✓  11 [desktop] › tests/m2-ui/ignition.spec.ts:126:1 › keyboard and screen readers: named dialog with a description, Skip first, Tab reaches Sound, captions are live, no axe violations (1.7s)
+  ✓  12 [desktop] › tests/m2-ui/ignition.spec.ts:142:1 › sound is off by default: no audio context is created until the visitor asks (2.2s)
+  ✓  13 [desktop] › tests/m2-ui/ignition.spec.ts:151:1 › no retained WebGL context: after the film, the page holds no more contexts than a visit without it (14.0s)
+  ✓  14 [desktop] › tests/m2-ui/ignition.spec.ts:213:1 › race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives (38.5s)
+  ✓  15 [desktop] › tests/m2-ui/ignition.spec.ts:250:1 › race: after a stale load is released, the replay still plays its whole story and ends itself (no stale end or close timer cuts it) (9.2s)
+  ✓  16 [desktop] › tests/m2-ui/ignition.spec.ts:269:1 › race: a replay started inside the Skip crossfade keeps the dialog (the old fade timer cannot close the new run) (1.9s)
+  ✓  17 [desktop] › tests/m2-ui/ignition.spec.ts:287:1 › rapid Skip/Replay ×8 (during loading and during play): one owner at a time, nothing left behind, Replay still works (16.8s)
+  ✓  18 [desktop] › tests/m2-ui/ignition.spec.ts:310:1 › loading-time navigation away (unmount) releases the pending run and does not replay on return (2.1s)
+  ✓  19 [desktop] › tests/m2-ui/ignition.spec.ts:332:1 › sound state: turning sound on, then Skip and Replay, starts the new run muted and closes the old audio (1.5s)
+  -  20 [desktop] › tests/m2-ui/ignition.spec.ts:348:1 › phones: controls are large, nothing overflows, and Skip stays reachable
+(node:96399) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [desktop] › tests/m2-ui/site-journey.spec.ts:9:1 › journey: home → training bay tour → missions → briefing → home, through real links (1.3s)
+  ✓  22 [desktop] › tests/m2-ui/site-journey.spec.ts:50:1 › navigation: the training bay is in the mission menu on desktop and mobile (299ms)
+  ✓  23 [desktop] › tests/m2-ui/site-journey.spec.ts:60:1 › WebGL scenes are released on client navigation: no stacked contexts after repeated round trips (14.1s)
+  ✓  24 [desktop] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector (550ms)
+  ✓  25 [desktop] › tests/m2-ui/site-journey.spec.ts:105:1 › reduced motion: the tour opens with no intro and no scroll animations on the invitation (1.4s)
+  ✓  26 [desktop] › tests/m2-ui/site-journey.spec.ts:117:1 › accessibility and reflow: tour and invitation pages have no axe violations and no horizontal scroll at 320 px (5.9s)
+(node:96987) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  27 [mobile] › tests/m2-ui/ignition.spec.ts:36:1 › first visit: the film opens before paint with Skip focused, plays its story, then lands on the working homepage without a reload
+  ✓  28 [mobile] › tests/m2-ui/ignition.spec.ts:58:1 › Skip before the first frame closes it at once and marks it seen (640ms)
+  -  29 [mobile] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during Earth departure (click) reveals the same homepage
+  -  30 [mobile] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during the emergency (escape) reveals the same homepage
+  -  31 [mobile] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during PIX activation (enter) reveals the same homepage
+  -  32 [mobile] › tests/m2-ui/ignition.spec.ts:77:1 › it never replays: not on client navigation back home, not after a refresh; Replay intro plays it on request
+  ✓  33 [mobile] › tests/m2-ui/ignition.spec.ts:93:1 › deep links and #fragments bypass the film (295ms)
+  ✓  34 [mobile] › tests/m2-ui/ignition.spec.ts:101:1 › reduced motion: no film, no Replay control, direct homepage (243ms)
+  ✓  35 [mobile] › tests/m2-ui/ignition.spec.ts:111:1 › no WebGL: the film bows out within a moment and the homepage is usable (241ms)
+  ✓  36 [mobile] › tests/m2-ui/ignition.spec.ts:118:1 › asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen (2.6s)
+  -  37 [mobile] › tests/m2-ui/ignition.spec.ts:126:1 › keyboard and screen readers: named dialog with a description, Skip first, Tab reaches Sound, captions are live, no axe violations
+  ✓  38 [mobile] › tests/m2-ui/ignition.spec.ts:142:1 › sound is off by default: no audio context is created until the visitor asks (2.1s)
+  -  39 [mobile] › tests/m2-ui/ignition.spec.ts:151:1 › no retained WebGL context: after the film, the page holds no more contexts than a visit without it
+  -  40 [mobile] › tests/m2-ui/ignition.spec.ts:213:1 › race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives
+  -  41 [mobile] › tests/m2-ui/ignition.spec.ts:250:1 › race: after a stale load is released, the replay still plays its whole story and ends itself (no stale end or close timer cuts it)
+  -  42 [mobile] › tests/m2-ui/ignition.spec.ts:269:1 › race: a replay started inside the Skip crossfade keeps the dialog (the old fade timer cannot close the new run)
+  -  43 [mobile] › tests/m2-ui/ignition.spec.ts:287:1 › rapid Skip/Replay ×8 (during loading and during play): one owner at a time, nothing left behind, Replay still works
+  -  44 [mobile] › tests/m2-ui/ignition.spec.ts:310:1 › loading-time navigation away (unmount) releases the pending run and does not replay on return
+  -  45 [mobile] › tests/m2-ui/ignition.spec.ts:332:1 › sound state: turning sound on, then Skip and Replay, starts the new run muted and closes the old audio
+  ✓  46 [mobile] › tests/m2-ui/ignition.spec.ts:348:1 › phones: controls are large, nothing overflows, and Skip stays reachable (788ms)
+(node:97284) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  47 [mobile] › tests/m2-ui/site-journey.spec.ts:9:1 › journey: home → training bay tour → missions → briefing → home, through real links (1.2s)
+  ✓  48 [mobile] › tests/m2-ui/site-journey.spec.ts:50:1 › navigation: the training bay is in the mission menu on desktop and mobile (395ms)
+  -  49 [mobile] › tests/m2-ui/site-journey.spec.ts:60:1 › WebGL scenes are released on client navigation: no stacked contexts after repeated round trips
+  ✓  50 [mobile] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector (475ms)
+  ✓  51 [mobile] › tests/m2-ui/site-journey.spec.ts:105:1 › reduced motion: the tour opens with no intro and no scroll animations on the invitation (1.3s)
+  ✓  52 [mobile] › tests/m2-ui/site-journey.spec.ts:117:1 › accessibility and reflow: tour and invitation pages have no axe violations and no horizontal scroll at 320 px (5.9s)
+
+  15 skipped
+  37 passed (2.6m)

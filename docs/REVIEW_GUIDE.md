@@ -1,5 +1,7 @@
 # MicroFire-V2: full review guide
 
+Isolated 2026-11-12 backend candidate: see [completion status](codex-completion/FINAL_IMPLEMENTATION_STATUS.md). The main/deployment findings below are historical; the candidate adds Stage A, private campaign rules and a mandatory dedicated review-route credential. Independent acceptance, frontend runtime connection and public release remain pending.
+
 This guide is the starting point for an independent review of the whole repository. It tells you what the project is, how it is built, the rules it must never break, how to verify it, what is deliberately unfinished, and where scrutiny is most useful.
 
 | | |

@@ -1,0 +1,50 @@
+{
+  "checkedAtUTC": "2026-11-12T10:48:01.802454+00:00",
+  "origin": "https://microfire-v2-preview.vercel.app",
+  "checks": [
+    {
+      "route": "/",
+      "status": 200,
+      "length": 55455,
+      "b20CalibratedMention": false,
+      "body": null
+    },
+    {
+      "route": "/api/health",
+      "status": 200,
+      "length": 89,
+      "b20CalibratedMention": false,
+      "body": "{\"apiVersion\":\"1\",\"data\":{\"status\":\"ok\",\"phase\":\"one\",\"datasetVersion\":\"p0-bass-b20-v1\"}}"
+    },
+    {
+      "route": "/experiments/bass2-b20",
+      "status": 200,
+      "length": 57716,
+      "b20CalibratedMention": true,
+      "body": null
+    },
+    {
+      "route": "/missions",
+      "status": 200,
+      "length": 25534,
+      "b20CalibratedMention": false,
+      "body": null
+    },
+    {
+      "route": "/passport",
+      "status": 200,
+      "length": 13597,
+      "b20CalibratedMention": false,
+      "body": null
+    },
+    {
+      "route": "/api/game/preview/capability",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "route": "/design",
+      "error": "HTTP Error 404: Not Found"
+    }
+  ],
+  "deploymentMetadata": "Vercel connector access denied (403); deployed source SHA unknown"
+}

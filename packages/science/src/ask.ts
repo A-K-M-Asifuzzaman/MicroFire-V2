@@ -4,7 +4,7 @@ import { catalog } from './catalog';
 import { FIELD_LABELS, TARGET_FIELDS, contentTokens, tokenize, sameCitation, coverage, formatCondition, indexExperiment, isCatalogCitation, matchTarget, rankEvidence } from './evidence';
 import { isQuarantinedTestId } from './quarantine';
 
-export const RETRIEVAL_VERSION = 'p1-grounded-template-v2';
+export const RETRIEVAL_VERSION = 'p1-grounded-template-v3';
 
 /**
  * Deterministic grounded answering. No language model or provider is called: answers are assembled only from
@@ -27,7 +27,7 @@ const CAUSAL = /\b(caus\w*|because|effect of|affect\w*|impact\w*|faster|slower|h
 // Generic combustion words cannot by themselves make a record relevant (e.g. "how did cotton burn?" must not return PMMA evidence).
 // ponytail: fixed word list, replace with an evaluated material/program vocabulary when the corpus grows.
 const GENERIC = new Set(contentTokens('flame flames fire fires burn burned burning combustion sample samples spread ignite ignition extinguish extinction'));
-const TEST_ID = /\b([bf]\d+|gmt\d+-t\d+[ab]?)\b/gi;
+const TEST_ID = /\b(flex-\d+|[bf]\d+|gmt\d+-t\d+[ab]?)\b/gi;
 const CLAIM_CATEGORIES: Record<StatementType, AnswerStatement['category']> = {
   observed: 'direct-observation', derived: 'supported-derivation', interpretation: 'scientific-interpretation', hypothesis: 'unknown-or-gap', unknown: 'unknown-or-gap'
 };
@@ -46,8 +46,11 @@ export function verifyAnswerStatements(statements: AnswerStatement[], dataset: C
 export function answerQuestion(request: { question: string; targetConditions: TargetConditions }, dataset: Catalog = catalog, compose: (e: Experiment[], question: string, t: TargetConditions) => AnswerStatement[] = composeStatements): Abstain | Answered {
   const base = { datasetVersion: dataset.datasetVersion, retrievalVersion: RETRIEVAL_VERSION };
   const abstain = (code: Abstain['code'], reason: string): Abstain => ({ abstained: true, code, reason, citations: [], ...base });
-  const question = request.question;
+  const question = request.question.normalize('NFKC');
   for (const rule of UNSUPPORTED) if (rule.pattern.test(question)) return abstain('unsupported-intent', rule.reason);
+  const programs = [...question.matchAll(/\b(saffire|flex(?:-2)?|acme|sofie)\b/gi)].map(m => m[1]!.toLowerCase());
+  if (programs.some(program => !dataset.experiments.some(e => e.program.toLowerCase().includes(program))))
+    return abstain('no-relevant-evidence', 'The requested investigation is not in the admitted catalog. A matching fuel in BASS-II cannot substitute for evidence from another NASA investigation.');
 
   const mentioned = [...new Set([...question.matchAll(TEST_ID)].map((m) => m[1]!.toLowerCase()))];
   const unknownTests = mentioned.filter((t) => !dataset.experiments.some((e) => e.testId.toLowerCase() === t));
@@ -66,7 +69,18 @@ export function answerQuestion(request: { question: string; targetConditions: Ta
   const records = named.length ? named : relevant;
   if (!records.length) return abstain('no-relevant-evidence', 'No validated record matches this question or its target conditions. Not found in our catalog is not the same as never studied.');
 
+  const transcripts = new Map<string, string>();
+  for (const record of records) {
+    const identity = `${record.program.toLowerCase()}:${record.testId.toLowerCase()}`;
+    const observed = record.claims.filter(c => c.kind === 'observed' && c.origin === 'research').map(c => c.text).sort().join('\n');
+    if (transcripts.has(identity) && transcripts.get(identity) !== observed)
+      return abstain('no-relevant-evidence', 'Selected source transcriptions disagree for the same experiment identity. Review the primary sources; PIX will not merge them into a conclusion.');
+    transcripts.set(identity, observed);
+  }
   const statements = compose(records, question, request.targetConditions);
+  const allowed = composeStatements(records, question, request.targetConditions);
+  if (statements.some(s => !allowed.some(a => a.category === s.category && a.text === s.text && a.claimId === s.claimId && a.citations.length === s.citations.length && a.citations.every((c, i) => sameCitation(c, s.citations[i]!)))))
+    return abstain('citation-verification-failed', 'The draft is outside the source-grounded template. A valid locator cannot validate arbitrary prose, so no answer was released.');
   if (CAUSAL.test(question))
     statements.push({ category: 'unknown-or-gap', text: `This asks about a relationship or trend. ${dataset.experiments.length < 2 ? 'One validated record' : 'These records'} cannot establish causation or a trend; that requires a controlled comparison the catalog does not yet support.`, claimId: null, citations: [] });
   if (!verifyAnswerStatements(statements, dataset))

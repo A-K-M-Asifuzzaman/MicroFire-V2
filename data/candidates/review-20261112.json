@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "status": "quarantined-pending-independent-review",
+  "sources": [
+    {
+      "id": "bass",
+      "url": "https://ntrs.nasa.gov/api/citations/20210011385/downloads/TM-20210011385.pdf",
+      "sha256": "5ffa911fd9b6356f204646003fb9342e341810dcdfdf5cb15756e7f01ec5f770",
+      "bytes": 48972416,
+      "inspectedAt": "2026-11-12",
+      "inspection": "Fresh download, hash, primary-page rendering and visual inspection; independent science review pending."
+    },
+    {
+      "id": "flex",
+      "url": "https://ntrs.nasa.gov/api/citations/20205008449/downloads/Effects%20of%20ambient%20inert%20gas%20properties%20-Combustion%20Science-Nayagam-FAW.pdf",
+      "sha256": "7bd5fad64cabb3d780b473a36cfeee4645861e7924814ff7eac722709cced43a",
+      "bytes": 909025,
+      "inspectedAt": "2026-11-12",
+      "inspection": "Fresh download, hash, primary-page rendering and visual inspection; independent science review pending."
+    },
+    {
+      "id": "saffire",
+      "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+      "sha256": "d25b394f43774ee79a3223b53e90571be299c8996d1cff2512c76e3308e107f5",
+      "bytes": 6518291,
+      "inspectedAt": "2026-11-12",
+      "inspection": "Fresh download, hash, primary-page rendering and visual inspection; independent science review pending."
+    },
+    {
+      "id": "acme",
+      "url": "https://ntrs.nasa.gov/api/citations/20220015583/downloads/PS-03790%20ACME%20poster%2013thUSNCM%202023.pdf",
+      "sha256": "d808902f62d814c02ac06904ad5a4ac50cc252af7d0513bfb27bbcba6223c322",
+      "bytes": 2898168,
+      "inspectedAt": "2026-11-12",
+      "inspection": "Fresh download, hash, primary-page rendering and visual inspection; independent science review pending."
+    }
+  ],
+  "records": [
+    {
+      "id": "candidate-bass2-b19",
+      "program": "BASS-II",
+      "testId": "B19",
+      "kind": "experiment-candidate",
+      "sourceId": "bass",
+      "locators": [
+        {
+          "page": 112,
+          "printedPage": "104",
+          "section": "Table A.1, B19, as-run 52"
+        }
+      ],
+      "raw": {
+        "calibratedInitialOxygenVolPct": 17.3,
+        "calibratedFinalOxygenVolPct": 17.2,
+        "uncalibratedInitialOxygenVolPct": 16.4,
+        "uncalibratedFinalOxygenVolPct": 16.3,
+        "flowRestrictor": 0,
+        "airDisplay": "10, blowoff",
+        "extinctionPotentiometerSetting": 6.0
+      },
+      "statement": "The B19 row reports flame blow-out at a potentiometer setting. It does not report airflow at that event.",
+      "missing": [
+        "Pressure",
+        "Run-level acceleration",
+        "Measurement uncertainty",
+        "Potentiometer-to-velocity calibration"
+      ],
+      "issues": [
+        "Existing B19 quarantine remains authoritative; this is a fresh verification, not a second admitted record.",
+        "Restrictor differs from B20; a one-variable airflow comparison is unsupported."
+      ]
+    },
+    {
+      "id": "candidate-flex-062",
+      "program": "FLEX",
+      "testId": "FLEX-062",
+      "kind": "experiment-candidate",
+      "sourceId": "flex",
+      "locators": [
+        {
+          "page": 4,
+          "printedPage": "unnumbered slide 4",
+          "section": "Cool flames in different diluents; inset row FLEX-062"
+        }
+      ],
+      "raw": {
+        "fuel": "n-octane",
+        "diluent": "nitrogen",
+        "oxygenMoleFraction": 0.17,
+        "pressureAtm": 1.0,
+        "D0UnconfirmedUnit": 3.43,
+        "DextUnconfirmedUnit": 3.17,
+        "DcoolApproxUnconfirmedUnit": "~1.6"
+      },
+      "statement": "A plotted droplet-diameter history and inset identify this run. No points have been digitized.",
+      "missing": [
+        "Explicit table diameter units and symbol definitions",
+        "Run timing and original PSI file",
+        "Measurement uncertainty",
+        "Individual acceleration and flow"
+      ],
+      "issues": [
+        "Oxygen is a mole fraction, not a calibrated BASS vol% reading.",
+        "Do not infer individual-run values from other plotted diluents.",
+        "Retain the approximate diameter symbol; resolve units before normalization."
+      ]
+    },
+    {
+      "id": "candidate-saffire-v-2",
+      "program": "Saffire V",
+      "testId": "V-2",
+      "kind": "experiment-candidate",
+      "sourceId": "saffire",
+      "locators": [
+        {
+          "page": 3,
+          "printedPage": "3",
+          "section": "Table 1; column V-2"
+        },
+        {
+          "page": 4,
+          "printedPage": "4",
+          "section": "Section III.A; Figure 3"
+        }
+      ],
+      "raw": {
+        "material": "Cotton jersey",
+        "lengthCm": 50,
+        "initialAirflowCmS": 20,
+        "flowDirection": "Concurrent",
+        "ambientPressureKpa": 70.7,
+        "oxygenMolPct": 26.2
+      },
+      "statement": "The report describes embers and flamelets after fan shutdown. Their relative roles in continued burning are unresolved.",
+      "missing": [
+        "Individual acceleration",
+        "Measurement uncertainty",
+        "Complete time series and original PSI file"
+      ],
+      "issues": [
+        "Table oxygen is mol%; do not silently map it to the BASS calibrated-vol% field.",
+        "Initial flow is not constant flow over the experiment.",
+        "Narrative timing mentions both 300 s and about 280 s; reconcile with original logs before timing claims.",
+        "The apparatus description gives different duct heights on pages 2 and 3; resolve before geometry normalization."
+      ]
+    },
+    {
+      "id": "candidate-acme-overview",
+      "program": "ACME",
+      "testId": null,
+      "kind": "source-lead",
+      "sourceId": "acme",
+      "locators": [
+        {
+          "page": 1,
+          "printedPage": "unnumbered poster",
+          "section": "WHAT/WHERE headings; E-FIELD and BRE image captions"
+        }
+      ],
+      "raw": {
+        "platformContext": "ISS Combustion Integrated Rack",
+        "individualExperimentId": null
+      },
+      "statement": "The poster identifies several ACME investigations and their apparatus context. It supplies no complete individual-run measurement record.",
+      "missing": [
+        "Individual test identity",
+        "Oxygen",
+        "Pressure",
+        "Fuel/flow conditions for a particular run",
+        "Original PSI data linkage"
+      ],
+      "issues": [
+        "Poster operation dates differ from the metadata abstract start month; do not infer a run date.",
+        "Metadata and photographs cannot substitute for run-level measurements."
+      ]
+    }
+  ],
+  "psiDiscovery": {
+    "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+    "result": "Saffire-I discovery page located; browser extraction returned no readable dataset content. No PSI data files or API access were assumed."
+  }
+}

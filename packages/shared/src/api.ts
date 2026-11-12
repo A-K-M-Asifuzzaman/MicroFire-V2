@@ -23,8 +23,11 @@ export const SourceDetailResponseSchema = envelope(z.strictObject({
   citedBy: z.array(z.strictObject({ experimentId: IdSchema, claimIds: z.array(IdSchema), conditionFields: z.array(TextSchema) }))
 }));
 export const ExperimentResponseSchema = envelope(ExperimentSchema);
+const queryNumber = (schema: z.ZodNumber) => z.string().regex(/^\d+(?:\.\d+)?$/).transform(Number).pipe(schema).optional();
 export const ExperimentQuerySchema = z.strictObject({
   q: z.string().trim().min(1).max(200).optional(), program: TextSchema.optional(), material: TextSchema.optional(), flowDirection: TextSchema.optional(),
+  gravity: TextSchema.optional(), sourceId: IdSchema.optional(), observation: TextSchema.optional(),
+  oxygenPct: queryNumber(z.number().min(0).max(100)), pressureKpa: queryNumber(z.number().positive()), flowCmS: queryNumber(z.number().nonnegative()),
   limit: z.coerce.number().int().min(1).max(100).default(20), offset: z.coerce.number().int().nonnegative().max(100000).default(0)
 });
 export const ExperimentsResponseSchema = envelope(z.strictObject({ items: z.array(ExperimentSchema), total: z.number().int().nonnegative(), limit: z.number().int().positive(), offset: z.number().int().nonnegative(), datasetVersion: IdSchema, coverage: CoverageSchema }));
@@ -35,6 +38,7 @@ export const TargetConditionsSchema = z.strictObject({
 export const RankRequestSchema = z.strictObject({ question: TextSchema, targetConditions: TargetConditionsSchema, limit: z.number().int().min(1).max(20).default(5) });
 export const RankedEvidenceSchema = z.strictObject({
   experimentId: IdSchema, evidenceLevel: EvidenceLevelSchema, relevanceScore: z.number().min(0).max(1),
+  sourceIds: z.array(IdSchema).min(1),
   support: z.strictObject({ kind: z.enum(['observed', 'derived', 'interpretation', 'unsupported']), claimId: IdSchema.nullable(), citations: z.array(CitationSchema).max(20) }),
   matchedFields: z.array(TextSchema), mismatches: z.array(TextSchema), missingFields: z.array(TextSchema), reasons: z.array(TextSchema).min(1), limitations: z.array(TextSchema).min(1)
 }).superRefine((item, ctx) => {
@@ -45,6 +49,10 @@ export const RankedEvidenceSchema = z.strictObject({
     ctx.addIssue({ code: 'custom', message: 'Evidence level requires consistent source claim support' });
 });
 export const RankResponseSchema = envelope(z.strictObject({ items: z.array(RankedEvidenceSchema), rankingVersion: IdSchema, datasetVersion: IdSchema, scoreMeaning: z.literal('retrieval-relevance-not-fire-risk'), coverage: CoverageSchema }));
+export const FrontierResponseSchema = envelope(z.strictObject({
+  classification: z.enum(['evidence-present', 'related-evidence-only', 'conditions-differ', 'measurement-missing', 'not-in-audited-catalog']),
+  items: z.array(RankedEvidenceSchema), coverage: CoverageSchema, limitations: z.array(TextSchema).min(1)
+}));
 export const CompareRequestSchema = z.strictObject({ experimentIds: z.array(IdSchema).min(2).max(4) }).refine((r) => new Set(r.experimentIds).size === r.experimentIds.length, 'Choose distinct records');
 export const CompareResponseSchema = envelope(z.strictObject({ experimentIds: z.array(IdSchema), comparability: z.enum(['controlled', 'confounded', 'insufficient-data']), differences: z.array(TextSchema), missingFields: z.array(TextSchema), limitations: z.array(TextSchema).min(1), citations: z.array(CitationSchema).min(1) }));
 
