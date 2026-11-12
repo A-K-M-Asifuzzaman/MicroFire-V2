@@ -1,0 +1,39 @@
+TAP version 13
+# Disposable UI integration built from c22d6c917b161807565e9bed8e36ab05ce9b94d4; production checkout and public availability unchanged.
+# keyboard: real UI completed and resumed; 27 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+# Subtest: real M2 UI: keyboard completes, exports and resumes a server-confirmed case
+ok 1 - real M2 UI: keyboard completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 55183.030792
+  type: 'test'
+  ...
+# touch: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+# Subtest: real M2 UI: touch completes, exports and resumes a server-confirmed case
+ok 2 - real M2 UI: touch completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 50230.497791
+  type: 'test'
+  ...
+# no-webgl: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+# Subtest: real M2 UI: no-webgl completes, exports and resumes a server-confirmed case
+ok 3 - real M2 UI: no-webgl completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 50608.791667
+  type: 'test'
+  ...
+# 3d: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+# Subtest: real M2 UI: 3d completes, exports and resumes a server-confirmed case
+ok 4 - real M2 UI: 3d completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 51266.396417
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 228969.006417

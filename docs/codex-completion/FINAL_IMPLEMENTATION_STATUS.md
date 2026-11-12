@@ -1,6 +1,6 @@
 # Final implementation status — backend review candidate, 2026-11-12
 
-**The backend review package is implemented and committed. The entire website and public missions are not complete or approved.**
+**The backend review package is implemented and committed. The entire website and public missions are not complete or approved. Deadline execution evidence, the valid-cookie reload correction and real browser results are in DEADLINE_EXECUTION_STATUS.md.**
 
 Repository: A-K-M-Asifuzzaman/MicroFire-V2. Branch: codex/backend-completion-20261112. Worktree: MicroFire-V2-sol-completion. Starting/current remote main (freshly fetched again at delivery): b82db9c0be16c3485b67c774d9da734334192aec. Original clean Stage A: 6d1887b4b3860214cd0f2ab3c687527285be91d9; its six implementation commits were recovered onto main in this isolated branch. No main push, merge or deployment occurred. Claude's dirty worktree, Design B, Meshy production, videos and dependencies remain untouched. Test-generated screenshot changes were restored only in this new Codex worktree and excluded from code commits.
 
@@ -8,20 +8,20 @@ Repository: A-K-M-Asifuzzaman/MicroFire-V2. Branch: codex/backend-completion-202
 |---|---|---|
 | P0 baseline | Correct repo/branches/worktrees/main/ancestor chain inspected; clean isolated integration branch | No external acceptance inferred |
 | P1 Stage A | Recovered frozen schemas/coordinator/security/API/save admission; hosted guard corrected; 41 focused tests and 11 real HTTP cases passed | Astra Stage A review |
-| P2 M2 readiness | All seven endpoints, full manual fault/repair/qualification/source/Passport loop; pinned main transport/controller HTTP and type checks passed | contractRuntime remains null; Claude's 3-file seam adoption and real rendered keyboard/touch/no-WebGL/3D acceptance; preview not deployed |
+| P2 M2 readiness | All seven endpoints, full manual fault/repair/qualification/source/Passport loop; pinned main transport/controller HTTP and type checks passed | contractRuntime remains null; isolated live UI passed in all four modes after the reload correction; Astra approval, Claude's two-file seam adoption and release-target QA remain; preview not deployed |
 | P3 campaign | Source verification, prediction lock/explanation, evidence appraisal/confounders, fictional habitat reasoning; common v2 state/v1 Passport, runtime/revision identities, private signed replay/export adapter; 12 tests including server full campaign and optional-history reserve | Independent new-contract/adapter review; no campaign HTTP route or visual mission consumer is installed; no public mission availability |
 | P4 science | Exact recorded/source/observation filters, source IDs in rank, five-way question frontier endpoint, stricter deterministic PIX drafting/relevance/conflict abstention, duplicate comparison refusal | Claude DTO/UI adoption and independent scientific evaluation; no model or full-corpus claim |
 | P5 evidence | Four primary PDFs freshly downloaded/hashed/visually inspected, exact review-only candidates and reproducible acquisition/validation, runtime quarantine enforcement | Independent scientific/rights review and explicit versioned promotion; admitted corpus stays one B20, 55 legacy candidates remain excluded |
 | P6 recovery/Passport | Existing M2 checkpoint/save admission preserved; campaign MAC/replay/concurrent revision/dedup/export tested; source/training/learner provenance retained | All writable browser saves remain disabled; WebKit failed and Firefox could not launch; cross-process Chromium proof absent |
-| P7 security/checks | Dedicated R4 credential at both server layers with R1/R2 retained; real HTML/RSC tests; combined lint/types/197-unit/data/science/security/build passes | Astra R4 review, actual UI mission acceptance, full cross-browser/storage/device/release gates |
+| P7 security/checks | Dedicated R4 credential at both server layers with R1/R2 retained; real HTML/RSC tests; combined lint/types/197-unit/data/science/security/build passes | Astra R4 review, release-target UI acceptance, full cross-browser/storage/device/release gates |
 
 Final engineering evidence: npm run check exit 0, 197/0/0 unit tests; frontend controller suite 30/0/0; Stage A HTTP 11/0/0; pinned consumer HTTP 1/0/0; R4 HTTP 1/0/0; research browser 88/0/22. M2 browser runs and exact failing/follow-up counts are recorded in 12_TEST_EVIDENCE.md, without claiming a single full green final run. Serial film/tour follow-up passed 37/0/15. Native save primitives failed overall (1 pass, 2 fail), correctly preserving read-only behavior. npm audit has no high/critical and 10 moderate development dependency findings. Secret checking is limited pattern scanning, not a complete security audit.
 
 Handoffs: CLAUDE_INTEGRATION_HANDOFF.md contains exact exports/files/endpoints/errors/reconciliation and required UI tests. 11_SECURITY_REVIEW_HANDOFF.md identifies separate Stage A, R4 and campaign review decisions. Mission contracts are 04–07; scientific changes/candidate process in 08–09; persistence limits in 10. These are written handoffs; no external agent/chat message was sent and no independent signoff was fabricated.
 
-Remaining gates: Astra approval of Stage A/R4/new campaign security; actual frontend seam/Passport/campaign transport and scene integration; live rendered mission acceptance; process-isolated cross-browser save consistency; human review of source promotion/applicability; owner release decision. The private campaign is a bounded local review design, not public multi-user hosting. Old signed checkpoints remain the local recovery boundary; no durable anti-rollback service is claimed. Unreviewed data and private APIs were never deployed.
+Remaining gates: Astra approval of Stage A/R4/new campaign security; actual frontend seam/Passport/campaign transport and scene integration; release-target rendered mission acceptance; process-isolated cross-browser save consistency; human review of source promotion/applicability; owner release decision. The private campaign is a bounded local review design, not public multi-user hosting. Old signed checkpoints remain the local recovery boundary; no durable anti-rollback service is claimed. Unreviewed data and private APIs were never deployed.
 
-Next required action: independent Astra review of the exact code milestones below, followed by Claude's narrow M2 seam integration and live UI acceptance. Codex's next dependent integration task is a separately reviewed campaign transport/HTTP adapter; do not expose the private server class or enlarge M2's frozen resume/body contract without that review. No permission question is pending.
+Next required action: independent Astra review of the exact code milestones below, followed by Claude's narrow M2 seam integration and release-target live UI acceptance. The isolated four-mode browser proof is now implemented; it exposed and verified the valid-cookie reload correction 0b17864. Codex's next dependent integration task is a separately reviewed campaign transport/HTTP adapter; do not expose the private server class or enlarge M2's frozen resume/body contract without that review. Exact owner cutoff times remain unconfirmed; a deadline clarification is pending. No integration or deployment approval is inferred.
 
 ## Stage A recovery/security correction
 
@@ -165,3 +165,9 @@ The six original backend commits were cherry-picked before the focused correctio
 - `tests/unit/training-helpers.ts`
 - `tests/unit/training-save.test.ts`
 - `tests/unit/training-security.test.ts`
+
+## Deadline reliability correction
+
+`0b17864c416669e6ec66072afcd4dea814cf812e` fixes valid-cookie boot in apps/web/game/controller.ts and adds three regressions in its controller test file. The public runtime remains null. Latest combined check passed 197 units plus lint/types/data/science/security/build; the separate frontend suite now passes 33 tests. Actual hosted desktop/mobile research and disposable live mission evidence are recorded in DEADLINE_EXECUTION_STATUS.md. No public source SHA, rendered video acceptance or exact cutoff confirmation is claimed.
+
+Final deadline live acceptance: one pinned run at c22d6c917b161807565e9bed8e36ab05ce9b94d4 passed 4/4 real rendered mission paths (keyboard, touch, no-WebGL fallback, actual 3D), including learner-note retention and signed download/reload/resume. The temporary integrated checkout also passed 33 frontend tests and production build. This is review evidence; public availability and mandatory approvals remain unchanged.

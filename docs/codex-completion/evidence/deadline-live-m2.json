@@ -1,0 +1,86 @@
+{
+  "sourceSha": "c22d6c917b161807565e9bed8e36ab05ce9b94d4",
+  "passed": 4,
+  "failed": 0,
+  "skipped": 0,
+  "records": [
+    {
+      "sourceSha": "c22d6c917b161807565e9bed8e36ab05ce9b94d4",
+      "mode": "keyboard",
+      "url": "http://127.0.0.1:3390/missions/bass-assembly?preview=bass-b20-training-v1",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "browser": "156.0.8078.4",
+      "revision": 23,
+      "posts": 27,
+      "learningChecks": 5,
+      "passportEntries": 2,
+      "pageErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "writableSavesEnabled": false,
+      "integrationScope": "disposable-local-review-only-not-release-approval"
+    },
+    {
+      "sourceSha": "c22d6c917b161807565e9bed8e36ab05ce9b94d4",
+      "mode": "touch",
+      "url": "http://127.0.0.1:3391/missions/bass-assembly?preview=bass-b20-training-v1",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "browser": "156.0.8078.4",
+      "revision": 22,
+      "posts": 25,
+      "learningChecks": 5,
+      "passportEntries": 2,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "writableSavesEnabled": false,
+      "integrationScope": "disposable-local-review-only-not-release-approval"
+    },
+    {
+      "sourceSha": "c22d6c917b161807565e9bed8e36ab05ce9b94d4",
+      "mode": "no-webgl",
+      "url": "http://127.0.0.1:3392/missions/bass-assembly?preview=bass-b20-training-v1",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "browser": "156.0.8078.4",
+      "revision": 22,
+      "posts": 25,
+      "learningChecks": 5,
+      "passportEntries": 2,
+      "pageErrors": [],
+      "consoleErrors": [
+        "THREE.WebGLRenderer: THREE.WebGLRenderer: Error creating WebGL context."
+      ],
+      "writableSavesEnabled": false,
+      "integrationScope": "disposable-local-review-only-not-release-approval"
+    },
+    {
+      "sourceSha": "c22d6c917b161807565e9bed8e36ab05ce9b94d4",
+      "mode": "3d",
+      "url": "http://127.0.0.1:3393/missions/bass-assembly?preview=bass-b20-training-v1",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "browser": "156.0.8078.4",
+      "revision": 22,
+      "posts": 25,
+      "learningChecks": 5,
+      "passportEntries": 2,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "writableSavesEnabled": false,
+      "integrationScope": "disposable-local-review-only-not-release-approval"
+    }
+  ],
+  "artifactDirectory": "/Users/asifzaman/.codex/visualizations/2026/11/12/01a1cf2b-dc04-7572-a122-84cd3aed8524/m2-live-acceptance",
+  "checks": "real UI; signed checkpoint download/reload/resume; learner notes visible after resume; source/training/learner provenance"
+}
