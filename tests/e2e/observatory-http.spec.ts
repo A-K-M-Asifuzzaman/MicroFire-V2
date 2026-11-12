@@ -43,19 +43,20 @@ test.describe('real HTTP: Ask, research tools and Passport trust', () => {
     for (const [question, abstained] of [['What happened in B20?', false], ['Can this certify a lunar habitat?', true], ['B16 '.repeat(999).trim(), true],
       ['B999 '.repeat(799).trim(), true], ['B20 '.repeat(999).trim(), false], ['What happened to cotton?', true]] as const) {
       await page.getByLabel('Your research question').fill(question);
-      const response = page.waitForResponse((r) => r.url().endsWith('/api/ask'));
+      const response = page.waitForResponse((r) => r.url().endsWith('/api/intelligence'));
       await page.getByRole('button', { name: 'Ask PIX', exact: true }).click();
       expect((await response).status()).toBe(200);
       await expect(page.getByTestId(abstained ? 'pix-abstention' : 'pix-answer')).toBeVisible();
       await expect(page.getByTestId(abstained ? 'pix-answer' : 'pix-abstention')).toHaveCount(0);
     }
-    await expect(page.getByText(/no AI model was used/)).toBeVisible();
+    await expect(page.getByTestId('pix-method')).toContainText('no AI model');
     expect(await noOverflow(page)).toBe(true);
   });
 
   test('F2: retry resends the exact submitted question and conditions; suggestions carry visible conditions (2 POSTs)', async ({ page }) => {
     const bodies: unknown[] = [];
-    await page.route('**/api/ask', async (r) => { bodies.push(r.request().postDataJSON()); if (bodies.length === 1) await r.abort(); else await r.continue(); });
+    let failing = true; // first submit: the intelligence endpoint and the /api/ask fallback are both unreachable
+    await page.route('**/api/{ask,intelligence}', async (r) => { if (r.request().url().endsWith('/api/intelligence')) bodies.push(r.request().postDataJSON()); if (failing) await r.abort(); else await r.continue(); });
     await page.goto('/ask');
     await page.getByLabel('Your research question').fill('What happened in B20?');
     await page.getByText('Add target conditions (optional)').click();
@@ -65,17 +66,18 @@ test.describe('real HTTP: Ask, research tools and Passport trust', () => {
     await expect(page.locator('.notice[role="alert"]')).toContainText('could not be reached');
     // Editing the draft after a failure must not leak into the retry of the failed request.
     await page.getByLabel('Material', { exact: true }).fill('PMMA');
+    failing = false;
     await page.getByRole('button', { name: 'Retry' }).click();
     await expect(page.getByTestId('pix-answer').or(page.getByTestId('pix-abstention'))).toBeVisible();
     expect(bodies).toHaveLength(2);
     expect(bodies[1]).toEqual(bodies[0]);
-    expect(bodies[0]).toEqual({ question: 'What happened in B20?', targetConditions: { material: 'cotton', oxygenPct: 21 } });
+    expect(bodies[0]).toEqual({ question: 'What happened in B20?', targetConditions: { material: 'cotton', oxygenPct: 21 }, environment: 'custom', limit: 4 });
     await expect(page.getByTestId('pix-request-conditions')).toHaveText('material cotton · oxygen 21 vol%');
     await shot(page, 'ask-retry-conditions-desktop');
 
     await page.getByRole('button', { name: 'What happened in B19?' }).click();
     await expect(page.getByTestId('pix-abstention')).toBeVisible();
-    expect(bodies[2]).toEqual({ question: 'What happened in B19?', targetConditions: { material: 'PMMA', oxygenPct: 21 } });
+    expect(bodies[2]).toEqual({ question: 'What happened in B19?', targetConditions: { material: 'PMMA', oxygenPct: 21 }, environment: 'custom', limit: 4 });
     await expect(page.getByTestId('pix-request-conditions')).toHaveText('material PMMA · oxygen 21 vol%');
   });
 
@@ -84,7 +86,7 @@ test.describe('real HTTP: Ask, research tools and Passport trust', () => {
     const gate = new Promise<void>((r) => { release = r; });
     let started!: () => void;
     const firstStarted = new Promise<void>((r) => { started = r; });
-    await page.route('**/api/ask', async (r: Route) => {
+    await page.route('**/api/intelligence', async (r: Route) => {
       if (r.request().postDataJSON().question !== 'What does B20 establish about airflow?') return r.continue();
       const response = await r.fetch(); // real backend answer, held back
       started(); await gate;
@@ -105,8 +107,8 @@ test.describe('real HTTP: Ask, research tools and Passport trust', () => {
     // A stale failure must not replace the newer result either (mocked transport, no POST reaches the server).
     let releaseError!: () => void;
     const errorGate = new Promise<void>((r) => { releaseError = r; });
-    await page.unroute('**/api/ask');
-    await page.route('**/api/ask', async (r) => { if (r.request().postDataJSON().question === 'stale question') { await errorGate; await r.abort().catch(() => undefined); } else await r.fulfill({ status: 503, json: { apiVersion: '1', error: { code: 'PROVIDER_UNAVAILABLE', message: 'Newer request failed safely.', retryable: true } } }); });
+    await page.unroute('**/api/intelligence');
+    await page.route('**/api/{ask,intelligence}', async (r) => { if (r.request().postDataJSON().question === 'stale question') { await errorGate; await r.abort().catch(() => undefined); } else await r.fulfill({ status: 503, json: { apiVersion: '1', error: { code: 'PROVIDER_UNAVAILABLE', message: 'Newer request failed safely.', retryable: true } } }); });
     await page.getByLabel('Your research question').fill('stale question');
     await page.getByRole('button', { name: 'Ask PIX', exact: true }).click();
     await page.getByLabel('Your research question').fill('newer question');

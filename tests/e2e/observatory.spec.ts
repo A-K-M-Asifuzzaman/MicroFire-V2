@@ -12,6 +12,7 @@ const envelope = (data: unknown) => ({ json: { apiVersion: '1', data } });
 const science = (fn: string, input: unknown): unknown => JSON.parse(execFileSync(process.execPath, ['--import', 'tsx', 'tests/e2e/science-oracle.ts', fn, JSON.stringify(input)], { encoding: 'utf8' }));
 async function scienceBackedPosts(page: Page) {
   await page.route('**/api/ask', (r) => r.fulfill(envelope(science('ask', r.request().postDataJSON()))));
+  await page.route('**/api/intelligence', (r) => r.fulfill(envelope(science('intelligence', r.request().postDataJSON()))));
   await page.route('**/api/evidence/rank', (r) => r.fulfill(envelope(science('rank', r.request().postDataJSON()))));
   await page.route('**/api/gaps', (r) => r.fulfill(envelope(science('gaps', r.request().postDataJSON()))));
 }
@@ -161,19 +162,19 @@ test('Ask PIX: abstentions, quarantined references and failures are never shown 
   await expect(page.getByText(/\(3995 characters\)/)).toBeVisible();
   expect(await noOverflow(page)).toBe(true);
 
-  await page.unroute('**/api/ask');
-  await page.route('**/api/ask', (r) => r.fulfill({ status: 429, headers: { 'Retry-After': '42' }, json: { apiVersion: '1', error: { code: 'RATE_LIMITED', message: 'Local request budget reached; retry after the indicated delay.', retryable: true } } }));
+  await page.unroute('**/api/{ask,intelligence}');
+  await page.route('**/api/{ask,intelligence}', (r) => r.fulfill({ status: 429, headers: { 'Retry-After': '42' }, json: { apiVersion: '1', error: { code: 'RATE_LIMITED', message: 'Local request budget reached; retry after the indicated delay.', retryable: true } } }));
   await page.getByRole('button', { name: 'What happened in B19?' }).click();
   await expect(page.locator('.notice[role="alert"]')).toContainText('Retry in about 42 s');
 
-  await page.unroute('**/api/ask');
-  await page.route('**/api/ask', (r) => r.fulfill(envelope({ abstained: false, answer: 'Invented', statements: [], claimIds: [], citations: [], limitations: [] })));
+  await page.unroute('**/api/{ask,intelligence}');
+  await page.route('**/api/{ask,intelligence}', (r) => r.fulfill(envelope({ abstained: false, answer: 'Invented', statements: [], claimIds: [], citations: [], limitations: [] })));
   await page.getByRole('button', { name: 'What happened in B19?' }).click();
   await expect(page.locator('.notice[role="alert"]')).toContainText('did not match the evidence contract');
   await expect(page.getByText('Invented')).toHaveCount(0);
 
-  await page.unroute('**/api/ask');
-  await page.route('**/api/ask', (r) => r.abort());
+  await page.unroute('**/api/{ask,intelligence}');
+  await page.route('**/api/{ask,intelligence}', (r) => r.abort());
   await page.getByRole('button', { name: 'What happened in B19?' }).click();
   await expect(page.locator('.notice[role="alert"]')).toContainText('could not be reached');
   await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();

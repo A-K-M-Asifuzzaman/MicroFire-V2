@@ -8,6 +8,7 @@ const envelope = (data: unknown) => ({ json: { apiVersion: '1', data } });
 const science = (fn: string, input: unknown): unknown => JSON.parse(execFileSync(process.execPath, ['--import', 'tsx', 'tests/e2e/science-oracle.ts', fn, JSON.stringify(input)], { encoding: 'utf8' }));
 async function oraclePosts(page: Page) {
   await page.route('**/api/ask', (r) => r.fulfill(envelope(science('ask', r.request().postDataJSON()))));
+  await page.route('**/api/intelligence', (r) => r.fulfill(envelope(science('intelligence', r.request().postDataJSON()))));
   await page.route('**/api/evidence/rank', (r) => r.fulfill(envelope(science('rank', r.request().postDataJSON()))));
   await page.route('**/api/gaps', (r) => r.fulfill(envelope(science('gaps', r.request().postDataJSON()))));
 }

@@ -865,3 +865,32 @@ main > * { animation: fade .35s var(--ease) both; }
 .atlas-more { margin-top: 10px; }
 .atlas-more-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0 14px; margin-top: 12px; }
 .atlas-more small { display: block; margin-top: 4px; color: var(--ink-3); }
+
+/* Scientific intelligence (Workstation + PIX): six-condition applicability analysis */
+.ws-section { margin: 18px 0 2px; font: 800 1.15rem var(--display); }
+.xfer { display: grid; gap: 12px; }
+.xfer-record { display: grid; gap: 12px; }
+.xfer-verdict { padding: 14px 18px; border-radius: 20px; border: var(--outline); box-shadow: var(--pop-sm); background: var(--paper); }
+.xfer-verdict h3 { margin: 0 0 4px; font: 800 1.25rem/1.15 var(--display); }
+.xfer-verdict p { margin: 0; }
+.xfer-verdict[data-tone="mint"] { background: var(--mint-soft); }
+.xfer-verdict[data-tone="sun"] { background: var(--sun-soft); }
+.xfer-verdict[data-tone="coral"] { background: #ffe3e4; }
+.xfer-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .92rem; }
+.xfer-table th, .xfer-table td { padding: 10px 12px; border-bottom: 2px solid var(--lav); text-align: left; vertical-align: top; }
+.xfer-table thead th { font: 800 .8rem var(--body); color: var(--ink-3); }
+.xfer-table td .meta { margin: 4px 0 0; }
+.xfer-pill { display: inline-block; padding: 2px 10px; border-radius: 999px; border: 2px solid var(--ink); font: 700 .8rem var(--body); background: var(--paper); }
+.xfer-pill[data-kind="match"] { background: var(--mint-soft); }
+.xfer-pill[data-kind="near"], .xfer-pill[data-kind="context"] { background: #eceeff; }
+.xfer-pill[data-kind="differ"] { background: var(--sun-soft); }
+.xfer-pill[data-kind="unknown"] { background: #ffe3e4; }
+.xfer-pill[data-kind="unset"] { background: var(--cloud); border-style: dashed; }
+@media (max-width: 700px) {
+  .xfer-table thead { display: none; }
+  .xfer-table, .xfer-table tbody, .xfer-table tr, .xfer-table th, .xfer-table td { display: block; width: 100%; }
+  .xfer-table tr { padding: 10px 0; border-bottom: 2px solid var(--lav); }
+  .xfer-table th, .xfer-table td { border: 0; padding: 2px 0; }
+  .xfer-table td:nth-of-type(1)::before { content: "Your scenario: "; font-weight: 700; }
+  .xfer-table td:nth-of-type(2)::before { content: "NASA recorded: "; font-weight: 700; }
+}

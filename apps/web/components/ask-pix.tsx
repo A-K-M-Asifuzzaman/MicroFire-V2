@@ -1,6 +1,8 @@
 'use client';
 import { useRef, useState, type FormEvent } from 'react';
-import { AskResponseSchema, type TargetConditions } from '@microfire/shared';
+import Link from 'next/link';
+import { AskResponseSchema, IntelligenceResponseSchema, type TargetConditions } from '@microfire/shared';
+import { TransferAnalysis, type IntelligenceData } from './intelligence-ui';
 import { callApi, Failure, useLatestRequest, type ApiFailure } from './client-api';
 import { CitationList, Kind, Limitations, type SourceRef } from './evidence-ui';
 import type { PixState } from './pix-avatar';
@@ -9,7 +11,11 @@ import { PixStage } from './pix-stage';
 type AskData = ReturnType<typeof AskResponseSchema.parse>['data'];
 /** The submitted request is frozen: its echo, response, failure and retry all refer to this exact snapshot. */
 type AskRequest = Readonly<{ question: string; targetConditions: Readonly<TargetConditions> }>;
-type State = { status: 'idle' } | { status: 'loading'; request: AskRequest } | { status: 'done'; request: AskRequest; data: AskData } | { status: 'failed'; request: AskRequest; failure: ApiFailure };
+/** `intel` is the scientific-intelligence-v1 result when that endpoint answered; null means the labelled /api/ask fallback ran. */
+type State = { status: 'idle' } | { status: 'loading'; request: AskRequest } | { status: 'done'; request: AskRequest; data: AskData; intel: IntelligenceData | null }
+  | { status: 'failed'; request: AskRequest; failure: ApiFailure };
+/** Endpoint unavailable (not deployed, unreachable or server fault): fall back. A 400/413/415/429 is a real answer about the request and is shown as-is. */
+const unavailable = (f: ApiFailure) => f.status === 0 || f.status === 404 || f.status >= 500;
 
 const abstentionTitles: Record<string, string> = {
   'unsupported-intent': 'Outside what this evidence can support',
@@ -43,9 +49,13 @@ export function AskPix({ sources }: { sources: SourceRef[] }) {
   const ask = async (request: AskRequest) => {
     const r = begin();
     setState({ status: 'loading', request });
-    const result = await callApi('/api/ask', AskResponseSchema, request, r.signal);
+    const intel = await callApi('/api/intelligence', IntelligenceResponseSchema, { ...request, environment: 'custom', limit: 4 }, r.signal);
     if (!r.isCurrent()) return; // superseded or unmounted: never let an older response replace a newer one
-    setState(result.ok ? { status: 'done', request, data: result.data } : { status: 'failed', request, failure: result });
+    if (intel.ok) return setState({ status: 'done', request, data: intel.data.summary, intel: intel.data });
+    if (!unavailable(intel)) return setState({ status: 'failed', request, failure: intel });
+    const result = await callApi('/api/ask', AskResponseSchema, request, r.signal);
+    if (!r.isCurrent()) return;
+    setState(result.ok ? { status: 'done', request, data: result.data, intel: null } : { status: 'failed', request, failure: result });
   };
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -121,8 +131,18 @@ export function AskPix({ sources }: { sources: SourceRef[] }) {
           </div>)}
           <Limitations items={state.data.limitations} />
         </div>)}
-      {state.status === 'done' && <p className="meta" style={{ marginTop: 14 }}>
-        Retrieval {state.data.retrievalVersion} · dataset {state.data.datasetVersion}. Assembled from catalog statements by a fixed template; no AI model was used. Citation checks confirm source lineage, not scientific truth.
+      {state.status === 'done' && state.intel && <div className="stack" style={{ marginTop: 14 }}>
+        {state.intel.ranking.items[0] && (() => { const top = state.intel.ranking.items[0]; return <div className="panel pix-source" data-testid="pix-source">
+          <p className="eyebrow" style={{ margin: 0 }}>Source experiment</p>
+          <p style={{ margin: '4px 0' }}><Link href={`/experiments/${top.experimentId}`}>{top.experimentId}</Link> · {top.support.kind === 'unsupported' ? 'related record; no cited observation supports this exact question' : `supported by a ${top.support.kind} statement (${top.evidenceLevel})`}</p>
+          <details className="disclose"><summary>Why this record is relevant</summary><ul>{top.reasons.map((x) => <li key={x}>{x}</li>)}</ul>
+            <p className="meta">Retrieval relevance {top.relevanceScore.toFixed(2)}: a word-and-condition match score, not fire risk, safety or scientific confidence.</p></details>
+        </div>; })()}
+        <TransferAnalysis transfer={state.intel.transfer} note={state.intel.transferNote} sources={sources} />
+      </div>}
+      {state.status === 'done' && <p className="meta" style={{ marginTop: 14 }} data-testid="pix-method">
+        {state.intel ? <>Method: scientific intelligence API ({state.intel.intelligenceVersion}), deterministic source templates; no AI model was used.</> : <>Method: catalog-template fallback (/api/ask) because the intelligence service was unavailable. Deterministic; no AI model was used.</>}{' '}
+        Retrieval {state.data.retrievalVersion} · dataset {state.data.datasetVersion}. Citation checks confirm source lineage, not scientific truth.
       </p>}
     </section>
   </div>;
