@@ -28,7 +28,8 @@ The judging blocks are WHO, WHY, WHAT and SO WHAT NEXT, allocated 45, 60, 60 and
 | 104.7–110.7 | What | So what did we build? A research observatory that shows its work. | 12 w ≈ 5 s |
 | 110.3–122.3 | What | Ask PIX a question. It answers only from cited evidence, and every line links to its page. PIX is deterministic; there's no AI model inventing answers. | 26 w ≈ 11 s |
 | 121.9–131.4 | What | Ask something the evidence can't support, like certifying a lunar habitat, and PIX says so instead of guessing. | 18 w ≈ 8 s |
-| 131.0–146.5 | What | The Evidence Workstation traces a question to its conditions, the admitted record, NASA's observation, the citation and its limits. | 19 w ≈ 8 s |
+| 131.0–139.2 | What | Ask whether B20 transfers to a Moon habitat. At a glance: what NASA recorded, what matches, what differs, and the key limit. | 21 w ≈ 8 s |
+| 138.8–146.5 | What | The Citation Checker confirms a reference against the NASA source, and flags a wrong page. | 15 w ≈ 6 s |
 | 146.1–157.1 | What | The B20 dossier explains the instrument part by part, with unknowns clearly marked. | 13 w ≈ 5 s |
 | 156.7–164.7 | What | And evidence exports keep their sources and limitations attached. | 9 w ≈ 4 s |
 | 164.3–170.3 | Next | So what's next? Learning by doing the science. | 8 w ≈ 3 s |
