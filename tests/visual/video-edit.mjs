@@ -39,7 +39,7 @@ for (const [i, s] of edl.shots.entries()) {
   const out = path.join(work, `s${String(i).padStart(3, '0')}.mp4`), over = path.join(work, `o${i}.png`);
   const enc = ['-r', String(FPS), '-c:v', 'libx264', '-preset', 'slow', '-crf', '18', '-pix_fmt', 'yuv420p', '-an'];
   if (s.card) {
-    await png(`<div class="card">${s.card.kicker ? `<span class="k">${esc(s.card.kicker)}</span>` : ''}<h1>${esc(s.card.title)}</h1>${s.card.body ? `<p>${esc(s.card.body)}</p>` : ''}${s.card.foot ? `<div class="foot">${esc(s.card.foot)}</div>` : ''}</div>`, over);
+    await png(`<div class="card">${s.card.kicker ? `<span class="k">${esc(s.card.kicker)}</span>` : ''}<h1 style="font-size:${s.card.title.length > 26 ? 76 : 104}px">${esc(s.card.title)}</h1>${s.card.body ? `<p>${esc(s.card.body)}</p>` : ''}${s.card.foot ? `<div class="foot">${esc(s.card.foot)}</div>` : ''}</div>`, over);
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-loop', '1', '-t', String(s.dur), '-i', over, '-vf', `scale=${W}:${H},format=yuv420p`, ...enc, out]);
   } else {
     await png(`${s.tag ? `<span class="tag">${esc(s.tag)}</span>` : ''}${s.caption ? `<div class="cap">${s.chapter ? `<span class="chap">${esc(s.chapter)}</span>` : ''}${esc(s.caption)}</div>` : ''}`, over);

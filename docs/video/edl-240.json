@@ -1,30 +1,189 @@
 {
  "title": "MicroFire — local submission (240 s). WHO 45 · WHY 60 · WHAT 60 · SO WHAT NEXT 75",
  "shots": [
-  { "card": { "kicker": "NASA Space Apps 2026 · Flame in Freefall", "title": "MicroFire", "body": "The Living Science Observatory: NASA's microgravity fire evidence, checked at the source.", "foot": "Team MicroFire · Independent project, not NASA-endorsed" }, "dur": 6 },
-  { "clip": "01-opening-film", "from": 1, "dur": 11, "chapter": "Who", "tag": "Opening film · illustration", "caption": "We're Team MicroFire. We love space, and we wanted fire science anyone can check." },
-  { "clip": "02-gravity-lens", "from": 0.5, "dur": 13, "chapter": "Who", "tag": "Illustration, not a measurement", "caption": "Gravity changes a flame. Switch it on and off in the Gravity Lens, with PIX as your guide." },
-  { "clip": "02b-home-sections", "from": 0, "dur": 17, "chapter": "Who", "caption": "We built one place where students, teachers and researchers meet the real evidence." },
-
-  { "card": { "kicker": "Why", "title": "The evidence is real. It is also buried.", "body": "NASA has flown fire experiments in microgravity. Their results sit in long technical reports, and copied catalogs drift from the source." }, "dur": 7 },
-  { "clip": "03-atlas", "from": 0, "dur": 12, "chapter": "Why", "caption": "Our Atlas admits only records checked against the NASA source: 1 admitted, 55 quarantined until verified." },
-  { "clip": "04-b20-dossier", "from": 0, "dur": 11, "chapter": "Why", "caption": "BASS-II test B20: a PMMA film burning against airflow, documented in one NASA report." },
-  { "clip": "04-b20-dossier", "from": 11, "dur": 11, "chapter": "Why", "caption": "A copied catalog said 16.5% oxygen. NASA Table A.1, page 112, says 17.4% calibrated. We fixed it." },
-  { "clip": "07-frontier", "from": 0, "dur": 9, "chapter": "Why", "caption": "Future crews need to know what was measured, and what is still unknown." },
-  { "card": { "kicker": "What", "title": "A research observatory that shows its work.", "body": "Search, trace, ask and export. Every answer carries its NASA page and its limits." }, "dur": 6 },
-
-  { "clip": "05-ask-pix", "from": 0, "dur": 12, "chapter": "What", "caption": "Ask PIX answers from cited evidence only. No AI model: every line links to its page." },
-  { "clip": "05-ask-pix", "from": 12, "dur": 11, "chapter": "What", "caption": "Ask beyond the evidence and PIX says so instead of guessing." },
-  { "clip": "06-workstation", "from": 0, "dur": 14, "chapter": "What", "caption": "The Workstation traces a question to conditions, the record, NASA's observation, the citation and the limits." },
-  { "clip": "04-b20-dossier", "from": 22, "dur": 12, "chapter": "What", "caption": "The B20 dossier explains the instrument part by part. Unknown values stay 'not recorded'." },
-  { "clip": "09-passport", "from": 0, "dur": 8, "chapter": "What", "tag": "Preview", "caption": "Evidence exports keep their sources and limitations." },
-
-  { "card": { "kicker": "So what next", "title": "Learn by doing the science.", "body": "Five missions turn the evidence into play. They are designed and the rules are tested; none is playable yet." }, "dur": 6 },
-  { "clip": "08-missions-and-bay", "from": 1, "dur": 11, "chapter": "Next", "tag": "Illustrations · not playable yet", "caption": "From station arrival to a fictional lunar habitat, each decision will cite its evidence." },
-  { "clip": "08-missions-and-bay", "from": 12, "dur": 6, "chapter": "Next", "tag": "Concept illustration", "caption": "Mission 05 asks what NASA evidence can and cannot tell a habitat designer." },
-  { "clip": "08-missions-and-bay", "from": 22, "dur": 20, "chapter": "Next", "tag": "3D tour · gameplay not playable yet", "caption": "The BASS-II training bay is built in 3D. Its gameplay opens after server integration." },
-  { "card": { "kicker": "Next steps", "title": "Where we go from here", "body": "Verify more NASA records · connect the mission server · independent science review · test with students and teachers." }, "dur": 9 },
-  { "card": { "kicker": "What we need", "title": "Help us grow the evidence", "body": "Combustion-science reviewers, time with more NASA reports, and classrooms willing to test." }, "dur": 8 },
-  { "card": { "kicker": "Try it now", "title": "microfire-v2-preview.vercel.app", "body": "Everything in this video was recorded from the live site.", "foot": "Independent educational project. Not NASA-endorsed. No fire-safety certification." }, "dur": 7 }
+  {
+   "card": {
+    "kicker": "NASA Space Apps 2026 · Flame in Freefall",
+    "title": "MicroFire",
+    "body": "The Living Science Observatory: NASA's microgravity fire evidence, checked at the source.",
+    "foot": "Team MicroFire · Independent project, not NASA-endorsed"
+   },
+   "dur": 6
+  },
+  {
+   "clip": "01-opening-film",
+   "from": 0.8,
+   "dur": 9.6,
+   "chapter": "Who",
+   "tag": "Opening film · illustration",
+   "caption": "We're Team MicroFire. We love space, and we wanted fire science anyone can check."
+  },
+  {
+   "clip": "02-gravity-lens",
+   "from": 0.5,
+   "dur": 14,
+   "chapter": "Who",
+   "tag": "Illustration, not a measurement",
+   "caption": "Gravity changes a flame. Switch it on and off in the Gravity Lens, with PIX as your guide."
+  },
+  {
+   "clip": "02b-home-sections",
+   "from": 0,
+   "dur": 16,
+   "chapter": "Who",
+   "caption": "We built one place where students, teachers and researchers meet the real evidence."
+  },
+  {
+   "card": {
+    "kicker": "Why",
+    "title": "The evidence is real. It is also buried.",
+    "body": "NASA has flown fire experiments in microgravity. Their results sit in long technical reports, and copied catalogs drift from the source."
+   },
+   "dur": 7
+  },
+  {
+   "clip": "03-atlas",
+   "from": 1,
+   "dur": 12.5,
+   "chapter": "Why",
+   "caption": "Our Atlas admits only records checked against the NASA source: 1 admitted, 55 quarantined until verified."
+  },
+  {
+   "clip": "04-b20-dossier",
+   "from": 1,
+   "dur": 5,
+   "chapter": "Why",
+   "caption": "BASS-II test B20: a PMMA film burning against airflow, documented in one NASA report."
+  },
+  {
+   "clip": "04-b20-dossier",
+   "from": 4.5,
+   "dur": 7,
+   "chapter": "Why",
+   "caption": "A copied catalog said 16.5% oxygen. NASA Table A.1, page 112, says 17.4% calibrated. We fixed it."
+  },
+  {
+   "clip": "04-b20-dossier",
+   "from": 23,
+   "dur": 8,
+   "chapter": "Why",
+   "caption": "Missing values stay 'not recorded'. Nothing is filled in by guesswork."
+  },
+  {
+   "clip": "07-frontier",
+   "from": 1.2,
+   "dur": 12,
+   "chapter": "Why",
+   "caption": "Future crews need to know what was measured, and what is still unknown."
+  },
+  {
+   "card": {
+    "kicker": "What",
+    "title": "A research observatory that shows its work.",
+    "body": "Search, trace, ask and export. Every answer carries its NASA page and its limits."
+   },
+   "dur": 6
+  },
+  {
+   "clip": "05-ask-pix",
+   "from": 1.2,
+   "dur": 12,
+   "chapter": "What",
+   "caption": "Ask PIX answers from cited evidence only. No AI model: every line links to its page."
+  },
+  {
+   "clip": "05-ask-pix",
+   "from": 14,
+   "dur": 9.5,
+   "chapter": "What",
+   "caption": "Ask beyond the evidence and PIX says so instead of guessing."
+  },
+  {
+   "clip": "06-workstation",
+   "from": 5.5,
+   "dur": 17.5,
+   "chapter": "What",
+   "caption": "The Workstation traces a question to conditions, the record, NASA's observation, the citation and the limits."
+  },
+  {
+   "clip": "04-b20-dossier",
+   "from": 10,
+   "dur": 11,
+   "chapter": "What",
+   "caption": "The B20 dossier explains the instrument part by part. Unknown values stay 'not recorded'."
+  },
+  {
+   "clip": "09-passport",
+   "from": 9.5,
+   "dur": 8,
+   "chapter": "What",
+   "tag": "Preview",
+   "caption": "Evidence exports keep their sources and limitations."
+  },
+  {
+   "card": {
+    "kicker": "So what next",
+    "title": "Learn by doing the science.",
+    "body": "Five missions turn the evidence into play. They are designed and the rules are tested; none is playable yet."
+   },
+   "dur": 6
+  },
+  {
+   "clip": "08-missions-and-bay",
+   "from": 0.3,
+   "dur": 10,
+   "chapter": "Next",
+   "tag": "Illustrations · not playable yet",
+   "caption": "From station arrival to a fictional lunar habitat, each decision will cite its evidence."
+  },
+  {
+   "clip": "08-missions-and-bay",
+   "from": 12,
+   "dur": 5,
+   "chapter": "Next",
+   "tag": "Concept illustration",
+   "caption": "Mission 05 asks what NASA evidence can and cannot tell a habitat designer."
+  },
+  {
+   "clip": "08-missions-and-bay",
+   "from": 21,
+   "dur": 18,
+   "chapter": "Next",
+   "tag": "3D tour · gameplay not playable yet",
+   "caption": "The BASS-II training bay is built in 3D. Its gameplay opens after server integration."
+  },
+  {
+   "card": {
+    "kicker": "Honest status",
+    "title": "What works today, and what doesn't yet",
+    "body": "Working: the Atlas, the B20 dossier, cited Ask PIX, the evidence trace and export. Not yet: playable missions, more admitted records, independent science review."
+   },
+   "dur": 9
+  },
+  {
+   "card": {
+    "kicker": "Next steps",
+    "title": "Where we go from here",
+    "body": "Verify more NASA records · connect the mission server · independent science review · test with students and teachers."
+   },
+   "dur": 9
+  },
+  {
+   "card": {
+    "kicker": "What we need",
+    "title": "Help us grow the evidence",
+    "body": "Combustion-science reviewers, time with more NASA reports, and classrooms willing to test."
+   },
+   "dur": 8
+  },
+  {
+   "card": {
+    "kicker": "Try it now",
+    "title": "microfire-v2-preview.vercel.app",
+    "body": "Everything in this video was recorded from the live site.",
+    "foot": "Independent educational project. Not NASA-endorsed. No fire-safety certification."
+   },
+   "dur": 7
+  }
  ]
 }

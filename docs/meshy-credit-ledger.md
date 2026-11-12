@@ -146,3 +146,18 @@ Task IDs, balance before and balance after for every job are in `tools/meshy/led
 | `m3-diorama-v1` | Mission map + Mission 03 page | 30 | Accepted with note: the chamber renders opaque, with no visible flame | Card and page still, generic illustration only |
 | `m4-diorama-v1` | Mission map + Mission 04 page | 30 | Accepted | Card and page still |
 | `m5-diorama-v1` | Mission map + Mission 05 page | 30 | Accepted with note: the ground is pale blue, not grey regolith (fictional scene) | Card and page still |
+| `m1-science-rack-v1` | Mission 01 scene (glovebox rack) | 30 | Accepted | Generated + QA'd; not yet placed in a scene |
+| `m3-sample-carousel-v1` | Mission 03 scene | 30 | Accepted with note: the dome is opaque and open at the front | Generated + QA'd; not yet placed |
+| `m4-evidence-lectern-v1` | Mission 04 scene | 30 | Accepted with note: reads as a reading desk with a floating holo disc | Generated + QA'd; not yet placed |
+| `m5-ventilation-unit-v1` | Mission 05 scene | 30 | Accepted | Generated + QA'd; not yet placed |
+| `m5-airlock-v1` | Mission 05 scene | 30 | Accepted with note: a round hatch, not a full module; also serves Mission 01 | Generated + QA'd; not yet placed |
+
+**Batch 1 totals:** 10 jobs, 10 succeeded, 0 failed, 0 retries. Spent **300**, taking the balance from **1,689 to 1,389**; this matches the live balance.
+
+A generated model is not a game feature. The props join mission scenes only when those missions are built. None of them affects placement, qualification or any scientific outcome.
+
+### Batch 2 (started 2026-11-12 after Batch 1 QA passed)
+
+- **Jobs:** 29 of the 30 planned. `m1-airlock-hatch-v1` was dropped because it would duplicate `m5-airlock-v1`.
+- **Spend:** estimate 870, hard floor 519. That leaves 300 for Batch 3 plus about 219 in reserve.
+- **Results:** recorded per job in `tools/meshy/ledger.jsonl`, with QA results appended when the batch finishes.
