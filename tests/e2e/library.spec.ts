@@ -2,10 +2,11 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 // NASA Investigation Library + Citation Checker over Codex's investigation-library-v1 (real backend; 2 verify POSTs).
-test('the library lists four source descriptions but only one admitted run, and search narrows it', async ({ page }) => {
+test('the library lists every source description from the API but only one admitted run, and search narrows it', async ({ page, request }) => {
+  const api = await (await request.get('/api/investigations')).json() as { data: { items: unknown[] } };
   await page.goto('/investigations');
   const cards = page.locator('.library-card');
-  await expect(cards).toHaveCount(4);
+  await expect(cards).toHaveCount(api.data.items.length);
   await expect(page.locator('.results-meta')).toContainText('1 admitted run usable as evidence');
   await expect(cards.filter({ hasText: 'BASS-II' })).toContainText('1 admitted run: bass2-b20');
   await expect(cards.filter({ hasText: 'FLEX' })).toContainText('Description only · no admitted runs');
