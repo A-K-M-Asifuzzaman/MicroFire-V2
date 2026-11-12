@@ -109,7 +109,7 @@ export function createController(deps: ControllerDeps) {
   const settled = (): Link => (state.snapshot ? { status: 'confirmed' } : state.runtimeId ? { status: 'ready' } : { status: 'idle' });
   /** After (re)authorization: a case from an older server runtime must be explicitly resumed, never replayed. */
   const authorized = (runtimeId: string): Link =>
-    state.snapshot && state.snapshot.runtimeId !== runtimeId ? { status: 'runtime-changed', runtimeId } : settled();
+    state.snapshot && state.snapshot.runtimeId !== runtimeId ? { status: 'runtime-changed', runtimeId } : state.snapshot ? { status: 'confirmed' } : { status: 'ready' };
 
   async function paced<T>(pending: Pending | null, run: () => Promise<T>): Promise<T> {
     const delay = lastPostAt + gap - now();
