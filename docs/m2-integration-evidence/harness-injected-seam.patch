@@ -1,0 +1,39 @@
+diff --git a/apps/web/game/contract.ts b/apps/web/game/contract.ts
+index ee52b54..9b7c3bd 100644
+--- a/apps/web/game/contract.ts
++++ b/apps/web/game/contract.ts
+@@ -12,11 +12,11 @@ export type {
+   CurrentDiagnostic, DiagnosticFinding, DiagnosticResult, DisplayFault, DomainResult, FaultCode, HttpCode, HttpFailure, LearningCheck,
+   LocalSaveResult, LocalSlot, NoteIssue, PassportPresentation, PreviewId, Progress, ResumeRequest, ResumeResponse, RevokeResponse,
+   SaveConflictCode, Snapshot, StartRequest, StartResponse, Step, Training, TrainingAction, TrainingCode, TrainingCorrection
+-} from '../../../docs/m2/fixtures/contract-types';
++} from '@microfire/shared';
+ import type { PartId } from '@microfire/shared';
+ import type {
+   ActionResponse, AuthorizeResponse, CapabilityResponse, HttpFailure, NoteIssue, RevokeResponse, StartResponse
+-} from '../../../docs/m2/fixtures/contract-types';
++} from '@microfire/shared';
+ 
+ /** Plain, serialisable part data that server components hand to the client game (see ./contract/parts.ts). */
+ export type PartSpec = { id: PartId; label: string; anchorId: string; anchorLabel: string; requires: PartId[]; sourceNote: string;
+@@ -35,4 +35,9 @@ export type ContractRuntime = {
+   noteIssue: (text: string) => NoteIssue | null;
+ };
+ /** Not available on this branch: Sol's runtime schemas and canonical identity live on codex/m2-stage-a-backend. */
+-export const contractRuntime: ContractRuntime | null = null;
++
++import {ActionResponseSchema,AuthorizeResponseSchema,CapabilityResponseSchema,HttpFailureSchema,RevokeResponseSchema,StartResponseSchema,requestIdentity,noteIssue} from '@microfire/shared';
++export const contractRuntime: ContractRuntime = {
++  parse: {capability:v=>CapabilityResponseSchema.parse(v),authorize:v=>AuthorizeResponseSchema.parse(v),revoke:v=>RevokeResponseSchema.parse(v),snapshot:v=>StartResponseSchema.parse(v),action:v=>ActionResponseSchema.parse(v),failure:v=>HttpFailureSchema.parse(v)},
++  identify:requestIdentity,noteIssue
++};
+diff --git a/apps/web/game/contract/specs.ts b/apps/web/game/contract/specs.ts
+index f6d7b17..eee65fc 100644
+--- a/apps/web/game/contract/specs.ts
++++ b/apps/web/game/contract/specs.ts
+@@ -1,4 +1,4 @@
+-import { equipmentCopy, equipmentDefinitions } from './equipment-copy';
++import { equipmentCopy, equipmentDefinitions } from '@microfire/shared';
+ import type { PartSpec } from '../contract';
+ 
+ /** The frozen equipment language as plain props (labels, anchors, dependencies, source notes). */
