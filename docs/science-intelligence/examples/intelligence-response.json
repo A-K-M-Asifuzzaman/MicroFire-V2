@@ -1,0 +1,288 @@
+{
+  "apiVersion": "1",
+  "data": {
+    "intelligenceVersion": "scientific-intelligence-v1",
+    "producer": "deterministic-source-templates-no-model",
+    "ranking": {
+      "items": [
+        {
+          "experimentId": "bass2-b20",
+          "evidenceLevel": "gap",
+          "relevanceScore": 0.533,
+          "sourceIds": [
+            "nasa-bass-ii-20210011385"
+          ],
+          "support": {
+            "kind": "unsupported",
+            "claimId": null,
+            "citations": []
+          },
+          "matchedFields": [
+            "oxygenPct"
+          ],
+          "mismatches": [],
+          "missingFields": [
+            "gravity: not recorded (ISS microgravity context is described by the report; acceleration for this run was not extracted.)",
+            "pressureKpa: not recorded (No per-test pressure in Table A.1; do not substitute a series range.)"
+          ],
+          "reasons": [
+            "Matches oxygenPct: target 17.4 vol%, recorded 17.4 vol% (tolerance ±0.5; Calibrated initial O2 vol% column; final calibrated value also 17.4. Adjacent uncalibrated initial/final readings are 16.5.)",
+            "No exact cited observation, derivation or interpretation supports this question. Matching metadata or retrieval scores do not establish that the requested outcome was measured.",
+            "Question terms found in the record: b20",
+            "Score = 0.7 × 1/3 conditions matched + 0.3 × 1/1 question terms (p1-claim-support-v3)."
+          ],
+          "limitations": [
+            "One BASS-II test, not a catalog of NASA combustion research.",
+            "This record cannot establish lunar fire safety or isolate airflow causation.",
+            "Air display mixes velocities and a potentiometer setting; pot 0.5 is not 0.5 cm/s.",
+            "Pressure and measurement uncertainty are not established for this individual row.",
+            "Score is retrieval relevance, not fire risk, safety or scientific confidence.",
+            "Ranked within a validated catalog of 1 experiment; ordering across studies is not yet meaningful."
+          ]
+        }
+      ],
+      "rankingVersion": "p1-claim-support-v3",
+      "datasetVersion": "p0-bass-b20-v1",
+      "scoreMeaning": "retrieval-relevance-not-fire-risk",
+      "coverage": {
+        "datasetVersion": "p0-bass-b20-v1",
+        "validatedExperiments": 1,
+        "validatedSources": 1,
+        "quarantinedCandidates": 55,
+        "statement": "1 validated experiment from 1 source. 55 legacy candidate rows are quarantined pending primary-source review and are excluded. Absence from this catalog is not evidence that a condition was never studied."
+      }
+    },
+    "summary": {
+      "abstained": false,
+      "answer": "Direct observation: B20: The B20 observation log reports that the flame burned the entire sample.\nUnknown or research gap: B20 Gravity: unknown (ISS microgravity context is described by the report; acceleration for this run was not extracted.)\nDirect observation: B20 Oxygen: 17.4 vol% — Calibrated initial O2 vol% column; final calibrated value also 17.4. Adjacent uncalibrated initial/final readings are 16.5.\nUnknown or research gap: B20 Pressure: unknown (No per-test pressure in Table A.1; do not substitute a series range.)\nAnalogous or mechanistic evidence: B20 is analogous, not direct, evidence for your target: it matches oxygen but not gravity, pressure.",
+      "statements": [
+        {
+          "category": "direct-observation",
+          "text": "B20: The B20 observation log reports that the flame burned the entire sample.",
+          "claimId": "bass2-b20-burned-entire-sample",
+          "citations": [
+            {
+              "sourceId": "nasa-bass-ii-20210011385",
+              "locator": {
+                "kind": "pdf",
+                "page": 112,
+                "printedPage": "104",
+                "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+              }
+            }
+          ]
+        },
+        {
+          "category": "unknown-or-gap",
+          "text": "B20 Gravity: unknown (ISS microgravity context is described by the report; acceleration for this run was not extracted.)",
+          "claimId": null,
+          "citations": []
+        },
+        {
+          "category": "direct-observation",
+          "text": "B20 Oxygen: 17.4 vol% — Calibrated initial O2 vol% column; final calibrated value also 17.4. Adjacent uncalibrated initial/final readings are 16.5.",
+          "claimId": null,
+          "citations": [
+            {
+              "sourceId": "nasa-bass-ii-20210011385",
+              "locator": {
+                "kind": "pdf",
+                "page": 112,
+                "printedPage": "104",
+                "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+              }
+            }
+          ]
+        },
+        {
+          "category": "unknown-or-gap",
+          "text": "B20 Pressure: unknown (No per-test pressure in Table A.1; do not substitute a series range.)",
+          "claimId": null,
+          "citations": []
+        },
+        {
+          "category": "analogous-or-mechanistic",
+          "text": "B20 is analogous, not direct, evidence for your target: it matches oxygen but not gravity, pressure.",
+          "claimId": null,
+          "citations": [
+            {
+              "sourceId": "nasa-bass-ii-20210011385",
+              "locator": {
+                "kind": "pdf",
+                "page": 112,
+                "printedPage": "104",
+                "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+              }
+            }
+          ]
+        }
+      ],
+      "claimIds": [
+        "bass2-b20-burned-entire-sample"
+      ],
+      "citations": [
+        {
+          "sourceId": "nasa-bass-ii-20210011385",
+          "locator": {
+            "kind": "pdf",
+            "page": 112,
+            "printedPage": "104",
+            "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+          }
+        }
+      ],
+      "limitations": [
+        "One BASS-II test, not a catalog of NASA combustion research.",
+        "This record cannot establish lunar fire safety or isolate airflow causation.",
+        "Air display mixes velocities and a potentiometer setting; pot 0.5 is not 0.5 cm/s.",
+        "Pressure and measurement uncertainty are not established for this individual row.",
+        "1 validated experiment from 1 source. 55 legacy candidate rows are quarantined pending primary-source review and are excluded. Absence from this catalog is not evidence that a condition was never studied.",
+        "Generated from a fixed template over validated records; no language model wrote this answer."
+      ],
+      "datasetVersion": "p0-bass-b20-v1",
+      "retrievalVersion": "p1-grounded-template-v3"
+    },
+    "transfer": {
+      "analysisVersion": "condition-transfer-v1",
+      "environment": "moon",
+      "targetConditions": {
+        "gravity": "lunar",
+        "oxygenPct": 17.4,
+        "pressureKpa": 70
+      },
+      "records": [
+        {
+          "experimentId": "bass2-b20",
+          "dimensions": [
+            {
+              "field": "gravity",
+              "status": "source-not-recorded",
+              "target": "lunar",
+              "source": null,
+              "unit": null,
+              "basis": "unknown",
+              "reason": "ISS microgravity context is described by the report; acceleration for this run was not extracted.",
+              "citations": []
+            },
+            {
+              "field": "material",
+              "status": "target-unspecified",
+              "target": null,
+              "source": "PMMA",
+              "unit": null,
+              "basis": "recorded",
+              "reason": "Target condition not supplied; no match is assumed.",
+              "citations": [
+                {
+                  "sourceId": "nasa-bass-ii-20210011385",
+                  "locator": {
+                    "kind": "pdf",
+                    "page": 112,
+                    "printedPage": "104",
+                    "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                  }
+                }
+              ]
+            },
+            {
+              "field": "geometry",
+              "status": "target-unspecified",
+              "target": null,
+              "source": "2 cm wide film",
+              "unit": null,
+              "basis": "recorded",
+              "reason": "Target condition not supplied; no match is assumed.",
+              "citations": [
+                {
+                  "sourceId": "nasa-bass-ii-20210011385",
+                  "locator": {
+                    "kind": "pdf",
+                    "page": 112,
+                    "printedPage": "104",
+                    "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                  }
+                }
+              ]
+            },
+            {
+              "field": "oxygenPct",
+              "status": "exact-recorded",
+              "target": 17.4,
+              "source": 17.4,
+              "unit": "vol%",
+              "basis": "recorded",
+              "reason": "Equal to the recorded condition; equality alone does not establish transferability.",
+              "citations": [
+                {
+                  "sourceId": "nasa-bass-ii-20210011385",
+                  "locator": {
+                    "kind": "pdf",
+                    "page": 112,
+                    "printedPage": "104",
+                    "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                  }
+                }
+              ]
+            },
+            {
+              "field": "pressureKpa",
+              "status": "source-not-recorded",
+              "target": 70,
+              "source": null,
+              "unit": null,
+              "basis": "unknown",
+              "reason": "No per-test pressure in Table A.1; do not substitute a series range.",
+              "citations": []
+            },
+            {
+              "field": "flowCmS",
+              "status": "target-unspecified",
+              "target": null,
+              "source": 5,
+              "unit": "cm/s",
+              "basis": "recorded",
+              "reason": "Target condition not supplied; no match is assumed.",
+              "citations": [
+                {
+                  "sourceId": "nasa-bass-ii-20210011385",
+                  "locator": {
+                    "kind": "pdf",
+                    "page": 112,
+                    "printedPage": "104",
+                    "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                  }
+                }
+              ]
+            }
+          ],
+          "conclusion": "insufficient-evidence",
+          "confounders": [
+            "gravity: ISS microgravity context is described by the report; acceleration for this run was not extracted.",
+            "material: Target condition not supplied; no match is assumed.",
+            "geometry: Target condition not supplied; no match is assumed.",
+            "pressureKpa: No per-test pressure in Table A.1; do not substitute a series range.",
+            "flowCmS: Target condition not supplied; no match is assumed."
+          ],
+          "limitations": [
+            "One BASS-II test, not a catalog of NASA combustion research.",
+            "This record cannot establish lunar fire safety or isolate airflow causation.",
+            "Air display mixes velocities and a potentiometer setting; pot 0.5 is not 0.5 cm/s.",
+            "Pressure and measurement uncertainty are not established for this individual row.",
+            "Environment labels describe user-proposed scenarios, not measured NASA mission conditions.",
+            "No partial-gravity result, causal effect, fire-risk probability, target safety or certification follows from condition matching."
+          ]
+        }
+      ],
+      "coverage": {
+        "datasetVersion": "p0-bass-b20-v1",
+        "validatedExperiments": 1,
+        "validatedSources": 1,
+        "quarantinedCandidates": 55,
+        "statement": "1 validated experiment from 1 source. 55 legacy candidate rows are quarantined pending primary-source review and are excluded. Absence from this catalog is not evidence that a condition was never studied."
+      },
+      "scope": "condition-comparison-not-safety-prediction"
+    },
+    "transferNote": "Condition comparison is separate from question support and experimental uncertainty.",
+    "scope": "research-support-not-operational-fire-safety-advice"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "resources-index": {
+    "status": 200,
+    "url": "https://www.spaceappschallenge.org/resources/",
+    "submissionGuideLinks": [],
+    "softNotFound": false
+  },
+  "submission-guide": {
+    "status": 200,
+    "url": "https://www.spaceappschallenge.org/resources/project-submission-guide/",
+    "submissionGuideLinks": [],
+    "softNotFound": true
+  },
+  "challengeResources": {
+    "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=resources",
+    "status": "November 13 release notice; no named list confirmed"
+  }
+}

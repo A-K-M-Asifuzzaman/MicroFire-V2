@@ -1,0 +1,16 @@
+{
+  "runtimeId": "33333333-3333-4333-8333-333333333333",
+  "sessionId": "11111111-1111-4111-8111-111111111111",
+  "expectedRevision": 0,
+  "commandId": "bbcb735dbb80153d42bcd7492a6436765e91c9913feaba9cbf79e68ad0e605d6",
+  "action": {
+    "type": "TRAINING",
+    "action": {
+      "type": "GAME",
+      "action": {
+        "type": "INSPECT_EVIDENCE",
+        "experimentId": "bass2-b20"
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "environment": "moon",
+  "experimentIds": [
+    "bass2-b20"
+  ],
+  "targetConditions": {
+    "gravity": "lunar",
+    "oxygenPct": 17.4,
+    "pressureKpa": 70
+  }
+}

@@ -1,13 +1,18 @@
-# Official release watch
+# Official release watch — current semantic state
 
-Latest manual check: November 12, 2026, approximately 22:43 Asia/Dhaka. The official Flame in Freefall Resources tab still says resources will be available November 13. The general Resources index did not expose a current Project Submission Guide in its initial HTML; that alone is not proof of non-publication because the index loads dynamically. A current-year rendered/linked guide must be inspected before declaring it released.
+Last direct Resources fetch: 2026-11-12T22:42:43.416458+06:00. It still announced November 13 availability; no named qualifying-resource list was confirmed.
+
+Last rendered guide/index inspection: 2026-11-12T23:00:47.992100+06:00. The index listed Participant FAQs, Team Formation and Space Apps Connect guides, with no current Project Submission Guide link. The conventional guide URL returned HTTP 200 with a Page Not Found body. A successful status alone is not publication; reject archived/staging/wrong-year guides.
 
 Sources:
 - https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=resources
 - https://www.spaceappschallenge.org/resources/
+- https://www.spaceappschallenge.org/resources/project-submission-guide/
 
-Exact qualifying NASA resource: pending actual publication/inspection. PSI-25 Version 4, DOI 10.60555/4qc4-de67, is a verified candidate only. No “officially qualifying” field is set by assumption.
+Exact qualifying NASA resource: pending actual publication/inspection. PSI-25 Version 4, DOI 10.60555/4qc4-de67, is a verified and functionally linked candidate in the implemented Investigation Library, not yet confirmed as qualifying by the unpublished list. Source mappings are in 06_RESOURCE_FEATURE_MAPPING.md.
 
-Quiet thread heartbeat `microfire-resource-release` is active every 30 minutes. It watches semantic publication/updates, ignores changing analytics and wrong-year/staging guides, documents exact links/mapping when released, and stops after both releases are documented or the bounded monitoring window ends. It does not implement, deploy, promote data or contact other people. Unchanged checks remain quiet.
+Thread heartbeat `microfire-resource-release` is ACTIVE every 30 minutes. It checks semantic publication, ignores unchanged placeholders/analytics/old guides, and stays quiet unless there is a meaningful release, failure, completed authorized follow-up or required owner action. It pauses after both releases and the bounded P0 result/dependency are documented, or after reporting the unresolved end-of-window issue once.
 
-The owner's subsequent confirmation authorizes local engineering implementation as recorded in 07_OWNER_AUTHORIZATION_RECORD.md. The release monitor remains a separate research-only watcher; resource release alone does not authorize scientific admission or public deployment.
+The owner has now reported organizer permission for reuse and early development and authorized implementation; see 07_OWNER_AUTHORIZATION_RECORD.md. The updated heartbeat honors this direction. Once a qualifying resource is published it may complete minimal source-metadata P0 integration under existing contracts, or document that the functional feature already uses it. It may not admit experiments, bypass rights/scientific/security gates, alter M2/Claude assets/videos, rewrite history, mount unreviewed campaign services, merge or deploy. It preserves dirty/unrelated work and does not repeat completed PDF hashing or eligibility research without changed evidence.
+
+Raw HTTP status/semantic findings from the last manual inspection are retained in evidence/release-state.json. No organizer authorization is inferred from a page appearing; the local implementation authorization is the separately recorded owner report.
