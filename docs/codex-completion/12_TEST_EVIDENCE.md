@@ -10,7 +10,7 @@ export NEXT_TELEMETRY_DISABLED=1
 export PLAYWRIGHT_BROWSERS_PATH='/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2/.cache/ms-playwright'
 ```
 
-Each row reports actual test cases, not assertion counts. “—” means a non-test command. Full output is retained in evidence/.
+Each row reports actual test cases, not assertion counts. “—” means a non-test command. Output is retained in evidence/ with trailing whitespace/terminal line endings normalized; test results and failure details are preserved.
 
 | Exact command | Exit | Passed / failed / skipped | Evidence / limits |
 |---|---:|---|---|

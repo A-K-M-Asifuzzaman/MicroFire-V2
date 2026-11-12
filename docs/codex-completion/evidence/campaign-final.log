@@ -31,4 +31,3 @@ AssertionError: {"code":"CAMPAIGN_LIMIT_REACHED","action":{"type":"TRAINING","ac
       Tests  1 failed | 11 passed (12)
    Start at  16:20:14
    Duration  12.48s (tests 94%, transform 4%, import 2%)
-

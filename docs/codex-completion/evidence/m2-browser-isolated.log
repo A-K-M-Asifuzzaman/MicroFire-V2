@@ -8914,7 +8914,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
   ✘  142 [mobile] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector (25.4s)
 
 
-  1) [desktop] › tests/m2-ui/ignition.spec.ts:213:1 › race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives 
+  1) [desktop] › tests/m2-ui/ignition.spec.ts:213:1 › race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives
 
     Error: expect(received).toBe(expected) // Object.is equality
 
@@ -8944,7 +8944,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  2) [mobile] › tests/m2-ui/ignition.spec.ts:118:1 › asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen 
+  2) [mobile] › tests/m2-ui/ignition.spec.ts:118:1 › asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen
 
     Error: expect(locator).not.toHaveAttribute(expected) failed
 
@@ -8980,7 +8980,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  3) [mobile] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector 
+  3) [mobile] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector
 
     Error: expect(locator).toBeVisible() failed
 
@@ -9013,7 +9013,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  4) [mobile] › tests/m2-ui/site-journey.spec.ts:117:1 › accessibility and reflow: tour and invitation pages have no axe violations and no horizontal scroll at 320 px 
+  4) [mobile] › tests/m2-ui/site-journey.spec.ts:117:1 › accessibility and reflow: tour and invitation pages have no axe violations and no horizontal scroll at 320 px
 
     Error: expect(received).toEqual(expected) // deep equality
 
@@ -9056,10 +9056,10 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   4 failed
-    [desktop] › tests/m2-ui/ignition.spec.ts:213:1 › race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives 
-    [mobile] › tests/m2-ui/ignition.spec.ts:118:1 › asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen 
-    [mobile] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector 
-    [mobile] › tests/m2-ui/site-journey.spec.ts:117:1 › accessibility and reflow: tour and invitation pages have no axe violations and no horizontal scroll at 320 px 
+    [desktop] › tests/m2-ui/ignition.spec.ts:213:1 › race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives
+    [mobile] › tests/m2-ui/ignition.spec.ts:118:1 › asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen
+    [mobile] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector
+    [mobile] › tests/m2-ui/site-journey.spec.ts:117:1 › accessibility and reflow: tour and invitation pages have no axe violations and no horizontal scroll at 320 px
   38 skipped
   16 did not run
   112 passed (2.2m)

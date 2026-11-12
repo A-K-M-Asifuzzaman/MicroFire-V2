@@ -189,7 +189,7 @@ Running 110 tests using 2 workers
   ✓   96 [mobile] › tests/e2e/observatory-m15.spec.ts:208:1 › fix E: no automated axe violations (WCAG 2.x A/AA) on core routes (20.3s)
 
 
-  1) [desktop] › tests/e2e/observatory-m15.spec.ts:75:1 › fix A: an initially offscreen lens does not render continuously; visibility drives motion 
+  1) [desktop] › tests/e2e/observatory-m15.spec.ts:75:1 › fix A: an initially offscreen lens does not render continuously; visibility drives motion
 
     Error: apiRequestContext._wrapApiCall: ENOENT: no such file or directory, copyfile '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/test-results/.playwright-artifacts-0/traces/8008165f76a9f411130c-33d0b7a38c2ba0249e8f-recording30.network' -> '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/test-results/.playwright-artifacts-0/traces/8008165f76a9f411130c-33d0b7a38c2ba0249e8f-recording30-pwnetcopy-1.network'
 
@@ -206,7 +206,7 @@ Running 110 tests using 2 workers
 
     Error: ENOENT: no such file or directory, open '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/test-results/.playwright-artifacts-0/13c0fb86c9e0699817d940073bcbcccf.zip'
 
-  2) [desktop] › tests/e2e/observatory.spec.ts:194:1 › workstation, frontier and comparison keep support, gaps and refusals explicit 
+  2) [desktop] › tests/e2e/observatory.spec.ts:194:1 › workstation, frontier and comparison keep support, gaps and refusals explicit
 
     Error: browserContext.close: ENOENT: no such file or directory, open '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/test-results/.playwright-artifacts-1/traces/2d68d06cf89477466321-0ef8e1eb19abea29468e-recording57.trace'
 
@@ -215,7 +215,7 @@ Running 110 tests using 2 workers
     Error Context: test-results/observatory-workstation-fr-be527--gaps-and-refusals-explicit-desktop/error-context.md
 
   2 failed
-    [desktop] › tests/e2e/observatory-m15.spec.ts:75:1 › fix A: an initially offscreen lens does not render continuously; visibility drives motion 
-    [desktop] › tests/e2e/observatory.spec.ts:194:1 › workstation, frontier and comparison keep support, gaps and refusals explicit 
+    [desktop] › tests/e2e/observatory-m15.spec.ts:75:1 › fix A: an initially offscreen lens does not render continuously; visibility drives motion
+    [desktop] › tests/e2e/observatory.spec.ts:194:1 › workstation, frontier and comparison keep support, gaps and refusals explicit
   22 skipped
   86 passed (2.1m)

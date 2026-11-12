@@ -22,7 +22,7 @@ test at tests/backend/browser-save-consistency.test.ts:1:231
 ✖ firefox: two-page lock visibility, stale generation refusal and tombstone (3470.70775ms)
   browserType.launch: Failed to launch the browser process.
   Browser logs:
-  
+
   <launching> /tmp/microfire-browsers-20261112/firefox-1555/firefox/Nightly.app/Contents/MacOS/firefox -no-remote -headless -profile /var/folders/gb/jr8j60jj3wngw7vjh6g_kg_m0000gn/T/playwright_firefoxdev_profile-SSLapU -juggler-pipe -silent
   <launched> pid=81782
   [pid=81782][err] *** You are running in headless mode.
@@ -43,7 +43,7 @@ test at tests/backend/browser-save-consistency.test.ts:1:231
   [2m  - [pid=81782] <skipped force kill spawnedProcess.killed=false processClosed=true>[22m
   [2m  - [pid=81782] finished temporary directories cleanup[22m
   [2m  - [pid=81782] <gracefully close end>[22m
-  
+
       at TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/browser-save-consistency.test.ts:12:32) {
     name: 'Error',
     log: [ '  - <launching> /tmp/microfire-browsers-20261112/firefox-1555/firefox/Nightly.app/Contents/MacOS/firefox -no-remote -headless -profile /var/folders/gb/jr8j60jj3wngw7vjh6g_kg_m0000gn/T/playwright_firefoxdev_profile-SSLapU -juggler-pipe -silent', '  - <launched> pid=81782', '  - [pid=81782][err] *** You are running in headless mode.', '  - [pid=81782][err] sandbox_extension_issue_file_to_process failed for /tmp/microfire-browsers-20261112/firefox-1555/firefox/Nightly.app: 1 (Operation not permitted)', '  - [pid=81782][err] Could not find profile folder.', '  - [pid=81782] <process did exit: exitCode=1, signal=null>', '  - [pid=81782] starting temporary directories cleanup', '  - [pid=81782] <gracefully close start>', '  - [pid=81782] <kill>', '  - [pid=81782] <skipped force kill spawnedProcess.killed=false processClosed=true>', '  - [pid=81782] finished temporary directories cleanup', '  - [pid=81782] <gracefully close end>' ]
@@ -52,9 +52,9 @@ test at tests/backend/browser-save-consistency.test.ts:1:231
 test at tests/backend/browser-save-consistency.test.ts:1:231
 ✖ webkit: two-page lock visibility, stale generation refusal and tombstone (7002.812959ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
-  
+
   '56' !== '100'
-  
+
       at TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/browser-save-consistency.test.ts:28:12)
       at async Test.run (node:internal/test_runner/test:1409:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {

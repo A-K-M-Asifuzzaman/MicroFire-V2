@@ -61,9 +61,9 @@ Basic secret/environment/provider/XSS/media-rights checks passed across 1022 fil
   Finished TypeScript in 2.2s ...
   Collecting page data using 10 workers ...
   Generating static pages using 10 workers (0/25) ...
-  Generating static pages using 10 workers (6/25) 
-  Generating static pages using 10 workers (12/25) 
-  Generating static pages using 10 workers (18/25) 
+  Generating static pages using 10 workers (6/25)
+  Generating static pages using 10 workers (12/25)
+  Generating static pages using 10 workers (18/25)
 ✓ Generating static pages using 10 workers (25/25) in 552ms
   Finalizing page optimization ...
   Collecting build traces ...
@@ -109,4 +109,3 @@ Route (app)
 ○  (Static)   prerendered as static content
 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
 ƒ  (Dynamic)  server-rendered on demand
-

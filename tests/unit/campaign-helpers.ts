@@ -20,4 +20,3 @@ export const appraise = (id: string): CampaignAction => {
 };
 export const trial: CampaignAction[] = [core({ type: 'START_MISSION', missionId: 'claim-trial' }), ...claimTrialStatements.map(s => appraise(s.id)), core({ type: 'COMPLETE_MISSION', missionId: 'claim-trial' })];
 export const habitat: CampaignAction = { type: 'ASSESS_HABITAT', scenario: { gravity: 'lunar', oxygenPct: 26, pressureKpa: 55, ventilation: 'Fictional forced ventilation', material: 'PMMA panel' }, verdict: 'insufficient-evidence', citations: claim.citations, gaps: ['gravity', 'oxygen', 'pressure', 'ventilation', 'material'], nextMeasurements: ['gravity', 'pressure'], learnerExplanation: 'Investigate the missing conditions before drawing a conclusion.' };
-

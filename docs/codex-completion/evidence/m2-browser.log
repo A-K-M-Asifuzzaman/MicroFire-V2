@@ -8926,7 +8926,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
   -  170 [desktop] › tests/m2-ui/ignition.spec.ts:348:1 › phones: controls are large, nothing overflows, and Skip stays reachable
 
 
-  1) [desktop] › tests/m2-ui/gameplay-ui.spec.ts:248:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state 
+  1) [desktop] › tests/m2-ui/gameplay-ui.spec.ts:248:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state
 
     Error: expect(locator).toBeVisible() failed
 
@@ -8960,7 +8960,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  2) [desktop] › tests/m2-ui/gameplay-ui.spec.ts:298:1 › reduced motion: no intro, no fault flash animation, no pulsing 
+  2) [desktop] › tests/m2-ui/gameplay-ui.spec.ts:298:1 › reduced motion: no intro, no fault flash animation, no pulsing
 
     Error: expect(locator).toBeVisible() failed
 
@@ -8994,7 +8994,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  3) [desktop] › tests/m2-ui/gameplay-ui.spec.ts:319:1 › reflow at 320 px: no horizontal page scroll 
+  3) [desktop] › tests/m2-ui/gameplay-ui.spec.ts:319:1 › reflow at 320 px: no horizontal page scroll
 
     Error: expect(locator).toBeVisible() failed
 
@@ -9028,7 +9028,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  4) [desktop] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL_ENV":"preview"}) cannot render a review page 
+  4) [desktop] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL_ENV":"preview"}) cannot render a review page
 
     Error: browserContext.close: ENOENT: no such file or directory, open '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/test-results/.playwright-artifacts-4/traces/bf7406894731e8c0dba0-e771623c48cd3759c756-recording10.trace'
 
@@ -9038,7 +9038,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     Error Context: test-results/review-routes-client-side--b93e4-cannot-render-a-review-page-desktop/error-context.md
 
-  5) [mobile] › tests/m2-ui/gameplay-ui.spec.ts:248:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state 
+  5) [mobile] › tests/m2-ui/gameplay-ui.spec.ts:248:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state
 
     Error: expect(locator).toBeVisible() failed
 
@@ -9072,7 +9072,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  6) [mobile] › tests/m2-ui/gameplay-ui.spec.ts:298:1 › reduced motion: no intro, no fault flash animation, no pulsing 
+  6) [mobile] › tests/m2-ui/gameplay-ui.spec.ts:298:1 › reduced motion: no intro, no fault flash animation, no pulsing
 
     Error: expect(locator).toBeVisible() failed
 
@@ -9106,7 +9106,7 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  7) [mobile] › tests/m2-ui/gameplay-ui.spec.ts:319:1 › reflow at 320 px: no horizontal page scroll 
+  7) [mobile] › tests/m2-ui/gameplay-ui.spec.ts:319:1 › reflow at 320 px: no horizontal page scroll
 
     Error: expect(locator).toBeVisible() failed
 
@@ -9141,12 +9141,12 @@ H:WEBSITE_SITE_NAME WEBSITE_SITE_NAME alone, flags enabled | path variant, loopb
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   7 failed
-    [desktop] › tests/m2-ui/gameplay-ui.spec.ts:248:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state 
-    [desktop] › tests/m2-ui/gameplay-ui.spec.ts:298:1 › reduced motion: no intro, no fault flash animation, no pulsing 
-    [desktop] › tests/m2-ui/gameplay-ui.spec.ts:319:1 › reflow at 320 px: no horizontal page scroll 
-    [desktop] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL_ENV":"preview"}) cannot render a review page 
-    [mobile] › tests/m2-ui/gameplay-ui.spec.ts:248:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state 
-    [mobile] › tests/m2-ui/gameplay-ui.spec.ts:298:1 › reduced motion: no intro, no fault flash animation, no pulsing 
+    [desktop] › tests/m2-ui/gameplay-ui.spec.ts:248:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state
+    [desktop] › tests/m2-ui/gameplay-ui.spec.ts:298:1 › reduced motion: no intro, no fault flash animation, no pulsing
+    [desktop] › tests/m2-ui/gameplay-ui.spec.ts:319:1 › reflow at 320 px: no horizontal page scroll
+    [desktop] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL_ENV":"preview"}) cannot render a review page
+    [mobile] › tests/m2-ui/gameplay-ui.spec.ts:248:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state
+    [mobile] › tests/m2-ui/gameplay-ui.spec.ts:298:1 › reduced motion: no intro, no fault flash animation, no pulsing
     [mobile] › tests/m2-ui/gameplay-ui.spec.ts:319:1 › reflow at 320 px: no horizontal page scroll ─
   47 skipped
   116 passed (3.2m)
