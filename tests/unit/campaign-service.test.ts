@@ -1,7 +1,7 @@
 import { expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { randomBytes, randomUUID } from 'node:crypto';
-import { campaignIdentity, campaignJson, type CampaignAction } from '@microfire/shared';
+import { campaignIdentity, campaignJson, CampaignHttpActionResponseSchema, CampaignHttpExportResponseSchema, type CampaignAction } from '@microfire/shared';
 import { CampaignService } from '../../apps/web/lib/campaign-service';
 import { PreviewAuthority, previewConfig } from '../../apps/web/lib/game-preview-security';
 import { at, review, core, detective, trial, habitat } from './campaign-helpers';
@@ -27,6 +27,7 @@ it('server runs the complete campaign, exports source-linked entries and restore
     core({ type: 'PROPOSE_NEXT_TEST', question: 'Test lunar gravity and scenario pressure.', limitations: ['B20 is not a lunar test.'] }), core({ type: 'COMPLETE_MISSION', missionId: 'lunar-habitat' })];
   for (const action of actions) {
     const command = await h.command(snapshot, action), response = await h.service.command(h.request, command);
+    CampaignHttpActionResponseSchema.parse({ apiVersion: '1', data: response });
     expect(response.ok, JSON.stringify(response.ok ? {} : response)).toBe(true); snapshot = response.snapshot;
     const duplicate = await h.service.command(h.request, command);
     expect(duplicate.snapshot.checkpoint).toBe(snapshot.checkpoint);
@@ -34,6 +35,7 @@ it('server runs the complete campaign, exports source-linked entries and restore
   }
   expect(snapshot.state.passport.entries).toHaveLength(5);
   const exported = h.service.export(h.request, snapshot.sessionId);
+  CampaignHttpExportResponseSchema.parse({ apiVersion: '1', data: exported });
   expect(exported.record.events.some(e => e.action.type === 'ASSESS_HABITAT')).toBe(true);
   expect(exported.passport).toEqual(snapshot.state.passport);
   expect(exported.checkpoint).toBe(snapshot.checkpoint); expect(snapshot.revision).toBe(actions.length);
