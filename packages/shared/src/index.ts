@@ -12,3 +12,5 @@ export * from './campaign';
 
 export * from './intelligence';
 export * from './campaign-http';
+
+export * from './public-campaign';
