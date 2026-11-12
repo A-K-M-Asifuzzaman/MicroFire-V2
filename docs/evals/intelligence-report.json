@@ -1,0 +1,205 @@
+{
+  "evaluationVersion": "intelligence-regression-v1",
+  "datasetVersion": "p0-bass-b20-v1",
+  "catalogSha256": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+  "labels": "Codex implementation author; source-specific regression cases, pending independent scientific review",
+  "scope": "One admitted B20; no predictive accuracy, statistical confidence or multi-investigation retrieval metric",
+  "independentScientificAcceptance": false,
+  "admissionUnchanged": true,
+  "cases": [
+    {
+      "id": "calibrated-b20",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": null,
+        "oxygenStatus": null,
+        "gravityStatus": null,
+        "abstentionCode": null,
+        "answerIncludes": true
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": null,
+        "oxygenStatus": null,
+        "gravityStatus": null,
+        "abstentionCode": null,
+        "answerIncludes": true
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "lunar-unknown-gravity",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "oxygenStatus": "exact-recorded",
+        "gravityStatus": "source-not-recorded",
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "oxygenStatus": "exact-recorded",
+        "gravityStatus": "source-not-recorded",
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "martian-unknown-pressure",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "oxygenStatus": "exact-recorded",
+        "gravityStatus": "source-not-recorded",
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "oxygenStatus": "exact-recorded",
+        "gravityStatus": "source-not-recorded",
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "nearby-is-not-exact",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "oxygenStatus": "non-exact-retrieval-match",
+        "gravityStatus": "target-unspecified",
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "oxygenStatus": "non-exact-retrieval-match",
+        "gravityStatus": "target-unspecified",
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "unavailable-flex",
+      "expected": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "oxygenStatus": null,
+        "gravityStatus": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null
+      },
+      "actual": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "oxygenStatus": null,
+        "gravityStatus": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "quarantine-no-substitute",
+      "expected": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "oxygenStatus": null,
+        "gravityStatus": null,
+        "abstentionCode": "quarantined-record",
+        "answerIncludes": null
+      },
+      "actual": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "oxygenStatus": null,
+        "gravityStatus": null,
+        "abstentionCode": "quarantined-record",
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "irrelevant-question-despite-match",
+      "expected": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "oxygenStatus": null,
+        "gravityStatus": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null
+      },
+      "actual": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "oxygenStatus": null,
+        "gravityStatus": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "no-target-certification",
+      "expected": {
+        "abstained": true,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "oxygenStatus": "conditions-differ",
+        "gravityStatus": "target-unspecified",
+        "abstentionCode": "unsupported-intent",
+        "answerIncludes": null
+      },
+      "actual": {
+        "abstained": true,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "oxygenStatus": "conditions-differ",
+        "gravityStatus": "target-unspecified",
+        "abstentionCode": "unsupported-intent",
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    }
+  ],
+  "passed": 8,
+  "total": 8
+}
