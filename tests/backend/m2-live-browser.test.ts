@@ -99,6 +99,7 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
       await expect(target).toBeChecked();
     };
     const nativeSelect = async (target: Locator, value: string) => {
+      await expect(target).toBeVisible();
       if (mode !== 'keyboard') { await target.selectOption(value); return; }
       const values = await target.locator('option').evaluateAll(options => options.map(o => (o as HTMLOptionElement).value));
       const at = values.indexOf(value); assert(at >= 0);
@@ -166,12 +167,12 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
     await page.screenshot({ path: path.join(artifacts, mode + '-fault.png'), fullPage: false });
     await command(page.getByRole('button', { name: 'Run Training check', exact: true }));
     if (mode === 'keyboard') {
-      await nativeSelect(page.getByLabel('Component', { exact: true }), 'radiometer');
+      await nativeSelect(page.getByLabel('Component'), 'radiometer');
       await radio(page.getByRole('radio', { name: 'Missing', exact: true }));
       const wrong = await command(page.getByRole('button', { name: 'Submit diagnosis', exact: true }));
       assert(wrong.ok && wrong.feedback?.correct === false); await expect(page.getByText('Not this one.', { exact: true })).toBeVisible();
     }
-    await nativeSelect(page.getByLabel('Component', { exact: true }), 'fan');
+    await nativeSelect(page.getByLabel('Component'), 'fan');
     await radio(page.getByRole('radio', { name: 'Reversed orientation', exact: true }));
     await command(page.getByRole('button', { name: 'Submit diagnosis', exact: true }));
     const fan = equipmentDefinitions.find(p => p.id === 'fan')!;
