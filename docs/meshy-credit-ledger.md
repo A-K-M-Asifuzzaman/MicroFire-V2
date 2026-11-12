@@ -161,3 +161,47 @@ A generated model is not a game feature. The props join mission scenes only when
 - **Jobs:** 29 of the 30 planned. `m1-airlock-hatch-v1` was dropped because it would duplicate `m5-airlock-v1`.
 - **Spend:** estimate 870, hard floor 519. That leaves 300 for Batch 3 plus about 219 in reserve.
 - **Results:** recorded per job in `tools/meshy/ledger.jsonl`, with QA results appended when the batch finishes.
+
+**Batch 2 result.** 29 of 29 succeeded with no failures or retries. Spent **870**, taking the balance from **1,389 to 519**; this matches the live balance.
+
+Five-view QA:
+- **27 accepted**, 4 of them with notes.
+- **2 rejected as corridors.** Both came out as flat panels and are kept as wall dressing only.
+
+The models are generated, QA'd and preserved in `tools/meshy/incoming/` (git-ignored). None is placed in a playable scene yet; each mission scene adopts its props when that mission is built.
+
+| Job | QA | Note |
+|---|---|---|
+| `m1-corridor-segment-v1` | rejected-as-corridor | Came out as a flat handrail/ladder frame (0.11 m deep), not a walk-through corridor. Kept as wall dressing only. |
+| `m1-research-console-v1` | accepted |  |
+| `m1-evidence-scanner-v1` | accepted |  |
+| `m1-storage-module-v1` | accepted |  |
+| `m1-stowage-bags-v1` | accepted |  |
+| `m2-diagnostic-housing-v1` | accepted |  |
+| `m2-specimen-case-v1` | accepted-with-note | Foam inserts empty; no sample cards visible. |
+| `m2-inspection-scope-v1` | accepted |  |
+| `m2-tool-wall-v1` | accepted |  |
+| `m2-parts-rack-v1` | accepted |  |
+| `m2-cable-reel-console-v1` | accepted |  |
+| `m3-camera-housing-v1` | accepted |  |
+| `m3-optical-bench-v1` | accepted |  |
+| `m3-observation-console-v1` | accepted |  |
+| `m3-inspection-microscope-v1` | accepted |  |
+| `m3-gauge-panel-v1` | accepted |  |
+| `m3-viewing-window-v1` | accepted |  |
+| `m4-archive-unit-v1` | accepted |  |
+| `m4-evidence-podium-v1` | accepted-with-note | Glass dome renders opaque. |
+| `m4-comparison-console-v1` | accepted-with-note | Screens read faintly. |
+| `m4-document-board-v1` | accepted |  |
+| `m4-filing-cart-v1` | accepted |  |
+| `m4-review-desk-v1` | accepted-with-note | Two small detached floating bulbs; trim or hide in scene. |
+| `m5-habitat-module-v1` | accepted |  |
+| `m5-corridor-module-v1` | rejected-as-corridor | Came out as a flat hatch/floor panel (0.06 m deep), not a corridor module. Kept as panel dressing only. |
+| `m5-life-support-housing-v1` | accepted |  |
+| `m5-utility-robot-v1` | accepted |  |
+| `m5-inspection-drone-v1` | accepted |  |
+| `m5-research-workstation-v1` | accepted |  |
+
+**Remaining:**
+- 519 credits, of which 300 is the approved Batch 3 for revisions, rigging and animation.
+- About 219 is reserved for the owner's other project. Nothing beyond Batch 3 is approved.

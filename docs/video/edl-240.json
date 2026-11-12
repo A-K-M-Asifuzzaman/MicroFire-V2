@@ -28,7 +28,7 @@
   },
   {
    "clip": "02b-home-sections",
-   "from": 0,
+   "from": 6,
    "dur": 16,
    "chapter": "Who",
    "caption": "We built one place where students, teachers and researchers meet the real evidence."
@@ -39,7 +39,14 @@
     "title": "The evidence is real. It is also buried.",
     "body": "NASA has flown fire experiments in microgravity. Their results sit in long technical reports, and copied catalogs drift from the source."
    },
-   "dur": 7
+   "dur": 8
+  },
+  {
+   "clip": "02b-home-sections",
+   "from": 0.5,
+   "dur": 8,
+   "chapter": "Why",
+   "caption": "On Earth, hot gas rises. In microgravity it can't, so a flame behaves differently. Space fire safety needs its own evidence."
   },
   {
    "clip": "03-atlas",
@@ -58,14 +65,14 @@
   {
    "clip": "04-b20-dossier",
    "from": 4.5,
-   "dur": 7,
+   "dur": 9,
    "chapter": "Why",
    "caption": "A copied catalog said 16.5% oxygen. NASA Table A.1, page 112, says 17.4% calibrated. We fixed it."
   },
   {
    "clip": "04-b20-dossier",
    "from": 23,
-   "dur": 8,
+   "dur": 9,
    "chapter": "Why",
    "caption": "Missing values stay 'not recorded'. Nothing is filled in by guesswork."
   },
@@ -101,7 +108,7 @@
   {
    "clip": "06-workstation",
    "from": 5.5,
-   "dur": 17.5,
+   "dur": 15.5,
    "chapter": "What",
    "caption": "The Workstation traces a question to conditions, the record, NASA's observation, the citation and the limits."
   },
@@ -158,7 +165,7 @@
     "title": "What works today, and what doesn't yet",
     "body": "Working: the Atlas, the B20 dossier, cited Ask PIX, the evidence trace and export. Not yet: playable missions, more admitted records, independent science review."
    },
-   "dur": 9
+   "dur": 10
   },
   {
    "card": {
@@ -166,7 +173,7 @@
     "title": "Where we go from here",
     "body": "Verify more NASA records · connect the mission server · independent science review · test with students and teachers."
    },
-   "dur": 9
+   "dur": 10
   },
   {
    "card": {
@@ -174,7 +181,7 @@
     "title": "Help us grow the evidence",
     "body": "Combustion-science reviewers, time with more NASA reports, and classrooms willing to test."
    },
-   "dur": 8
+   "dur": 9
   },
   {
    "card": {
