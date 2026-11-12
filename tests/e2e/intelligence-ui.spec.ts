@@ -26,7 +26,7 @@ test('Workstation: question → ranked NASA evidence → source-linked summary �
   await expect(t.locator('tr[data-status="source-not-recorded"]')).toHaveCount(2); // gravity and pressure: unknown at source
   await expect(t.locator('tr[data-status="source-not-recorded"]').first()).toContainText('Not recorded');
   await expect(t.locator('[data-conclusion="insufficient-evidence"]')).toContainText('Not enough recorded evidence to transfer');
-  await expect(page.getByText('A condition comparison, not a safety prediction.')).toBeVisible();
+  await expect(t.getByText('A condition comparison, not a safety prediction.')).toBeVisible();
   await expect(page.getByText(/deterministic source templates \(no AI model\)/)).toBeVisible();
   expect(await noOverflow(page)).toBe(true);
   const r = await new AxeBuilder({ page }).include('.ws-result').withTags(['wcag2a', 'wcag2aa']).analyze();
@@ -84,4 +84,32 @@ test('real HTTP: the Moon transfer journey keeps 17.4 vol% and unknown pressure 
   await expect(t.locator('tr[data-status="conditions-differ"]')).toContainText('17.4');
   await expect(t.locator('tr', { hasText: 'Pressure' })).toContainText('Not recorded');
   await expect(t.locator('tr', { hasText: 'Gravity' })).toContainText('Not recorded');
+});
+
+test('At a glance: the outcome, evidence, conditions, source and one limit are readable before the detail', async ({ page }) => {
+  await oracle(page);
+  await page.goto('/dashboard');
+  await page.getByRole('button', { name: 'Would B20 transfer to a Moon habitat?' }).click();
+  const g = page.getByTestId('at-a-glance');
+  await expect(g.getByTestId('glance-transfer')).toHaveText('Not enough recorded evidence to transfer');
+  await expect(g.getByRole('link', { name: 'bass2-b20' })).toBeVisible();
+  await expect(g.locator('li[data-kind="match"]')).toContainText('Material');
+  await expect(g.locator('li[data-kind="differ"]')).toContainText('Oxygen');
+  await expect(g.locator('li[data-kind="unknown"]')).toContainText('Gravity');
+  await expect(g.locator('li[data-kind="unknown"]')).toContainText('Pressure');
+  await expect(g).toContainText('PDF page 112');
+  await expect(g.getByText('Key limitation')).toBeVisible();
+  // It comes first: above the detailed six-condition report.
+  const [gy, ty] = await Promise.all([g.boundingBox(), page.getByTestId('transfer-analysis').boundingBox()]);
+  expect(gy!.y).toBeLessThan(ty!.y);
+});
+
+test('At a glance: an abstention says so plainly, with no applicability verdict invented', async ({ page }) => {
+  await oracle(page);
+  await page.goto('/dashboard');
+  await page.getByRole('button', { name: 'Is a lunar habitat fire-safe? (should abstain)' }).click();
+  const g = page.getByTestId('at-a-glance');
+  await expect(g.getByTestId('glance-answer')).toHaveText('No supported answer');
+  await expect(g.getByTestId('glance-transfer')).toHaveText('Not assessed');
+  await expect(g.getByText('Why PIX withheld an answer')).toBeVisible();
 });

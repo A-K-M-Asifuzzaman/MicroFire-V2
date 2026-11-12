@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { IntelligenceResponseSchema, RankResponseSchema, type Coverage, type TargetConditions } from '@microfire/shared';
-import { Method, SummaryBlock, TransferAnalysis, type IntelligenceData } from './intelligence-ui';
+import { AtAGlance, Method, SummaryBlock, TransferAnalysis, type IntelligenceData } from './intelligence-ui';
 import { callApi, Failure, useLatestRequest } from './client-api';
 import { CitationList, CoverageNote, Kind, Limitations, type SourceRef } from './evidence-ui';
 import { ConditionFields, fieldLabel, targetsFrom, withUnit, type Pending } from './tool-kit';
@@ -94,6 +94,7 @@ export function Workstation({ sources, claims, coverage }: { sources: SourceRef[
       </dl>}
       {state.status === 'loading' && <div className="loading-bar" aria-hidden="true" />}
       {state.status === 'failed' && <Failure failure={state.failure} onRetry={request ? () => void run(request.question, request.targetConditions, request.environment) : undefined} />}
+      {state.status === 'done' && <AtAGlance data={state.data} sources={sources} />}
       {state.status === 'done' && request && <ChainRail question={request.question} item={state.data.ranking.items[0]} />}
       {state.status === 'done' && <div className="stack">
         <h3 className="ws-section">1 · Ranked NASA evidence</h3>

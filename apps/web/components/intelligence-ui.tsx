@@ -81,3 +81,35 @@ export function SummaryBlock({ summary, sources }: { summary: IntelligenceData['
 export function Method({ data }: { data: IntelligenceData }) {
   return <p className="meta">Produced by {data.producer === 'deterministic-source-templates-no-model' ? 'deterministic source templates (no AI model)' : data.producer} · {data.intelligenceVersion} · ranking {data.ranking.rankingVersion} · dataset {data.ranking.datasetVersion}. Research support, not operational fire-safety advice. Citation checks confirm source lineage, not scientific truth.</p>;
 }
+
+/** The judge's first look: one card built only from fields the server returned. Neutral tones; never a safety colour. */
+export function AtAGlance({ data, sources }: { data: IntelligenceData; sources: SourceRef[] }) {
+  const top = data.ranking.items[0], s = data.summary, rec = data.transfer?.records[0];
+  const answer = s.abstained ? { title: 'No supported answer', text: s.reason }
+    : top && top.support.kind !== 'unsupported' ? { title: `Supported by a ${top.support.kind} NASA statement`, text: 'A cited statement in an admitted record speaks to your question.' }
+      : { title: 'Related evidence only', text: 'Records relate to your question, but no cited statement establishes the outcome.' };
+  const by = (k: string[]) => rec ? rec.dimensions.filter((d) => k.includes(d.status)).map((d) => fieldLabel(d.field)) : [];
+  const groups: [string, string[], string][] = rec ? [['Match', by(['exact-recorded']), 'match'], ['Close (retrieval only)', by(['non-exact-retrieval-match']), 'near'], ['Differ', by(['conditions-differ']), 'differ'],
+    ['Unknown / not recorded', by(['source-not-recorded', 'context-only']), 'unknown'], ['Not specified by you', by(['target-unspecified']), 'unset']]
+    : top ? [['Match', top.matchedFields.map((f) => fieldLabel(f.split(':')[0]!)), 'match'], ['Differ', top.mismatches.map((f) => fieldLabel(f.split(':')[0]!)), 'differ'], ['Unknown / not recorded', top.missingFields.map((f) => fieldLabel(f.split(':')[0]!)), 'unknown']] : [];
+  const citation = (s.abstained ? s.citations[0] : s.citations[0]) ?? top?.support.citations[0];
+  const limit = s.abstained ? null : rec?.limitations[0] ?? s.limitations[0] ?? top?.limitations[0];
+  return <section className="glance" aria-labelledby="glance-title" data-testid="at-a-glance">
+    <h3 id="glance-title" className="sr-only">At a glance</h3>
+    <div className="glance-grid">
+      <div><p className="glance-k">Answer</p><p className="glance-v" data-testid="glance-answer">{answer.title}</p><p className="meta">{answer.text}</p></div>
+      <div><p className="glance-k">Applies to your scenario?</p>
+        <p className="glance-v" data-testid="glance-transfer">{rec ? CONCLUSION[rec.conclusion].title : 'Not assessed'}</p>
+        <p className="meta">{rec ? 'A condition comparison, not a safety prediction.' : data.transferNote}</p></div>
+      <div><p className="glance-k">Most relevant NASA evidence</p>
+        <p className="glance-v">{top ? <Link href={`/experiments/${top.experimentId}`}>{top.experimentId}</Link> : 'No admitted record matched'}</p>
+        {top && <p className="meta">{top.support.kind === 'unsupported' ? 'related record' : `${top.support.kind} · ${top.evidenceLevel}`}</p>}</div>
+    </div>
+    {groups.some(([, f]) => f.length) && <ul className="glance-conds" aria-label="Your conditions against the record">
+      {groups.filter(([, f]) => f.length).map(([label, f, kind]) => <li key={label} data-kind={kind}><b>{label}:</b> {f.join(', ')}</li>)}</ul>}
+    <div className="glance-foot">
+      {citation && <div><p className="glance-k">Primary source</p><CitationList citations={[citation]} sources={sources} /></div>}
+      <div><p className="glance-k">{s.abstained ? 'Why PIX withheld an answer' : 'Key limitation'}</p><p>{s.abstained ? s.reason : limit}</p></div>
+    </div>
+  </section>;
+}
