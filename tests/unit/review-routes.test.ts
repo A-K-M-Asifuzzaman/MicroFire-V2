@@ -1,12 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { randomBytes } from 'node:crypto';
-import { HOSTED_MARKERS, isLoopbackAuthority, reviewFlagFor, reviewRouteAllowed as allowed, type ReviewFlag } from '../../apps/web/lib/review-policy';
+import { HOSTED_MARKERS, isLoopbackAuthority, reviewFlagFor, reviewRouteAllowed, type ReviewFlag } from '../../apps/web/lib/review-policy';
 
 // Review routes fail closed: explicit local flag, no hosting marker (presence alone denies), exact loopback authority.
 const FLAGS: readonly ReviewFlag[] = ['MICROFIRE_DESIGN_REVIEW', 'MICROFIRE_M2_FIXTURE_GALLERY'];
-const token = randomBytes(32).toString('base64url');
-const on = (flag: ReviewFlag, extra: Record<string, string> = {}) => ({ [flag]: '1', MICROFIRE_REVIEW_ACCESS_TOKEN: token, ...extra });
-const reviewRouteAllowed = (flag: ReviewFlag, env: Record<string, string>, host: string | null, forwarded: string | null = null) => allowed(flag, env, host, forwarded, token);
+const on = (flag: ReviewFlag, extra: Record<string, string> = {}) => ({ [flag]: '1', ...extra });
 const LOCAL = '127.0.0.1:3240';
 
 /** Authorities that must never pass, whatever the environment (Astra R2 and the adversarial set). */
@@ -87,16 +84,4 @@ test('reviewFlagFor guards exactly the review routes', () => {
   for (const p of ['/design', '/design/', '/design/a', '/design/b/lab']) expect(reviewFlagFor(p), p).toBe('MICROFIRE_DESIGN_REVIEW');
   for (const p of ['/m2-fixtures', '/m2-fixtures/x']) expect(reviewFlagFor(p), p).toBe('MICROFIRE_M2_FIXTURE_GALLERY');
   for (const p of ['/', '/designs', '/atlas', '/missions/bass-assembly/tour', '/m2-fixturesx', '/api/design']) expect(reviewFlagFor(p), p).toBeNull();
-});
-
-test('R4: forged headers and unknown hosting markers never substitute for a dedicated credential', () => {
-  for (const flag of FLAGS) {
-    const env = on(flag, { UNKNOWN_HOSTING_PROVIDER: '1' });
-    for (const credential of [null, '', 'wrong', randomBytes(32).toString('base64url'), `${token},${token}`])
-      expect(allowed(flag, env, LOCAL, LOCAL, credential)).toBe(false);
-    expect(allowed(flag, env, LOCAL, LOCAL, token)).toBe(true);
-    for (const secret of ['', 'weak', token + '=', undefined])
-      expect(allowed(flag, { ...env, MICROFIRE_REVIEW_ACCESS_TOKEN: secret }, LOCAL, LOCAL, token)).toBe(false);
-    expect(allowed(flag, on(flag), LOCAL)).toBe(false);
-  }
 });

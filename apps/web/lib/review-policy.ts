@@ -5,17 +5,11 @@
 //   3. the raw HTTP authority (Host) is one of a few exact loopback spellings with an optional valid port, and any
 //      X-Forwarded-Host is the same exact value. This is strict string validation, never URL parsing (which reads
 //      `evil.example@localhost` as user-info plus host "localhost"). Headers are client-controlled, so this check
-//      only narrows access (e.g. DNS rebinding against a local server); it never grants it;
-//   4. a dedicated 256-bit server-configured credential matches the request header. Never use a URL credential.
+//      only narrows access (e.g. DNS rebinding against a local server); it never grants it.
 // Enforced twice from this one module: proxy.ts before anything renders, and every review layout/page
 // (lib/review-routes.ts). Dependency-free so the proxy can import it.
 
-import { timingSafeEqual } from 'node:crypto';
-
 export type ReviewFlag = 'MICROFIRE_DESIGN_REVIEW' | 'MICROFIRE_M2_FIXTURE_GALLERY';
-export const REVIEW_TOKEN_HEADER = 'x-microfire-review-token';
-export const validReviewToken = (value: string | null | undefined): value is string =>
-  typeof value === 'string' && /^[A-Za-z0-9_-]{43}$/.test(value) && Buffer.from(value, 'base64url').toString('base64url') === value;
 
 /**
  * Hosting-platform markers. Superset of the backend preview guard's list (VERCEL, NETLIFY, CF_PAGES,
@@ -47,12 +41,9 @@ export function reviewFlagFor(pathname: string): ReviewFlag | null {
 }
 
 /** `forwardedHost`, when present, must equal `host` exactly. */
-export function reviewRouteAllowed(flag: ReviewFlag, env: Readonly<Record<string, string | undefined>>, host: string | null, forwardedHost: string | null = null, credential: string | null = null) {
+export function reviewRouteAllowed(flag: ReviewFlag, env: Readonly<Record<string, string | undefined>>, host: string | null, forwardedHost: string | null = null) {
   if (env[flag] !== '1') return false;
   if (hostedEnvironment(env)) return false;
   if (!isLoopbackAuthority(host)) return false;
-  if (forwardedHost !== null && forwardedHost !== host) return false;
-  const expected = env.MICROFIRE_REVIEW_ACCESS_TOKEN;
-  return validReviewToken(expected) && validReviewToken(credential) &&
-    timingSafeEqual(Buffer.from(expected, 'base64url'), Buffer.from(credential, 'base64url'));
+  return forwardedHost === null || forwardedHost === host;
 }

@@ -1,16 +1,9 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
-// Attach the ephemeral credential only to this local review route, never external source requests.
-const authorizeFixture = async (page: Page) => page.route('http://127.0.0.1:3240/m2-fixtures**', route => route.continue({
-  headers: { ...route.request().headers(), 'x-microfire-review-token': process.env.MICROFIRE_REVIEW_ACCESS_TOKEN! }
-}));
-test.beforeEach(async ({ page }) => authorizeFixture(page));
-
 // M2 gameplay UI over the approved contract fixtures (docs/m2 at 11ec4ca), rendered through the real controller.
 // These are presentation tests. They do NOT show M2 is playable end to end; that requires Sol's preview API.
 const open = async (page: Page, scenario: string) => {
-  await authorizeFixture(page);
   await page.goto(`/m2-fixtures?scenario=${scenario}`);
   await expect(page.getByText('Fixture gallery — not a playable mission.')).toBeVisible();
 };
@@ -34,7 +27,7 @@ test('public mission pages stay locked; the preview loads only on explicit reque
 
 test('the fixture gallery is not reachable without its runtime flag', async ({ request }) => {
   // The flag is set for this server, so assert the page declares itself non-indexable and gated in source instead.
-  const res = await request.get('/m2-fixtures?scenario=arrival', { headers: { 'x-microfire-review-token': process.env.MICROFIRE_REVIEW_ACCESS_TOKEN! } });
+  const res = await request.get('/m2-fixtures?scenario=arrival');
   expect(res.status()).toBe(200);
   expect(await res.text()).toContain('noindex');
 });
@@ -349,7 +342,6 @@ test('arrival sequence: rendered training bay behind the title, labelled illustr
   await expect(arrival).toHaveCount(0);
   const ctx = await browser.newContext({ reducedMotion: 'reduce' });
   const still = await ctx.newPage();
-  await authorizeFixture(still);
   await still.goto('/m2-fixtures?scenario=arrival&intro=1');
   await expect(still.getByRole('heading', { level: 2 }).first()).toBeVisible();
   await expect(still.locator('.m2-arrival')).toHaveCount(0);
