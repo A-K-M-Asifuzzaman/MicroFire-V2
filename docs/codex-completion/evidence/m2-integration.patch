@@ -13,7 +13,7 @@ index ee52b54..9b7c3bd 100644
    ActionResponse, AuthorizeResponse, CapabilityResponse, HttpFailure, NoteIssue, RevokeResponse, StartResponse
 -} from '../../../docs/m2/fixtures/contract-types';
 +} from '@microfire/shared';
- 
+
  /** Plain, serialisable part data that server components hand to the client game (see ./contract/parts.ts). */
  export type PartSpec = { id: PartId; label: string; anchorId: string; anchorLabel: string; requires: PartId[]; sourceNote: string;
 @@ -35,4 +35,9 @@ export type ContractRuntime = {
@@ -35,5 +35,5 @@ index f6d7b17..eee65fc 100644
 -import { equipmentCopy, equipmentDefinitions } from './equipment-copy';
 +import { equipmentCopy, equipmentDefinitions } from '@microfire/shared';
  import type { PartSpec } from '../contract';
- 
+
  /** The frozen equipment language as plain props (labels, anchors, dependencies, source notes). */
