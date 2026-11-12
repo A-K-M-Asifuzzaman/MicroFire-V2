@@ -76,15 +76,16 @@ function apply(view: CampaignView, action: CampaignAction, dataset: Catalog, at:
     const thickness = statement.id === 'trial-b20-thickness', causal = statement.id === 'trial-flow-caused-burnout', lunar = statement.id === 'trial-ai-lunar-claim';
     const expectedCites = thickness ? [dataset.experiments[0]!.conditions.thicknessMm].flatMap(c => c.status === 'known' ? [c.citation] : []) : claim.citations;
     const feedback = assess([
-      [action.kind === statement.expected.kind && action.evidenceLevel === (thickness ? 'analogous' : statement.expected.evidenceLevel), statement.hint + (thickness ? ' A unit derivation is not a directly transcribed observation.' : '')],
+      [action.kind === statement.expected.kind && action.evidenceLevel === statement.expected.evidenceLevel, statement.hint],
       [matchesCitations(action.citations, expectedCites), 'Select the source locator for this statement, rather than an unrelated citation.'],
       [action.support === (causal || lunar ? 'insufficient' : 'supports'), 'Separate lack of support from contradiction: this run does not settle a lunar claim or isolate an airflow cause.'],
       [unique(action.confounders) && (!causal || action.confounders.includes('flow-history')) && (!lunar || ['gravity', 'pressure'].every(x => action.confounders.includes(x as typeof action.confounders[number]))), 'Identify the varying flow history or the missing gravity and pressure applicability.']
     ], expectedCites);
     v.appraisals[statement.id] = feedback;
-    // Keep the legacy reducer's classification vocabulary; the campaign's stricter applicability assessment is separate.
-    const classified = transition(s, { type: 'CLASSIFY_CLAIM', claimId: statement.id, kind: feedback.correct ? statement.expected.kind : 'unknown', evidenceLevel: feedback.correct ? statement.expected.evidenceLevel : 'direct' }, dataset, at, { isMissionAvailable: () => true });
+    const classified = transition(s, { type: 'CLASSIFY_CLAIM', claimId: statement.id, kind: action.kind, evidenceLevel: action.evidenceLevel }, dataset, at, { isMissionAvailable: () => true });
     if (!classified.ok) return fail(classified.code, classified.message);
+    // Preserve the actual answer; campaign completion also requires its evidence and applicability rubric.
+    classified.state.classifications.at(-1)!.correct = feedback.correct;
     v.state = classified.state; return result(feedback);
   }
   if (action.type === 'ASSESS_HABITAT') {

@@ -1,7 +1,7 @@
 import 'server-only';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { CampaignExportSchema, CampaignSnapshotSchema, CampaignCommandSchema, PreviewUuidSchema, campaignIdentity, campaignJson, parsePreviewJson, type CampaignRecord } from '@microfire/shared';
-import { createCampaign, replayCampaign, transitionCampaign } from '@microfire/game-core';
+import { createCampaign, replayCampaign, transitionCampaign, type CampaignFeedback } from '@microfire/game-core';
 import { catalog, catalogSha256, validatePassport } from '@microfire/science';
 import { localPreviewRequest, PreviewAuthority, PreviewFailure } from './game-preview-security';
 import { z } from 'zod';
@@ -9,7 +9,7 @@ import { CampaignRecordSchema } from '@microfire/shared';
 
 const checkpointSchema = z.strictObject({ format: z.literal('evidence-campaign-v1'), realmId: PreviewUuidSchema, origin: z.string(), keyId: z.string(), catalogSha256: z.string(), record: CampaignRecordSchema });
 const PREFIX = 'microfire-evidence-campaign-v1\0';
-type Head = { record: CampaignRecord; checkpoint: string; commandId: string | null };
+type Head = { record: CampaignRecord; checkpoint: string; commandId: string | null; feedback?: CampaignFeedback };
 /** Private server adapter only. No HTTP route or public availability is enabled by constructing it. */
 export class CampaignService {
   private readonly heads = new Map<string, Head>();
@@ -80,11 +80,11 @@ export class CampaignService {
       this.authorized(request);
       const head = this.heads.get(command.sessionId);
       if (!head) throw new PreviewFailure(404, 'SESSION_NOT_FOUND', 'Explicitly resume the saved campaign checkpoint.');
-      if (head.commandId === command.commandId && head.record.events.length === command.expectedRevision + 1) return { ok: true as const, snapshot: this.snapshot(head) };
+      if (head.commandId === command.commandId && head.record.events.length === command.expectedRevision + 1) return { ok: true as const, snapshot: this.snapshot(head), ...(head.feedback ? { feedback: head.feedback } : {}) };
       if (head.record.events.length !== command.expectedRevision) throw new PreviewFailure(409, 'STALE_SESSION', 'Read the current campaign head before retrying.');
       const result = transitionCampaign(head.record, command.action, catalog, new Date(this.now()).toISOString());
       if (!result.ok) return { ok: false as const, code: result.code, message: result.message, snapshot: this.snapshot(head) };
-      const candidate = { record: result.record, checkpoint: this.sign(result.record), commandId: command.commandId };
+      const candidate: Head = { record: result.record, checkpoint: this.sign(result.record), commandId: command.commandId, ...(result.feedback ? { feedback: result.feedback } : {}) };
       const snapshot = this.snapshot(candidate); this.authorized(request); this.heads.set(command.sessionId, candidate);
       return { ok: true as const, snapshot, ...(result.feedback ? { feedback: result.feedback } : {}) };
     } finally { unlock(); if (this.locks.get(command.sessionId) === tail) this.locks.delete(command.sessionId); }

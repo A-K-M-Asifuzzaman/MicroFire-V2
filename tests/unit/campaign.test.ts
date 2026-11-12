@@ -61,6 +61,7 @@ it('explains missing evidence, derivations, confounders and wrong classification
   expect(transitionCampaign(record, { ...appraise('trial-b20-thickness'), evidenceLevel: 'direct' }, catalog, at)).toMatchObject({ ok: true, feedback: { correct: false } });
   const wrong = transitionCampaign(record, { ...appraise('trial-ai-lunar-claim'), support: 'contradicts' }, catalog, at);
   if (!wrong.ok) throw Error(); record = wrong.record;
+  expect(replayCampaign(record, catalog).state.classifications.at(-1)).toMatchObject({kind:'unknown',evidenceLevel:'gap',correct:false});
   expect(transitionCampaign(record, trial.at(-1)!, catalog, at)).toMatchObject({ ok: false, code: 'APPRAISAL_REQUIRED' });
   record = advance(record, trial.slice(1));
   expect(replayCampaign(record, catalog).state.passport.entries.find(e => e.missionId === 'claim-trial')!.corrections).toHaveLength(1);

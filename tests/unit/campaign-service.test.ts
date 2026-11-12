@@ -28,7 +28,9 @@ it('server runs the complete campaign, exports source-linked entries and restore
   for (const action of actions) {
     const command = await h.command(snapshot, action), response = await h.service.command(h.request, command);
     expect(response.ok, JSON.stringify(response.ok ? {} : response)).toBe(true); snapshot = response.snapshot;
-    expect((await h.service.command(h.request, command)).snapshot.checkpoint).toBe(snapshot.checkpoint);
+    const duplicate = await h.service.command(h.request, command);
+    expect(duplicate.snapshot.checkpoint).toBe(snapshot.checkpoint);
+    if (response.ok && duplicate.ok) expect(duplicate.feedback).toEqual(response.feedback);
   }
   expect(snapshot.state.passport.entries).toHaveLength(5);
   const exported = h.service.export(h.request, snapshot.sessionId);
