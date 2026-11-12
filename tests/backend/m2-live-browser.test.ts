@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
-import { chromium, expect, type Browser, type Locator } from '@playwright/test';
+import { chromium, expect, type Browser, type Page, type Locator } from '@playwright/test';
 import { ActionResponseSchema, StartResponseSchema, equipmentDefinitions, PREVIEW_SAVE_KEY, type Snapshot } from '@microfire/shared';
 
 // Browser plugin not available. This runs real Playwright/UI/HTTP in a disposable integration checkout only.
@@ -69,11 +69,12 @@ async function startServer(port: number) {
 for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).entries()) test(`real M2 UI: ${mode} completes, exports and resumes a server-confirmed case`, { timeout: 180000 }, async () => {
   const server = await startServer(3390 + index);
   let browser: Browser | undefined;
+  let activePage: Page | undefined;
   try {
     browser = await chromium.launch();
     const touch = mode === 'touch';
     const context = await browser.newContext({ viewport: touch ? { width: 390, height: 844 } : { width: 1440, height: 900 }, isMobile: touch, hasTouch: touch, reducedMotion: mode === '3d' ? 'no-preference' : 'reduce' });
-    const page = await context.newPage();
+    const page = await context.newPage(); activePage = page;
     const runtimeErrors: string[] = [], consoleErrors: string[] = [];
     page.on('pageerror', error => runtimeErrors.push(error.message));
     page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
@@ -161,7 +162,7 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
     if (mode === 'keyboard') await install(equipmentDefinitions.find(p => p.id === 'igniter')!, true);
     for (const part of equipmentDefinitions) await install(part);
     assert.equal(snapshot.training.fault?.id, 'training-fan-reversed-v1');
-    await expect(page.getByText('Authored training fault — not a NASA incident.', { exact: true }).first()).toBeVisible();
+    await expect(page.locator('.m2-fault-banner')).toBeVisible();
     await page.screenshot({ path: path.join(artifacts, mode + '-fault.png'), fullPage: false });
     await command(page.getByRole('button', { name: 'Run Training check', exact: true }));
     if (mode === 'keyboard') {
@@ -215,5 +216,13 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
       integrationScope: 'disposable-local-review-only-not-release-approval' }, null, 2) + '\n');
     console.log(`${mode}: real UI completed and resumed; ${posts} POSTs, ${resumed.progress.completedChecks}/5 checks, two source entries. Public runtime remains disconnected.`);
     await context.close();
+  } catch (error) {
+    const message = String(error instanceof Error ? error.stack : error).replaceAll(server.approvalToken, '[redacted]');
+    writeFileSync(path.join(artifacts, mode + '-failure.txt'), message + '\n');
+    if (activePage && !activePage.isClosed()) {
+      await activePage.screenshot({ path: path.join(artifacts, mode + '-failure.png'), fullPage: false }).catch(() => undefined);
+      writeFileSync(path.join(artifacts, mode + '-failure.html'), (await activePage.content()).replaceAll(server.approvalToken, '[redacted]'));
+    }
+    throw Error(message, { cause: message });
   } finally { await browser?.close(); await server.stop(); }
 });
