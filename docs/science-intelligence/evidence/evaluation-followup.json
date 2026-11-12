@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "ea3e907937588362ba91cb4371d48752d8e3c180",
+  "codeAndDataTreeClean": true,
+  "command": "node --import tsx scripts/eval-intelligence.ts",
+  "report": "intelligence-regression-v2",
+  "passed": 11,
+  "total": 11,
+  "citationsPassed": 5,
+  "citationsTotal": 5,
+  "independentScientificAcceptance": false,
+  "sha256": {
+    "data/evals/intelligence-gold.json": "c8bf3df40f5f58aeb61214a2b199642c44e1427a34108e17f47720a11704869e",
+    "scripts/eval-intelligence.ts": "eee0c74a7548b548fe41fc75c426fdd32d2c3bf992954728ecef689f908a75fe",
+    "docs/evals/intelligence-report.json": "61cffac635e26eb6902e130f7d8046bc95b63f28e9b5d81113f8d115dcc34c39",
+    "data/fixtures/catalog.json": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc"
+  }
+}

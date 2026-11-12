@@ -82,3 +82,7 @@ Concrete parsed requests/responses: [examples/README.md](examples/README.md). Th
 `node --import tsx --test tests/backend/intelligence-http.test.ts` passed against a disposable production server: source-only descriptions, exact citations, 17.4, unknown gravity/pressure, unavailable source/quarantined IDs, supported/unsupported summaries, data-only headers and the real 30-POST limit. Campaign and M2 preview routes remained 404 in the ordinary build; the server was stopped. Existing M2 browser suites were not rebuilt/rerun unnecessarily.
 
 Independent scientific entailment/admission, source-specific redistribution rights, current official-resource qualification, Claude visual integration, latest Astra acceptance and owner release approval remain separate. Root project licensing and asset entitlement gaps in the accepted inventory are not silently cleared by the local reuse confirmation.
+
+## Evaluation follow-up — November 12
+
+`ea3e907937588362ba91cb4371d48752d8e3c180` expands evaluation to all six transfer dimensions and five positive/negative citation cases. Latest results: 222/222 units, 11/11 authored applicability/abstention cases, 5/5 citation cases, lint and types pass. Runtime APIs and Zod contracts above are unchanged; no production build or HTTP rerun was needed for test/evaluator-only edits. The repeating resource monitor is deleted; resource inspection resumes during the next authorized work session. See `11_SCIENCE_IMPLEMENTATION_FOLLOWUP.md` for pinned evidence.

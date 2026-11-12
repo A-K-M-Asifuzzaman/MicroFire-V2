@@ -1,6 +1,6 @@
 # Resource-to-feature mapping
 
-Status: owner-authorized local implementation; official qualifying-resource identification still awaits the published November 13 challenge list. No source is labelled “qualifying” by assumption. Current-year Project Submission Guide also remains pending: the rendered index lists FAQ, Team Formation and Connect guides; the conventional submission-guide URL currently renders “Page Not Found” despite HTTP 200. The watcher checks content/year, not status alone.
+Status: owner-authorized local implementation; official qualifying-resource identification still awaits the published November 13 challenge list. No source is labelled “qualifying” by assumption. Current-year Project Submission Guide also remains pending: the rendered index lists FAQ, Team Formation and Connect guides; the conventional submission-guide URL currently renders “Page Not Found” despite HTTP 200. Release checks must inspect content/year, not status alone. The repeating monitor is now deleted; the next check is during the next authorized work session.
 
 | Resource | Current qualification | Actual implemented use | Scientific boundary |
 |---|---|---|---|
