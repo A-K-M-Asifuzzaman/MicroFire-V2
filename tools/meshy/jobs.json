@@ -1111,6 +1111,206 @@
     "texture_resolution": "2k",
     "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
    }
+  },
+  {
+   "id": "m3-glass-chamber-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 03 test station. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a clear transparent glass cube combustion chamber on a sturdy base, with one small round glowing blue flame floating inside above a thin flat sample strip on a small holder, visible through the clear glass walls, with corner frame posts and two cable ports. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-sample-holder-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 03 specimen. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a small laboratory sample holder: a rectangular metal clamp frame holding one thin flat translucent plastic film sample strip vertically, on a tiny stand with two thumb screws. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m3-prediction-board-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 03 prediction step. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a freestanding pin board on two legs holding three blank cards and a small sealed envelope clipped at the top, with a pencil tray. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-evidence-table-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 04 hall centre. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a long low evidence examination table with a light-box surface, two document trays, a large magnifying glass on an arm and a small lamp. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m4-claim-card-stand-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 04 appraisal step. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a desktop stand holding four large blank cards upright in a row, each card with a different coloured tab on top (mint, sunflower, lavender, coral). Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-regolith-rocks-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 05 terrain dressing. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a cluster of five rounded grey lunar rocks of different sizes, low and chunky. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 8000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "matte light and mid grey lunar regolith with darker grey shadows in craters, subtle hand-painted shading, stylized, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-crater-tile-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 05 modular terrain. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a single flat square tile of grey cratered lunar ground with two small shallow craters and a few pebbles, thin slab, clean straight edges. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 8000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "matte light and mid grey lunar regolith with darker grey shadows in craters, subtle hand-painted shading, stylized, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-solar-array-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 05 habitat exterior. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a deployable solar panel array: four rectangular dark blue panels on a hinged frame mounted on a short tripod, with a small cable junction box. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-oxygen-rack-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 05 oxygen inspection hotspot. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a rack holding four upright gas cylinders with round valve caps and a pressure gauge panel, blank labels, on a small wheeled base. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
+  },
+  {
+   "id": "m5-rover-v1",
+   "batch": "MicroFire Nov batch 3 (M3/M4/M5 gaps; owner explicitly approved 2026-11-13, cap 300, floor 219)",
+   "purpose": "Mission 05 habitat exterior. Decorative only: never used for placement, qualification or any scientific outcome.",
+   "estimateCredits": 30,
+   "preview": {
+    "prompt": "Single isolated object, centered, no base, no floor: a small friendly pressurized lunar rover with six chunky wheels, a rounded cabin with a big front window, a roof antenna and a rear hatch. Stylized premium game art in a friendly illustrated style: chunky readable forms, softly rounded bevelled hard-surface panels, slightly exaggerated proportions, clean silhouette. No text, no letters, no logos, no flags, no insignia, no people.",
+    "ai_model": "meshy-7.1",
+    "model_type": "standard",
+    "topology": "triangle",
+    "should_remesh": true,
+    "target_polycount": 15000,
+    "moderation": true
+   },
+   "refine": {
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "texture_prompt": "Design B palette: cream white and pale lavender painted panels, deep ultramarine blue structural accents, sunflower yellow and mint green details, a few small coral red indicator lights, matte painted materials with subtle hand-painted shading, clean and bright, no text, no logos"
+   }
   }
  ]
 }

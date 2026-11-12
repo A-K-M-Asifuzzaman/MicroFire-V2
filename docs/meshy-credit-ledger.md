@@ -205,3 +205,23 @@ The models are generated, QA'd and preserved in `tools/meshy/incoming/` (git-ign
 **Remaining:**
 - 519 credits, of which 300 is the approved Batch 3 for revisions, rigging and animation.
 - About 219 is reserved for the owner's other project. Nothing beyond Batch 3 is approved.
+
+
+### Batch 3 (owner explicitly approved 2026-11-13: these 10 models, cap 300)
+
+Balance before: 519 (live). Spent **300**. Balance after: **219** (live); the 219 is the owner's reserve for another project. 10/10 succeeded with no retries and no failures. Model meshy-7.1, 30 credits each (preview 20 + PBR refine 10).
+
+| Job | Preview / refine task | Credits | Balance | QA | Use |
+|---|---|---:|---|---|---|
+| `m3-glass-chamber-v1` | `01a1d125-ac05-7267-a1bb-0886ed1c4573` / `01a1d126-b5c9-7351-88f8-59dba01a37de` | 30 | 519→489 | accepted-with-restriction | Flame inside is a tall yellow teardrop (a normal-gravity shape); not placed where it could be read as the B20 microgravity flame. |
+| `m3-sample-holder-v1` | `01a1d127-833a-7686-b234-a6b60c99c4d2` / `01a1d128-3f63-75e1-8c77-dde9cbd40247` | 30 | 489→459 | accepted | Integrated in Mission 03. |
+| `m3-prediction-board-v1` | `01a1d129-00ab-7008-8226-dfd6d4977f2e` / `01a1d12a-3303-70ad-93f9-846c84b3adad` | 30 | 459→429 | accepted | Mission 03 "Prediction panel" station. |
+| `m4-evidence-table-v1` | `01a1d12b-2464-7782-82e6-a0b1bd76241a` / `01a1d12c-0660-7405-b919-070a0b20431a` | 30 | 429→399 | accepted | Mission 04 hall centre. |
+| `m4-claim-card-stand-v1` | `01a1d12c-c7f3-735c-bbee-ce16d3604b56` / `01a1d12d-82c6-71d9-9f8a-43d831313495` | 30 | 399→369 | accepted | Mission 04, on the evidence table. |
+| `m5-regolith-rocks-v1` | `01a1d12e-4826-7628-aee6-3c4662127604` / `01a1d12e-fccf-72e7-8d59-cd3102b067f4` | 30 | 369→339 | accepted | Preserved for the Mission 05 exterior scene. |
+| `m5-crater-tile-v1` | `01a1d12f-98ec-759c-bf03-1c965069875e` / `01a1d130-4dd3-70a6-b048-cf811426dd5f` | 30 | 339→309 | accepted | Preserved for the Mission 05 exterior scene. |
+| `m5-solar-array-v1` | `01a1d131-0f19-7302-84b3-7d0011408c81` / `01a1d131-ef12-7476-be8b-62762706d274` | 30 | 309→279 | accepted | Preserved for the Mission 05 exterior scene. |
+| `m5-oxygen-rack-v1` | `01a1d132-b7c9-767a-b5ba-e090282879da` / `01a1d133-9e55-7636-bf9e-c78923f984b1` | 30 | 279→249 | accepted | Mission 05 habitat room. |
+| `m5-rover-v1` | `01a1d134-8dcb-77e7-9dce-2a7d1d1e4c81` / `01a1d135-ec71-759d-897c-afb60efcc1e7` | 30 | 249→219 | accepted | Preserved for the Mission 05 exterior scene. |
+
+Originals are kept in `tools/meshy/incoming/` (git-ignored). The models used in scenes are optimized in `claude/mission-scenes` (`apps/web/public/models/missions/`), with their rights entries.
