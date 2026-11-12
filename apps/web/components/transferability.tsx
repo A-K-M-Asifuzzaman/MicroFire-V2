@@ -77,7 +77,7 @@ function Result({ data, sourceTitles }: { data: Data; sourceTitles: Record<strin
     </div>
     {data.items.map((item) => <article key={item.experimentId} className="panel transfer-item">
       <p className="eyebrow" style={{ margin: 0 }}>Admitted record · <Link href={`/experiments/${item.experimentId}`}>{item.experimentId}</Link></p>
-      <p className="transfer-support"><b>{item.support.kind === 'unsupported' ? 'No cited observation supports this outcome.' : `Supported by a ${item.support.kind} statement`}</b>{item.support.kind !== 'unsupported' && ` · evidence level: ${item.evidenceLevel}`}</p>
+      <p className="transfer-support"><b>{item.support.kind === 'unsupported' ? 'No cited observation supports this outcome.' : `Supported by ${/^[aeiou]/.test(item.support.kind) ? 'an' : 'a'} ${item.support.kind} statement`}</b>{item.support.kind !== 'unsupported' && ` · evidence level: ${item.evidenceLevel}`}</p>
       <ul className="transfer-chips" aria-label="How your conditions compare">
         {item.matchedFields.map((t) => chip('match', t))}{item.mismatches.map((t) => chip('differ', t))}{item.missingFields.map((t) => chip('missing', t))}
       </ul>

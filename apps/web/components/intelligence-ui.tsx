@@ -86,7 +86,7 @@ export function Method({ data }: { data: IntelligenceData }) {
 export function AtAGlance({ data, sources }: { data: IntelligenceData; sources: SourceRef[] }) {
   const top = data.ranking.items[0], s = data.summary, rec = data.transfer?.records[0];
   const answer = s.abstained ? { title: 'No supported answer', text: s.reason }
-    : top && top.support.kind !== 'unsupported' ? { title: `Supported by a ${top.support.kind} NASA statement`, text: 'A cited statement in an admitted record speaks to your question.' }
+    : top && top.support.kind !== 'unsupported' ? { title: `Supported by ${/^[aeiou]/.test(top.support.kind) ? 'an' : 'a'} ${top.support.kind} NASA statement`, text: 'A cited statement in an admitted record speaks to your question.' }
       : { title: 'Related evidence only', text: 'Records relate to your question, but no cited statement establishes the outcome.' };
   const by = (k: string[]) => rec ? rec.dimensions.filter((d) => k.includes(d.status)).map((d) => fieldLabel(d.field)) : [];
   const groups: [string, string[], string][] = rec ? [['Match', by(['exact-recorded']), 'match'], ['Close (retrieval only)', by(['non-exact-retrieval-match']), 'near'], ['Differ', by(['conditions-differ']), 'differ'],
