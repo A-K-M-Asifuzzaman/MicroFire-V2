@@ -5,15 +5,20 @@ import { Readable } from 'node:stream';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { Pool } from 'pg';
+import path from 'node:path';
 
 export async function testDatabase() {
   const directory = mkdtempSync('/tmp/microfire-campaign-db-'), data = directory + '/data';
-  execFileSync('/opt/homebrew/bin/initdb', ['-D', data, '-A', 'trust', '-U', 'microfire_test', '--no-locale', '-E', 'UTF8'], { stdio: 'ignore' });
-  execFileSync('/opt/homebrew/bin/pg_ctl', ['-D', data, '-o', `-k ${directory} -h '' -p 5432`, '-l', directory + '/postgres.log', '-w', 'start'], { stdio: 'ignore' });
+  const bin = process.env.MICROFIRE_TEST_PG_BIN ?? execFileSync('pg_config', ['--bindir'], { encoding: 'utf8' }).trim();
+  execFileSync(path.join(bin, 'initdb'), ['-D', data, '-A', 'trust', '-U', 'microfire_test', '--no-locale', '-E', 'UTF8'], { stdio: 'ignore' });
+  execFileSync(path.join(bin, 'pg_ctl'), ['-D', data, '-o', `-k ${directory} -h '' -p 5432`, '-l', directory + '/postgres.log', '-w', 'start'], { stdio: 'ignore' });
   const options = { host: directory, port: 5432, user: 'microfire_test', database: 'postgres', max: 4 };
+  const admin = new Pool(options); admin.on('error', () => {});
+  await admin.query(readFileSync('data/migrations/campaign-public-v1.sql', 'utf8'));
+  await admin.query('REVOKE CREATE ON SCHEMA public FROM PUBLIC; CREATE ROLE microfire_app LOGIN; GRANT USAGE ON SCHEMA public TO microfire_app; GRANT SELECT,INSERT,UPDATE,DELETE ON microfire_campaign_visitors,microfire_campaign_heads,microfire_campaign_budgets TO microfire_app');
+  options.user = 'microfire_app';
   const pool = new Pool(options); pool.on('error', () => {});
-  await pool.query(readFileSync('data/migrations/campaign-public-v1.sql', 'utf8'));
-  return { pool, options, restart() { execFileSync('/opt/homebrew/bin/pg_ctl', ['-D', data, '-m', 'fast', '-w', 'restart'], { stdio: 'ignore' }); }, async close() { await pool.end(); execFileSync('/opt/homebrew/bin/pg_ctl', ['-D', data, '-m', 'immediate', '-w', 'stop'], { stdio: 'ignore' }); rmSync(directory, { recursive: true, force: true }); } };
+  return { pool, options, restart() { execFileSync(path.join(bin, 'pg_ctl'), ['-D', data, '-m', 'fast', '-w', 'restart'], { stdio: 'ignore' }); }, async close() { await pool.end(); await admin.end(); execFileSync(path.join(bin, 'pg_ctl'), ['-D', data, '-m', 'immediate', '-w', 'stop'], { stdio: 'ignore' }); rmSync(directory, { recursive: true, force: true }); } };
 }
 type Handler = (request: Request, trustedAddress: string) => Promise<Response>;
 type Factory = (origin: string) => Handler;
