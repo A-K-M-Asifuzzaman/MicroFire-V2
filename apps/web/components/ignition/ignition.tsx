@@ -135,9 +135,14 @@ export function Ignition() {
       <p id="ign-desc" className="sr-only">A fictional 8-second story, not a real NASA incident. A crew spacecraft travels from Earth toward the Moon. A small fire starts inside its cabin, where there is oxygen. PIX, MicroFire’s guide, wakes up and opens a hologram showing that in microgravity a flame grows round and dim instead of tall. The hologram opens into the MicroFire observatory. Skip at any time.</p>
       {/* Also before hydration (beat null): the gate opens the dialog while the page's scripts are still downloading. */}
       {(beat === null || beat === 'loading') && <div className="ign-loading">
-        <p aria-hidden="true">MicroFire</p>
-        <progress max={1} value={progress} aria-label="Loading the opening film" />
-        <p aria-hidden="true">Loading the film · {Math.round(progress * 100)}%</p>
+        <BootSky />
+        <div className="ign-boot">
+          <svg className="ign-boot-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2c7 7 10 12 10 17a10 10 0 0 1-20 0c0-5 3-10 10-17z" fill="#ffb020" stroke="#15153d" strokeWidth="2.2" /><path d="M16 14c3 3 4 5 4 7a4 4 0 0 1-8 0c0-2 1-4 4-7z" fill="#ff5a5f" /></svg>
+          <p className="ign-boot-word" aria-hidden="true">MicroFire</p>
+          <p className="ign-boot-sub" aria-hidden="true">The Living Science Observatory</p>
+          <progress max={1} value={progress} aria-label="Loading the opening film" />
+          <p className="ign-boot-pct" aria-hidden="true">Loading the film · {Math.round(progress * 100)}%</p>
+        </div>
       </div>}
       {cap?.alert && <p className="ign-alert" role="status"><span aria-hidden="true">▲</span> FIRE ANOMALY DETECTED</p>}
       {cap && !cap.alert && !title && <p className="ign-caption" key={beat} aria-live="polite">{cap.who && <b>{cap.who}: </b>}{cap.text}</p>}
@@ -187,4 +192,13 @@ function flyWordmark() {
 /** Small "Replay intro" control for the homepage (hidden under reduced motion, where the film never plays). */
 export function ReplayIntro() {
   return <button type="button" className="ign-replay" onClick={() => document.dispatchEvent(new Event('ignition:replay'))}>Replay intro</button>;
+}
+
+/** The boot screen's sky: the homepage hero's sparkle stars and Earth's curve, so loading already looks like the site. */
+const BOOT_STARS = [[8, 14, 1], [18, 70, .7], [27, 28, 1.1], [41, 84, .8], [56, 12, .9], [64, 64, .6], [73, 24, 1.2], [86, 46, .9], [93, 16, .7], [34, 52, .6]] as const;
+function BootSky() {
+  return <div className="ign-boot-sky" aria-hidden="true">
+    {BOOT_STARS.map(([x, y, k], i) => <svg key={i} className="ign-boot-star" style={{ left: `${x}%`, top: `${y}%`, ['--s' as string]: k, ['--d' as string]: `${(i % 5) * .6}s` }} viewBox="0 0 20 20"><path d="M10 0 C11 7 13 9 20 10 C13 11 11 13 10 20 C9 13 7 11 0 10 C7 9 9 7 10 0Z" /></svg>)}
+    <span className="ign-boot-earth" />
+  </div>;
 }

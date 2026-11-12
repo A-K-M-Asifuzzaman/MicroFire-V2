@@ -30,10 +30,11 @@ async function segment(name, fn) {
   const t0 = Date.now();
   await fn();
   await pause(300);
+  const tEnd = Date.now() / 1000; // screencast timestamps are epoch seconds; frames only arrive on change
   await cdp.send('Page.stopScreencast'); recording = null;
   const dir = path.join(out, `.frames-${name}`); rmSync(dir, { recursive: true, force: true }); mkdirSync(dir);
   // Variable-rate frames → a concat list with real durations → constant 30 fps H.264.
-  const list = frames.map((f, i) => { const file = `f${String(i).padStart(5, '0')}.jpg`; writeFileSync(path.join(dir, file), Buffer.from(f.data, 'base64')); const next = frames[i + 1]?.t ?? f.t + 1 / 30; return `file '${file}'\nduration ${Math.max(1 / 60, next - f.t).toFixed(4)}`; });
+  const list = frames.map((f, i) => { const file = `f${String(i).padStart(5, '0')}.jpg`; writeFileSync(path.join(dir, file), Buffer.from(f.data, 'base64')); const next = frames[i + 1]?.t ?? Math.max(f.t + 1 / 30, tEnd); /* hold the final frame until stop */ return `file '${file}'\nduration ${Math.max(1 / 60, next - f.t).toFixed(4)}`; });
   writeFileSync(path.join(dir, 'list.txt'), list.join('\n') + `\nfile 'f${String(frames.length - 1).padStart(5, '0')}.jpg'\n`);
   execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', path.join(dir, 'list.txt'), '-vf', `fps=30,scale=${width}:${height}:flags=lanczos,format=yuv420p`, '-c:v', 'libx264', '-preset', 'slow', '-crf', '17', '-movflags', '+faststart', path.join(out, `${name}.mp4`)]);
   rmSync(dir, { recursive: true, force: true });

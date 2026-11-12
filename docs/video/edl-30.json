@@ -1,0 +1,13 @@
+{
+ "title": "MicroFire — global submission (30 s): problem, solution, strongest real demo",
+ "shots": [
+  { "card": { "kicker": "NASA Space Apps 2026 · Flame in Freefall", "title": "Fire behaves differently in space." }, "dur": 2.8 },
+  { "clip": "02-gravity-lens", "from": 1.5, "dur": 4.2, "tag": "Illustration", "caption": "With almost no buoyancy, a flame can turn round and blue." },
+  { "card": { "title": "The NASA evidence is buried in long reports.", "body": "MicroFire checks it at the source." }, "dur": 2.8 },
+  { "clip": "04-b20-dossier", "from": 12, "dur": 4.4, "caption": "NASA Table A.1, page 112: 17.4% oxygen, corrected and cited." },
+  { "clip": "05-ask-pix", "from": 14, "dur": 4.2, "caption": "PIX cites its source or says it doesn't know. No AI model." },
+  { "clip": "08-missions-and-bay", "from": 2, "dur": 3.8, "tag": "Illustrations · not playable yet", "caption": "Five missions are on the way." },
+  { "clip": "08-missions-and-bay", "from": 26, "dur": 3.6, "tag": "3D tour · not playable yet", "caption": "Tour the BASS-II training bay today." },
+  { "card": { "title": "MicroFire", "body": "microfire-v2-preview.vercel.app", "foot": "Independent project. Not NASA-endorsed." }, "dur": 3.4 }
+ ]
+}
