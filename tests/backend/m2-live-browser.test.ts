@@ -101,10 +101,8 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
     const nativeSelect = async (target: Locator, value: string) => {
       await expect(target).toBeVisible();
       if (mode !== 'keyboard') { await target.selectOption(value); return; }
-      const values = await target.locator('option').evaluateAll(options => options.map(o => (o as HTMLOptionElement).value));
-      const at = values.indexOf(value); assert(at >= 0);
-      await target.focus(); await target.press('Home');
-      for (let i = 0; i < at; i++) await target.press('ArrowDown');
+      await target.focus();
+      for (const key of value) await target.press(key);
       await target.press('Enter'); await expect(target).toHaveValue(value);
     };
     const responseFor = (endpoint: string) => page.waitForResponse(response => new URL(response.url()).pathname === '/api/game/preview/' + endpoint && response.request().method() === 'POST', { timeout: 15000 });
