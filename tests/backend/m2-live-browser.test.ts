@@ -103,7 +103,7 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
       if (mode !== 'keyboard') { await target.selectOption(value); return; }
       await target.focus();
       for (const key of value) await target.press(key);
-      await target.press('Enter'); await expect(target).toHaveValue(value);
+      await target.press('Tab'); await expect(target).toHaveValue(value);
     };
     const responseFor = (endpoint: string) => page.waitForResponse(response => new URL(response.url()).pathname === '/api/game/preview/' + endpoint && response.request().method() === 'POST', { timeout: 15000 });
     const command = async (target: Locator, refused = false) => {
@@ -172,7 +172,8 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
     }
     await nativeSelect(page.getByLabel('Component'), 'fan');
     await radio(page.getByRole('radio', { name: 'Reversed orientation', exact: true }));
-    await command(page.getByRole('button', { name: 'Submit diagnosis', exact: true }));
+    const correct = await command(page.getByRole('button', { name: 'Submit diagnosis', exact: true }));
+    assert(correct.ok && correct.feedback?.correct === true);
     const fan = equipmentDefinitions.find(p => p.id === 'fan')!;
     await selectPart(fan.label); await command(page.getByRole('button', { name: 'Remove fan', exact: true }));
     assert(snapshot.training.pendingRepair); await radio(page.locator('input[name="m2-mount"][value="duct-inlet"]'));
