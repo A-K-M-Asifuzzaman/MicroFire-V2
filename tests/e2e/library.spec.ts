@@ -2,14 +2,25 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 // NASA Investigation Library + Citation Checker over Codex's investigation-library-v1 (real backend; 2 verify POSTs).
-test('the library lists every source description from the API but only one admitted run, and search narrows it', async ({ page, request }) => {
-  const api = await (await request.get('/api/investigations')).json() as { data: { items: unknown[] } };
+// Pinned science invariant: only BASS-II carries an admitted run (B20). New descriptions may be added, never silently admitted.
+const ADMITTED: Record<string, string[]> = { 'bass-ii': ['bass2-b20'] };
+const BASELINE = ['bass-ii', 'flex', 'acme', 'saffire-iv-v'];
+
+test('the library renders every API description, admits only B20, and search narrows it', async ({ page, request }) => {
+  const api = await (await request.get('/api/investigations')).json() as { data: { items: { id: string; admittedExperimentIds: string[] }[] } };
+  const items = api.data.items;
+  expect(items.map((i) => i.id)).toEqual(expect.arrayContaining(BASELINE));
+  for (const i of items) expect(i.admittedExperimentIds, i.id).toEqual(ADMITTED[i.id] ?? []);
   await page.goto('/investigations');
   const cards = page.locator('.library-card');
-  await expect(cards).toHaveCount(api.data.items.length);
+  await expect(cards).toHaveCount(items.length);
+  await expect(page.locator('.results-meta')).toContainText(`${items.length} investigation descriptions`);
   await expect(page.locator('.results-meta')).toContainText('1 admitted run usable as evidence');
-  await expect(cards.filter({ hasText: 'BASS-II' })).toContainText('1 admitted run: bass2-b20');
-  await expect(cards.filter({ hasText: 'FLEX' })).toContainText('Description only · no admitted runs');
+  for (const i of items) {
+    const card = page.locator(`.library-card[href="/investigations/${i.id}"]`);
+    await expect(card, i.id).toHaveAttribute('data-admitted', String(i.id in ADMITTED));
+    await expect(card, i.id).toContainText(i.id in ADMITTED ? `1 admitted run: ${ADMITTED[i.id]!.join(', ')}` : 'Description only · no admitted runs');
+  }
   await page.getByLabel('Search investigations').fill('flex');
   await page.getByRole('button', { name: 'Search' }).click();
   await expect(page).toHaveURL(/\?q=flex/);
