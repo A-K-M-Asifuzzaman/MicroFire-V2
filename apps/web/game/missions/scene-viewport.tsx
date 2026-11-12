@@ -21,7 +21,7 @@ const noWebgl = () => {
 const never = () => () => undefined;
 
 export function SceneViewport({ layout, spots, next, open, onToggle, loading }: {
-  layout: 'station' | 'detective'; spots: Spot[]; next: string | undefined; open: string | null; onToggle: (id: string) => void; loading: string;
+  layout: 'station' | 'detective' | 'trial' | 'habitat'; spots: Spot[]; next: string | undefined; open: string | null; onToggle: (id: string) => void; loading: string;
 }) {
   const flat = useSyncExternalStore(never, noWebgl, () => false);
   const canvas = useRef<HTMLCanvasElement>(null), sceneRef = useRef<StationScene | null>(null);
@@ -33,7 +33,7 @@ export function SceneViewport({ layout, spots, next, open, onToggle, loading }: 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     void import('./station-scene').then((m) => {
       if (!live || !canvas.current) return;
-      const props: Prop[] = layout === 'detective' ? m.DETECTIVE_PROPS : m.STATION_PROPS;
+      const props: Prop[] = ({ station: m.STATION_PROPS, detective: m.DETECTIVE_PROPS, trial: m.TRIAL_PROPS, habitat: m.HABITAT_PROPS })[layout];
       scene = m.mountStationScene(canvas.current, { props, reducedMotion, onReady: () => live && setReady(true),
         onPositions: (p) => { if (live) setPos((old) => Object.keys(p).every((k) => Math.abs((old[k]?.x ?? -1) - (p[k]?.x ?? -1)) < 0.5 && Math.abs((old[k]?.y ?? -1) - (p[k]?.y ?? -1)) < 0.5) ? old : p as typeof old); } });
       if (!scene) setFailed(true); sceneRef.current = scene;

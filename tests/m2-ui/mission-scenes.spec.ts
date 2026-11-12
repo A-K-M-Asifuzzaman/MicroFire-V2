@@ -145,3 +145,81 @@ test('mission scenes never leak WebGL contexts while the camera drifts (one scen
   expect(await page.evaluate(() => (window as unknown as { __gl: number }).__gl)).toBeLessThanOrEqual(2); // probe + scene
   expect(warnings).toEqual([]);
 });
+
+const M4 = '/m2-fixtures/missions/claim-trial', M5 = '/m2-fixtures/missions/lunar-habitat';
+
+test('Claim Trial: four statements, engine reasons on a wrong appraisal, correct ones tick off; no answer key reaches the browser', async ({ page }) => {
+  const res = await page.goto(M4);
+  const html = await res!.text();
+  expect(html).not.toContain('a unit conversion, so the value is derived'); // engine hint
+  expect(html).not.toContain('"expected"');
+  await expect(page.getByText('Fixture gallery: not a playable mission.')).toBeVisible();
+  await state(page, /trial-ai-lunar-claim" too generously \(wrong\)/);
+  await expect(page.locator('.mf-verdict[data-kind="wrong"]')).toContainText('this run does not settle a lunar claim');
+  const obj = page.getByRole('region', { name: 'Claim Trial objectives' });
+  await expect(obj.locator('li[data-done="true"]')).toHaveCount(3);
+  await spot(page, /Statement board/).click();
+  await expect(page.locator('.mf-statements li[data-status="wrong"]')).toContainText('B20 proves PMMA cannot burn in a lunar habitat');
+  await state(page, /Complete Claim Trial/);
+  await expect(obj.locator('li[data-done="true"]')).toHaveCount(5);
+  await expect(page.getByRole('region', { name: 'Evidence Passport' }).locator('li[data-scenario]')).toHaveCount(1);
+});
+
+test('Claim Trial: the review desk emits a schema-valid appraisal with real source citations only', async ({ page }) => {
+  await page.goto(M4);
+  await spot(page, /Review desk/).click();
+  await page.getByLabel('Statement').selectOption('trial-flow-caused-burnout');
+  await page.getByLabel('Hypothesis').check();
+  await page.getByLabel('Evidence gap').check();
+  await page.getByLabel('B20 observation log (Table A.1)').check();
+  await page.getByLabel('The evidence is insufficient').check();
+  await page.getByLabel('Airflow changed during the run').check();
+  await page.getByRole('button', { name: 'Submit appraisal' }).click();
+  const a = await lastIntent(page);
+  expect(a).toMatchObject({ type: 'APPRAISE_CLAIM', statementId: 'trial-flow-caused-burnout', kind: 'hypothesis', evidenceLevel: 'gap', support: 'insufficient', confounders: ['flow-history'] });
+  expect(a.type === 'APPRAISE_CLAIM' && a.citations[0]!.locator).toMatchObject({ kind: 'pdf', page: 112 });
+  await expect(page.getByRole('region', { name: 'Claim Trial objectives' }).locator('li[data-done="true"]')).toHaveCount(0);
+});
+
+test('Lunar Habitat: labelled fictional; a safety verdict gets the engine rebuttal; B20 unknowns stay unknown', async ({ page }) => {
+  await page.goto(M5);
+  await expect(page.getByRole('note').filter({ hasText: 'Fictional scenario.' })).toBeVisible();
+  await state(page, /Declare the habitat safe \(wrong\)/);
+  await expect(page.locator('.mf-verdict[data-kind="wrong"]')).toContainText('cannot certify this fictional habitat');
+  await spot(page, /Evidence terminal/).click();
+  await expect(page.locator('.mf-recorded')).toContainText('17.4');
+  await expect(page.locator('.mf-recorded div', { hasText: 'Pressure' })).toContainText('Not recorded');
+  await expect(page.locator('.mf-recorded div', { hasText: 'Gravity' })).toContainText('Not recorded');
+  await state(page, /Complete Lunar Habitat/);
+  await expect(page.getByRole('region', { name: 'Lunar Habitat objectives' }).locator('li[data-done="true"]')).toHaveCount(4);
+});
+
+test('Lunar Habitat: assessment and decision emit schema-valid intents with the learner scenario, never NASA values', async ({ page }, info) => {
+  await page.goto(M5);
+  const press = async (name: RegExp) => { const b = spot(page, name); if (info.project.name === 'mobile') await b.tap(); else { await b.focus(); await page.keyboard.press('Enter'); } };
+  await press(/Life-support bay/);
+  await page.getByLabel('Insufficient evidence to decide').check();
+  const gaps = page.getByRole('group', { name: /Where does B20 not apply/ });
+  for (const d of ['Gravity', 'Pressure']) await gaps.getByLabel(d).check();
+  const next = page.getByRole('group', { name: /Which measurements should come next/ });
+  for (const d of ['Gravity', 'Pressure']) await next.getByLabel(d).check();
+  await page.getByRole('button', { name: 'Submit assessment' }).click();
+  expect(await lastIntent(page)).toMatchObject({ type: 'ASSESS_HABITAT', verdict: 'insufficient-evidence', scenario: { gravity: 'lunar', oxygenPct: 26, pressureKpa: 55 }, gaps: ['gravity', 'pressure'], nextMeasurements: ['gravity', 'pressure'] });
+  await press(/Decision station/);
+  await page.getByRole('group', { name: 'Provisional decision' }).getByLabel('Insufficient evidence to decide').check();
+  await page.getByRole('button', { name: 'Record decision' }).click();
+  expect(await lastIntent(page)).toEqual({ type: 'CORE', action: { type: 'RECORD_DECISION', verdict: 'insufficient-evidence' } });
+});
+
+test('Claim Trial and Lunar Habitat: complete 2D alternative without WebGL; accessible; no overflow', async ({ page }) => {
+  await page.addInitScript(() => { const o = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, k: string, ...a: unknown[]) { return /webgl/.test(k) ? null : Reflect.apply(o, this, [k, ...a]); } as typeof o; });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  for (const [route, n] of [[M4, 4], [M5, 5]] as const) {
+    await page.goto(route);
+    await expect(page.locator('.mf-viewport')).toHaveAttribute('data-mode', '2d');
+    await expect(page.getByRole('group', { name: 'Station hotspots' }).getByRole('button')).toHaveCount(n);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), route).toBe(true);
+    const r = await new AxeBuilder({ page }).include('.mf-gallery').withTags(['wcag2a', 'wcag2aa']).analyze();
+    expect(r.violations.map((v) => `${v.id}: ${v.nodes.length}`), route).toEqual([]);
+  }
+});

@@ -7,7 +7,7 @@ import { cleanFinish, loadModel } from '../../components/model-loader';
 
 export type HotspotId = string;
 export type Prop = { url: string; height: number; at: [number, number, number]; turn: number; hotspot?: HotspotId; labelY?: number };
-const M = '/models/missions/m1', M3 = '/models/missions/m3';
+const M = '/models/missions/m1', M3 = '/models/missions/m3', M4 = '/models/missions/m4', M5 = '/models/missions/m5';
 // Positions in metres inside a 4.4 m module, camera at +z looking toward the hatch at -z.
 export const STATION_PROPS: Prop[] = [
   { url: `${M}/research-console/research-console.gltf`, height: 1.5, at: [-1.55, 0, -0.6], turn: 0.9, hotspot: 'terminal', labelY: 1.15 },
@@ -28,6 +28,26 @@ export const DETECTIVE_PROPS: Prop[] = [
   { url: `${M3}/sample-carousel/sample-carousel.gltf`, height: 0.8, at: [0.9, 0, -2.6], turn: -0.5, hotspot: 'report', labelY: 0.95 },
   { url: `${M3}/camera-housing/camera-housing.gltf`, height: 0.7, at: [-0.4, 0, -2.4], turn: 0.6 },
   { url: `${M3}/optical-bench/optical-bench.gltf`, height: 0.6, at: [1.7, 0, 0.3], turn: -1.5 },
+];
+// Mission 04: an evidence hall. Statements on the board, sources in the archive, appraisal at the review desk.
+export const TRIAL_PROPS: Prop[] = [
+  { url: `${M4}/document-board/document-board.gltf`, height: 1.5, at: [-1.4, 0, -1.2], turn: 0.9, hotspot: 'statements', labelY: 1.0 },
+  { url: `${M4}/archive-unit/archive-unit.gltf`, height: 1.9, at: [-1.55, 0, -0.5], turn: 1.3, hotspot: 'archive', labelY: 0.85 },
+  { url: `${M4}/review-desk/review-desk.gltf`, height: 1.1, at: [0.3, 0, -2.6], turn: 0, hotspot: 'appraise', labelY: 1.15 },
+  { url: `${M4}/evidence-lectern/evidence-lectern.gltf`, height: 1.2, at: [1.5, 0, -1.0], turn: -1.2, hotspot: 'report', labelY: 1.0 },
+  { url: `${M4}/comparison-console/comparison-console.gltf`, height: 0.8, at: [1.7, 0, -0.3], turn: -1.4 },
+  { url: `${M4}/evidence-podium/evidence-podium.gltf`, height: 0.9, at: [-0.4, 0, -1.6], turn: 0.3 },
+  { url: `${M4}/filing-cart/filing-cart.gltf`, height: 0.9, at: [1.0, 0, -3.0], turn: -0.6 },
+];
+// Mission 05: a FICTIONAL lunar habitat research room (scenario, not NASA evidence).
+export const HABITAT_PROPS: Prop[] = [
+  { url: `${M5}/research-workstation/research-workstation.gltf`, height: 1.3, at: [-1.4, 0, -0.6], turn: 1.0, hotspot: 'conditions', labelY: 1.05 },
+  { url: `${M5}/life-support/life-support.gltf`, height: 1.6, at: [1.6, 0, -1.2], turn: -1.3, hotspot: 'assess', labelY: 0.95 },
+  { url: `${M5}/utility-robot/utility-robot.gltf`, height: 1.0, at: [-0.3, 0, -2.2], turn: 0.4, hotspot: 'decide', labelY: 1.15 },
+  { url: `${M5}/airlock-hatch/airlock-hatch.gltf`, height: 1.8, at: [0.3, 0.2, -3.5], turn: 0, hotspot: 'report', labelY: 0.85 },
+  { url: `${M5}/ventilation-unit/ventilation-unit.gltf`, height: 1.2, at: [-1.8, 0.4, -2.4], turn: 1.3, hotspot: 'evidence', labelY: 1.0 },
+  { url: `${M5}/inspection-drone/inspection-drone.gltf`, height: 0.4, at: [1.0, 1.7, -2.4], turn: -0.4 },
+  { url: `${M5}/habitat-module/habitat-module.gltf`, height: 0.7, at: [1.6, 0, 0.6], turn: -1.5 },
 ];
 export type StationScene = { setActive(id: HotspotId | null): void; dispose(): void };
 

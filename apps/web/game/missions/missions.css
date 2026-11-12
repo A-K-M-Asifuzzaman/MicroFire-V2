@@ -72,3 +72,15 @@
   .mf-spots .mf-spot span:not(.mf-spot-dot) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .mf-spot, .mf-spot-dot { animation: none !important; transition: none !important; } }
+
+.mf-fiction { margin: 0; padding: 10px 16px; border-radius: 16px; background: #eceeff; border: 3px dashed var(--ink); }
+.mf-statements { display: grid; gap: 12px; padding-left: 20px; }
+.mf-statements li { padding: 10px 12px; border-radius: 12px; border: 2px solid var(--ink); }
+.mf-statements li[data-status="correct"] { background: #dcfbef; }
+.mf-statements li[data-status="wrong"] { background: #ffe3e4; }
+.mf-statements p { margin: 0 0 6px; font-weight: 700; }
+.mf-kind[data-origin="authored-tutorial"] { background: var(--lav); }
+.mf-recorded { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; }
+.mf-recorded div { padding: 6px 10px; border-radius: 10px; border: 2px solid var(--lav); }
+.mf-recorded dt { font: 700 .75rem var(--body); color: var(--violet-ink); }
+.mf-recorded dd { margin: 0; }
