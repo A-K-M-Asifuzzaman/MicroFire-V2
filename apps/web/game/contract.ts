@@ -12,11 +12,12 @@ export type {
   CurrentDiagnostic, DiagnosticFinding, DiagnosticResult, DisplayFault, DomainResult, FaultCode, HttpCode, HttpFailure, LearningCheck,
   LocalSaveResult, LocalSlot, NoteIssue, PassportPresentation, PreviewId, Progress, ResumeRequest, ResumeResponse, RevokeResponse,
   SaveConflictCode, Snapshot, StartRequest, StartResponse, Step, Training, TrainingAction, TrainingCode, TrainingCorrection
-} from '../../../docs/m2/fixtures/contract-types';
+} from '@microfire/shared';
 import type { PartId } from '@microfire/shared';
+import { ActionResponseSchema, AuthorizeResponseSchema, CapabilityResponseSchema, HttpFailureSchema, RevokeResponseSchema, StartResponseSchema, noteIssue, requestIdentity } from '@microfire/shared';
 import type {
   ActionResponse, AuthorizeResponse, CapabilityResponse, HttpFailure, NoteIssue, RevokeResponse, StartResponse
-} from '../../../docs/m2/fixtures/contract-types';
+} from '@microfire/shared';
 
 /** Plain, serialisable part data that server components hand to the client game (see ./contract/parts.ts). */
 export type PartSpec = { id: PartId; label: string; anchorId: string; anchorLabel: string; requires: PartId[]; sourceNote: string;
@@ -34,5 +35,12 @@ export type ContractRuntime = {
   /** Sol's shared learner-note preflight. */
   noteIssue: (text: string) => NoteIssue | null;
 };
-/** Not available on this branch: Sol's runtime schemas and canonical identity live on codex/m2-stage-a-backend. */
-export const contractRuntime: ContractRuntime | null = null;
+/** Sol's Stage A runtime: shared response schemas, canonical request identity and note validation from @microfire/shared.
+ *  The server stays authoritative; this only validates wire shapes and builds idempotency identities. */
+export const contractRuntime: ContractRuntime = {
+  parse: {
+    capability: (v) => CapabilityResponseSchema.parse(v), authorize: (v) => AuthorizeResponseSchema.parse(v), revoke: (v) => RevokeResponseSchema.parse(v),
+    snapshot: (v) => StartResponseSchema.parse(v), action: (v) => ActionResponseSchema.parse(v), failure: (v) => HttpFailureSchema.parse(v)
+  },
+  identify: requestIdentity, noteIssue
+};
