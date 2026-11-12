@@ -4,11 +4,11 @@ import {
   API_VERSION, ApiErrorSchema, AskRequestSchema, AskResponseSchema, CitationVerifyRequestSchema, CitationVerifyResponseSchema, CompareRequestSchema,
   CompareResponseSchema, ExperimentQuerySchema, ExperimentResponseSchema, ExperimentsResponseSchema, ExportQuerySchema, ExportResponseSchema,
   FeaturesResponseSchema, GapsRequestSchema, GapsResponseSchema, HealthResponseSchema, IdSchema, PassportSchema, PassportValidationResponseSchema,
-  RankRequestSchema, RankResponseSchema, SourceDetailResponseSchema, SourcesResponseSchema, features
+  RankRequestSchema, RankResponseSchema, FrontierResponseSchema, SourceDetailResponseSchema, SourcesResponseSchema, features
 } from '@microfire/shared';
 import {
   answerQuestion, catalog, classifyGaps, compareExperiments, coverage, exportEvidence, isQuarantinedId, rankEvidence, searchExperiments,
-  sourceDetail, validatePassport, verifyCitations
+  sourceDetail, validatePassport, verifyCitations, researchFrontier
 } from '@microfire/science';
 
 type ErrorCode = z.infer<typeof ApiErrorSchema>['error']['code'];
@@ -124,6 +124,7 @@ async function readJson(request: Request): Promise<unknown> {
 }
 
 const postRoutes: Record<string, { schema: z.ZodType; handle: (input: never) => Response }> = {
+  'evidence/frontier': { schema: RankRequestSchema, handle: (r: z.infer<typeof RankRequestSchema>) => success(FrontierResponseSchema, researchFrontier(r)) },
   'evidence/rank': { schema: RankRequestSchema, handle: (r: z.infer<typeof RankRequestSchema>) => success(RankResponseSchema, rankEvidence(r)) },
   'evidence/compare': { schema: CompareRequestSchema, handle: (r: z.infer<typeof CompareRequestSchema>) => {
     const result = compareExperiments(r.experimentIds);

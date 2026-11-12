@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { Catalog } from '@microfire/shared';
+import { candidateReview } from './candidates';
 import ledgerJson from '../../../data/quarantine/legacy-ledger.json';
 
 const LedgerSchema = z.strictObject({
@@ -13,8 +14,8 @@ const LedgerSchema = z.strictObject({
 }).refine((l) => new Set(l.records.map((r) => r.candidateId)).size === l.records.length, 'Duplicate quarantine IDs');
 
 export const quarantineLedger = LedgerSchema.parse(ledgerJson);
-const quarantinedIds = new Set(quarantineLedger.records.flatMap((r) => [r.candidateId, r.upstreamRecordId.toLowerCase()]));
-const quarantinedTests = new Set(quarantineLedger.records.map((r) => r.testId.toLowerCase()));
+const quarantinedIds = new Set([...quarantineLedger.records.flatMap((r) => [r.candidateId, r.upstreamRecordId.toLowerCase()]), ...candidateReview.records.map(r => r.id)]);
+const quarantinedTests = new Set([...quarantineLedger.records.map((r) => r.testId.toLowerCase()), ...candidateReview.records.flatMap(r => r.testId ? [r.testId.toLowerCase()] : [])]);
 
 export const isQuarantinedId = (id: string) => quarantinedIds.has(id.toLowerCase());
 export const isQuarantinedTestId = (testId: string) => quarantinedTests.has(testId.toLowerCase());
@@ -23,6 +24,6 @@ export const isQuarantinedTestId = (testId: string) => quarantinedTests.has(test
 export function assertNoQuarantinedRecords(dataset: Catalog): Catalog {
   for (const e of dataset.experiments)
     if (isQuarantinedId(e.id) || isQuarantinedId(e.provenance.upstreamRecordId) || isQuarantinedTestId(e.testId))
-      throw new Error(`Quarantined legacy record ${e.provenance.upstreamRecordId} cannot enter the validated catalog`);
+      throw new Error(`Quarantined record ${e.provenance.upstreamRecordId} cannot enter the validated catalog`);
   return dataset;
 }

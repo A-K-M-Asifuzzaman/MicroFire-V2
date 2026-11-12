@@ -2,7 +2,7 @@ import type { Catalog, Citation, Coverage, EvidenceLevel, Experiment, Source, Ta
 import { catalog, catalogSha256, citationUrl } from './catalog';
 import { quarantineLedger, isQuarantinedId } from './quarantine';
 
-export const RANKING_VERSION = 'p1-claim-support-v2';
+export const RANKING_VERSION = 'p1-claim-support-v3';
 /** Retrieval tolerances decide relevance only. They do not assert scientific equivalence of conditions. */
 export const NUMERIC_TOLERANCE = { oxygenPct: 0.5, pressureKpa: 2, flowCmS: 1 } as const;
 export const TARGET_FIELDS = ['gravity', 'material', 'geometry', 'oxygenPct', 'pressureKpa', 'flowCmS'] as const;
@@ -82,13 +82,18 @@ export function coverage(dataset: Catalog = catalog): Coverage {
 }
 
 const eqi = (a: string, b: string) => a.normalize('NFKC').toLowerCase() === b.normalize('NFKC').toLowerCase();
-export function searchExperiments(query: { q?: string | undefined; program?: string | undefined; material?: string | undefined; flowDirection?: string | undefined }, dataset: Catalog = catalog): Experiment[] {
+export function searchExperiments(query: { q?: string | undefined; program?: string | undefined; material?: string | undefined; flowDirection?: string | undefined; gravity?: string | undefined; sourceId?: string | undefined; observation?: string | undefined; oxygenPct?: number | undefined; pressureKpa?: number | undefined; flowCmS?: number | undefined }, dataset: Catalog = catalog): Experiment[] {
   const terms = query.q ? contentTokens(query.q) : [];
+  const observationTerms = query.observation ? contentTokens(query.observation) : [];
   const known = (c: Experiment['conditions'][ConditionKey], v: string) => c.status === 'known' && eqi(String(c.value), v);
   return dataset.experiments.filter((e) =>
     (!query.program || eqi(e.program, query.program)) &&
     (!query.material || known(e.conditions.material, query.material)) &&
     (!query.flowDirection || known(e.conditions.flowDirection, query.flowDirection)) &&
+    (!query.gravity || known(e.conditions.gravity, query.gravity)) &&
+    (!query.sourceId || e.sourceIds.includes(query.sourceId)) &&
+    (!query.observation || observationTerms.length > 0 && observationTerms.every(t => e.claims.some(c => c.origin === 'research' && c.kind === 'observed' && contentTokens(c.text).includes(t)))) &&
+    (['oxygenPct', 'pressureKpa', 'flowCmS'] as const).every(field => query[field] === undefined || (e.conditions[field].status === 'known' && e.conditions[field].value === query[field])) &&
     terms.every((t) => indexExperiment(e).vocab.has(t)));
 }
 
@@ -132,7 +137,7 @@ export function rankEvidence(request: { question: string; targetConditions: Targ
       : `No target conditions given; score = ${hits.length}/${question.length || 0} question terms found; claim support is checked separately (${RANKING_VERSION}).`);
     const limitations = [...e.limitations, 'Score is retrieval relevance, not fire risk, safety or scientific confidence.'];
     if (dataset.experiments.length < 2) limitations.push(`Ranked within a validated catalog of ${dataset.experiments.length} experiment; ordering across studies is not yet meaningful.`);
-    return { experimentId: e.id, evidenceLevel, support, relevanceScore, matchedFields, mismatches, missingFields, reasons, limitations };
+    return { experimentId: e.id, sourceIds: [...e.sourceIds], evidenceLevel, support, relevanceScore, matchedFields, mismatches, missingFields, reasons, limitations };
   }).filter((i) => i.relevanceScore > 0)
     .sort((a, b) => b.relevanceScore - a.relevanceScore || a.experimentId.localeCompare(b.experimentId))
     .slice(0, request.limit);
@@ -140,6 +145,19 @@ export function rankEvidence(request: { question: string; targetConditions: Targ
 }
 
 // ---------- gaps ----------
+export function researchFrontier(request: { question: string; targetConditions: TargetConditions; limit: number }, dataset: Catalog = catalog) {
+  const ranked = rankEvidence(request, dataset), items = ranked.items;
+  const classification = !items.length ? 'not-in-audited-catalog' as const
+    : items.some(i => i.support.kind === 'observed' && i.evidenceLevel === 'direct') ? 'evidence-present' as const
+    : items.every(i => i.missingFields.length > 0) ? 'measurement-missing' as const
+    : items.every(i => i.mismatches.length > 0) ? 'conditions-differ' as const : 'related-evidence-only' as const;
+  return { classification, items, coverage: ranked.coverage, limitations: [
+    'This classification describes the audited MicroFire catalog, not the whole NASA literature.',
+    'Related records and relevance scores do not establish the requested outcome, causal relationship or safety.',
+    'Measurement-missing concerns an unrecorded requested field; conditions-differ concerns a recorded mismatch. Inspect each result when both occur.'
+  ] };
+}
+
 export function classifyGaps(target: TargetConditions, dataset: Catalog = catalog) {
   const fields = TARGET_FIELDS.filter((f) => target[f] !== undefined).map((field) => {
     const results = dataset.experiments.map((e) => ({ e, m: matchTarget(e, field, target[field]!) }));
@@ -201,6 +219,7 @@ export function verifyCitations(request: { subject: VerifySubject; citations: Ci
 
 // ---------- compare ----------
 export function compareExperiments(ids: string[], dataset: Catalog = catalog) {
+  if (ids.length < 2 || ids.length > 4 || new Set(ids).size !== ids.length) return { ok: false as const, unknownIds: [], quarantinedIds: [] };
   const records = ids.map((id) => dataset.experiments.find((e) => e.id === id));
   const unknownIds = ids.filter((_, i) => !records[i]);
   if (unknownIds.length) return { ok: false as const, unknownIds, quarantinedIds: unknownIds.filter(isQuarantinedId) };
