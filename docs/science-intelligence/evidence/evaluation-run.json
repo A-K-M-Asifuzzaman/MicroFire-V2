@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "976267222ffe38b3c4972764338501bfa923bc6a",
+  "node": "24.22.1",
+  "command": "node --import tsx scripts/eval-intelligence.ts",
+  "codeAndDataTreeClean": true,
+  "fixtureSha256": "2df198fb3da7ade0979471dcd050a409e9380bc6e92f7165614c6aa15ec70ed2",
+  "evaluatorSha256": "239290e412d440683e7b302f41d6895b4dce75e61384fae4072bc4b9367cea6b",
+  "reportSha256": "5fbeeeccdd54e246d43986e5e49c7445cae88f89997698d0b85eab2dd553d892",
+  "catalogSha256": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+  "passed": 8,
+  "total": 8,
+  "labelScope": "Codex implementation author; source-specific regression cases, pending independent scientific review",
+  "independentScientificAcceptance": false
+}

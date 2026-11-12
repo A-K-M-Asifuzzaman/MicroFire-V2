@@ -1,0 +1,10 @@
+{
+  "question": "What happened in B20?",
+  "environment": "moon",
+  "targetConditions": {
+    "gravity": "lunar",
+    "oxygenPct": 17.4,
+    "pressureKpa": 70
+  },
+  "limit": 4
+}

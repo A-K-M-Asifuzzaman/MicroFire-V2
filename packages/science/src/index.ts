@@ -4,3 +4,4 @@ export * from './evidence';
 export * from './ask';
 
 export * from './candidates';
+export * from './intelligence';
