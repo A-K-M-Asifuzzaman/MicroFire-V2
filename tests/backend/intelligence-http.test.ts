@@ -38,6 +38,7 @@ test('production HTTP: source-only library, exact citations, calibrated target c
       else { assert.equal(r.status, 429); assert(Number(r.headers.get('retry-after')) > 0); }
     }
     assert.equal((await get('game/campaign/v1/capability')).status, 404);
+    assert.equal((await get('game/public-campaign/v1/session')).status, 404);
     assert.equal((await get('game/preview/capability')).status, 404);
     console.log('Real HTTP: 4 descriptions, 1 admitted run, 55 quarantined; 17.4 preserved; unsupported summaries abstain; unchanged POST budget; no campaign API exposed.');
   } finally { await server.stop(); }
