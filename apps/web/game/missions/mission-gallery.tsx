@@ -3,11 +3,12 @@
 // actions taken here are validated and LOGGED, never applied. This proves the interface, not gameplay.
 import { useState } from 'react';
 import type { CampaignAction } from '@microfire/shared';
+import { FlameDetective, type DetectiveSnapshot } from './flame-detective';
 import { StationArrival, type Claim, type Snapshot } from './station-arrival';
 import type { Feedback, Refusal } from './mission-kit';
 import './missions.css';
 
-export type FixtureStep = { id: string; title: string; mission: string; ok: boolean; feedback: Feedback; refusal: Refusal; snapshot: Snapshot };
+export type FixtureStep = { id: string; title: string; mission: string; ok: boolean; feedback: Feedback; refusal: Refusal; snapshot: Snapshot & DetectiveSnapshot };
 
 export function MissionGallery({ mission, steps, claim, sourceTitle }: { mission: string; steps: FixtureStep[]; claim: Claim; sourceTitle: string }) {
   const [i, setI] = useState(0);
@@ -20,6 +21,7 @@ export function MissionGallery({ mission, steps, claim, sourceTitle }: { mission
       {steps.map((s, n) => <button key={s.id} type="button" aria-pressed={n === i} onClick={() => setI(n)}>{n + 1}. {s.title}</button>)}
     </nav>
     {mission === 'station-arrival' && <StationArrival key={step.id} snapshot={step.snapshot} claim={claim} sourceTitle={sourceTitle} feedback={step.feedback} refusal={step.refusal} onIntent={onIntent} />}
+    {mission === 'flame-detective' && <FlameDetective key={step.id} snapshot={step.snapshot} claim={claim} sourceTitle={sourceTitle} feedback={step.feedback} refusal={step.refusal} onIntent={onIntent} />}
     <section className="mf-intents" aria-label="Intent log (fixture gallery)">
       <h2>Intent log</h2>
       {log.length === 0 ? <p className="mf-fine">No intents yet. Use a station above.</p>

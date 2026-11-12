@@ -11,7 +11,7 @@ import { requireReviewRoute } from '../../../../lib/review-routes';
 // and is not linked from any public page.
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Mission fixture gallery', robots: { index: false, follow: false } };
-const BUILT = new Set(['station-arrival']);
+const BUILT = new Set(['station-arrival', 'flame-detective']);
 
 function fixtures(): { steps: (FixtureStep & { mission: string })[] } | null {
   for (const d of [path.join(process.cwd(), '..', '..', 'docs', 'campaign', 'fixtures'), path.join(process.cwd(), 'docs', 'campaign', 'fixtures')]) {

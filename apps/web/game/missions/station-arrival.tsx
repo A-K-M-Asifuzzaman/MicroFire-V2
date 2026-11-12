@@ -2,10 +2,11 @@
 // Mission 01 · Station Arrival. Renders a CampaignSnapshot and emits CampaignAction intents (evidence-campaign-v1).
 // The 3D module is optional decoration over real buttons: no WebGL, reduced motion or a slow load still leaves every
 // control usable. Objective ticks are read straight from snapshot facts; the engine alone decides what counts.
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useState } from 'react';
 import type { CampaignAction, Citation } from '@microfire/shared';
 import { Objectives, PassportList, PixLine, Verdict, cite, emitter, type Feedback, type Objective, type Refusal } from './mission-kit';
-import type { HotspotId, StationScene } from './station-scene';
+import { SceneViewport } from './scene-viewport';
+type HotspotId = 'terminal' | 'scanner' | 'lockers' | 'hatch';
 
 export type Snapshot = { sourceReviewed: boolean; state: { activeMission: string | null; completedMissions: string[]; inspectedExperimentIds: string[];
   passport: { entries: { id: string; missionId: string; claimIds: string[]; conclusion: string; observationType: string; evidenceLevel: string; citations: Citation[]; limitations: string[]; scenario: string }[] } } };
@@ -26,8 +27,6 @@ const PIX: Record<HotspotId | 'done', string> = {
   done: 'Station Arrival complete. The engine recorded it; nothing here was decided by the browser.',
 };
 
-const noWebgl = () => { try { const c = document.createElement('canvas'); return !(c.getContext('webgl2') || c.getContext('webgl')); } catch { return true; } };
-const never = () => () => undefined;
 
 export function StationArrival({ snapshot, claim, sourceTitle, feedback, refusal, onIntent }: {
   snapshot: Snapshot; claim: Claim; sourceTitle: string; feedback: Feedback; refusal: Refusal; onIntent: (a: CampaignAction) => void;
@@ -42,41 +41,10 @@ export function StationArrival({ snapshot, claim, sourceTitle, feedback, refusal
   const next = objectives.find((o) => !o.done)?.id as HotspotId | undefined;
   const [open, setOpen] = useState<HotspotId | null>(null);
   const [origin, setOrigin] = useState<{ observation: 'research' | 'fiction' | null; incident: 'research' | 'fiction' | null }>({ observation: null, incident: null });
-  const flat = useSyncExternalStore(never, noWebgl, () => false);
-  const canvas = useRef<HTMLCanvasElement>(null), sceneRef = useRef<StationScene | null>(null);
-  const [pos, setPos] = useState<Partial<Record<HotspotId, { x: number; y: number; visible: boolean }>>>({});
-  const [ready, setReady] = useState(false), [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    if (flat || !canvas.current) return;
-    let live = true, scene: StationScene | null = null;
-    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    void import('./station-scene').then(({ mountStationScene }) => {
-      if (!live || !canvas.current) return;
-      scene = mountStationScene(canvas.current, { reducedMotion, onReady: () => live && setReady(true),
-        onPositions: (p) => { if (live) setPos((old) => ORDER.every((k) => Math.abs((old[k]?.x ?? -1) - (p[k]?.x ?? -1)) < 0.5 && Math.abs((old[k]?.y ?? -1) - (p[k]?.y ?? -1)) < 0.5) ? old : p); } });
-      if (!scene) setFailed(true); sceneRef.current = scene;
-    }, () => live && setFailed(true));
-    return () => { live = false; scene?.dispose(); sceneRef.current = null; };
-  }, [flat]);
-  useEffect(() => { sceneRef.current?.setActive(next ?? null); }, [next, ready]);
-
-  const twoD = flat || failed;
-  const spot = (id: HotspotId) => <button key={id} type="button" className="mf-spot" data-next={id === next} aria-expanded={open === id} aria-controls="mf-panel"
-    style={!twoD && pos[id] ? { left: pos[id]!.x, top: pos[id]!.y, visibility: pos[id]!.visible ? undefined : 'hidden' } : undefined}
-    onClick={() => setOpen(open === id ? null : id)}>
-    <span className="mf-spot-dot" aria-hidden="true" /><b>{SPOTS[id].label}</b><span>{SPOTS[id].what}</span>
-  </button>;
-
   return <div className="mf-mission" data-mission="station-arrival">
     <div className="mf-main">
-      <div className="mf-viewport" data-mode={twoD ? '2d' : '3d'} data-ready={ready}>
-        {!twoD && <canvas ref={canvas} aria-hidden="true" />}
-        {twoD && <p className="mf-fallback-note">{flat ? 'The 3D module is not available on this device. Every station still works below.' : 'The 3D module could not start. Every station still works below.'}</p>}
-        {!twoD && !ready && <p className="mf-loading" role="status">Loading the station module…</p>}
-        <div className={twoD ? 'mf-plan' : 'mf-spots'} role="group" aria-label="Station hotspots">{ORDER.map(spot)}</div>
-        <span className="mf-tag">Illustration · fixture states</span>
-      </div>
+      <SceneViewport layout="station" loading="Loading the station module…" next={next} open={open} onToggle={(id) => setOpen(open === id ? null : id as HotspotId)}
+        spots={ORDER.map((id) => ({ id, ...SPOTS[id] }))} />
       <PixLine text={PIX[next ?? 'done']} mood={next === 'scanner' ? 'cite' : next ? 'look' : 'greet'} />
       <Verdict feedback={feedback} refusal={refusal} sourceTitle={sourceTitle} />
       <div id="mf-panel" className="mf-panel" hidden={!open} aria-live="polite">

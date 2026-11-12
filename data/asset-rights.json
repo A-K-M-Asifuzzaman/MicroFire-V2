@@ -896,6 +896,356 @@
       "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
       "approved": true,
       "part": "handrail-frame — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/observation-console/baseColor_1.webp",
+      "title": "Mission 03 station prop: observation console (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-observation-console-v1, preview task 01a1cf34-569d-77e6-96d6-b508c8a301d9, refine task 01a1cf35-0cbd-73b0-b3fd-f75d39fd21e4, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "observation-console — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/observation-console/metallicRoughness_1.webp",
+      "title": "Mission 03 station prop: observation console (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-observation-console-v1, preview task 01a1cf34-569d-77e6-96d6-b508c8a301d9, refine task 01a1cf35-0cbd-73b0-b3fd-f75d39fd21e4, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "observation-console — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/observation-console/normal_1.webp",
+      "title": "Mission 03 station prop: observation console (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-observation-console-v1, preview task 01a1cf34-569d-77e6-96d6-b508c8a301d9, refine task 01a1cf35-0cbd-73b0-b3fd-f75d39fd21e4, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "observation-console — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/observation-console/observation-console.bin",
+      "title": "Mission 03 station prop: observation console (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-observation-console-v1, preview task 01a1cf34-569d-77e6-96d6-b508c8a301d9, refine task 01a1cf35-0cbd-73b0-b3fd-f75d39fd21e4, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "observation-console — observation-console.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/observation-console/observation-console.gltf",
+      "title": "Mission 03 station prop: observation console (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-observation-console-v1, preview task 01a1cf34-569d-77e6-96d6-b508c8a301d9, refine task 01a1cf35-0cbd-73b0-b3fd-f75d39fd21e4, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "observation-console — observation-console.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/viewing-window/baseColor_1.webp",
+      "title": "Mission 03 station prop: viewing window (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-viewing-window-v1, preview task 01a1cf43-9efb-76bf-9046-ed959fa0f536, refine task 01a1cf45-2827-73a9-a124-32ef6f919c54, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "viewing-window — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/viewing-window/metallicRoughness_1.webp",
+      "title": "Mission 03 station prop: viewing window (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-viewing-window-v1, preview task 01a1cf43-9efb-76bf-9046-ed959fa0f536, refine task 01a1cf45-2827-73a9-a124-32ef6f919c54, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "viewing-window — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/viewing-window/normal_1.webp",
+      "title": "Mission 03 station prop: viewing window (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-viewing-window-v1, preview task 01a1cf43-9efb-76bf-9046-ed959fa0f536, refine task 01a1cf45-2827-73a9-a124-32ef6f919c54, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "viewing-window — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/viewing-window/viewing-window.bin",
+      "title": "Mission 03 station prop: viewing window (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-viewing-window-v1, preview task 01a1cf43-9efb-76bf-9046-ed959fa0f536, refine task 01a1cf45-2827-73a9-a124-32ef6f919c54, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "viewing-window — viewing-window.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/viewing-window/viewing-window.gltf",
+      "title": "Mission 03 station prop: viewing window (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-viewing-window-v1, preview task 01a1cf43-9efb-76bf-9046-ed959fa0f536, refine task 01a1cf45-2827-73a9-a124-32ef6f919c54, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "viewing-window — viewing-window.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/gauge-panel/baseColor_1.webp",
+      "title": "Mission 03 station prop: gauge panel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-gauge-panel-v1, preview task 01a1cf37-9a71-74e0-946a-f813e3dddbab, refine task 01a1cf42-0219-7477-89f6-1b3bd1a4ee1c, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "gauge-panel — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/gauge-panel/gauge-panel.bin",
+      "title": "Mission 03 station prop: gauge panel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-gauge-panel-v1, preview task 01a1cf37-9a71-74e0-946a-f813e3dddbab, refine task 01a1cf42-0219-7477-89f6-1b3bd1a4ee1c, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "gauge-panel — gauge-panel.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/gauge-panel/gauge-panel.gltf",
+      "title": "Mission 03 station prop: gauge panel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-gauge-panel-v1, preview task 01a1cf37-9a71-74e0-946a-f813e3dddbab, refine task 01a1cf42-0219-7477-89f6-1b3bd1a4ee1c, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "gauge-panel — gauge-panel.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/gauge-panel/metallicRoughness_1.webp",
+      "title": "Mission 03 station prop: gauge panel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-gauge-panel-v1, preview task 01a1cf37-9a71-74e0-946a-f813e3dddbab, refine task 01a1cf42-0219-7477-89f6-1b3bd1a4ee1c, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "gauge-panel — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/gauge-panel/normal_1.webp",
+      "title": "Mission 03 station prop: gauge panel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-gauge-panel-v1, preview task 01a1cf37-9a71-74e0-946a-f813e3dddbab, refine task 01a1cf42-0219-7477-89f6-1b3bd1a4ee1c, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "gauge-panel — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/inspection-microscope/baseColor_1.webp",
+      "title": "Mission 03 station prop: inspection microscope (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-inspection-microscope-v1, preview task 01a1cf36-23d8-75e5-91b6-6dbb670671a7, refine task 01a1cf36-d912-73a0-96cb-8e3bac70c679, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "inspection-microscope — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/inspection-microscope/inspection-microscope.bin",
+      "title": "Mission 03 station prop: inspection microscope (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-inspection-microscope-v1, preview task 01a1cf36-23d8-75e5-91b6-6dbb670671a7, refine task 01a1cf36-d912-73a0-96cb-8e3bac70c679, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "inspection-microscope — inspection-microscope.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/inspection-microscope/inspection-microscope.gltf",
+      "title": "Mission 03 station prop: inspection microscope (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-inspection-microscope-v1, preview task 01a1cf36-23d8-75e5-91b6-6dbb670671a7, refine task 01a1cf36-d912-73a0-96cb-8e3bac70c679, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "inspection-microscope — inspection-microscope.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/inspection-microscope/metallicRoughness_1.webp",
+      "title": "Mission 03 station prop: inspection microscope (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-inspection-microscope-v1, preview task 01a1cf36-23d8-75e5-91b6-6dbb670671a7, refine task 01a1cf36-d912-73a0-96cb-8e3bac70c679, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "inspection-microscope — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/inspection-microscope/normal_1.webp",
+      "title": "Mission 03 station prop: inspection microscope (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-inspection-microscope-v1, preview task 01a1cf36-23d8-75e5-91b6-6dbb670671a7, refine task 01a1cf36-d912-73a0-96cb-8e3bac70c679, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "inspection-microscope — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/camera-housing/baseColor_1.webp",
+      "title": "Mission 03 station prop: camera housing (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-camera-housing-v1, preview task 01a1cf31-23d1-73d8-9d5e-002c52a4a4fb, refine task 01a1cf31-dff0-74d6-8d63-defb4708dd08, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "camera-housing — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/camera-housing/camera-housing.bin",
+      "title": "Mission 03 station prop: camera housing (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-camera-housing-v1, preview task 01a1cf31-23d1-73d8-9d5e-002c52a4a4fb, refine task 01a1cf31-dff0-74d6-8d63-defb4708dd08, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "camera-housing — camera-housing.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/camera-housing/camera-housing.gltf",
+      "title": "Mission 03 station prop: camera housing (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-camera-housing-v1, preview task 01a1cf31-23d1-73d8-9d5e-002c52a4a4fb, refine task 01a1cf31-dff0-74d6-8d63-defb4708dd08, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "camera-housing — camera-housing.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/camera-housing/metallicRoughness_1.webp",
+      "title": "Mission 03 station prop: camera housing (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-camera-housing-v1, preview task 01a1cf31-23d1-73d8-9d5e-002c52a4a4fb, refine task 01a1cf31-dff0-74d6-8d63-defb4708dd08, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "camera-housing — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/camera-housing/normal_1.webp",
+      "title": "Mission 03 station prop: camera housing (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-camera-housing-v1, preview task 01a1cf31-23d1-73d8-9d5e-002c52a4a4fb, refine task 01a1cf31-dff0-74d6-8d63-defb4708dd08, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "camera-housing — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/optical-bench/baseColor_1.webp",
+      "title": "Mission 03 station prop: optical bench (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-optical-bench-v1, preview task 01a1cf32-a511-71c7-afd3-e6b241878b05, refine task 01a1cf33-86ff-71e4-ac70-055d0459ed96, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "optical-bench — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/optical-bench/metallicRoughness_1.webp",
+      "title": "Mission 03 station prop: optical bench (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-optical-bench-v1, preview task 01a1cf32-a511-71c7-afd3-e6b241878b05, refine task 01a1cf33-86ff-71e4-ac70-055d0459ed96, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "optical-bench — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/optical-bench/normal_1.webp",
+      "title": "Mission 03 station prop: optical bench (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-optical-bench-v1, preview task 01a1cf32-a511-71c7-afd3-e6b241878b05, refine task 01a1cf33-86ff-71e4-ac70-055d0459ed96, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "optical-bench — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/optical-bench/optical-bench.bin",
+      "title": "Mission 03 station prop: optical bench (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-optical-bench-v1, preview task 01a1cf32-a511-71c7-afd3-e6b241878b05, refine task 01a1cf33-86ff-71e4-ac70-055d0459ed96, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "optical-bench — optical-bench.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/optical-bench/optical-bench.gltf",
+      "title": "Mission 03 station prop: optical bench (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-optical-bench-v1, preview task 01a1cf32-a511-71c7-afd3-e6b241878b05, refine task 01a1cf33-86ff-71e4-ac70-055d0459ed96, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "optical-bench — optical-bench.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-carousel/baseColor_1.webp",
+      "title": "Mission 03 station prop: sample carousel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-carousel-v1, preview task 01a1cefe-6874-7241-a040-397aad702422, refine task 01a1ceff-73c1-7065-a956-bda4ff49e545, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome. QA note: dome renders opaque.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "sample-carousel — baseColor_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-carousel/metallicRoughness_1.webp",
+      "title": "Mission 03 station prop: sample carousel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-carousel-v1, preview task 01a1cefe-6874-7241-a040-397aad702422, refine task 01a1ceff-73c1-7065-a956-bda4ff49e545, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome. QA note: dome renders opaque.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "sample-carousel — metallicRoughness_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-carousel/normal_1.webp",
+      "title": "Mission 03 station prop: sample carousel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-carousel-v1, preview task 01a1cefe-6874-7241-a040-397aad702422, refine task 01a1ceff-73c1-7065-a956-bda4ff49e545, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome. QA note: dome renders opaque.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "sample-carousel — normal_1.webp"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-carousel/sample-carousel.bin",
+      "title": "Mission 03 station prop: sample carousel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-carousel-v1, preview task 01a1cefe-6874-7241-a040-397aad702422, refine task 01a1ceff-73c1-7065-a956-bda4ff49e545, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome. QA note: dome renders opaque.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "sample-carousel — sample-carousel.bin"
+    },
+    {
+      "path": "apps/web/public/models/missions/m3/sample-carousel/sample-carousel.gltf",
+      "title": "Mission 03 station prop: sample carousel (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m3-sample-carousel-v1, preview task 01a1cefe-6874-7241-a040-397aad702422, refine task 01a1ceff-73c1-7065-a956-bda4ff49e545, 2026-11-12; prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible. Decorative only: never used for any scientific outcome. QA note: dome renders opaque.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "sample-carousel — sample-carousel.gltf"
     }
   ]
 }

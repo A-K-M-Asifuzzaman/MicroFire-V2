@@ -5,11 +5,11 @@
 import * as THREE from 'three';
 import { cleanFinish, loadModel } from '../../components/model-loader';
 
-export type HotspotId = 'terminal' | 'scanner' | 'lockers' | 'hatch';
-type Prop = { url: string; height: number; at: [number, number, number]; turn: number; hotspot?: HotspotId; labelY?: number };
-const M = '/models/missions/m1';
+export type HotspotId = string;
+export type Prop = { url: string; height: number; at: [number, number, number]; turn: number; hotspot?: HotspotId; labelY?: number };
+const M = '/models/missions/m1', M3 = '/models/missions/m3';
 // Positions in metres inside a 4.4 m module, camera at +z looking toward the hatch at -z.
-const PROPS: Prop[] = [
+export const STATION_PROPS: Prop[] = [
   { url: `${M}/research-console/research-console.gltf`, height: 1.5, at: [-1.55, 0, -0.6], turn: 0.9, hotspot: 'terminal', labelY: 1.15 },
   { url: `${M}/evidence-scanner/evidence-scanner.gltf`, height: 1.05, at: [-0.55, 0, -2.1], turn: 0.45, hotspot: 'scanner', labelY: 0.55 },
   { url: `${M}/storage-lockers/storage-lockers.gltf`, height: 1.7, at: [1.6, 0.1, -1.4], turn: -1.35, hotspot: 'lockers', labelY: 0.9 },
@@ -19,12 +19,24 @@ const PROPS: Prop[] = [
   { url: `${M}/handrail-frame/handrail-frame.gltf`, height: 1.4, at: [-1.95, 0.6, 0.9], turn: 1.57 },
 ];
 
+// Mission 03: an observation lab around the test chamber. Positions in metres, same module shell.
+export const DETECTIVE_PROPS: Prop[] = [
+  { url: `${M3}/observation-console/observation-console.gltf`, height: 1.0, at: [-1.4, 0, -0.5], turn: 1.0, hotspot: 'select', labelY: 1.2 },
+  { url: `${M3}/gauge-panel/gauge-panel.gltf`, height: 0.9, at: [-1.9, 1.1, -2.1], turn: 1.3, hotspot: 'predict', labelY: 0.9 },
+  { url: `${M3}/viewing-window/viewing-window.gltf`, height: 1.3, at: [0.2, 0.5, -3.6], turn: 0, hotspot: 'reveal', labelY: 0.85 },
+  { url: `${M3}/inspection-microscope/inspection-microscope.gltf`, height: 1.0, at: [1.5, 0, -1.6], turn: -1.2, hotspot: 'explain', labelY: 1.1 },
+  { url: `${M3}/sample-carousel/sample-carousel.gltf`, height: 0.8, at: [0.9, 0, -2.6], turn: -0.5, hotspot: 'report', labelY: 0.95 },
+  { url: `${M3}/camera-housing/camera-housing.gltf`, height: 0.7, at: [-0.4, 0, -2.4], turn: 0.6 },
+  { url: `${M3}/optical-bench/optical-bench.gltf`, height: 0.6, at: [1.7, 0, 0.3], turn: -1.5 },
+];
 export type StationScene = { setActive(id: HotspotId | null): void; dispose(): void };
 
 export function mountStationScene(canvas: HTMLCanvasElement, opts: {
+  props?: Prop[];
   onPositions(p: Partial<Record<HotspotId, { x: number; y: number; visible: boolean }>>): void;
   onReady(): void; reducedMotion: boolean;
 }): StationScene | null {
+  const PROPS = opts.props ?? STATION_PROPS;
   let renderer: THREE.WebGLRenderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false }); } catch { return null; }
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
