@@ -162,7 +162,7 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
     for (const part of equipmentDefinitions) await install(part);
     assert.equal(snapshot.training.fault?.id, 'training-fan-reversed-v1');
     await expect(page.locator('.m2-fault-banner')).toBeVisible();
-    await page.screenshot({ path: path.join(artifacts, mode + '-fault.png'), fullPage: false });
+    await page.locator('.m2-viewport').screenshot({ path: path.join(artifacts, mode + '-fault.png') });
     await command(page.getByRole('button', { name: 'Run Training check', exact: true }));
     if (mode === 'keyboard') {
       await nativeSelect(page.getByLabel('Component'), 'radiometer');
@@ -191,6 +191,7 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
     if (mode === 'keyboard') { await note.focus(); await note.pressSequentially('B20 is source evidence; the repair is authored training.'); }
     else await note.fill('B20 is source evidence; the repair is authored training.');
     await command(page.getByRole('button', { name: 'Add note', exact: true }));
+    await expect(page.locator('.m2-pp-section[data-origin="learner"] .m2-notes')).toContainText('B20 is source evidence; the repair is authored training.');
     await command(page.getByRole('button', { name: 'Complete the training episode', exact: true }));
     assert.equal(snapshot.progress.completedChecks, 5); assert.equal(snapshot.state.passport.entries.length, 2);
     assert(snapshot.state.passport.entries.every(e => e.corrections.length === 0));
@@ -208,6 +209,7 @@ for (const [index, mode] of (['keyboard', 'touch', 'no-webgl', '3d'] as const).e
     const resumed = StartResponseSchema.parse(await (await restored).json()).data;
     assert.equal(resumed.checkpoint, checkpoint); assert.equal(resumed.progress.completedChecks, 5);
     await expect(page.getByText('Training episode complete', { exact: true })).toBeVisible();
+    await expect(page.locator('.m2-pp-section[data-origin="learner"] .m2-notes')).toContainText('B20 is source evidence; the repair is authored training.');
     assert(posts <= 30, 'Live UI must respect the unchanged server POST budget');
     assert.equal(runtimeErrors.length, 0, runtimeErrors.join('\n'));
     assert.equal(consoleErrors.filter(e => !/ERR_FAILED|WebGL|WebGLRenderer|Error creating WebGL context|CONTEXT_LOST/i.test(e)).length, 0, 'Unexpected console errors; inspect the sanitized proof record.');
