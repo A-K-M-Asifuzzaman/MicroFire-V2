@@ -63,7 +63,7 @@ export function SceneViewport({ layout, spots, next, open, onToggle, loading }: 
     {twoD && <p className="mf-fallback-note">{flat ? 'The 3D room is not available on this device. Every station still works below.' : 'The 3D room could not start. Every station still works below.'}</p>}
     {!twoD && !ready && <p className="mf-loading" role="status">{loading}</p>}
     <div className={twoD ? 'mf-plan' : 'mf-spots'} role="group" aria-label="Station hotspots">{spots.map((sp) => <button key={sp.id} ref={(el) => { btn.current[sp.id] = el; }} type="button" className="mf-spot" data-next={sp.id === next} aria-expanded={open === sp.id} aria-controls="mf-panel"
-      style={!twoD && pos[sp.id] ? { left: pos[sp.id]!.x, top: pos[sp.id]!.y, visibility: pos[sp.id]!.visible ? undefined : 'hidden' } : undefined}
+      style={!twoD && pos[sp.id] ? { left: `clamp(84px, ${pos[sp.id]!.x}px, calc(100% - 84px))`, top: pos[sp.id]!.y, visibility: pos[sp.id]!.visible ? undefined : 'hidden' } : undefined}
       onClick={() => onToggle(sp.id)}><span className="mf-spot-dot" aria-hidden="true" /><b>{sp.label}</b><span>{sp.what}</span></button>)}</div>
     <span className="mf-tag">Original 3D illustration · not NASA imagery</span>
   </div>;

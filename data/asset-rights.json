@@ -2196,6 +2196,156 @@
       "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-13; owner explicitly approved Batch 3 (cap 300)",
       "approved": true,
       "part": "oxygen-rack — oxygen-rack.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/rover/baseColor_1.webp",
+      "title": "Mission 05 scene prop: pressurised rover (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-rover-v1, preview task 01a1d134-8dcb-77e7-9dce-2a7d1d1e4c81, refine task 01a1d135-ec71-759d-897c-afb60efcc1e7, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/rover/metallicRoughness_1.webp",
+      "title": "Mission 05 scene prop: pressurised rover (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-rover-v1, preview task 01a1d134-8dcb-77e7-9dce-2a7d1d1e4c81, refine task 01a1d135-ec71-759d-897c-afb60efcc1e7, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/rover/normal_1.webp",
+      "title": "Mission 05 scene prop: pressurised rover (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-rover-v1, preview task 01a1d134-8dcb-77e7-9dce-2a7d1d1e4c81, refine task 01a1d135-ec71-759d-897c-afb60efcc1e7, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/rover/rover.bin",
+      "title": "Mission 05 scene prop: pressurised rover (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-rover-v1, preview task 01a1d134-8dcb-77e7-9dce-2a7d1d1e4c81, refine task 01a1d135-ec71-759d-897c-afb60efcc1e7, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/rover/rover.gltf",
+      "title": "Mission 05 scene prop: pressurised rover (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-rover-v1, preview task 01a1d134-8dcb-77e7-9dce-2a7d1d1e4c81, refine task 01a1d135-ec71-759d-897c-afb60efcc1e7, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/solar-array/baseColor_1.webp",
+      "title": "Mission 05 scene prop: solar array (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-solar-array-v1, preview task 01a1d131-0f19-7302-84b3-7d0011408c81, refine task 01a1d131-ef12-7476-be8b-62762706d274, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/solar-array/metallicRoughness_1.webp",
+      "title": "Mission 05 scene prop: solar array (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-solar-array-v1, preview task 01a1d131-0f19-7302-84b3-7d0011408c81, refine task 01a1d131-ef12-7476-be8b-62762706d274, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/solar-array/normal_1.webp",
+      "title": "Mission 05 scene prop: solar array (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-solar-array-v1, preview task 01a1d131-0f19-7302-84b3-7d0011408c81, refine task 01a1d131-ef12-7476-be8b-62762706d274, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/solar-array/solar-array.bin",
+      "title": "Mission 05 scene prop: solar array (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-solar-array-v1, preview task 01a1d131-0f19-7302-84b3-7d0011408c81, refine task 01a1d131-ef12-7476-be8b-62762706d274, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/solar-array/solar-array.gltf",
+      "title": "Mission 05 scene prop: solar array (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-solar-array-v1, preview task 01a1d131-0f19-7302-84b3-7d0011408c81, refine task 01a1d131-ef12-7476-be8b-62762706d274, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/regolith-rocks/baseColor_1.webp",
+      "title": "Mission 05 scene prop: regolith rock cluster (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-regolith-rocks-v1, preview task 01a1d12e-4826-7628-aee6-3c4662127604, refine task 01a1d12e-fccf-72e7-8d59-cd3102b067f4, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/regolith-rocks/metallicRoughness_1.webp",
+      "title": "Mission 05 scene prop: regolith rock cluster (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-regolith-rocks-v1, preview task 01a1d12e-4826-7628-aee6-3c4662127604, refine task 01a1d12e-fccf-72e7-8d59-cd3102b067f4, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/regolith-rocks/normal_1.webp",
+      "title": "Mission 05 scene prop: regolith rock cluster (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-regolith-rocks-v1, preview task 01a1d12e-4826-7628-aee6-3c4662127604, refine task 01a1d12e-fccf-72e7-8d59-cd3102b067f4, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/regolith-rocks/regolith-rocks.bin",
+      "title": "Mission 05 scene prop: regolith rock cluster (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-regolith-rocks-v1, preview task 01a1d12e-4826-7628-aee6-3c4662127604, refine task 01a1d12e-fccf-72e7-8d59-cd3102b067f4, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
+    },
+    {
+      "path": "apps/web/public/models/missions/m5/regolith-rocks/regolith-rocks.gltf",
+      "title": "Mission 05 scene prop: regolith rock cluster (3D)",
+      "source": "Meshy Text-to-3D (meshy-7.1) job m5-regolith-rocks-v1, preview task 01a1d12e-4826-7628-aee6-3c4662127604, refine task 01a1d12e-fccf-72e7-8d59-cd3102b067f4, 2026-11-12 (30 credits, owner-approved Batch 3, QA accepted 2026-11-13); prompt in tools/meshy/jobs.json (original design brief, Design B palette)",
+      "license": "Meshy paid-plan output, owned by the MicroFire project account holder under Meshy's Terms of Service; original design, no third-party characters, logos or insignia",
+      "processing": "glTF-Transform 4.2.1 optimize: 50% simplification, quantized geometry (KHR_mesh_quantization), external WebP textures at 1024 px; same-origin, CSP-compatible; five-angle QA render checked 2026-11-14. Decorative outdoor set dressing only (no hotspot): never used for any scientific outcome. Mission 05 is a fictional scenario.",
+      "reviewedBy": "Claude (frontend) five-view turnaround QA + rights QA, 2026-11-12; owner approved batches 1–2",
+      "approved": true,
+      "part": "habitat-module — habitat-module.gltf"
     }
   ]
 }

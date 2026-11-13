@@ -52,6 +52,10 @@ export const HABITAT_PROPS: Prop[] = [
   { url: `${M5}/ventilation-unit/ventilation-unit.gltf`, height: 1.2, at: [-2.6, 0, -3.0], turn: 1.1, hotspot: 'evidence', labelY: 1.0 },
   { url: `${M5}/inspection-drone/inspection-drone.gltf`, height: 0.4, at: [1.4, 2.1, -2.6], turn: -0.4 },
   { url: `${M5}/oxygen-rack/oxygen-rack.gltf`, height: 1.1, at: [3.0, 0, -3.4], turn: -1.2 },
+  // Outdoor set dressing (decorative, no hotspot): a pressurised rover, a solar array and a regolith rock cluster.
+  { url: `${M5}/rover/rover.gltf`, height: 1.7, at: [-8.0, 0, -5.6], turn: 1.1 },
+  { url: `${M5}/solar-array/solar-array.gltf`, height: 1.9, at: [4.9, 0, -4.6], turn: -0.7 },
+  { url: `${M5}/regolith-rocks/regolith-rocks.gltf`, height: 0.4, at: [1.7, 0, 0.8], turn: 0.3 },
 ];
 export type StationScene = { setActive(id: HotspotId | null): void; dispose(): void };
 /** Each mission has its own world: architecture, light, sky and camera differ, not just the props or a colour. */
@@ -198,7 +202,10 @@ export function mountStationScene(canvas: HTMLCanvasElement, opts: {
 
   let active: HotspotId | null = null, raf = 0, disposed = false, w = 0, h = 0, drift = 0;
   const v = new THREE.Vector3();
-  const resize = () => { const r = canvas.getBoundingClientRect(); if (r.width === w && r.height === h) return; w = r.width; h = r.height; renderer.setSize(w, h, false); camera.aspect = w / Math.max(h, 1); camera.updateProjectionMatrix(); };
+  const resize = () => { const r = canvas.getBoundingClientRect(); if (r.width === w && r.height === h) return; w = r.width; h = r.height; renderer.setSize(w, h, false); camera.aspect = w / Math.max(h, 1);
+    // Portrait screens keep the landscape horizontal field of view (as if aspect 1.3) so every station stays in frame.
+    camera.fov = camera.aspect < 1.3 ? Math.min(95, 2 * Math.atan(Math.tan(world.fov * Math.PI / 360) * 1.3 / camera.aspect) * 180 / Math.PI) : world.fov;
+    camera.updateProjectionMatrix(); };
   const frame = (t: number) => {
     resize();
     if (!opts.reducedMotion) drift = Math.sin(t / 4000) * world.drift;
