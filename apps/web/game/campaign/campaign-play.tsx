@@ -14,7 +14,7 @@ import type { PartSpec } from '../contract';
 import { createPublicController, type PublicController } from './public-controller';
 import { createPublicTransport } from './public-transport';
 import { MissionGuide } from './mission-guide';
-import { MISSIONS, currentMission, needsStart, sceneSnapshot } from './view-adapter';
+import { MISSIONS, currentMission, needsStart, sceneSnapshot, recordedActions } from './view-adapter';
 import '../missions/missions.css';
 import './campaign.css';
 
@@ -87,7 +87,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, parts, co
 
     {view && !mission && <section className="mf-done" aria-label="Campaign complete"><h2>All five missions complete</h2>
       <p>The server recorded every mission and Passport entry. This is educational progress, not scientific certification.</p></section>}
-    {view && (!mission || s.phase === 'expired' || s.phase === 'missing') && <PassportList entries={view.passport.entries} sourceTitle={sourceTitle} />}
+    {view && (!mission || s.phase === 'expired' || s.phase === 'missing') && <PassportList entries={view.passport.entries} sourceTitle={sourceTitle} recorded={recordedActions(view)} />}
 
     {view && s.phase !== 'expired' && s.phase !== 'missing' && <footer className="mf-play-foot">
       <button type="button" className="btn" onClick={() => void download()} disabled={view.passport.entries.length === 0}>Download Passport (JSON)</button>

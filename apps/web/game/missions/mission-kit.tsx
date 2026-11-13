@@ -54,12 +54,13 @@ const ENTRY_LABELS: Record<string, { title: string; action: string }> = {
   'lunar-habitat': { title: '05 · Lunar Habitat', action: 'Assessed a hypothetical habitat and documented its evidence gaps' }
 };
 type Entry = { id: string; missionId?: string; conclusion: string; observationType: string; evidenceLevel: string; citations: Citation[]; limitations: string[]; scenario: string };
-export function PassportList({ entries, sourceTitle }: { entries: Entry[]; sourceTitle: string }) {
+export function PassportList({ entries, sourceTitle, recorded }: { entries: Entry[]; sourceTitle: string; recorded?: Partial<Record<string, string>> | undefined }) {
   return <section className="mf-passport" aria-label="Evidence Passport">
     <h2>Evidence Passport</h2>
     {entries.length === 0 ? <p className="mf-fine">Nothing recorded yet. Entries appear only when the campaign engine accepts them.</p>
       : <ul>{entries.map((e) => <li key={e.id} data-scenario={e.scenario}>
         {e.missionId && ENTRY_LABELS[e.missionId] && <><h3>{ENTRY_LABELS[e.missionId]!.title}</h3><p><b>Mission task:</b> {ENTRY_LABELS[e.missionId]!.action}</p></>}
+        {e.missionId && recorded?.[e.missionId] && <p className="mf-recorded-action"><b>What you did (recorded by the server):</b> {recorded[e.missionId]}</p>}
         <span className="mf-kind">{e.scenario === 'research' ? `NASA source · ${e.observationType}` : 'Fictional scenario'}</span>
         <p>{e.conclusion}</p>
         <p className="mf-cite">{e.citations.map((c) => cite(c, sourceTitle)).join('; ')}</p>

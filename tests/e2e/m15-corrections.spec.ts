@@ -36,7 +36,7 @@ test('S1/S2: visible, hidden and accessible copy never overclaims; the still-air
 
 test('S3: registry states are unchanged; built interfaces say what is true and keep the registry note', async ({ page }) => {
   const expected: [string, string][] = [['/atlas', 'Preview'], ['/experiments/bass2-b20', 'Preview'], ['/dashboard', 'Coming Soon'], ['/gaps', 'Coming Soon'],
-    ['/ask', 'Coming Soon'], ['/passport', 'Coming Soon'], ['/lab', 'Coming Soon'], ['/missions', 'Preview']];
+    ['/ask', 'Coming Soon'], ['/passport', 'Coming Soon'], ['/missions', 'Preview']];
   for (const [route, badge] of expected) {
     await page.goto(route);
     await expect(page.locator('.badge').first(), route).toHaveText(badge);
@@ -149,8 +149,14 @@ test('navigation: unfinished destinations are tagged, Passport is reachable, the
     await expect(page.locator('details.mobile-nav').getByRole('link', { name: 'Passport', exact: true })).toHaveAttribute('href', '/passport');
     await expect(page.locator('details.mobile-nav').getByRole('link', { name: 'Frontier' })).toBeVisible();
   }
+  // The Flame Lab is a working, honestly labelled toy model with a cited B20 comparison (no Coming Soon placeholder).
   await page.goto('/lab');
-  await expect(page.getByRole('link', { name: 'Open the Gravity Lens illustration' })).toHaveAttribute('href', '/#gravity-lens');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Change a condition');
+  await expect(page.getByText('Authored toy model · qualitative · not a measurement or simulation')).toBeVisible();
+  await page.getByRole('button', { name: 'Compare with the real B20 test' }).click();
+  const b20 = page.getByRole('region', { name: 'What NASA actually recorded for BASS-II test B20' });
+  await expect(b20).toContainText('17.4 vol%'); await expect(b20).toContainText('PDF page 112');
+  await expect(b20.getByRole('row', { name: /Pressure/ })).toContainText('unknown');
   await page.goto('/');
   await expect(page.locator('#gravity-lens figure.lens')).toHaveCount(1);
 });
