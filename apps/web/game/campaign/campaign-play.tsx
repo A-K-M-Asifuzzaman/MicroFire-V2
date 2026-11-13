@@ -2,6 +2,7 @@
 // Public campaign shell: bootstraps the visitor's durable case, renders the server's projected view through the
 // existing mission scenes, and routes every learner intent through the controller. No rule runs here.
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import Link from 'next/link';
 import type { CampaignAction } from '@microfire/shared';
 import { ClaimTrial, type EvidenceOption } from '../missions/claim-trial';
 import { FlameDetective } from '../missions/flame-detective';
@@ -42,6 +43,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controlle
   return <div className="wrap page mf-play" aria-busy={s.phase === 'booting' || s.phase === 'sending'} data-phase={s.phase} data-revision={view?.revision}>
     <header className="mf-play-head">
       <h1>Flame in Freefall missions</h1>
+      <p className="mf-fine">New here? <Link href="/missions/guide">Read the step-by-step mission guide</Link> before playing. Need the evidence tools? <Link href="/lab">Open Flame Lab</Link>.</p>
       {view && <ol className="mf-rail" aria-label="Mission progress (saved on the server)">{MISSIONS.map((m) => {
         const done = view.completedMissions.includes(m.id), here = m.id === mission;
         return <li key={m.id} data-state={done ? 'done' : here ? 'current' : 'upcoming'} aria-current={here ? 'step' : undefined}>

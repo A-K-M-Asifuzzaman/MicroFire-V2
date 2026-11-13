@@ -28,7 +28,7 @@ const definitions = [
   ['atlas', '/atlas', 'Experiment Atlas', 'preview', 'One audited BASS-II record; search API exists, search UI and broader coverage are pending.'],
   ['experiment', '/experiments/[id]', 'Experiment Dossier', 'preview', 'One cited record with field-level provenance; export API exists, export UI is pending.'],
   ['compare', '/compare', 'Controlled Comparison', 'coming_soon', 'Requires multiple independently verified records.'],
-  ['lab', '/lab', 'Flame Instrument', 'coming_soon', 'Illustrative rendering and accessible controls are pending.'],
+  ['lab', '/lab', 'Flame Instrument', 'preview', 'Interactive guided lab with an illustrative gravity lens, NASA B20 condition comparison and downloadable practice notes; no numerical combustion or ML prediction.'],
   ['gaps', '/gaps', 'Research Frontier', 'coming_soon', 'Gap-classification API exists over one validated record; the frontier UI is pending.'],
   ['ask', '/ask', 'Ask PIX', 'coming_soon', 'Deterministic, catalog-grounded answers with citation-lineage checks and abstention exist as an API (no AI model); the PIX UI is pending.'],
   ['missions', '/missions', 'Mission Map', 'preview', 'Mission descriptions only; none is playable yet.'],
