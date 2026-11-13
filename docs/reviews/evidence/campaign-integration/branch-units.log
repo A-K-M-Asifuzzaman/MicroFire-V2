@@ -1,0 +1,12 @@
+
+> microfire-v2@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 <review-worktree>
+
+
+ Test Files  23 passed (23)
+      Tests  267 passed (267)
+   Start at  10:32:06
+   Duration  4.95s (tests 69%, import 15%, transform 15%, worker 1%)

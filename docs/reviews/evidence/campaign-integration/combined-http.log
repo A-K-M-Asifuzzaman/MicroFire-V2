@@ -1,0 +1,16 @@
+✔ loopback real HTTP: separate credentials, cookie/proof, ownership, revoke/expiry/restart, replay and boundaries (133.452792ms)
+✔ loopback real browser: cross-port same-site attacks and M2 cookie isolation (944.361333ms)
+✔ public real PostgreSQL/HTTPS: visitor isolation, CSRF, full progression, multi-instance retry/restore, expiry/revoke and abuse (4751.604666ms)
+✔ public real browser: Secure HttpOnly visitor sessions, independent contexts and origin/CSRF refusal (3965.651875ms)
+✔ public storage: bootstrap/action fault rollback and shared budgets persist across pools and database restart (3405.244875ms)
+✔ production HTTP: bounded B20 paraphrase support preserves target and source limits (1687.661167ms)
+Real HTTP: 6 descriptions, 1 admitted run, 55 quarantined; 17.4 preserved; unsupported summaries abstain; unchanged POST budget; no campaign API exposed.
+✔ production HTTP: source-only library, exact citations, calibrated target comparison, abstention and real POST limit (1978.1555ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15840.298375

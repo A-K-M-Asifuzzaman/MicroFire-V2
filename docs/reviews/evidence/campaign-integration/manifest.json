@@ -1,0 +1,67 @@
+{
+  "recordedAt": "2026-11-13T04:45:52.425297+00:00",
+  "reviewBranch": "codex/review-campaign-security-20261113",
+  "sourceCommit": "48d2c8baa1505c11499d405d934529269cdde722",
+  "originalMilestone": "faecf92b18528a18486d2106c050130e95e4bc0c",
+  "combinedCommit": "ad876e9054f49f9a917bfaeae94db5310c33ba2d",
+  "combinedTree": "9a30fa37c576c4146ca2d37542d870592db3a1e7",
+  "results": {
+    "branchUnits": 267,
+    "frontendUnits": 33,
+    "campaignHTTP": 5,
+    "otherBackendHTTP": 13,
+    "researchBrowser": {
+      "passed": 88,
+      "skipped": 22,
+      "failed": 0
+    },
+    "m2Browser": {
+      "passed": 123,
+      "skipped": 47,
+      "failed": 0
+    },
+    "combinedUnits": 315,
+    "combinedCheckExit": 0,
+    "combinedHTTP": 7,
+    "combinedControllerHTTP": 1,
+    "combinedLiveM2": 4,
+    "nativeBrowserStorage": {
+      "passed": 1,
+      "failed": 2,
+      "skipped": 0,
+      "exit": 1
+    },
+    "runtimeVulnerabilities": 0,
+    "developmentModerateAdvisories": 10
+  },
+  "hostedStagingAcceptance": false,
+  "independentSecurityApproval": false,
+  "publicEndpointsMounted": false,
+  "deploymentCreated": false,
+  "files": {
+    "backend-http.log": "7b9ed5a67a421093d633c70bd3a047dede46adb0d5b974658ead0c2367eed55f",
+    "branch-check.log": "9536decda3219f552e040d05c46bd63cf3985bcdfc31e75873338c61b28fb592",
+    "branch-units.log": "d628021349efa9ab93dc1a45aef4191bb4bc0a081db77a6d198aeee700fa07ce",
+    "browser-storage-initial.log": "95c33da822b8477b2acec4c7823b1cfd83bc30b3362aa0241d544153dfe0cdce",
+    "browser-storage.log": "fd4d1e843f17df3b99e3a7b9312270f1af5fa401a291e71d7b5089dfe04fd91f",
+    "campaign-http.log": "a56ea712f6efe2a1ab449f26e08896efcb6f4f9c26b50dd314dd212b69f1e441",
+    "candidate-admission.log": "68365aecfa609f6a765acb4e79f70eb9e383da4a2072416e74e98482fbdb51de",
+    "combined-check.log": "0c6dfa91c4097782b7fdc21354e5b8987ef6150b7d03b3d9a886c9d03540b90e",
+    "combined-controller-http.log": "f2d042ba791437c9c2a55d886bcb502bfd9bd17b71c50c085480e3926dc4364f",
+    "combined-http.log": "7acdec517995b5845bae7154c8b286c2a87037518ea86d09a94eee0832fda94a",
+    "combined-intelligence.log": "685c10be05feaa1dee4abea4cf0fdddd999886b3bd979852171af7b52e02e6fb",
+    "combined-live-m2.log": "9927eed171b04740e6d73ed2d5f938b575ae06775898560162c0baa6a69c2469",
+    "combined-science.patch": "ab2c2d07152f2227362c15cc3ffc77e6cac8370cbaa204cec05a47a83c80dcfa",
+    "frontend-units.log": "3839fa008bd2d5e01a23ac9b821f608892bb38d76e74c5111b7e86a7e7c26666",
+    "full-audit.json": "35c5b6e13c5a042f6290f59e603f925743bc1a9173babfa7a0e795a58b6263e8",
+    "intelligence.log": "685c10be05feaa1dee4abea4cf0fdddd999886b3bd979852171af7b52e02e6fb",
+    "m2-browser.log": "237fd657a4c3de40dede5906602dedddd2ce3060c2dd6c03b2c3000062f8b1df",
+    "preservation.json": "c20c71d67bbe49d87cd2dbbe4077c75f933e6047a64ee7ca85b88739c64d020a",
+    "provider-access.json": "a203ddb91bcf22a9ed8df84cdb1cb8ec6df2736bc2939803e333b24d74cdadfb",
+    "publication-scan.json": "4e2fdbef47b5a508c7d4c146f6f1009046c2934cdbeec9dc56e0afdd684c522e",
+    "publication-security.log": "744d0a7199586d715b8e0aed658e799d52a43ca1f85fab89e129765c3f4802b3",
+    "research-browser.log": "9208cc2d5a5d3c688881b85711142acf9f48cb8c3ef8f12f08bb76fd4dd90c98",
+    "runtime-audit.json": "4428c8c30352c986e54f1a9a4d99fcfa896fc7ef19f8db5dd56bbd40331c0562",
+    "submission-health.json": "eb980404dc821b1f93fe0087f37ea405950374166e19fa1a04e021d7d68e90f3"
+  }
+}

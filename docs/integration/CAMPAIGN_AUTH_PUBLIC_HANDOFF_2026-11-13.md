@@ -1,5 +1,7 @@
 # Campaign authority and public-user handoff — November 13, 2026
 
+Publication follow-up: [review branch, staging package and full combined regression report](../reviews/CAMPAIGN_REVIEW_PUBLICATION_2026-11-13.md). Source review pin `48d2c8baa1505c11499d405d934529269cdde722`; no runtime or API contract changes from this handoff.
+
 Status: implemented and tested in `codex/campaign-security-remediation-20261113`, isolated from Claude's consumer and the submission deployment. **Both factories remain unmounted. This document is not independent security approval.** No database was provisioned, route enabled, merge made or deployment performed.
 
 ## Exact source commits

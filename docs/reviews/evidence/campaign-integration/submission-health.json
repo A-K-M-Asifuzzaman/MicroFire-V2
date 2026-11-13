@@ -1,0 +1,44 @@
+{
+  "origin": "https://microfire-v2-preview.vercel.app",
+  "checkedAt": "2026-11-13T04:38:21.292559+00:00",
+  "method": "read-only GET",
+  "results": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/api/experiments/bass2-b20",
+      "status": 200
+    },
+    {
+      "path": "/missions",
+      "status": 200
+    },
+    {
+      "path": "/passport",
+      "status": 200
+    },
+    {
+      "path": "/api/game/preview/capability",
+      "status": 404
+    },
+    {
+      "path": "/api/game/campaign/v1/capability",
+      "status": 404
+    },
+    {
+      "path": "/api/game/public-campaign/v1/session",
+      "status": 404
+    },
+    {
+      "path": "/design",
+      "status": 404
+    }
+  ],
+  "limits": "HTTP availability only; not deployment source SHA, video integrity, or hosted campaign acceptance."
+}

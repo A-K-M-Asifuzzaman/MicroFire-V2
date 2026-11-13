@@ -1,0 +1,9 @@
+{
+  "provider": "Vercel",
+  "status": "blocked",
+  "reason": "403 insufficient team authorization",
+  "configurationApplied": false,
+  "deploymentCreated": false,
+  "independentSecurityApproval": "pending",
+  "hostedAcceptance": "not-run"
+}

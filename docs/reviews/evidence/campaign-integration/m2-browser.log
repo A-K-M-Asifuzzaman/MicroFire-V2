@@ -1,0 +1,175 @@
+Case outcomes and totals; repetitive browser shader diagnostics omitted.
+Raw source SHA-256: 441f909b009755ed98124289d52ce4f27c89913f0c0168887349a1d5f095b326
+Running 170 tests using 3 workers
+  ✓    2 [desktop] › tests/m2-ui/design-b-home.spec.ts:25:1 › PIX guides: greeting, then a station-specific line with the right tone for evidence and for gaps (1.4s)
+  ✓    3 [desktop] › tests/m2-ui/design-b-home.spec.ts:41:1 › PIX narrates the gravity control (illustration, never a measurement) (1.3s)
+  ✓    4 [desktop] › tests/m2-ui/design-b-home.spec.ts:50:1 › Training Bay entrance: focus gives PIX the bay line; activating it arrives at the tour (864ms)
+  ✓    5 [desktop] › tests/m2-ui/design-b-home.spec.ts:61:1 › reduced motion: plain links, no replay control, no moving decoration (1.0s)
+  ✓    1 [desktop] › tests/m2-ui/design-b-home.spec.ts:9:1 › Design B hero: the flame is an illustration in the module porthole; the only 3D on the page is the lens flame (2.9s)
+  ✓    6 [desktop] › tests/m2-ui/design-b-home.spec.ts:72:1 › after a navigation, keyboard focus lands on the new page heading (984ms)
+  ✓    7 [desktop] › tests/m2-ui/design-b-home.spec.ts:80:1 › sound and PIX voice are opt-in on the homepage (873ms)
+  ✓    9 [desktop] › tests/m2-ui/design-review.spec.ts:4:1 › design-review routes are not served without their review flag (102ms)
+  ✓   10 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:34:1 › the fixture gallery is not reachable without its runtime flag (1.3s)
+  ✓   11 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:19:1 › public mission pages stay locked; the preview loads only on explicit request and reports the missing backend (2.2s)
+  ✓   12 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:41:1 › keyboard placement: part → mount → orientation → Install produces the exact frozen intent; refusal text is readable (3.0s)
+  -   13 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:60:1 › touch placement: tapping a part opens the bottom sheet with reachable mount, orientation and Install
+  -   14 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:76:1 › phone placement: the view docks above the part sheet, both visible and untouched; Back to bench undocks
+  ✓   15 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:96:1 › apparatus cues: progress, designated mount, a wrong mount and a repeated install stay intents the server judges (2.2s)
+  ✓   16 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:119:1 › fault: authored-training labels, flagged fan, no findings before a check (1.6s)
+  ✓    8 [desktop] › tests/m2-ui/design-b-home.spec.ts:86:1 › guided tour: PIX walks through the parts with the frozen NASA descriptions; any choice of the visitor ends it (8.5s)
+  ✓   17 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:128:1 › diagnostic: renders exactly the typed finding; stale results are hidden (1.9s)
+  ✓   18 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:142:1 › diagnosis: wrong answer is coaching from the server; the form needs a current check (2.3s)
+  ✓   20 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:163:1 › qualification is a training result, never certification (1.8s)
+  ✓   19 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:153:1 › repair provenance: the two approved histories show their own server receipts (2.3s)
+  ✓   21 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:170:1 › Passport: three separate provenance sections; training never inherits direct evidence; five named checks (1.7s)
+  ✓   23 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:224:1 › invalid learner note: exact draft retained with the typed issue (1.6s)
+  ✓   24 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:233:1 › saving: read-only by default, busy and unverified writes are never shown as Saved (2.5s)
+  ✓   22 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:190:1 › recovery states keep the pending intent and offer only safe actions (4.0s)
+  ✓   25 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:249:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state (3.3s)
+  ✓   27 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:299:1 › reduced motion: no intro, no fault flash animation, no pulsing (3.1s)
+  ✓   26 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:266:1 › 3D bench renders the same confirmed rig and keeps the 2D controls (6.0s)
+  ✓   29 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:320:1 › reflow at 320 px: no horizontal page scroll (3.8s)
+  ✓   31 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:340:1 › arrival sequence: rendered training bay behind the title, labelled illustrative, skippable, absent under reduced motion (8.3s)
+  ✓   32 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:358:1 › sound and PIX narration are opt-in toggles; nothing plays by default (2.6s)
+  ✓   30 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:330:1 › screenshot evidence for every major stage (18.1s)
+  ✓   33 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes A: local, review flags absent → DENY everything (5.8s)
+  ✓   28 [desktop] › tests/m2-ui/gameplay-ui.spec.ts:310:1 › accessibility: no axe violations across stages (23.4s)
+  ✓   36 [desktop] › tests/m2-ui/site-journey.spec.ts:50:1 › navigation: the training bay is in the mission menu on desktop and mobile (1.8s)
+  ✓   34 [desktop] › tests/m2-ui/site-journey.spec.ts:9:1 › journey: home → training bay tour → missions → briefing → home, through real links (3.1s)
+  ✓   38 [desktop] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector (2.4s)
+  ✓   35 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes B: local, review flags enabled → ALLOW on exact loopback authority only (7.1s)
+  ✓   39 [desktop] › tests/m2-ui/site-journey.spec.ts:105:1 › reduced motion: the tour opens with no intro and no scroll animations on the invitation (2.9s)
+  ✓   40 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes C: VERCEL=1, flags enabled → DENY everything (4.7s)
+  ✓   42 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes D: Astra R1: VERCEL_ENV=production, VERCEL unset, flags enabled → DENY everything (4.4s)
+  ✓   41 [desktop] › tests/m2-ui/site-journey.spec.ts:117:1 › accessibility and reflow: tour and invitation pages have no axe violations and no horizontal scroll at 320 px (8.6s)
+  ✓   37 [desktop] › tests/m2-ui/site-journey.spec.ts:60:1 › WebGL scenes are released on client navigation: no stacked contexts after repeated round trips (16.6s)
+  ✓   43 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes E: Astra R1: VERCEL_ENV=preview, VERCEL unset, flags enabled → DENY everything (3.8s)
+  ✓   45 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes F: VERCEL_ENV=development, VERCEL unset, flags enabled → DENY everything (3.2s)
+  ✓   46 [mobile] › tests/m2-ui/design-b-home.spec.ts:9:1 › Design B hero: the flame is an illustration in the module porthole; the only 3D on the page is the lens flame (2.7s)
+  ✓   48 [mobile] › tests/m2-ui/design-b-home.spec.ts:25:1 › PIX guides: greeting, then a station-specific line with the right tone for evidence and for gaps (917ms)
+  ✓   49 [mobile] › tests/m2-ui/design-b-home.spec.ts:41:1 › PIX narrates the gravity control (illustration, never a measurement) (938ms)
+  ✓   47 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes G: custom VERCEL_ENV=qa-custom-env, VERCEL unset, flags enabled → DENY everything (2.9s)
+  ✓   50 [mobile] › tests/m2-ui/design-b-home.spec.ts:50:1 › Training Bay entrance: focus gives PIX the bay line; activating it arrives at the tour (2.4s)
+  ✓   44 [desktop] › tests/m2-ui/ignition.spec.ts:36:1 › first visit: the film opens before paint with Skip focused, plays its story, then lands on the working homepage without a reload (9.9s)
+  ✓   52 [mobile] › tests/m2-ui/design-b-home.spec.ts:61:1 › reduced motion: plain links, no replay control, no moving decoration (1.8s)
+  ✓   53 [desktop] › tests/m2-ui/ignition.spec.ts:58:1 › Skip before the first frame closes it at once and marks it seen (1.6s)
+  ✓   51 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes G0: VERCEL_ENV defined but empty, flags enabled → DENY everything (4.6s)
+  ✓   54 [mobile] › tests/m2-ui/design-b-home.spec.ts:72:1 › after a navigation, keyboard focus lands on the new page heading (1.5s)
+  ✓   55 [desktop] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during Earth departure (click) reveals the same homepage (1.3s)
+  ✓   57 [mobile] › tests/m2-ui/design-b-home.spec.ts:80:1 › sound and PIX voice are opt-in on the homepage (850ms)
+  ✓   56 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:VERCEL_URL: VERCEL_URL alone, flags enabled → DENY everything (4.3s)
+  ✓   58 [desktop] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during the emergency (escape) reveals the same homepage (4.5s)
+  ✓   60 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:VERCEL_REGION: VERCEL_REGION alone, flags enabled → DENY everything (2.5s)
+  ✓   59 [mobile] › tests/m2-ui/design-b-home.spec.ts:86:1 › guided tour: PIX walks through the parts with the frozen NASA descriptions; any choice of the visitor ends it (8.2s)
+  ✓   62 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:VERCEL_DEPLOYMENT_ID: VERCEL_DEPLOYMENT_ID alone, flags enabled → DENY everything (2.6s)
+  ✓   63 [mobile] › tests/m2-ui/design-review.spec.ts:4:1 › design-review routes are not served without their review flag (37ms)
+  ✓   61 [desktop] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during PIX activation (enter) reveals the same homepage (5.5s)
+  ✓   65 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:19:1 › public mission pages stay locked; the preview loads only on explicit request and reports the missing backend (1.2s)
+  ✓   67 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:34:1 › the fixture gallery is not reachable without its runtime flag (767ms)
+  -   68 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:41:1 › keyboard placement: part → mount → orientation → Install produces the exact frozen intent; refusal text is readable
+  ✓   66 [desktop] › tests/m2-ui/ignition.spec.ts:77:1 › it never replays: not on client navigation back home, not after a refresh; Replay intro plays it on request (2.2s)
+  ✓   64 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:NOW_REGION: NOW_REGION alone, flags enabled → DENY everything (3.5s)
+  ✓   69 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:60:1 › touch placement: tapping a part opens the bottom sheet with reachable mount, orientation and Install (1.1s)
+  ✓   70 [desktop] › tests/m2-ui/ignition.spec.ts:93:1 › deep links and #fragments bypass the film (658ms)
+  ✓   73 [desktop] › tests/m2-ui/ignition.spec.ts:101:1 › reduced motion: no film, no Replay control, direct homepage (820ms)
+  ✓   74 [desktop] › tests/m2-ui/ignition.spec.ts:111:1 › no WebGL: the film bows out within a moment and the homepage is usable (571ms)
+  ✓   72 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:76:1 › phone placement: the view docks above the part sheet, both visible and untouched; Back to bench undocks (1.6s)
+  -   76 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:96:1 › apparatus cues: progress, designated mount, a wrong mount and a repeated install stay intents the server judges
+  ✓   77 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:119:1 › fault: authored-training labels, flagged fan, no findings before a check (699ms)
+  ✓   71 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:NETLIFY: NETLIFY alone, flags enabled → DENY everything (3.5s)
+  ✓   78 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:128:1 › diagnostic: renders exactly the typed finding; stale results are hidden (1.3s)
+  ✓   75 [desktop] › tests/m2-ui/ignition.spec.ts:118:1 › asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen (3.1s)
+  ✓   80 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:142:1 › diagnosis: wrong answer is coaching from the server; the form needs a current check (1.4s)
+  ✓   81 [desktop] › tests/m2-ui/ignition.spec.ts:126:1 › keyboard and screen readers: named dialog with a description, Skip first, Tab reaches Sound, captions are live, no axe violations (1.7s)
+  ✓   79 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:CF_PAGES: CF_PAGES alone, flags enabled → DENY everything (3.9s)
+  ✓   82 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:153:1 › repair provenance: the two approved histories show their own server receipts (1.4s)
+  ✓   85 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:163:1 › qualification is a training result, never certification (1.5s)
+  ✓   83 [desktop] › tests/m2-ui/ignition.spec.ts:142:1 › sound is off by default: no audio context is created until the visitor asks (2.6s)
+  ✓   86 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:170:1 › Passport: three separate provenance sections; training never inherits direct evidence; five named checks (1.4s)
+  ✓   84 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:AWS_LAMBDA_FUNCTION_NAME: AWS_LAMBDA_FUNCTION_NAME alone, flags enabled → DENY everything (4.8s)
+  ✓   88 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:190:1 › recovery states keep the pending intent and offer only safe actions (2.8s)
+  ✓   90 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:224:1 › invalid learner note: exact draft retained with the typed issue (1.4s)
+  ✓   89 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:AWS_EXECUTION_ENV: AWS_EXECUTION_ENV alone, flags enabled → DENY everything (4.3s)
+  ✓   91 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:233:1 › saving: read-only by default, busy and unverified writes are never shown as Saved (2.0s)
+  ✓   93 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:249:1 › no-WebGL: the 3D bench falls back to the full 2D schematic without losing state (2.9s)
+  -   94 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:266:1 › 3D bench renders the same confirmed rig and keeps the 2D controls
+  ✓   92 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:LAMBDA_TASK_ROOT: LAMBDA_TASK_ROOT alone, flags enabled → DENY everything (4.5s)
+  ✓   95 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:299:1 › reduced motion: no intro, no fault flash animation, no pulsing (1.6s)
+  ✓   96 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:K_SERVICE: K_SERVICE alone, flags enabled → DENY everything (2.1s)
+  ✓   98 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:GAE_SERVICE: GAE_SERVICE alone, flags enabled → DENY everything (1.1s)
+  ✓   87 [desktop] › tests/m2-ui/ignition.spec.ts:151:1 › no retained WebGL context: after the film, the page holds no more contexts than a visit without it (15.2s)
+  ✓   99 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:RENDER: RENDER alone, flags enabled → DENY everything (2.0s)
+  ✓  101 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:FLY_APP_NAME: FLY_APP_NAME alone, flags enabled → DENY everything (1.3s)
+  ✓  102 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:RAILWAY_ENVIRONMENT: RAILWAY_ENVIRONMENT alone, flags enabled → DENY everything (2.3s)
+  ✓  103 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:DYNO: DYNO alone, flags enabled → DENY everything (2.7s)
+  ✓  104 [desktop] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:WEBSITE_SITE_NAME: WEBSITE_SITE_NAME alone, flags enabled → DENY everything (2.5s)
+  ✓   97 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:310:1 › accessibility: no axe violations across stages (16.7s)
+  ✓  105 [desktop] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL":"1"}) cannot render a review page (5.1s)
+  ✓  106 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:320:1 › reflow at 320 px: no horizontal page scroll (2.4s)
+  ✓  107 [desktop] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL_ENV":"production"}) cannot render a review page (6.1s)
+  ✓  109 [desktop] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL_ENV":"preview"}) cannot render a review page (7.2s)
+  ✓  108 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:330:1 › screenshot evidence for every major stage (14.0s)
+  ✓  110 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:358:1 › sound and PIX narration are opt-in toggles; nothing plays by default (2.2s)
+  -  112 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes A: local, review flags absent → DENY everything
+  -  113 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes B: local, review flags enabled → ALLOW on exact loopback authority only
+  -  114 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes C: VERCEL=1, flags enabled → DENY everything
+  -  115 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes D: Astra R1: VERCEL_ENV=production, VERCEL unset, flags enabled → DENY everything
+  -  116 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes E: Astra R1: VERCEL_ENV=preview, VERCEL unset, flags enabled → DENY everything
+  -  117 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes F: VERCEL_ENV=development, VERCEL unset, flags enabled → DENY everything
+  -  118 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes G: custom VERCEL_ENV=qa-custom-env, VERCEL unset, flags enabled → DENY everything
+  -  119 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes G0: VERCEL_ENV defined but empty, flags enabled → DENY everything
+  -  120 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:VERCEL_URL: VERCEL_URL alone, flags enabled → DENY everything
+  -  121 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:VERCEL_REGION: VERCEL_REGION alone, flags enabled → DENY everything
+  -  122 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:VERCEL_DEPLOYMENT_ID: VERCEL_DEPLOYMENT_ID alone, flags enabled → DENY everything
+  -  123 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:NOW_REGION: NOW_REGION alone, flags enabled → DENY everything
+  -  124 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:NETLIFY: NETLIFY alone, flags enabled → DENY everything
+  -  125 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:CF_PAGES: CF_PAGES alone, flags enabled → DENY everything
+  -  126 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:AWS_LAMBDA_FUNCTION_NAME: AWS_LAMBDA_FUNCTION_NAME alone, flags enabled → DENY everything
+  -  127 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:AWS_EXECUTION_ENV: AWS_EXECUTION_ENV alone, flags enabled → DENY everything
+  -  128 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:LAMBDA_TASK_ROOT: LAMBDA_TASK_ROOT alone, flags enabled → DENY everything
+  -  129 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:K_SERVICE: K_SERVICE alone, flags enabled → DENY everything
+  -  130 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:GAE_SERVICE: GAE_SERVICE alone, flags enabled → DENY everything
+  -  131 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:RENDER: RENDER alone, flags enabled → DENY everything
+  -  132 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:FLY_APP_NAME: FLY_APP_NAME alone, flags enabled → DENY everything
+  -  133 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:RAILWAY_ENVIRONMENT: RAILWAY_ENVIRONMENT alone, flags enabled → DENY everything
+  -  134 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:DYNO: DYNO alone, flags enabled → DENY everything
+  -  135 [mobile] › tests/m2-ui/review-routes.spec.ts:85:3 › review routes H:WEBSITE_SITE_NAME: WEBSITE_SITE_NAME alone, flags enabled → DENY everything
+  -  136 [mobile] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL":"1"}) cannot render a review page
+  -  137 [mobile] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL_ENV":"production"}) cannot render a review page
+  -  138 [mobile] › tests/m2-ui/review-routes.spec.ts:144:3 › client-side navigation after the server becomes hosted ({"VERCEL_ENV":"preview"}) cannot render a review page
+  ✓  139 [mobile] › tests/m2-ui/site-journey.spec.ts:9:1 › journey: home → training bay tour → missions → briefing → home, through real links (1.8s)
+  ✓  111 [mobile] › tests/m2-ui/gameplay-ui.spec.ts:340:1 › arrival sequence: rendered training bay behind the title, labelled illustrative, skippable, absent under reduced motion (5.7s)
+  ✓  140 [mobile] › tests/m2-ui/site-journey.spec.ts:50:1 › navigation: the training bay is in the mission menu on desktop and mobile (1.1s)
+  -  141 [mobile] › tests/m2-ui/site-journey.spec.ts:60:1 › WebGL scenes are released on client navigation: no stacked contexts after repeated round trips
+  ✓  142 [mobile] › tests/m2-ui/site-journey.spec.ts:88:1 › no WebGL: the tour shows a rendered still and keeps the parts inspector (1.9s)
+  ✓  143 [mobile] › tests/m2-ui/site-journey.spec.ts:105:1 › reduced motion: the tour opens with no intro and no scroll animations on the invitation (2.7s)
+  ✓  100 [desktop] › tests/m2-ui/ignition.spec.ts:213:1 › race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives (41.9s)
+  -  146 [mobile] › tests/m2-ui/ignition.spec.ts:36:1 › first visit: the film opens before paint with Skip focused, plays its story, then lands on the working homepage without a reload
+  ✓  147 [mobile] › tests/m2-ui/ignition.spec.ts:58:1 › Skip before the first frame closes it at once and marks it seen (1.0s)
+  -  148 [mobile] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during Earth departure (click) reveals the same homepage
+  -  149 [mobile] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during the emergency (escape) reveals the same homepage
+  -  150 [mobile] › tests/m2-ui/ignition.spec.ts:66:3 › Skip during PIX activation (enter) reveals the same homepage
+  -  151 [mobile] › tests/m2-ui/ignition.spec.ts:77:1 › it never replays: not on client navigation back home, not after a refresh; Replay intro plays it on request
+  ✓  152 [mobile] › tests/m2-ui/ignition.spec.ts:93:1 › deep links and #fragments bypass the film (524ms)
+  ✓  153 [mobile] › tests/m2-ui/ignition.spec.ts:101:1 › reduced motion: no film, no Replay control, direct homepage (343ms)
+  ✓  154 [mobile] › tests/m2-ui/ignition.spec.ts:111:1 › no WebGL: the film bows out within a moment and the homepage is usable (394ms)
+  ✓  144 [mobile] › tests/m2-ui/site-journey.spec.ts:117:1 › accessibility and reflow: tour and invitation pages have no axe violations and no horizontal scroll at 320 px (8.2s)
+  ✓  155 [mobile] › tests/m2-ui/ignition.spec.ts:118:1 › asset failure: a progress bar shows while loading; if the astronaut cannot load, the visitor goes straight to the site and the film is not marked seen (2.7s)
+  -  156 [mobile] › tests/m2-ui/ignition.spec.ts:126:1 › keyboard and screen readers: named dialog with a description, Skip first, Tab reaches Sound, captions are live, no axe violations
+  ✓  145 [desktop] › tests/m2-ui/ignition.spec.ts:250:1 › race: after a stale load is released, the replay still plays its whole story and ends itself (no stale end or close timer cuts it) (9.9s)
+  ✓  157 [mobile] › tests/m2-ui/ignition.spec.ts:142:1 › sound is off by default: no audio context is created until the visitor asks (2.2s)
+  -  159 [mobile] › tests/m2-ui/ignition.spec.ts:151:1 › no retained WebGL context: after the film, the page holds no more contexts than a visit without it
+  -  160 [mobile] › tests/m2-ui/ignition.spec.ts:213:1 › race (Astra reproduction, ×3): Skip during a held model load, Replay, release the old load, Skip again — no old renderer, loop or timer survives
+  -  161 [mobile] › tests/m2-ui/ignition.spec.ts:250:1 › race: after a stale load is released, the replay still plays its whole story and ends itself (no stale end or close timer cuts it)
+  -  162 [mobile] › tests/m2-ui/ignition.spec.ts:269:1 › race: a replay started inside the Skip crossfade keeps the dialog (the old fade timer cannot close the new run)
+  -  163 [mobile] › tests/m2-ui/ignition.spec.ts:287:1 › rapid Skip/Replay ×8 (during loading and during play): one owner at a time, nothing left behind, Replay still works
+  ✓  158 [desktop] › tests/m2-ui/ignition.spec.ts:269:1 › race: a replay started inside the Skip crossfade keeps the dialog (the old fade timer cannot close the new run) (1.9s)
+  -  164 [mobile] › tests/m2-ui/ignition.spec.ts:310:1 › loading-time navigation away (unmount) releases the pending run and does not replay on return
+  -  166 [mobile] › tests/m2-ui/ignition.spec.ts:332:1 › sound state: turning sound on, then Skip and Replay, starts the new run muted and closes the old audio
+  ✓  167 [mobile] › tests/m2-ui/ignition.spec.ts:348:1 › phones: controls are large, nothing overflows, and Skip stays reachable (987ms)
+  ✓  165 [desktop] › tests/m2-ui/ignition.spec.ts:287:1 › rapid Skip/Replay ×8 (during loading and during play): one owner at a time, nothing left behind, Replay still works (17.2s)
+  ✓  168 [desktop] › tests/m2-ui/ignition.spec.ts:310:1 › loading-time navigation away (unmount) releases the pending run and does not replay on return (2.1s)
+  ✓  169 [desktop] › tests/m2-ui/ignition.spec.ts:332:1 › sound state: turning sound on, then Skip and Replay, starts the new run muted and closes the old audio (1.8s)
+  -  170 [desktop] › tests/m2-ui/ignition.spec.ts:348:1 › phones: controls are large, nothing overflows, and Skip stays reachable
+  47 skipped
+  123 passed (3.1m)

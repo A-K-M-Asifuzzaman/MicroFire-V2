@@ -1,0 +1,17 @@
+{
+  "base": "d324ff06d2f9959041d0f01999ba1d48fe184276",
+  "sourceCommit": "48d2c8baa1505c11499d405d934529269cdde722",
+  "unchangedSha256": {
+    "apps/web/lib/game-preview-security.ts": "230bc136d9310286d85320ad0501dacedeaa204b7f897a4ca8611ebc681f5313",
+    "apps/web/lib/game-preview.ts": "229921c8dd17e84041ac27234dd08376c9e5979f7a18cafe157eef165f18fbc8",
+    "apps/web/lib/review-policy.ts": "bffc0d2a3b8dd8818d2b666492f4450412df1bd3e4a67f1d6831519a4fe965b3",
+    "apps/web/lib/api.ts": "9a726de718b6534744008b26236064836ab5895383734b4a2dea4c61bbb41617",
+    "packages/shared/src/training-schemas.ts": "46b8e850a606ba0a2d1be8917ab1537e2103845e9edf4f6afa984ba93c8935bc",
+    "tests/backend/browser-save-consistency.test.ts": "aa1b89cd8bbd9ae8069c3b01d9602b59f24a2a12cdfd6626d95ca2758669653c",
+    "data/fixtures/catalog.json": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+    "data/quarantine/legacy-ledger.json": "a2c0136d9fc8050671e14f081f75426b42bce9913b3a19a4e0ea988e9496d637"
+  },
+  "combinedSciencePatchSha256": "ab2c2d07152f2227362c15cc3ffc77e6cac8370cbaa204cec05a47a83c80dcfa",
+  "combinedCandidateCommit": "ad876e9054f49f9a917bfaeae94db5310c33ba2d",
+  "combinedCandidateIsDetachedAndUnpublished": true
+}
