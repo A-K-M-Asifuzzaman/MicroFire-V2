@@ -14,6 +14,7 @@ import type { PartSpec } from '../contract';
 import { createPublicController, type PublicController } from './public-controller';
 import { createPublicTransport } from './public-transport';
 import { MissionGuide } from './mission-guide';
+import { guide } from '../missions/mission-kit';
 import { MISSIONS, currentMission, needsStart, sceneSnapshot, recordedActions } from './view-adapter';
 import '../missions/missions.css';
 import './campaign.css';
@@ -35,6 +36,8 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, parts, co
   const last = s.last?.result;
   const feedback = last?.ok ? (last.feedback ?? null) : null, refusal = last && !last.ok ? { code: last.code, message: last.message } : null;
   const snap = view ? sceneSnapshot(view) : null;
+  const done = view?.completedMissions.length ?? 0;
+  useEffect(() => { guide({ phase: s.phase, done, complete: done === 5 }); }, [s.phase, done]);
 
   const download = async () => {
     const data = await controller.exportPassport(); if (!data) return;

@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
+import { PixGuide } from './pix-guide';
 
 const sections = [
   { label: 'Discover', href: '/', match: ['/', '/judge-guide', '/roadmap', '/challenge', '/impact', '/assets'] },
@@ -86,6 +87,7 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
       <div className="wrap">{missionTools.map(([href, label]) => <Link key={href} className="nav-link" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}</div>
     </nav>}
     <main id="main" tabIndex={-1}>{children}</main>
+    <PixGuide />
     <footer className="site-footer">
       <div className="wrap">
         <p>Independent educational research project. No NASA endorsement and no operational fire-safety certification.</p>

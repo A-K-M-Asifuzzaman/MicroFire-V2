@@ -3,7 +3,10 @@
 // schema-validated CampaignAction intents. No rule is evaluated in the browser: correctness, completion and evidence
 // all come from the campaign engine on the server (or, in the fixture gallery, from its recorded output).
 import { CampaignActionSchema, type CampaignAction, type Citation } from '@microfire/shared';
+import { useEffect } from 'react';
 import { PixAvatar } from '../../components/pix-avatar';
+import { guide } from '../../components/pix-guide';
+export { guide };
 
 export type Feedback = { correct: boolean; reasons: string[]; citations: Citation[]; scope: string } | null;
 export type Refusal = { code: string; message: string } | null;
@@ -22,6 +25,7 @@ export function cite(c: Citation, sourceTitle: string) {
 
 export function Objectives({ items, title }: { items: Objective[]; title: string }) {
   const next = items.find((o) => !o.done);
+  useEffect(() => { guide({ mission: title.replace(/ objectives$/, ''), step: next?.label ?? null }); }, [title, next?.label]);
   return <section className="mf-objectives" aria-label={title}>
     <h2>{title}</h2>
     <ol>{items.map((o) => <li key={o.id} data-done={o.done} aria-current={o === next ? 'step' : undefined}>
@@ -31,11 +35,14 @@ export function Objectives({ items, title }: { items: Objective[]; title: string
 }
 
 export function PixLine({ text, mood = 'look' }: { text: string; mood?: 'greet' | 'look' | 'cite' | 'gap' }) {
+  useEffect(() => { guide({ hint: text }); }, [text]);
   return <div className="mf-pix"><div className="mf-pix-face" aria-hidden="true"><PixAvatar mood={mood} state={mood === 'gap' ? 'abstained' : 'idle'} /></div>
     <p aria-live="polite"><b>PIX:</b> {text}</p></div>;
 }
 
 export function Verdict({ feedback, refusal, sourceTitle }: { feedback: Feedback; refusal: Refusal; sourceTitle: string }) {
+  const summary = refusal ? `Not accepted. ${refusal.message}` : feedback ? (feedback.correct ? 'Accepted by the server.' : `Not yet. ${feedback.reasons[0] ?? 'Read the feedback in the mission panel.'}`) : null;
+  useEffect(() => { guide({ result: summary }); }, [summary]);
   if (refusal) return <div className="mf-verdict" data-kind="refused" role="status"><b>Not accepted.</b> {refusal.message}</div>;
   if (!feedback) return null;
   return <div className="mf-verdict" data-kind={feedback.correct ? 'correct' : 'wrong'} role="status">

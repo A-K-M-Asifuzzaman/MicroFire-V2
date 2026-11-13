@@ -1,0 +1,45 @@
+/* PIX guide: a docked companion on every page. Design B: paper card, ink outline, offset shadow, sun accent. */
+.pixg { position: fixed; right: 16px; bottom: 16px; z-index: 40; max-width: calc(100vw - 32px); font-family: var(--body); }
+.pixg-card { width: 360px; max-width: 100%; max-height: min(72vh, 560px); overflow: auto; display: grid; gap: 10px; padding: 14px 16px 16px;
+  background: var(--paper); color: var(--ink); border: 3px solid var(--ink); border-radius: 22px; box-shadow: 6px 6px 0 var(--ink); }
+.pixg-head { display: grid; grid-template-columns: 64px 1fr auto; gap: 10px; align-items: start; }
+.pixg-face.pix-avatar { width: 64px; }
+.pixg-name { margin: 0; font: 800 .95rem var(--display); }
+.pixg-name span { font: 700 .8rem var(--body); color: var(--ink-3); }
+.pixg-where { margin: 4px 0 0; font-size: .92rem; line-height: 1.4; color: var(--ink-2); }
+.pixg-x { min-height: 36px; padding: 4px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--cloud); color: var(--ink); font: 700 .85rem var(--body); cursor: pointer; }
+.pixg-label { margin: 2px 0 0; font: 800 .8rem var(--display); color: var(--sun-ink); }
+.pixg-now { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: .95rem; line-height: 1.4; }
+.pixg-hint, .pixg-result { margin: 0; padding: 8px 10px; border-radius: 12px; background: var(--ultra-soft); font-size: .9rem; line-height: 1.4; }
+.pixg-result[data-ok="true"] { background: var(--mint-soft); }
+.pixg-result[data-ok="false"] { background: var(--sun-soft); }
+.pixg-fine { margin: 0; font-size: .82rem; line-height: 1.4; color: var(--ink-3); }
+.pixg-next { justify-self: start; padding: 8px 14px; border: 3px solid var(--ink); border-radius: 999px; background: var(--sun); color: var(--ink);
+  font: 800 .9rem var(--display); text-decoration: none; box-shadow: 3px 3px 0 var(--ink); }
+.pixg-mini { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; width: 420px; max-width: 100%; padding: 8px 10px 8px 8px;
+  background: var(--paper); color: var(--ink); border: 3px solid var(--ink); border-radius: 20px; box-shadow: 4px 4px 0 var(--ink); }
+.pixg-mini .pixg-face.pix-avatar { width: 44px; }
+.pixg-say { margin: 0; font-size: .92rem; line-height: 1.35; }
+.pixg-say b { font-family: var(--display); }
+.pixg-say b span { font: 700 .78rem var(--body); color: var(--ink-3); }
+.pixg-acts { display: flex; gap: 6px; }
+/* PIX alone, when hidden */
+.pixg-fab { display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 4px 14px 4px 6px; border: 3px solid var(--ink); border-radius: 999px;
+  background: var(--paper); color: var(--ink); font: 800 .95rem var(--display); box-shadow: 4px 4px 0 var(--ink); cursor: pointer; }
+.pixg-fab .pixg-face.pix-avatar { width: 44px; }
+.pixg-x:focus-visible, .pixg-next:focus-visible, .pixg-fab:focus-visible { outline: 3px solid var(--ultra); outline-offset: 3px; }
+/* Keep the last lines of every page scrollable clear of the docked guide. */
+.site-footer { padding-bottom: 112px; }
+@media (max-width: 640px) {
+  .pixg { right: 10px; bottom: 10px; left: auto; }
+  .pixg[data-mode="full"], .pixg[data-mode="mini"] { left: 10px; }
+  .pixg-mini { width: auto; grid-template-columns: 36px 1fr auto; }
+  .pixg-mini .pixg-face.pix-avatar { width: 36px; }
+  .pixg-say { font-size: .86rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+  .pixg-mini .pixg-x { min-height: 40px; padding: 4px 10px; }
+  .pixg-card { width: auto; max-height: 58vh; }
+  .pixg-head { grid-template-columns: 48px 1fr auto; }
+  .pixg-face.pix-avatar { width: 48px; }
+}
+@media (prefers-reduced-motion: reduce) { .pixg .pix-float { animation: none; } }
+@media print { .pixg { display: none; } }
