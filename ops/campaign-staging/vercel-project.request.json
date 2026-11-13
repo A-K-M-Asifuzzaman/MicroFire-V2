@@ -1,0 +1,12 @@
+{
+  "name": "microfire-v2-campaign-security-staging",
+  "framework": "nextjs",
+  "rootDirectory": "apps/web",
+  "installCommand": "cd ../.. && npm ci",
+  "buildCommand": "cd ../.. && npm run build",
+  "publicSource": false,
+  "skipGitConnectDuringLink": true,
+  "previewDeploymentsDisabled": true,
+  "ssoProtection": { "deploymentType": "all" },
+  "resourceConfig": { "fluid": true, "functionDefaultTimeout": 15 }
+}
