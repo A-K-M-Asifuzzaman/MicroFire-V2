@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = { themeColor: '#2a2bd6' };
 // Destinations with no working tool yet say so in the navigation (research tools are implemented for review).
-const tags = Object.fromEntries(['/lab', '/missions'].flatMap((route) => {
+const tags = Object.fromEntries(['/missions'].flatMap((route) => {
   const state = features.find((f) => f.route === route)?.state;
   return state === 'coming_soon' ? [[route, 'Soon']] : state === 'preview' ? [[route, 'Preview']] : [];
 }));
