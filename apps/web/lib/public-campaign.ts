@@ -56,13 +56,16 @@ export class PublicCampaignService {
   }
   private async transaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
     const client = await this.pool.connect();
+    let disconnected = false;
+    const onError = () => { disconnected = true; };
+    client.on('error', onError); // Leased clients are not covered by the pool's idle-client error handler.
     try { await client.query('BEGIN'); await client.query("SET LOCAL statement_timeout = '3s'"); const result = await fn(client); await client.query('COMMIT'); return result; }
-    catch (error) { await client.query('ROLLBACK').catch(() => {}); throw error; } finally { client.release(); }
+    catch (error) { await client.query('ROLLBACK').catch(() => {}); throw error; } finally { client.off('error', onError); client.release(disconnected); }
   }
   private async reserve(buckets: readonly (readonly [string, number])[]) {
     // Address first, global last; commit before taking any visitor/head or bootstrap lock.
     await this.transaction(async client => {
-      await client.query("SET LOCAL lock_timeout = '250ms'");
+      await client.query("SET LOCAL lock_timeout = '250ms'; SET LOCAL idle_in_transaction_session_timeout = '3s'");
       const window = (await client.query("SELECT date_trunc('minute',clock_timestamp()) AS window_at")).rows[0].window_at as Date;
       for (const [subject, limit] of buckets) {
         const hash = createHmac('sha256', this.config.abuseKey).update(subject).digest('hex');
