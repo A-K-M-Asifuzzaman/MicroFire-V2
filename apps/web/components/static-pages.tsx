@@ -165,19 +165,6 @@ export function MissionPage({ id, playable = false }: { id: string; playable?: b
   </div>;
 }
 
-export function LabPage() {
-  const f = feature('/lab')!;
-  return <div className="wrap page">
-    <header className="page-head reveal">
-      <p className="eyebrow">Virtual laboratory / illustrative view</p>
-      <h1>Change a condition. Check a record.</h1>
-      <p className="lede">Illustration available on Discover; the Lab workspace is in development. It will pair an illustrative instrument with links to the real records behind it, keeping footage, static evidence and illustration clearly apart.</p>
-    </header>
-    <StatusBlock f={f} />
-    <div className="actions"><Link className="btn btn-primary" href="/#gravity-lens">Open the Gravity Lens illustration</Link><button className="btn btn-quiet" disabled>Lab workspace · {featureLabels[f.state]}</button></div>
-  </div>;
-}
-
 export function RoadmapPage() {
   const order = ['available', 'preview', 'coming_soon', 'locked', 'blocked'] as const;
   return <>
