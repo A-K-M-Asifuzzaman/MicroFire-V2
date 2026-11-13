@@ -19,6 +19,7 @@ Public gameplay stays off until all of the following hold:
 | Base | `claude/release-global` @ `17621b4`: live Design B site, local submission release, R4 reverted |
 | Mission scenes 01, 03, 04, 05 | `claude/mission-scenes` @ `59cd120`, merged (`13eb1df`) |
 | Codex campaign code and tests | Cherry-picked, with `-x` provenance |
+| Codex PR #18 quota remediation | `0aa987f` → `f80ab81`, `47e1ffa` → `0ef3ccc` (code and tests only) |
 | Claude client, UI and tests | `0843e79`, `45ff6bb` and this document's commit |
 
 Codex commits were cherry-picked, not merged wholesale:
@@ -130,25 +131,37 @@ The public view is narrower than the scene contract. It doesn't carry these serv
 
 For a full-fidelity Mission 02 bench (3D rig, mounts and orientation), the DTO would also need the installed parts' `anchorId` and `orientation`.
 
-## Known unresolved server issue: P2 global quota starvation (NOT fixed here)
+## P2 global quota starvation: remediation integrated (pending external review)
 
-Codex's own re-review confirmed a P2 availability defect, **F1**. It is recorded in `docs/reviews/INDEPENDENT_CAMPAIGN_SECURITY_REVIEW_FAECF92_2026-11-13.md`, Codex commit `4f4f506` on `codex/review-campaign-security-20261113`.
+**The defect.** Codex's re-review confirmed **F1** at `apps/web/lib/public-campaign.ts:165–166`:
+- `edge-global` was charged before the per-address bucket;
+- so one address could exhaust the shared 2,000/min admitted-work allowance for every visitor.
 
-**Where it is:** `apps/web/lib/public-campaign.ts:165–166`.
+**What this branch now carries.** Only the two code commits from Codex PR #18 (`codex/fix-campaign-admission-20261113`, draft), cherry-picked with `-x`:
 
-**The defect:**
-- The handler charges the shared `edge-global` bucket (2,000/min) **before** the per-address `edge:<address>` bucket (240/min).
-- Requests already refused by the per-address quota therefore still consume the global quota. This includes cookie-free requests to a nonexistent route under the public prefix.
-- One address can starve every visitor. Codex reproduced this with the real handler and PostgreSQL.
+| Here | Codex | Change |
+|---|---|---|
+| `f80ab81` | `0aa987f` | `reserve()`: reserves the address bucket, then the global bucket, in one PostgreSQL transaction. Uses a conditional `INSERT … ON CONFLICT … WHERE hits<limit`, so a refused request persists nothing. Enrollment reserves `new-address` and `new-global` together. Adds `campaign-admission-http.test.ts`; updates `campaign-security-http.test.ts` and the staging guard |
+| `0ef3ccc` | `47e1ffa` | Bounds idle admission holders (idle-in-transaction timeout) and discards failed leased clients. Extends the admission test |
 
-**This integration does not change it:**
-- `public-campaign.ts` is byte-identical to Codex `8dca07d`, so the defect is present in this candidate.
-- No quota fix, reviewed or unreviewed, is included.
-- The fix will be integrated only after Codex publishes the remediation and independent review accepts it. Then it will be cherry-picked with `-x`, and the combined tree re-tested and re-submitted.
+- `public-campaign.ts` and both admission and security tests are byte-identical to Codex `47e1ffa`.
+- The only conflicts were the deploy-guard lists in `vercel.json`, `apps/web/vercel.json` and `tests/unit/campaign-staging.test.ts`. They now list all four isolated branches.
+- PR #18's documentation commits (`4f4f506`, `83183c7`) are not included. Neither is any other Codex history; R4 stays reverted.
 
-**Client behaviour while the defect exists:** a starved visitor sees the 429 state with a Retry-After countdown. The client never mints a new case or retries automatically on 429. That limits the visitor's own contribution, but it is **not a mitigation** of F1.
+**Review status.** This is Codex's internal fresh-context re-review (`83183c7`, `docs/reviews/CAMPAIGN_QUOTA_FIX_HANDOFF_2026-11-13.md`): **PASS for the reproduced model; not external Astra approval; production NOT APPROVED.**
 
-Public enablement is blocked on F1 independently of every other gate.
+**My independent check** (`tests/backend/public-campaign-client.test.ts`, second test). It runs in-process, not through Codex's `wire` harness:
+- One address sends 2,000 requests, 16 at a time, with a mix of nonexistent, `/session`, `/export` and `/action` routes, all inside one SQL minute.
+- Result: **1,760 got 429** and 240 were admitted.
+- The **global allowance is charged exactly 240**.
+- Two fresh visitors on other addresses then boot through Claude's controller concurrently and finish **all five missions (41 actions each) with 5 Passport entries each, across a PostgreSQL restart**. Their sessions and exports stay separate.
+- The attacker address is still throttled afterwards.
+
+**Residual limits Codex states, still open.**
+- Fixed-window burstiness remains.
+- Raw HTTP floods still cost SQL and connections; this is not a WAF or DDoS control.
+- Distributed sources, many serverless instances, IP provenance and provider connection caps need real hosted acceptance.
+- Old and new workers must never run mixed.
 
 ## Astra review checklist (frontend ↔ campaign boundary)
 
@@ -251,8 +264,8 @@ Public enablement is blocked on F1 independently of every other gate.
 
 | Step | Owner | Exit condition |
 |---|---|---|
-| 1. Fix P2 F1 (budget order, so a refused request cannot spend the shared allowance) and reproduce the original denial-of-service case | Codex | Published commit plus real-PostgreSQL proof |
-| 2. Cherry-pick the F1 fix onto this branch (`-x`), plus any DTO projection fields Codex accepts; rerun all suites | Claude | New exact SHA, all suites green |
+| 1. Fix P2 F1 | Codex | **Done**: PR #18 `47e1ffa` (internal re-review PASS) |
+| 2. Cherry-pick the F1 fix onto this branch; rerun all suites | Claude | **Done**: see Test evidence; exact SHA in the final commit of this document |
 | 3. Exact combined-tree review: F1, CSRF, cross-visitor access, answer-key exposure, privilege escalation | Astra | Explicit verdict on that SHA |
 | 4. Isolated, access-controlled Vercel staging project (not `microfire-v2`); TLS PostgreSQL; separate migration owner and runtime role; secrets; one approved Node route mounting `createVercelPublicCampaignHandler` | Codex (provision), owner (accounts) | Staging URL with protection on |
 | 5. Staging acceptance: multiple visitors and serverless instances, gateway `ipAddress`/Host, cookies, CSRF, durable revisions, recovery, rate limits, log redaction, cleanup; plus this branch's Chromium journey pointed at staging | Astra, with Claude and Codex | Signed-off acceptance |
