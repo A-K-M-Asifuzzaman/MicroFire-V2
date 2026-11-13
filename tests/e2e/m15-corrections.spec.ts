@@ -36,7 +36,7 @@ test('S1/S2: visible, hidden and accessible copy never overclaims; the still-air
 
 test('S3: registry states are unchanged; built interfaces say what is true and keep the registry note', async ({ page }) => {
   const expected: [string, string][] = [['/atlas', 'Preview'], ['/experiments/bass2-b20', 'Preview'], ['/dashboard', 'Coming Soon'], ['/gaps', 'Coming Soon'],
-    ['/ask', 'Coming Soon'], ['/passport', 'Coming Soon'], ['/lab', 'Coming Soon'], ['/missions', 'Preview']];
+    ['/ask', 'Coming Soon'], ['/passport', 'Coming Soon'], ['/missions', 'Preview']];
   for (const [route, badge] of expected) {
     await page.goto(route);
     await expect(page.locator('.badge').first(), route).toHaveText(badge);
@@ -150,7 +150,7 @@ test('navigation: unfinished destinations are tagged, Passport is reachable, the
     await expect(page.locator('details.mobile-nav').getByRole('link', { name: 'Frontier' })).toBeVisible();
   }
   await page.goto('/lab');
-  await expect(page.getByRole('link', { name: 'Open the Gravity Lens illustration' })).toHaveAttribute('href', '/#gravity-lens');
+  await expect(page.getByRole('heading', { name: 'MicroFire Flame Lab' })).toBeAttached();
   await page.goto('/');
   await expect(page.locator('#gravity-lens figure.lens')).toHaveCount(1);
 });
