@@ -1,0 +1,30 @@
+.page { max-width: 1160px; margin: 0 auto; padding: clamp(22px, 5vw, 64px) 20px 96px; display: grid; gap: clamp(30px, 5vw, 70px); }
+.hero { padding: clamp(24px, 5vw, 64px); border: 3px solid var(--ink); border-radius: 30px; background: linear-gradient(140deg, #121749 0%, #2b35ab 65%, #5865f2 100%); color: #fff; box-shadow: 8px 8px 0 var(--ink); }
+.eyebrow { font-size: .85rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #c3f6df; }
+.hero h1 { font: 900 clamp(2rem, 5vw, 4.2rem)/1.02 var(--display); max-width: 18ch; margin: 18px 0; color: #fff; }
+.hero > p:not(.truth) { font-size: clamp(1rem, 1.5vw, 1.25rem); line-height: 1.6; max-width: 70ch; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.hero .actions :global(.btn) { background: #fff; color: #14194f; }
+.hero .actions :global(.btn-primary) { background: #ffe18a; color: #14194f; }
+.truth { border-top: 1px solid #9ba8ff; padding-top: 20px; font-size: .86rem; line-height: 1.6; color: #f2f3ff; }
+.sectionHead { max-width: 68ch; }
+.sectionHead h2, .guidance h2 { font: 900 clamp(1.45rem, 3vw, 2.25rem)/1.15 var(--display); margin: 0 0 8px; }
+.sectionHead p { line-height: 1.6; }
+.steps { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 24px 0 0; padding: 0; }
+.step { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 12px; background: var(--paper); border: 2px solid var(--ink); border-radius: 22px; padding: 22px; box-shadow: 4px 4px 0 var(--ink); }
+.number { font: 900 1.4rem var(--display); color: #2525ab; }
+.step h3 { font: 850 1.15rem var(--display); margin: 0 0 9px; }
+.step p { line-height: 1.5; margin: 0 0 12px; }
+.note { background: #eef1ff; border-radius: 10px; padding: 10px; font-size: .88rem; }
+.stepLink { font-weight: 850; text-underline-offset: 4px; }
+.guidance { padding: clamp(20px, 4vw, 36px); border: 2px solid var(--ink); border-radius: 24px; background: var(--paper); }
+.guidance p { line-height: 1.6; }
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+.rules > div { border-left: 4px solid #4145da; padding-left: 14px; }
+.rules h3 { margin: 0 0 8px; font: 850 1.1rem var(--display); }
+.rules p { margin: 0; }
+@media (max-width: 760px) {
+  .steps, .rules { grid-template-columns: minmax(0, 1fr); }
+  .step { grid-template-columns: 42px minmax(0, 1fr); padding: 16px; }
+  .hero { border-radius: 20px; }
+}
