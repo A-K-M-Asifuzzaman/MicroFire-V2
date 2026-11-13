@@ -78,7 +78,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, parts, co
         : <>
           {mission === 'station-arrival' && <StationArrival snapshot={snap} claim={claim} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'bass-assembly' && <BassTraining view={view} parts={parts} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
-          {mission === 'flame-detective' && <FlameDetective snapshot={snap} claim={claim} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
+          {mission === 'flame-detective' && <FlameDetective snapshot={snap} claim={claim} recorded={recorded} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'claim-trial' && <ClaimTrial snapshot={snap} statements={view.trialStatements} evidence={evidence} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'lunar-habitat' && <LunarHabitat snapshot={snap} claim={claim} recorded={recorded} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
         </>}

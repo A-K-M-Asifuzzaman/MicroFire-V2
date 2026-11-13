@@ -60,17 +60,20 @@ export function ClaimTrial({ snapshot, statements, evidence, sourceTitle, feedba
           </li>)}</ol></>}
         {open === 'archive' && <><h3>Source archive</h3><p>The only citable evidence: entries from the admitted B20 record.</p>
           <ul>{evidence.map((e) => <li key={e.id}><b>{e.label}</b><br /><span className="mf-cite">{cite(e.citation, sourceTitle)}</span></li>)}</ul></>}
-        {open === 'appraise' && <form onSubmit={(e) => { e.preventDefault(); if (!ready) return;
+        {open === 'appraise' && <form className="mf-court" onSubmit={(e) => { e.preventDefault(); if (!ready) return;
           emit({ type: 'APPRAISE_CLAIM', statementId: target, kind: kind as 'observed', evidenceLevel: level as 'direct', support: support as 'supports',
             citations: evidence.filter((x) => cites.includes(x.id)).map((x) => x.citation), confounders: conf as ['gravity'] }); }}>
-          <h3>Review desk</h3>
-          <div className="field"><label htmlFor="ct-target">Statement</label>
-            <select id="ct-target" value={target} onChange={(e) => setTarget(e.target.value)}>{statements.map((st, i) => <option key={st.id} value={st.id}>{i + 1}. {st.text.slice(0, 70)}{st.text.length > 70 ? '…' : ''}</option>)}</select></div>
-          <fieldset><legend>What kind of statement is it?</legend>{StatementTypeSchema.options.map((v) => <label key={v}><input type="radio" name="ct-kind" checked={kind === v} onChange={() => setKind(v)} /> {KIND[v] ?? v}</label>)}</fieldset>
-          <fieldset><legend>How strong is the evidence for it?</legend>{EvidenceLevelSchema.options.map((v) => <label key={v}><input type="radio" name="ct-level" checked={level === v} onChange={() => setLevel(v)} /> {LEVEL[v] ?? v}</label>)}</fieldset>
-          <fieldset><legend>Which source evidence applies? (at least one)</legend>{evidence.map((x) => <label key={x.id}><input type="checkbox" checked={cites.includes(x.id)} onChange={(e) => toggle(cites, setCites, x.id, e.target.checked)} /> {x.label}</label>)}</fieldset>
-          <fieldset><legend>Does that evidence support the statement?</legend>{SUPPORT.map(([v, l]) => <label key={v}><input type="radio" name="ct-support" checked={support === v} onChange={() => setSupport(v)} /> {l}</label>)}</fieldset>
-          <fieldset><legend>Confounders to name (any that apply)</legend>{CONFOUNDERS.map(([v, l]) => <label key={v}><input type="checkbox" checked={conf.includes(v)} onChange={(e) => toggle(conf, setConf, v, e.target.checked)} /> {l}</label>)}</fieldset>
+          <h3>Review desk · the evidence court</h3><p className="mf-fine">Pick an exhibit, then rule on it. A citation shows where a statement comes from; it does not prove a stronger claim.</p>
+          <div className="mf-docket" role="group" aria-label="Statement on trial">{statements.map((st, i) => <button key={st.id} type="button" className="mf-claimcard" data-statement={st.id}
+            data-status={status(st.id)} aria-pressed={target === st.id} onClick={() => setTarget(st.id)}>
+            <span className="mf-claimno">Exhibit {i + 1}</span><span className="mf-claimtext">“{st.text}”</span>
+            <span className="mf-claimstate">{status(st.id) === 'correct' ? '✓ Appraised correctly' : status(st.id) === 'wrong' ? '✗ Needs correction' : 'Not yet appraised'}</span></button>)}</div>
+          {snapshot.appraisals[target] && !snapshot.appraisals[target]!.correct && <div className="mf-ruling" role="note"><b>The server&apos;s reasons for this exhibit:</b><ul>{snapshot.appraisals[target]!.reasons.map((r) => <li key={r}>{r}</li>)}</ul></div>}
+          <fieldset className="mf-chips"><legend>What kind of statement is it?</legend>{StatementTypeSchema.options.map((v) => <label key={v}><input type="radio" name="ct-kind" checked={kind === v} onChange={() => setKind(v)} /> {KIND[v] ?? v}</label>)}</fieldset>
+          <fieldset className="mf-chips"><legend>How strong is the evidence for it?</legend>{EvidenceLevelSchema.options.map((v) => <label key={v}><input type="radio" name="ct-level" checked={level === v} onChange={() => setLevel(v)} /> {LEVEL[v] ?? v}</label>)}</fieldset>
+          <fieldset className="mf-exhibits"><legend>Which source evidence applies? (at least one)</legend>{evidence.map((x) => <label key={x.id}><input type="checkbox" checked={cites.includes(x.id)} onChange={(e) => toggle(cites, setCites, x.id, e.target.checked)} /> {x.label}</label>)}</fieldset>
+          <fieldset className="mf-chips"><legend>Does that evidence support the statement?</legend>{SUPPORT.map(([v, l]) => <label key={v}><input type="radio" name="ct-support" checked={support === v} onChange={() => setSupport(v)} /> {l}</label>)}</fieldset>
+          <fieldset className="mf-chips"><legend>Confounders to name (any that apply)</legend>{CONFOUNDERS.map(([v, l]) => <label key={v}><input type="checkbox" checked={conf.includes(v)} onChange={(e) => toggle(conf, setConf, v, e.target.checked)} /> {l}</label>)}</fieldset>
           <button type="submit" className="btn btn-primary" disabled={!ready}>Submit appraisal</button>
         </form>}
         {open === 'report' && <><h3>Case lectern</h3><p>The engine files the case only when every statement is appraised correctly.</p>

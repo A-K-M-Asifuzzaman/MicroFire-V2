@@ -64,7 +64,7 @@ window.__mfRun = { log: [], done: false, error: null };
     // Mission 4
     await accepted('Start Claim Trial'); await spot(/Review desk/);
     for (const c of CLAIMS) {
-      await setValue(await labelInput('Statement'), c.id); await sleep(200);
+      (await until(() => document.querySelector(`[aria-label="Statement on trial"] button[data-statement="${c.id}"]`), 15000, 'exhibit ' + c.id)).click(); await sleep(200);
       await setChecked(await labelInput(KIND[c.kind])); await setChecked(await labelInput(LEVEL[c.evidenceLevel]));
       const ev = await group('Which source evidence applies'); for (const b of ev.querySelectorAll('input[type=checkbox]')) await setChecked(b, false);
       await setChecked(await labelInput(c.id === 'trial-b20-thickness' ? 'B20 sample thickness (recorded condition)' : 'B20 observation log (Table A.1)'));

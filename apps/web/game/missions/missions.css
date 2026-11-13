@@ -84,3 +84,39 @@
 .mf-recorded div { padding: 6px 10px; border-radius: 10px; border: 2px solid var(--lav); }
 .mf-recorded dt { font: 700 .75rem var(--body); color: var(--violet-ink); }
 .mf-recorded dd { margin: 0; }
+/* Mission 04 · evidence court: a docket of claim cards, chip rulings and exhibit cards. */
+.mf-docket { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin: 8px 0 12px; }
+.mf-claimcard { text-align: left; display: grid; gap: 6px; padding: 12px 14px; border-radius: 14px; border: 2px solid #6b4c35; background: #fbf4e8; color: #2b1d14; cursor: pointer; font: inherit; }
+.mf-claimcard[aria-pressed="true"] { background: #2b1d14; color: #fbf4e8; box-shadow: 0 0 0 3px #ffb020; }
+.mf-claimcard:focus-visible { outline: 3px solid #ffb020; outline-offset: 2px; }
+.mf-claimno { font-size: 12px; font-weight: 800; letter-spacing: .02em; color: #a8743f; }
+.mf-claimcard[aria-pressed="true"] .mf-claimno { color: #ffcf8a; }
+.mf-claimtext { font-weight: 600; line-height: 1.35; }
+.mf-claimstate { font-size: 13px; font-weight: 700; }
+.mf-claimcard[data-status="correct"] .mf-claimstate { color: #0a7a52; }
+.mf-claimcard[data-status="wrong"] .mf-claimstate { color: #c1272d; }
+.mf-claimcard[aria-pressed="true"][data-status="correct"] .mf-claimstate { color: #2ee6a6; }
+.mf-claimcard[aria-pressed="true"][data-status="wrong"] .mf-claimstate { color: #ff8a8e; }
+.mf-ruling { border-left: 4px solid #c1272d; background: #fff1f1; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; }
+.mf-court fieldset { border: 1px solid #e3d3bd; border-radius: 12px; padding: 8px 10px 10px; margin: 0 0 10px; }
+.mf-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mf-chips legend { width: 100%; font-weight: 700; margin-bottom: 4px; }
+.mf-chips label { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 2px solid #6b4c35; background: #fff; cursor: pointer; font-weight: 600; }
+.mf-chips label:has(input:checked) { background: #2b1d14; color: #fbf4e8; }
+.mf-chips input { accent-color: #ffb020; }
+.mf-exhibits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+.mf-exhibits legend { font-weight: 700; margin-bottom: 4px; }
+.mf-exhibits label { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; border: 2px dashed #6b4c35; background: #fffaf2; cursor: pointer; }
+.mf-exhibits label:has(input:checked) { border-style: solid; background: #fff1d6; }
+/* Mission 03 · observation lab: prediction vs record, then the conditions strip. */
+.mf-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0; }
+.mf-compare-col { border-radius: 14px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+.mf-compare-col[data-kind="prediction"] { background: #0b0d22; color: #e6ebff; border: 2px solid #4f7dff; }
+.mf-compare-col[data-kind="record"] { background: #eafaf3; border: 2px solid #0a7a52; }
+.mf-compare-col blockquote { margin: 0; font-size: 18px; font-weight: 600; }
+.mf-compare-h { font-size: 12px; font-weight: 800; letter-spacing: .03em; text-transform: none; }
+.mf-compare-col[data-kind="prediction"] .mf-fine { color: #aab6ff; }
+.mf-conditions { list-style: none; padding: 0; margin: 6px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.mf-conditions li { padding: 4px 10px; border-radius: 999px; background: #eef1ff; font-size: 14px; }
+.mf-conditions li[data-known="false"] { background: #ffe1e2; color: #c1272d; }
+@media (max-width: 700px) { .mf-compare { grid-template-columns: 1fr; } }

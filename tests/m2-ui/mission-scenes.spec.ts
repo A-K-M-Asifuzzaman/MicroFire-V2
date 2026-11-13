@@ -167,7 +167,7 @@ test('Claim Trial: four statements, engine reasons on a wrong appraisal, correct
 test('Claim Trial: the review desk emits a schema-valid appraisal with real source citations only', async ({ page }) => {
   await page.goto(M4);
   await spot(page, /Review desk/).click();
-  await page.getByLabel('Statement').selectOption('trial-flow-caused-burnout');
+  await page.getByRole('group', { name: 'Statement on trial' }).locator('button[data-statement="trial-flow-caused-burnout"]').click();
   await page.getByLabel('Hypothesis').check();
   await page.getByLabel('Evidence gap').check();
   await page.getByLabel('B20 observation log (Table A.1)').check();

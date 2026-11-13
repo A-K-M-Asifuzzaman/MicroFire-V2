@@ -199,7 +199,7 @@ test('public campaign UI in Chromium: five missions end to end, reload recovery,
     await spot(page, /Review desk/);
     for (const st of claimTrialStatements) {
       const a = appraise(st.id) as Extract<ReturnType<typeof appraise>, { type: 'APPRAISE_CLAIM' }>;
-      await page.getByLabel('Statement').selectOption(st.id);
+      await page.getByRole('group', { name: 'Statement on trial' }).locator(`button[data-statement="${st.id}"]`).click();
       await page.getByLabel(KIND[a.kind]!, { exact: true }).check(); await page.getByLabel(LEVEL[a.evidenceLevel]!, { exact: true }).check();
       for (const box of await page.getByRole('group', { name: /Which source evidence applies/ }).getByRole('checkbox').all()) await box.uncheck();
       await page.getByLabel(st.id === 'trial-b20-thickness' ? 'B20 sample thickness (recorded condition)' : 'B20 observation log (Table A.1)').check();
