@@ -84,7 +84,7 @@ const sigmoid = (z: number) => 1 / (1 + Math.exp(-z));
 
 /** Solve A x = v by Gaussian elimination (A is tiny and positive definite). */
 function solve(A: number[][], v: number[]) {
-  const n = v.length, M = A.map((row, i) => [...row, v[i]]);
+  const n = v.length, M = A.map((row, i) => [...row, v[i]!]);
   for (let c = 0; c < n; c++) {
     let p = c;
     for (let r = c + 1; r < n; r++) if (Math.abs(M[r]![c]!) > Math.abs(M[p]![c]!)) p = r;
@@ -316,7 +316,7 @@ export function snapshot(rows: Row[], modelId: Snapshot["modelId"]): Snapshot {
   const X = rows.map((r) => feats(r, fs)), y = rows.map((r) => r.y);
   const r = rng(29), pos = rows.flatMap((x, i) => (x.y ? [i] : [])), neg = rows.flatMap((x, i) => (x.y ? [] : [i]));
   const boot = Array.from({ length: BOOTSTRAPS }, () => {
-    const idx = [...pos.map(() => pos[Math.floor(r() * pos.length)]), ...neg.map(() => neg[Math.floor(r() * neg.length)])];
+    const idx = [...pos.map(() => pos[Math.floor(r() * pos.length)]!), ...neg.map(() => neg[Math.floor(r() * neg.length)]!)];
     return fitLogit(idx.map((i) => X[i]!), idx.map((i) => y[i]!));
   });
   const domain = Object.fromEntries(MODEL_MATERIALS.map((mat) => {

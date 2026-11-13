@@ -57,7 +57,7 @@ const cfgFromRecord = (r: EvidenceRecord): LabConfig => ({
 });
 
 export function FlameLab({ snap }: { snap: Snapshot }) {
-  const [cfg, setCfg] = useState<LabConfig>(PRESETS[2].cfg);
+  const [cfg, setCfg] = useState<LabConfig>(PRESETS[2]!.cfg);
   const [mode, setMode] = useState<Mode>("explorer");
   const [phase, setPhase] = useState<Phase>("idle");
   const [shown, setShown] = useState<Shown>(null);
@@ -103,7 +103,7 @@ export function FlameLab({ snap }: { snap: Snapshot }) {
     timers.current.forEach(clearTimeout); timers.current = [];
     const reduced = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
     const finish = () => {
-      setShown({ visual: a.visual, group: a.observed?.group ?? null, blowoff: !!a.direct[0] && /blow/i.test(a.direct[0].outcomeLabel) });
+      setShown({ visual: a.visual, group: a.observed?.group ?? null, blowoff: !!a.direct[0]! && /blow/i.test(a.direct[0]!.outcomeLabel) });
       setPhase("result"); setPulse((x) => x + 1);
       setRuns((rs) => [...rs, recordRun((rs[rs.length - 1]?.n ?? 0) + 1, cfg, a)]);
     };
@@ -111,7 +111,7 @@ export function FlameLab({ snap }: { snap: Snapshot }) {
     SEQ.slice(0, -1).forEach((p, i) => timers.current.push(window.setTimeout(() => setPhase(p), i * SEQ_MS)));
     timers.current.push(window.setTimeout(finish, (SEQ.length - 1) * SEQ_MS));
   };
-  const reset = () => { timers.current.forEach(clearTimeout); loadCfg(PRESETS[2].cfg); };
+  const reset = () => { timers.current.forEach(clearTimeout); loadCfg(PRESETS[2]!.cfg); };
   const pin = (id: string) => setPins((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id].slice(-4)));
   const pinned = runs.filter((r) => pins.includes(r.id));
   const media = cfg.material === "PMMA" ? "saffire-vi-pmma" : cfg.gravity === "orbit" && cfg.o2 < 20 ? "bass2-reduced-o2-gmt213" : "bass-cassidy-2013";
@@ -120,7 +120,7 @@ export function FlameLab({ snap }: { snap: Snapshot }) {
   const edge = a.cls === "mechanistic" || a.cls === "none";
 
   const stateTag = phase !== "result" || !shown ? (phase === "idle" ? "Ready: press Run experiment" : "Running…")
-    : shown.visual === "nasa" ? `NASA observation · ${a.direct[0]?.label ?? ""}` : shown.visual === "conceptual" ? "Conceptual visualization" : "Insufficient experimental evidence";
+    : shown.visual === "nasa" ? `NASA observation · ${a.direct[0]!?.label ?? ""}` : shown.visual === "conceptual" ? "Conceptual visualization" : "Insufficient experimental evidence";
 
   /* ---------------- panels ---------------- */
   const setup = (
@@ -162,7 +162,7 @@ export function FlameLab({ snap }: { snap: Snapshot }) {
     <section className={styles.card} aria-labelledby="lab-match" data-cls={a.cls} key={`m${pulse}`}>
       <p className={styles.acq}>{a.cls === "direct" ? "NASA evidence acquired" : "Evidence boundary reached"}</p>
       <h2 id="lab-match" className={styles.cardTitle}>{a.cls === "direct" ? "NASA evidence match" : "No direct NASA test"}</h2>
-      <p className={styles.recName}>{a.cls === "direct" ? "" : "Closest evidence: "}<Link className={styles.inlineLink} href={(a.cls === "direct" ? a.direct[0] : a.closest).href}>{(a.cls === "direct" ? a.direct[0] : a.closest).label}</Link></p>
+      <p className={styles.recName}>{a.cls === "direct" ? "" : "Closest evidence: "}<Link className={styles.inlineLink} href={(a.cls === "direct" ? a.direct[0]! : a.closest).href}>{(a.cls === "direct" ? a.direct[0]! : a.closest).label}</Link></p>
       <p className={styles.small}>{FAMILIES[a.closest.family].name}{a.closest.caveat ? ` · ${a.closest.caveat}` : ""}</p>
       <div className={styles.distance} aria-label="Your condition compared with this NASA test">
         <p className={styles.distHead}><span>Your condition</span><span aria-hidden="true">↓</span><span>NASA test</span></p>
@@ -281,7 +281,7 @@ export function FlameLab({ snap }: { snap: Snapshot }) {
             return (
               <div key={r.id} className={styles.col}>
                 <p className={styles.runN}>Run {String.fromCharCode(65 + i)} · {String(r.n).padStart(3, "0")}</p>
-                <Chamber cfg={r.cfg} phase="result" shown={{ visual: ra.visual, group: ra.observed?.group ?? null, blowoff: !!ra.direct[0] && /blow/i.test(ra.direct[0].outcomeLabel) }} compact />
+                <Chamber cfg={r.cfg} phase="result" shown={{ visual: ra.visual, group: ra.observed?.group ?? null, blowoff: !!ra.direct[0]! && /blow/i.test(ra.direct[0]!.outcomeLabel) }} compact />
                 <dl>
                   {(Object.keys(DIM_NAME) as (keyof LabConfig)[]).map((k) => <div key={k} data-diff={diffs.includes(k) || undefined}><dt>{DIM_NAME[k]}</dt><dd>{k === "gravity" ? GRAVITY_LABEL[r.cfg.gravity] : String(r.cfg[k])}</dd></div>)}
                   <div><dt>Evidence</dt><dd>{CLASS_LABEL[r.cls]}</dd></div>
