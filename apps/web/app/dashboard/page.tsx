@@ -9,6 +9,7 @@ export default function Page() {
   return <>
     <PageHero compact eyebrow="Evidence Workstation" title="What does the evidence actually say?" status={{ feature: feature('/dashboard')!, built: true }}
       lede="Trace a question to a cited observation, its conditions, its limits and its NASA page. No invented certainty." />
-    <Sheet><ResearchIntelligence /><div id="workstation"><h2 className="ri-ws-h">Ask your own question</h2><Workstation sources={sources} claims={claims} coverage={coverage()} /></div></Sheet>
+    {/* The question field stays in the first viewport (tests/e2e/m15-corrections.spec.ts); the intelligence report follows. */}
+    <Sheet><div id="workstation"><h2 className="ri-ws-h">Ask your own question</h2><Workstation sources={sources} claims={claims} coverage={coverage()} /></div><ResearchIntelligence /></Sheet>
   </>;
 }

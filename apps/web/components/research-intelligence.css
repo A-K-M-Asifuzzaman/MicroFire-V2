@@ -1,4 +1,4 @@
-.ri { display: grid; gap: 18px; margin-bottom: 28px; }
+.ri { display: grid; gap: 18px; margin-top: 40px; }
 .ri-head h2 { margin: 4px 0 8px; font-size: clamp(26px, 3vw, 38px); }
 .ri-lede { margin: 0; max-width: 72ch; }
 .ri-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
