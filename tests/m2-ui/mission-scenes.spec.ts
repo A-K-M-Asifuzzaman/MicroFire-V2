@@ -96,7 +96,7 @@ test('Flame Detective: objectives follow the engine; a hypothetical condition is
   await expect(spot(page, /Analysis bench/)).toHaveAttribute('data-next', 'true');
   await spot(page, /Observation window/).click();
   await expect(page.locator('#mf-panel blockquote')).toContainText('burned the entire sample');
-  await expect(page.locator('#mf-panel')).toContainText('Your locked prediction was');
+  await expect(page.locator('#mf-panel')).toContainText('Your locked prediction'); await expect(page.locator('#mf-panel')).toContainText('NASA documented result');
 });
 
 test('Flame Detective: a causal over-claim gets the engine’s reasons; stations emit schema-valid intents only', async ({ page }, info) => {

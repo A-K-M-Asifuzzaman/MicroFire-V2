@@ -137,10 +137,10 @@ test('Ask: one companion, a persistent no-AI caption and examples grouped by wha
   for (const label of ['What was observed?', 'What is not known?', 'Where PIX stops']) await expect(page.getByText(label, { exact: true })).toBeVisible();
 });
 
-test('navigation: unfinished destinations are tagged, Passport is reachable, the Lab hands off to the lens', async ({ page }, info) => {
+test('navigation: unfinished destinations are tagged, Passport is reachable, the Flame Lab works', async ({ page }, info) => {
   await page.goto('/missions');
   if (info.project.name === 'desktop') {
-    await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Flame Lab/ })).toContainText('Soon');
+    await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Flame Lab/ })).toContainText('Preview');
     await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Missions/ })).toContainText('Preview');
     await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: 'Evidence', exact: true })).toHaveCount(1);
     await expect(page.getByRole('navigation', { name: 'Mission tools' }).getByRole('link', { name: 'Evidence Passport' })).toHaveAttribute('href', '/passport');
