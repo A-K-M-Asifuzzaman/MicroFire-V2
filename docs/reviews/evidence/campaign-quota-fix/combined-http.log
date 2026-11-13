@@ -1,0 +1,22 @@
+Original attack: 240 admitted404 + 1760 throttled429; global240; forged forwarding refused; fresh visitor200/global241.
+✔ admission real HTTP: original 2,000-request attack cannot charge global work after address refusal (23599.00375ms)
+Two-pool races: global1998 admits exactly2; address race admits exactly240/300; denied reservations leave no partial counts.
+✔ admission PostgreSQL: independent instances reserve address/global atomically and retain capacity limits (811.513083ms)
+SQL fault/lock timeout roll back scopes; throttled IP avoids global lock; outage503; lost COMMIT ack fails closed and stays charged; retry cannot reclaim capacity.
+✔ admission real HTTP: SQL faults, global lock timeout and storage outage fail closed without partial reservation (1103.44075ms)
+Suspended worker: waiter503; PostgreSQL idle deadline ends connection and rolls back both reservations without crashing; fresh visitor200/global1.
+✔ admission PostgreSQL: suspended worker cannot retain the shared global lock indefinitely (3847.616541ms)
+✔ loopback real HTTP: separate credentials, cookie/proof, ownership, revoke/expiry/restart, replay and boundaries (79.7555ms)
+✔ loopback real browser: cross-port same-site attacks and M2 cookie isolation (914.049458ms)
+✔ public real PostgreSQL/HTTPS: visitor isolation, CSRF, full progression, multi-instance retry/restore, expiry/revoke and abuse (2049.938458ms)
+✔ public real browser: Secure HttpOnly visitor sessions, independent contexts and origin/CSRF refusal (1289.247875ms)
+✔ public storage: bootstrap/action fault rollback and shared budgets persist across pools and database restart (1086.861041ms)
+✔ production HTTP: bounded B20 paraphrase support preserves target and source limits (394.240959ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32719.40325

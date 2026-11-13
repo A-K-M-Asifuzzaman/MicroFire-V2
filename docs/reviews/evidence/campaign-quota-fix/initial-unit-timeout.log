@@ -1,0 +1,48 @@
+
+> microfire-v2@0.1.0 check
+> npm run lint && npm run typecheck && npm test && npm run validate:data && npm run eval:science && npm run security && npm run build
+
+
+> microfire-v2@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> microfire-v2@0.1.0 typecheck
+> tsc --noEmit && npm run typecheck --workspace @microfire/web
+
+
+> @microfire/web@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> microfire-v2@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 <fixed-checkout>
+
+ ❯ tests/unit/campaign-service.test.ts (4 tests | 1 failed) 5267ms
+   × server runs the complete campaign, exports source-linked entries and restores authenticated replay after restart 5236ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/campaign-service.test.ts > server runs the complete campaign, exports source-linked entries and restores authenticated replay after restart
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/campaign-service.test.ts:23:1
+     21|   return { service, authority, config, request, anonymous, command };
+     22| }
+     23| it('server runs the complete campaign, exports source-linked entries a…
+       | ^
+     24|   const h = harness(); let snapshot = h.service.start(h.request, rando…
+     25|   const actions: CampaignAction[] = [{ type: 'TRAINING', action: episo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 22 passed (23)
+      Tests  1 failed | 266 passed (267)
+   Start at  11:28:29
+   Duration  9.99s (tests 74%, import 15%, transform 10%)

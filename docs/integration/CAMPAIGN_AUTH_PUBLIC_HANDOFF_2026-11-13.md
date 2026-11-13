@@ -1,5 +1,7 @@
 # Campaign authority and public-user handoff — November 13, 2026
 
+Quota remediation follow-up: [fixed source47e1ffa, atomic admission policy, regression evidence and re-review](../reviews/CAMPAIGN_QUOTA_FIX_HANDOFF_2026-11-13.md). No API/schema/env/migration change. Internal local re-review is conditional; external Astra and authorized hosted staging remain gates.
+
 Exact-faecf92 security re-review: [conditional authority verdicts, P2 quota finding and blocked production readiness](../reviews/INDEPENDENT_CAMPAIGN_SECURITY_REVIEW_FAECF92_2026-11-13.md). Vercel team access is now verified; actual hosted tests remain blocked by owner instruction. This is not external Astra approval.
 
 Publication follow-up: [review branch, staging package and full combined regression report](../reviews/CAMPAIGN_REVIEW_PUBLICATION_2026-11-13.md). Source review pin `48d2c8baa1505c11499d405d934529269cdde722`; no runtime or API contract changes from this handoff.

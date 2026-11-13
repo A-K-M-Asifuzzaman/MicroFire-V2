@@ -1,0 +1,60 @@
+chromium 156.0.8078.4: 100 serialized increments, zero lost updates; two pages, no renderer-isolation proof; product writes remain disabled.
+✔ chromium: two-page lock visibility, stale generation refusal and tombstone (6274.694709ms)
+✖ firefox: two-page lock visibility, stale generation refusal and tombstone (1971.651959ms)
+✖ webkit: two-page lock visibility, stale generation refusal and tombstone (2889.058333ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11464.862792
+
+✖ failing tests:
+
+test at tests/backend/browser-save-consistency.test.ts:1:231
+✖ firefox: two-page lock visibility, stale generation refusal and tombstone (1971.651959ms)
+  browserType.launch: Failed to launch the browser process.
+  Browser logs:
+
+  <launching> /private/tmp/microfire-extra-browsers/firefox-1555/firefox/Nightly.app/Contents/MacOS/firefox -no-remote -headless -profile /private/tmp/microfire-browser-profiles/playwright_firefoxdev_profile-NySSYn -juggler-pipe -silent
+  <launched> pid=91927
+  [pid=91927][err] *** You are running in headless mode.
+  [pid=91927][err] Could not find profile folder.
+  [pid=91927] <process did exit: exitCode=1, signal=null>
+  [pid=91927] starting temporary directories cleanup
+  Call log:
+    - <launching> /private/tmp/microfire-extra-browsers/firefox-1555/firefox/Nightly.app/Contents/MacOS/firefox -no-remote -headless -profile /private/tmp/microfire-browser-profiles/playwright_firefoxdev_profile-NySSYn -juggler-pipe -silent
+    - <launched> pid=91927
+    - [pid=91927][err] *** You are running in headless mode.
+    - [pid=91927][err] Could not find profile folder.
+    - [pid=91927] <process did exit: exitCode=1, signal=null>
+    - [pid=91927] starting temporary directories cleanup
+    - [pid=91927] <gracefully close start>
+    - [pid=91927] <kill>
+    - [pid=91927] <skipped force kill spawnedProcess.killed=false processClosed=true>
+    - [pid=91927] finished temporary directories cleanup
+    - [pid=91927] <gracefully close end>
+
+      at TestContext.<anonymous> (<fixed-checkout>/tests/backend/browser-save-consistency.test.ts:14:28) {
+    name: 'Error',
+    log: [ '  - <launching> /private/tmp/microfire-extra-browsers/firefox-1555/firefox/Nightly.app/Contents/MacOS/firefox -no-remote -headless -profile /private/tmp/microfire-browser-profiles/playwright_firefoxdev_profile-NySSYn -juggler-pipe -silent', '  - <launched> pid=91927', '  - [pid=91927][err] *** You are running in headless mode.', '  - [pid=91927][err] Could not find profile folder.', '  - [pid=91927] <process did exit: exitCode=1, signal=null>', '  - [pid=91927] starting temporary directories cleanup', '  - [pid=91927] <gracefully close start>', '  - [pid=91927] <kill>', '  - [pid=91927] <skipped force kill spawnedProcess.killed=false processClosed=true>', '  - [pid=91927] finished temporary directories cleanup', '  - [pid=91927] <gracefully close end>' ]
+  }
+
+test at tests/backend/browser-save-consistency.test.ts:1:231
+✖ webkit: two-page lock visibility, stale generation refusal and tombstone (2889.058333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  '58' !== '100'
+
+      at TestContext.<anonymous> (<fixed-checkout>/tests/backend/browser-save-consistency.test.ts:29:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '58',
+    expected: '100',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

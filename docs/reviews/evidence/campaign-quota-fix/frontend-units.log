@@ -1,0 +1,8 @@
+
+ RUN  v5.0.3 <fixed-checkout>
+
+
+ Test Files  2 passed (2)
+      Tests  33 passed (33)
+   Start at  11:45:37
+   Duration  533ms (transform 59%, import 23%, tests 16%, worker 2%)

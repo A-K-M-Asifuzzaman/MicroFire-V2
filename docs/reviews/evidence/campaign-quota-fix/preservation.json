@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "47e1ffac8b0b664349eb28e88c001153cfdecc0c",
+  "baseCommit": "4f4f5063a6b370868128a92aa9166a55da747081",
+  "protectedSourceDiffEmpty": true,
+  "restoredOnlyTestScreenshots": 71,
+  "cleanAfterRestore": true,
+  "sha256": {
+    "apps/web/lib/public-campaign.ts": "cf1a621a98316076212cf13af0d36d6c788969ce4eef6ee40bfa7402f0124e29",
+    "tests/backend/campaign-admission-http.test.ts": "063195a28931b57f044a1716bd8e5939f172e8597f262b32f8be171146366d1c",
+    "apps/web/lib/game-preview-security.ts": "230bc136d9310286d85320ad0501dacedeaa204b7f897a4ca8611ebc681f5313",
+    "apps/web/lib/public-campaign-vercel.ts": "7427287d383ecc9267bcb3dc66d2c64a4fccdf019868742dce27fde84eeb0aba",
+    "data/fixtures/catalog.json": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+    "data/quarantine/legacy-ledger.json": "a2c0136d9fc8050671e14f081f75426b42bce9913b3a19a4e0ea988e9496d637",
+    "data/migrations/campaign-public-v1.sql": "2d321ecc5ce0df4a0e31087236911fba950fe8c50e2be595ea5a13d0a156181a",
+    "package-lock.json": "47ff7d139986f1194243e587dbddc83ced608c17a6bc8e48dc0b0de77c686396"
+  }
+}

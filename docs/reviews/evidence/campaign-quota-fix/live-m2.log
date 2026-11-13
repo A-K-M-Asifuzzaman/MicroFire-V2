@@ -1,0 +1,17 @@
+Disposable UI integration built from 2634a6cc50724e22789e4163ea3153f227f3041a; production checkout and public availability unchanged.
+keyboard: real UI completed and resumed; 27 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+✔ real M2 UI: keyboard completes, exports and resumes a server-confirmed case (55588.359333ms)
+touch: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+✔ real M2 UI: touch completes, exports and resumes a server-confirmed case (53106.497417ms)
+no-webgl: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+✔ real M2 UI: no-webgl completes, exports and resumes a server-confirmed case (52810.306292ms)
+3d: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+✔ real M2 UI: 3d completes, exports and resumes a server-confirmed case (54288.14925ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 238553.497416

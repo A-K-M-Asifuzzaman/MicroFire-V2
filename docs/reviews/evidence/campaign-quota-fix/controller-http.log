@@ -1,0 +1,10 @@
+Claude 2634a6cc50724e22789e4163ea3153f227f3041a: actual transport/controller, real mission, lost-response recovery, read-only save and JSON envelopes passed (30 POSTs).
+✔ Claude actual transport/controller consume real backend responses, recover lost acknowledgement and complete (1082.670667ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1352.614792
