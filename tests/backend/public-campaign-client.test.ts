@@ -9,6 +9,7 @@ import { createPublicCampaignHandler } from '../../apps/web/lib/public-campaign'
 import { createPublicTransport, type Fetch } from '../../apps/web/game/campaign/public-transport';
 import { createPublicController, type PublicController } from '../../apps/web/game/campaign/public-controller';
 import { testDatabase } from './campaign-security-harness';
+import { createHmac } from 'node:crypto';
 import { review, core, detective, trial, habitat } from '../unit/campaign-helpers';
 import { episodeActions } from '../unit/training-helpers';
 
@@ -18,14 +19,14 @@ const env = { MICROFIRE_PUBLIC_CAMPAIGN_ENABLED: '1', MICROFIRE_PUBLIC_CAMPAIGN_
   MICROFIRE_PUBLIC_CAMPAIGN_CSRF_KEY: secret(), MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY: secret(), MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID: randomUUID(), MICROFIRE_PUBLIC_CAMPAIGN_RUNTIME_ID: randomUUID() };
 
 /** A browser profile: one cookie jar, same-origin Fetch Metadata, Origin on POST. `drop` loses the next response after the server handled it. */
-function browser(handler: () => (r: Request, a: string) => Promise<Response>) {
+function browser(handler: () => (r: Request, a: string) => Promise<Response>, address = '127.0.0.1') {
   let cookie: string | null = null, drop = 0; const sent: { path: string; body: string | null }[] = [];
   const fetchImpl: Fetch = async (path, init) => {
     const headers = new Headers(init.headers); headers.set('host', new URL(origin).host); headers.set('sec-fetch-site', 'same-origin'); headers.set('sec-fetch-mode', 'cors');
     if (init.method === 'POST') headers.set('origin', origin);
     if (cookie) headers.set('cookie', cookie);
     sent.push({ path, body: typeof init.body === 'string' ? init.body : null });
-    const res = await handler()(new Request(origin + path, { method: init.method ?? 'GET', headers, ...(init.body ? { body: init.body } : {}) }), '127.0.0.1');
+    const res = await handler()(new Request(origin + path, { method: init.method ?? 'GET', headers, ...(init.body ? { body: init.body } : {}) }), address);
     const set = res.headers.get('set-cookie');
     if (set) { const [pair] = set.split(';'); cookie = /Max-Age=0/i.test(set) ? null : pair!; }
     if (drop > 0) { drop--; throw new TypeError('network lost after commit'); }
@@ -119,4 +120,47 @@ test('visitor client: full five-mission journey, reload recovery, retries, 409, 
     handler = createPublicCampaignHandler({ ...env, MICROFIRE_PUBLIC_CAMPAIGN_ENABLED: '0' }, pool);
     const off = a.controller(); await off.boot(); assert.equal(off.get().phase, 'disabled');
   } finally { if (pool !== database.pool) await pool.end().catch(() => {}); await database.close(); }
+});
+
+const journey: CampaignAction[] = [{ type: 'TRAINING', action: episodeActions[0]! }, review, ...episodeActions.slice(1).map((action) => ({ type: 'TRAINING' as const, action })), ...detective, ...trial,
+  core({ type: 'START_MISSION', missionId: 'lunar-habitat' }), habitat, core({ type: 'RECORD_DECISION', verdict: 'insufficient-evidence' }),
+  core({ type: 'PROPOSE_NEXT_TEST', question: 'Measure lunar gravity and pressure.', limitations: ['B20 is not lunar evidence.'] }), core({ type: 'COMPLETE_MISSION', missionId: 'lunar-habitat' })];
+
+test('quota remediation (independent check): 1,760 throttled requests from one address leave the global allowance intact; concurrent fresh visitors finish all five missions in isolation across a database restart', { timeout: 180000 }, async () => {
+  const database = await testDatabase(), handler = createPublicCampaignHandler(env, database.pool);
+  const globalHits = async () => Number((await database.pool.query('SELECT coalesce(sum(hits),0)::int AS n FROM microfire_campaign_budgets WHERE realm=$1 AND bucket_hash=$2',
+    [env.MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID, createHmac('sha256', Buffer.from(env.MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY, 'base64url')).update('edge-global').digest('hex')])).rows[0].n);
+  try {
+    // Keep the 2,000 attack requests inside one SQL minute window (real clock; no override).
+    const sec = Number((await database.pool.query('SELECT extract(second FROM clock_timestamp()) AS s')).rows[0].s);
+    if (sec > 20) await new Promise((r) => setTimeout(r, (60 - sec + 0.05) * 1000));
+    // Attacker: one address, matching Host/Origin/custom header, no cookie, a mix of routes, 16 in flight at a time.
+    const attackPaths = ['/does-not-exist', '/session', '/export', '/action'], counts: Record<number, number> = {};
+    for (let batch = 0; batch < 125; batch++) await Promise.all(Array.from({ length: 16 }, async (_, i) => {
+      const path = attackPaths[(batch * 16 + i) % 4]!, post = path === '/action';
+      const res = await handler(new Request(origin + '/api/game/public-campaign/v1' + path, { method: post ? 'POST' : 'GET', headers: { host: new URL(origin).host, 'x-microfire-campaign': '1', 'sec-fetch-site': 'same-origin',
+        ...(post ? { origin, 'content-type': 'application/json' } : {}) }, ...(post ? { body: '{}' } : {}) }), '192.0.2.66');
+      counts[res.status] = (counts[res.status] ?? 0) + 1;
+    }));
+    assert.equal(counts[429], 1760, JSON.stringify(counts)); assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 2000);
+    assert.equal(await globalHits(), 240, 'only the 240 address-admitted requests charged the shared allowance');
+
+    // Two fresh visitors on other addresses, playing concurrently through Claude's client.
+    const a = browser(() => handler, '198.51.100.7'), b = browser(() => handler, '198.51.100.8');
+    const ca = a.controller(), cb = b.controller(); await Promise.all([ca.boot(), cb.boot()]);
+    assert.equal(ca.get().phase, 'ready'); assert.equal(cb.get().phase, 'ready');
+    assert.notEqual(ca.get().view!.sessionId, cb.get().view!.sessionId);
+    const half = Math.floor(journey.length / 2);
+    for (let i = 0; i < half; i++) await Promise.all([play(ca, journey[i]!), play(cb, journey[i]!)]);
+    database.restart(); // durable revisions survive; the pool reconnects
+    for (let i = half; i < journey.length; i++) await Promise.all([play(ca, journey[i]!), play(cb, journey[i]!)]);
+    for (const c of [ca, cb]) { const v = c.get().view!; assert.equal(v.completedMissions.length, 5); assert.equal(v.passport.entries.length, 5); assert.equal(v.revision, journey.length); }
+    // Isolation: each visitor's export is its own case.
+    const [ea, eb] = await Promise.all([ca.exportPassport(), cb.exportPassport()]);
+    assert.equal(ea!.sessionId, ca.get().view!.sessionId); assert.equal(eb!.sessionId, cb.get().view!.sessionId);
+    // The attacker address is still throttled; the visitors were never affected.
+    const again = await handler(new Request(origin + '/api/game/public-campaign/v1/session', { method: 'GET', headers: { host: new URL(origin).host, 'x-microfire-campaign': '1' } }), '192.0.2.66');
+    assert.equal(again.status, 429);
+    console.log(`Independent quota check: ${JSON.stringify(counts)}; global after attack 240; two concurrent visitors x ${journey.length} actions, 5 missions + 5 Passport entries each, across a PostgreSQL restart.`);
+  } finally { await database.close(); }
 });
