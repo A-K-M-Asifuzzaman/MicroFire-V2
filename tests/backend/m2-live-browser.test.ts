@@ -22,22 +22,10 @@ before(() => {
   workspace = mkdtempSync(path.join(tmpdir(), 'microfire-m2-live-'));
   execFileSync('git', ['worktree', 'add', '--detach', workspace, sourceSha], { stdio: 'pipe' });
   created = true;
-  const contractPath = path.join(workspace, 'apps/web/game/contract.ts');
-  let contract = readFileSync(contractPath, 'utf8');
-  const seam = 'export const contractRuntime: ContractRuntime | null = null;';
-  assert(contract.includes(seam), 'The approved integration seam changed; review it before testing.');
-  contract = contract.replaceAll("'../../../docs/m2/fixtures/contract-types'", "'@microfire/shared'").replace(seam, `
-import {ActionResponseSchema,AuthorizeResponseSchema,CapabilityResponseSchema,HttpFailureSchema,RevokeResponseSchema,StartResponseSchema,requestIdentity,noteIssue} from '@microfire/shared';
-export const contractRuntime: ContractRuntime = {
-  parse: {capability:v=>CapabilityResponseSchema.parse(v),authorize:v=>AuthorizeResponseSchema.parse(v),revoke:v=>RevokeResponseSchema.parse(v),snapshot:v=>StartResponseSchema.parse(v),action:v=>ActionResponseSchema.parse(v),failure:v=>HttpFailureSchema.parse(v)},
-  identify:requestIdentity,noteIssue
-};`);
-  writeFileSync(contractPath, contract);
-  const specsPath = path.join(workspace, 'apps/web/game/contract/specs.ts');
-  const specs = readFileSync(specsPath, 'utf8');
-  assert(specs.includes("from './equipment-copy'"));
-  writeFileSync(specsPath, specs.replace("from './equipment-copy'", "from '@microfire/shared'"));
-  writeFileSync(path.join(artifacts, 'integration.patch'), execFileSync('git', ['diff', '--', 'apps/web/game/contract.ts', 'apps/web/game/contract/specs.ts'], { cwd: workspace }));
+  // The consumer is already wired to the frozen shared runtime; test its committed source without injection.
+  const contract = readFileSync(path.join(workspace, 'apps/web/game/contract.ts'), 'utf8');
+  assert(!contract.includes('export const contractRuntime: ContractRuntime | null = null;'), 'Consumer runtime must already be integrated.');
+  writeFileSync(path.join(artifacts, 'source.txt'), `${sourceSha}\nUnmodified committed consumer; no runtime injection.\n`);
   const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
   writeFileSync(path.join(artifacts, 'install.log'), execFileSync(npm, ['ci', '--offline', '--ignore-scripts'], { cwd: workspace, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }));
   writeFileSync(path.join(artifacts, 'consumer-unit.log'), execFileSync(path.join(workspace, 'node_modules/.bin/vitest'), ['run', '--config', 'vitest.m2-ui.config.ts'], { cwd: workspace, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }));
