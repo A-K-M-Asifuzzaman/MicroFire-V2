@@ -210,20 +210,31 @@ For a full-fidelity Mission 02 bench (3D rig, mounts and orientation), the DTO w
   - Claim Trial grading hints.
 - The Chromium test also asserts that no `expected` rubric object for any statement appears in the page HTML.
 
-## Test evidence (final pass on this tree, macOS, Node runtime from the Codex toolchain, PostgreSQL 16 local disposable cluster)
+## Test evidence (combined tree with the PR #18 quota fix)
+
+**Environment:** macOS, the Codex Node toolchain, fresh `npm ci`, and a local disposable PostgreSQL 16 cluster. Only Chromium is installed.
 
 | Suite | Result |
 |---|---|
-| `npm run check` (lint, types, units, data, science, security scan, build) | Exit 0. **264/264** units in 22 files. Science: Ask 30/30, rank 7/7 (pre-v4 ranking; the B20 `af2281e` set is not in this tree), faithful 13/13, forbidden 0, repeatable 30/30 |
-| Backend, real HTTP/Chromium/PostgreSQL (`node --conditions=react-server --import tsx --test`) | **7/7, 0 skipped**: Codex's 5 campaign security tests, unchanged, plus my client contract test and Chromium acceptance |
+| `npm run check` (lint, types, units, data, science, security scan, build) | Exit 0. **264/264** units in 22 files. Science: Ask 30/30, rank 7/7 (pre-v4 ranking; B20 `af2281e` is not in this tree), faithful 13/13, forbidden 0, repeatable 30/30 |
+| Campaign backend (real HTTP, Chromium, PostgreSQL) | **11/11 pass**: Codex's 4 new admission tests, 5 campaign security tests, plus my client contract test, independent quota check and Chromium five-mission acceptance |
+| Existing M2 and research backend (`training-http`, `intelligence-http`, `claude-http`) | **12/12 pass**. `claude-http` needs `MICROFIRE_CLAUDE_WORKTREE`; it skipped in the first full run without it and passed on the re-run with it |
+| `m2-live-browser.test.ts` (4 tests) | **4 fail on a precondition, not on behaviour.** Codex's harness requires an *unwired* M2 seam (`contractRuntime = null`) so it can patch in its own. The release and this tree carry the wired seam; `apps/web/game/contract.ts` is identical to release `17621b4`, so the release fails the same way. The test is meant for a pre-integration Claude checkout. Equivalent coverage: `claude-http` and the M2-UI suite |
+| `browser-save-consistency.test.ts` | Chromium: failed once under full-suite load (`'99' !== '100'`), **passed on an isolated re-run**. Firefox and WebKit: **fail because those browsers aren't installed here**. The file is unchanged from the release |
 | e2e (port 3217) | **118 passed, 22 skipped, 0 failed**. The skips are the same 22 as the release baseline: 17 observatory-http, 2 observatory-m15, 2 observatory, 1 m15-corrections |
-| M2-UI (port 3240) | **153 passed, 49 skipped, 0 failed**. 47 skips are the release baseline. The 2 new skips are mission-scenes checks deliberately run on desktop only (WebGL context accounting, label collision) |
-| Codex `verify-campaign-browser-bundle.ts` | 73 built browser artifacts scanned: no campaign credential canaries, credential names or private grading hints |
-| `npm audit --audit-level=high --omit=dev` | 0 vulnerabilities |
+| M2-UI (port 3240) | Full run: **143 passed, 48 skipped, 1 failed, 10 did not run**. The failure was `ignition.spec.ts:118` (asset-failure progress bar), and the serial ignition file stopped there. An isolated re-run of `ignition.spec.ts` gave **26 passed, 14 skipped, 0 failed**. In the previous full run on this tree before the quota fix: **153 passed, 49 skipped, 0 failed**. The ignition film has no changes on this branch |
+| Codex `verify-campaign-browser-bundle.ts` | 73 built browser artifacts scanned: no campaign credential canaries, credential names or grading hints |
+| `npm audit --omit=dev --audit-level=high` | 0 vulnerabilities |
+| `npm audit --audit-level=high` (including dev tools) | Exit 0. Moderate development-tool advisories remain, unchanged from Codex's baseline |
 
-**Earlier full M2-UI run (recorded for completeness): 4 failures.**
-- Two were the mission-scenes gate test, on desktop and mobile. It expected a 404 without the R4 review credential, but R4 is reverted on this line. I rewrote it the same way the release's revert `9bebb4d` rewrote the equivalent M2 gate test: flag-gated, 200 plus `noindex` on this flag-on server.
-- Two were timeouts under load: WebGL release on navigation, and 3D label overlap. Both passed on an isolated rerun and in the final full run. They are recorded as load flakes, not fixed by any code change.
+**Earlier runs, recorded for completeness:**
+- The mission-scenes gate test was rewritten because R4 is reverted on this line.
+- Two WebGL timeouts passed when re-run.
+
+**Concurrency, retry, restart and isolation.** These are covered by:
+- Codex's admission tests: two pools racing at the global edge admit exactly 2; 300 same-address races admit exactly 240; SQL faults, lock timeouts and outages fail closed without partial reservation; a suspended worker can't hold the global lock;
+- Codex's security tests: visitor isolation, CSRF, multi-instance retry and restore, expiry, revoke;
+- my client tests: identical-byte retry with a single revision change; 409 reconciliation; 503 with identical retry; two concurrent visitors through a PostgreSQL restart.
 
 **What the Chromium acceptance covers (`tests/backend/public-campaign-browser.test.ts`).** One HTTPS origin, with pages from `next start` (production build) and the API from Codex's unmounted handler in the harness.
 - Visitor cookie flags. CSRF proof absent from Web Storage, IndexedDB, the DOM and the URL.
