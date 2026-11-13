@@ -1,0 +1,39 @@
+{
+  "reviewedCommit": "faecf92b18528a18486d2106c050130e95e4bc0c",
+  "cases": [
+    {
+      "id": "second-write-fault-rolls-back-bootstrap",
+      "status": 503,
+      "visitors": 0,
+      "heads": 0,
+      "noSuccessCookie": true
+    },
+    {
+      "id": "attacker-selected-session-not-adopted",
+      "status": 403
+    },
+    {
+      "id": "two-independent-browser-processes",
+      "foreignCase": 404,
+      "wrongCsrf": 403,
+      "httpOnlyCookieOverwriteRefused": true
+    },
+    {
+      "id": "failed-head-write-atomic-and-exact-retry",
+      "failedStatus": 503,
+      "preFailureRevision": 0,
+      "acceptedRevision": 1,
+      "identicalRetry": true
+    },
+    {
+      "id": "runtime-role-denied-create-alter-drop",
+      "passed": true
+    },
+    {
+      "id": "local-live-rollback-blocked-restart-rollback-confirmed",
+      "latestRevision": 1,
+      "afterRestartRevision": 0
+    }
+  ],
+  "hostingProviderTests": "not-run-owner-directed-blocked"
+}

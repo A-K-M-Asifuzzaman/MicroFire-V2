@@ -1,0 +1,1 @@
+{"attackCounts":{"404":240,"429":1760},"freshAddressStatus":429,"freshAddressBody":{"apiVersion":"1","error":{"code":"RATE_LIMITED","message":"Campaign request budget reached.","retryable":true}},"globalCounters":[{"window_at":"2026-11-13T04:55:00.000Z","hits":2001}]}

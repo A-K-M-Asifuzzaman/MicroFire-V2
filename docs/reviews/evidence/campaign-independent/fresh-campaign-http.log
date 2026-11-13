@@ -1,0 +1,12 @@
+✔ loopback real HTTP: separate credentials, cookie/proof, ownership, revoke/expiry/restart, replay and boundaries (85.189041ms)
+✔ loopback real browser: cross-port same-site attacks and M2 cookie isolation (851.459209ms)
+✔ public real PostgreSQL/HTTPS: visitor isolation, CSRF, full progression, multi-instance retry/restore, expiry/revoke and abuse (2151.73575ms)
+✔ public real browser: Secure HttpOnly visitor sessions, independent contexts and origin/CSRF refusal (2117.886417ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6373.075542

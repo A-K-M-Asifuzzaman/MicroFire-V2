@@ -1,0 +1,53 @@
+{
+  "reviewedCommit": "faecf92b18528a18486d2106c050130e95e4bc0c",
+  "comparisonBase": "d324ff06d2f9959041d0f01999ba1d48fe184276",
+  "recordedAt": "2026-11-13T05:05:15.843360+00:00",
+  "method": "one fresh-context security subagent plus fresh integrating-agent test execution; integrating agent authored implementation",
+  "externalAstraApproval": false,
+  "verdicts": {
+    "loopback": "CONDITIONAL",
+    "publicVisitor": "CONDITIONAL",
+    "productionReadiness": "FAIL"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "P2",
+      "location": "apps/web/lib/public-campaign.ts:165",
+      "kind": "availability/global-quota-starvation",
+      "realPostgreSQLReproduced": true
+    }
+  ],
+  "results": {
+    "unit": 266,
+    "unitFiles": 22,
+    "campaignRealHTTPBrowserPostgres": 4,
+    "m2ScienceReviewHTTP": 13,
+    "adversarialCaseGroups": 6,
+    "intelligence": 11,
+    "citations": 5,
+    "browserArtifacts": 64,
+    "runtimeAdvisories": 0,
+    "developmentModerateAdvisories": 10
+  },
+  "hostingTests": "blocked per explicit owner instruction",
+  "noApplicationChanges": true,
+  "noProviderChanges": true,
+  "files": {
+    "adversarial-results.json": "34ebc308606e6306a57a061e794c70934d09e8e6242f6ad8dca498f8997f60e7",
+    "adversarial.mts.txt": "4e341bf970b9a52e2285e9e1fee148c4d3b32a067c079b0e4c6fbb066e27f8ac",
+    "fresh-browser-canary.log": "6d82574e43c7a961a11e5bbd4e72ed427324f081d898b17835b33388973aa360",
+    "fresh-campaign-http.log": "b60221b87b10ed18cd40291d7f3f195f6a775e6cab5056210b68a75d34651602",
+    "fresh-canary-build.log": "5a294a2cefc95fd8e28033abd4b35e4fdc697de346623d76a8c5fea62e71c4e3",
+    "fresh-check.log": "b372693966b66abd29180744c489b7691e76835e85e014f57e3f629b50882769",
+    "fresh-intelligence.log": "685c10be05feaa1dee4abea4cf0fdddd999886b3bd979852171af7b52e02e6fb",
+    "fresh-m2-science-http.log": "8739f5f5cea55f7e3d862bf285db5becc9b37cff15a4f0f5a29fc145878710ee",
+    "full-audit.json": "c7109a6c7322867883897ae45cc22c4dfed72dbe47e34f282d6961a6e4416dec",
+    "preservation.json": "ede9b010838243dc311d9027ea326503deaaaff4c470aa70c7d4ca7d939faa7d",
+    "provider-inspection.json": "f3e32136318df25439b13eeb732818ec120f45b639684c7bcb86c7caf0b81a47",
+    "quota-results.json": "1f87c6ea37506084a1d3d564f95124add5c753da82c45973309b54bf77006427",
+    "quota.mts.txt": "a2fcb3eab19dd84a36b4f5b3533a08fb47913553358fa581f921dfc7978b4be0",
+    "reviewer-findings.md": "a62585c22496a59817912f6249588ff60587b59eb5de2716de463ec17f8b3af1",
+    "runtime-audit.json": "4428c8c30352c986e54f1a9a4d99fcfa896fc7ef19f8db5dd56bbd40331c0562"
+  }
+}

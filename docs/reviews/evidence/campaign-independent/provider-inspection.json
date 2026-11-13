@@ -1,0 +1,11 @@
+{
+  "teamAccessVerified": true,
+  "inspection": "read-only Vercel project/variable-name/connector/custom-environment metadata; no decryption",
+  "campaignStagingOrApprovedDatabaseIdentified": false,
+  "actualHostedAcceptance": "blocked by owner instruction after infrastructure discovery",
+  "ownerInstruction": "Finish the review with hosted tests marked blocked",
+  "noProviderMutation": true,
+  "noDatabaseProvisioning": true,
+  "noEndpointMounting": true,
+  "noDeployment": true
+}

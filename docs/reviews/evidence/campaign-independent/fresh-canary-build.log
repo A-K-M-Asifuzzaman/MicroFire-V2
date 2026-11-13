@@ -1,0 +1,57 @@
+▲ Next.js 16.4.1 (webpack)
+✓ Running next.config.ts took 191ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.6s
+  Running TypeScript ...
+  Finished TypeScript in 1437ms ...
+  Collecting page data using 10 workers ...
+  Generating static pages using 10 workers (0/25) ...
+  Generating static pages using 10 workers (6/25)
+  Generating static pages using 10 workers (12/25)
+  Generating static pages using 10 workers (18/25)
+✓ Generating static pages using 10 workers (25/25) in 551ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├   /[...path]
+│ ├ ● /lab
+│ ├ ● /sources
+│ ├ ● /methodology
+│ └ ● [+4 more paths]
+├ ƒ /api/[...path]
+├ ○ /ask
+├ ƒ /atlas
+├ ○ /compare
+├ ○ /dashboard
+├ ƒ /design
+├ ƒ /design/a
+├ ƒ /design/a/b20
+├ ƒ /design/a/lab
+├ ƒ /design/b
+├ ƒ /design/b/b20
+├ ƒ /design/b/lab
+├   /experiments/[id]
+│ └ ● /experiments/bass2-b20
+├ ○ /gaps
+├ ○ /icon.svg
+├ ƒ /m2-fixtures
+├ ○ /missions
+├   /missions/[id]
+│ ├ ● /missions/station-arrival
+│ ├ ● /missions/bass-assembly
+│ ├ ● /missions/flame-detective
+│ └ ● [+2 more paths]
+├   /missions/[id]/tour
+│ └ ● /missions/bass-assembly/tour
+└ ○ /passport
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand

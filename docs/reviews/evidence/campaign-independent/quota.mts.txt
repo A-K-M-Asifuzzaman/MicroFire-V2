@@ -1,0 +1,16 @@
+import { randomBytes, randomUUID, createHmac } from 'node:crypto';
+const { createPublicCampaignHandler } = await import(process.cwd() + '/apps/web/lib/public-campaign.ts');
+const { testDatabase } = await import(process.cwd() + '/tests/backend/campaign-security-harness.ts');
+const secret=()=>randomBytes(32).toString('base64url');
+const env={MICROFIRE_PUBLIC_CAMPAIGN_ENABLED:'1',MICROFIRE_PUBLIC_CAMPAIGN_REVIEWED_PROTOCOL:'public-campaign-v1',MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN:'https://microfire.example',MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID:randomUUID(),MICROFIRE_PUBLIC_CAMPAIGN_RUNTIME_ID:randomUUID(),MICROFIRE_PUBLIC_CAMPAIGN_CSRF_KEY:secret(),MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY:secret()};
+const db=await testDatabase();
+try {
+const handler=createPublicCampaignHandler(env,db.pool);
+const request=()=>new Request('https://microfire.example/api/game/public-campaign/v1/does-not-exist',{headers:{host:'microfire.example','x-microfire-campaign':'1'}});
+const counts={};
+for(let i=0;i<2000;i++){const r=await handler(request(),'192.0.2.1');counts[r.status]=(counts[r.status]??0)+1;}
+const fresh=await handler(request(),'198.51.100.1');
+const hash=createHmac('sha256',Buffer.from(env.MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY,'base64url')).update('edge-global').digest('hex');
+const counters=await db.pool.query('SELECT window_at,hits FROM microfire_campaign_budgets WHERE realm=$1 AND bucket_hash=$2',[env.MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID,hash]);
+console.log(JSON.stringify({attackCounts:counts,freshAddressStatus:fresh.status,freshAddressBody:await fresh.json(),globalCounters:counters.rows}));
+}finally{await db.close()}

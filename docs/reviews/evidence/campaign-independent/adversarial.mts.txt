@@ -1,0 +1,83 @@
+import assert from 'node:assert/strict';
+import { randomBytes, randomUUID } from 'node:crypto';
+import { createRequire } from 'node:module';
+const root = process.cwd(), require = createRequire(root + '/package.json');
+const { Pool } = require('pg'), { chromium } = require('@playwright/test');
+const { testDatabase, testServer, wire } = await import(root + '/tests/backend/campaign-security-harness.ts');
+const { createPublicCampaignHandler } = await import(root + '/apps/web/lib/public-campaign.ts');
+const { CampaignAuthority, campaignConfig } = await import(root + '/apps/web/lib/campaign-security.ts');
+const { CampaignService } = await import(root + '/apps/web/lib/campaign-service.ts');
+const { campaignIdentity } = await import(root + '/packages/shared/src/index.ts');
+const secret = () => randomBytes(32).toString('base64url');
+const base = '/api/game/public-campaign/v1', cases: unknown[] = [];
+const env = { MICROFIRE_PUBLIC_CAMPAIGN_ENABLED: '1', MICROFIRE_PUBLIC_CAMPAIGN_REVIEWED_PROTOCOL: 'public-campaign-v1', MICROFIRE_PUBLIC_CAMPAIGN_CSRF_KEY: secret(), MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY: secret(), MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID: randomUUID(), MICROFIRE_PUBLIC_CAMPAIGN_RUNTIME_ID: randomUUID() };
+const db = await testDatabase(), admin = new Pool({ ...db.options, user: 'microfire_test' }); admin.on('error', () => {});
+const server = await testServer(origin => createPublicCampaignHandler({ ...env, MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN: origin }, db.pool), true);
+const browsers: import('@playwright/test').Browser[] = [];
+try {
+  await admin.query(`CREATE FUNCTION review_fault() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'independent-review-fault'; END $$; CREATE TRIGGER review_insert_fault AFTER INSERT ON microfire_campaign_heads FOR EACH ROW EXECUTE FUNCTION review_fault()`);
+  const failed = await wire(server.origin, base + '/session', {});
+  assert.equal(failed.status, 503); assert.equal(failed.headers['set-cookie'], undefined);
+  assert(!JSON.stringify(failed.body).includes('independent-review-fault'));
+  const counts = (await db.pool.query('SELECT (SELECT count(*) FROM microfire_campaign_visitors)::int AS visitors,(SELECT count(*) FROM microfire_campaign_heads)::int AS heads')).rows[0];
+  assert.equal(counts.visitors, 0); assert.equal(counts.heads, 0);
+  await admin.query('DROP TRIGGER review_insert_fault ON microfire_campaign_heads');
+  cases.push({ id: 'second-write-fault-rolls-back-bootstrap', status: 503, visitors: 0, heads: 0, noSuccessCookie: true });
+  const invalid = await wire(server.origin, base + '/session', {}, { cookie: '__Host-microfire_campaign_session=' + secret() });
+  assert.equal(invalid.status, 403); assert(invalid.headers['set-cookie'][0].includes('Max-Age=0'));
+  cases.push({ id: 'attacker-selected-session-not-adopted', status: 403 });
+  for (let i = 0; i < 2; i++) browsers.push(await chromium.launch({ headless: true }));
+  const contexts = await Promise.all(browsers.map(b => b.newContext({ ignoreHTTPSErrors: true })));
+  const pages = await Promise.all(contexts.map(c => c.newPage()));
+  await Promise.all(pages.map(p => p.goto(server.origin)));
+  const bootstrap = async (p: typeof pages[number]) => p.evaluate(async base => {
+    const r = await fetch(base + '/session', { method: 'POST', headers: { 'content-type': 'application/json', 'x-microfire-campaign': '1' }, body: '{}' });
+    return { status: r.status, body: await r.json() };
+  }, base);
+  const visitor = await Promise.all(pages.map(bootstrap));
+  assert(visitor.every(v => v.status === 200));
+  const a = visitor[0].body.data, b = visitor[1].body.data;
+  assert.notEqual(a.view.sessionId, b.view.sessionId);
+  assert.equal(await pages[0].evaluate(() => document.cookie), '');
+  const cookies = await contexts[0].cookies(), c = cookies.find(c => c.name === '__Host-microfire_campaign_session')!;
+  assert(c.secure && c.httpOnly && c.sameSite === 'Strict' && c.path === '/');
+  await pages[0].evaluate(() => { document.cookie = '__Host-microfire_campaign_session=forged; Secure; Path=/; SameSite=Strict'; });
+  assert.equal((await contexts[0].cookies()).find(c => c.name === '__Host-microfire_campaign_session')!.value, c.value);
+  const action = { type: 'CORE', action: { type: 'INSPECT_EVIDENCE', experimentId: 'bass2-b20' } };
+  const intent = { runtimeId: a.view.runtimeId, sessionId: a.view.sessionId, expectedRevision: a.view.revision, action };
+  const command = { ...intent, commandId: await campaignIdentity(intent) };
+  const send = (page: typeof pages[number], csrf: string) => page.evaluate(async ({ base, command, csrf }) => {
+    const r = await fetch(base + '/action', { method: 'POST', headers: { 'content-type': 'application/json', 'x-microfire-campaign': '1', 'x-microfire-csrf': csrf }, body: JSON.stringify(command) });
+    return { status: r.status, body: await r.json() };
+  }, { base, command, csrf });
+  assert.equal((await send(pages[1], b.csrfToken)).status, 404);
+  assert.equal((await send(pages[0], secret())).status, 403);
+  await admin.query('CREATE TRIGGER review_update_fault AFTER UPDATE ON microfire_campaign_heads FOR EACH ROW EXECUTE FUNCTION review_fault()');
+  assert.equal((await send(pages[0], a.csrfToken)).status, 503);
+  const row = (await db.pool.query('SELECT revision,record,last_command,last_response FROM microfire_campaign_heads WHERE owner_hash=(SELECT owner_hash FROM microfire_campaign_visitors WHERE session_id=$1)', [a.view.sessionId])).rows[0];
+  assert.equal(row.revision, 0); assert.equal(row.record.events.length, 0); assert.equal(row.last_command, null); assert.equal(row.last_response, null);
+  await admin.query('DROP TRIGGER review_update_fault ON microfire_campaign_heads; DROP FUNCTION review_fault()');
+  const accepted = await send(pages[0], a.csrfToken); assert.equal(accepted.status, 200); assert(accepted.body.data.ok);
+  assert.deepEqual((await send(pages[0], a.csrfToken)).body, accepted.body);
+  cases.push({ id: 'two-independent-browser-processes', foreignCase: 404, wrongCsrf: 403, httpOnlyCookieOverwriteRefused: true });
+  cases.push({ id: 'failed-head-write-atomic-and-exact-retry', failedStatus: 503, preFailureRevision: 0, acceptedRevision: accepted.body.data.view.revision, identicalRetry: true });
+  for (const ddl of ['CREATE TABLE review_forbidden(id int)', 'ALTER TABLE microfire_campaign_heads ADD COLUMN review_forbidden int', 'DROP TABLE microfire_campaign_heads']) await assert.rejects(db.pool.query(ddl), /permission denied|must be owner/);
+  cases.push({ id: 'runtime-role-denied-create-alter-drop', passed: true });
+} finally { await Promise.all(browsers.map(b => b.close())); await server.close(); await admin.end(); await db.close(); }
+// Independently demonstrate the local restart limitation without changing the reviewed authority.
+const localEnv = { MICROFIRE_LOCAL_CAMPAIGN: '1', MICROFIRE_CAMPAIGN_ORIGIN: 'http://127.0.0.1:3495', MICROFIRE_CAMPAIGN_ACCESS_TOKEN: secret(), MICROFIRE_CAMPAIGN_SIGNING_KEY: secret(), MICROFIRE_CAMPAIGN_REALM_ID: randomUUID(), MICROFIRE_CAMPAIGN_KEY_ID: 'independent-review' };
+const config = campaignConfig(localEnv)!;
+function session() {
+ const authority = new CampaignAuthority(config), service = new CampaignService(authority);
+ const authRequest = new Request(config.origin + '/api/game/campaign/v1/authorize', { method: 'POST', headers: { host: new URL(config.origin).host, origin: config.origin, 'x-microfire-campaign': '1' } });
+ const grant = authority.authorize(authRequest, localEnv.MICROFIRE_CAMPAIGN_ACCESS_TOKEN);
+ const request = new Request(authRequest, { headers: { ...Object.fromEntries(authRequest.headers), cookie: grant.cookie!.split(';')[0], 'x-microfire-campaign-csrf': grant.csrfToken } });
+ return { authority, service, request };
+}
+const first = session(), start = first.service.start(first.request, randomUUID());
+const intent = { runtimeId: first.authority.runtimeId, sessionId: start.sessionId, expectedRevision: 0, action: { type: 'CORE', action: { type: 'INSPECT_EVIDENCE', experimentId: 'bass2-b20' } } };
+const updated = await first.service.command(first.request, { ...intent, commandId: await campaignIdentity(intent) }); assert(updated.ok);
+assert.throws(() => first.service.resume(first.request, start.checkpoint), (e: unknown) => e instanceof Error && 'status' in e && e.status === 409);
+const restarted = session(), restored = restarted.service.resume(restarted.request, start.checkpoint); assert.equal(restored.revision, 0);
+cases.push({ id: 'local-live-rollback-blocked-restart-rollback-confirmed', latestRevision: updated.snapshot.revision, afterRestartRevision: restored.revision });
+console.log(JSON.stringify({ reviewedCommit: 'faecf92b18528a18486d2106c050130e95e4bc0c', cases, hostingProviderTests: 'not-run-owner-directed-blocked' }, null, 2));

@@ -1,0 +1,14 @@
+{
+  "reviewedCommit": "faecf92b18528a18486d2106c050130e95e4bc0c",
+  "baseline": "d324ff06d2f9959041d0f01999ba1d48fe184276",
+  "clean": true,
+  "protectedTreeDiffEmpty": true,
+  "dataDiffOnlyUnappliedMigration": true,
+  "sha256": {
+    "data/fixtures/catalog.json": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+    "data/quarantine/legacy-ledger.json": "a2c0136d9fc8050671e14f081f75426b42bce9913b3a19a4e0ea988e9496d637",
+    "apps/web/lib/game-preview-security.ts": "230bc136d9310286d85320ad0501dacedeaa204b7f897a4ca8611ebc681f5313",
+    "apps/web/lib/review-policy.ts": "bffc0d2a3b8dd8818d2b666492f4450412df1bd3e4a67f1d6831519a4fe965b3",
+    "apps/web/lib/api.ts": "9a726de718b6534744008b26236064836ab5895383734b4a2dea4c61bbb41617"
+  }
+}
