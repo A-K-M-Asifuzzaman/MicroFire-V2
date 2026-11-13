@@ -29,6 +29,17 @@ it('has no memory fallback when the approved deployment lacks its private databa
   expect(response.status).toBe(503); expect(attachDatabasePool).not.toHaveBeenCalled();
   expect((await response.json()).error.message).toBe('Campaign storage or platform context is unavailable.');
 });
+it('bounds opt-in boundary diagnostics to one boolean-only record per adapter', async () => {
+  vi.clearAllMocks(); vi.mocked(ipAddress).mockReturnValue('192.0.2.1');
+  const log = vi.spyOn(console, 'info').mockImplementation(() => {});
+  try {
+    const handler = createVercelPublicCampaignHandler({ ...env(), MICROFIRE_PUBLIC_CAMPAIGN_DIAGNOSTICS: '1' });
+    await handler(request()); await handler(request());
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(log.mock.calls[0]![0]).toBe('campaign-boundary-check');
+    expect(Object.values(log.mock.calls[0]![1]).every(value => typeof value === 'boolean')).toBe(true);
+  } finally { log.mockRestore(); }
+});
 it('mounts only the public adapter and fails closed for GET, POST, HEAD and OPTIONS by default', async () => {
   vi.clearAllMocks();
   vi.stubEnv('MICROFIRE_PUBLIC_CAMPAIGN_ENABLED', '0');
