@@ -49,7 +49,8 @@ export function SceneViewport({ layout, spots, next, open, onToggle, loading }: 
     void import('./station-scene').then((m) => {
       if (!live || !canvas.current) return;
       const props: Prop[] = ({ station: m.STATION_PROPS, detective: m.DETECTIVE_PROPS, trial: m.TRIAL_PROPS, habitat: m.HABITAT_PROPS })[layout];
-      scene = m.mountStationScene(canvas.current, { props, reducedMotion, onReady: () => live && setReady(true),
+      const environment = ({ station: 'station', detective: 'lab', trial: 'court', habitat: 'lunar' } as const)[layout];
+      scene = m.mountStationScene(canvas.current, { props, environment, reducedMotion, onReady: () => live && setReady(true),
         onPositions: (p) => { if (live) setPos((old) => Object.keys(p).every((k) => Math.abs((old[k]?.x ?? -1) - (p[k]?.x ?? -1)) < 0.5 && Math.abs((old[k]?.y ?? -1) - (p[k]?.y ?? -1)) < 0.5) ? old : p as typeof old); } });
       if (!scene) setFailed(true); sceneRef.current = scene;
     }, () => live && setFailed(true));
@@ -57,13 +58,13 @@ export function SceneViewport({ layout, spots, next, open, onToggle, loading }: 
   }, [flat, layout]);
   useEffect(() => { sceneRef.current?.setActive(next ?? null); }, [next, ready]);
   const twoD = flat || failed;
-  return <div className="mf-viewport" data-mode={twoD ? '2d' : '3d'} data-ready={ready}>
+  return <div className="mf-viewport" data-layout={layout} data-mode={twoD ? '2d' : '3d'} data-ready={ready}>
     {!twoD && <canvas ref={canvas} aria-hidden="true" />}
     {twoD && <p className="mf-fallback-note">{flat ? 'The 3D room is not available on this device. Every station still works below.' : 'The 3D room could not start. Every station still works below.'}</p>}
     {!twoD && !ready && <p className="mf-loading" role="status">{loading}</p>}
     <div className={twoD ? 'mf-plan' : 'mf-spots'} role="group" aria-label="Station hotspots">{spots.map((sp) => <button key={sp.id} ref={(el) => { btn.current[sp.id] = el; }} type="button" className="mf-spot" data-next={sp.id === next} aria-expanded={open === sp.id} aria-controls="mf-panel"
       style={!twoD && pos[sp.id] ? { left: pos[sp.id]!.x, top: pos[sp.id]!.y, visibility: pos[sp.id]!.visible ? undefined : 'hidden' } : undefined}
       onClick={() => onToggle(sp.id)}><span className="mf-spot-dot" aria-hidden="true" /><b>{sp.label}</b><span>{sp.what}</span></button>)}</div>
-    <span className="mf-tag">Illustration · fixture states</span>
+    <span className="mf-tag">Original 3D illustration · not NASA imagery</span>
   </div>;
 }

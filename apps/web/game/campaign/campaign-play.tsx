@@ -10,6 +10,7 @@ import { LunarHabitat, type RecordedCondition } from '../missions/lunar-habitat'
 import { StationArrival, type Claim } from '../missions/station-arrival';
 import { PassportList } from '../missions/mission-kit';
 import { BassTraining } from './bass-training';
+import type { PartSpec } from '../contract';
 import { createPublicController, type PublicController } from './public-controller';
 import { createPublicTransport } from './public-transport';
 import { MissionGuide } from './mission-guide';
@@ -19,7 +20,7 @@ import './campaign.css';
 
 const time = (iso: string) => new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
-export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controller: injected }: { claim: Claim; sourceTitle: string; evidence: EvidenceOption[]; recorded: RecordedCondition[]; controller?: PublicController }) {
+export function CampaignPlay({ claim, sourceTitle, evidence, recorded, parts, controller: injected }: { claim: Claim; sourceTitle: string; evidence: EvidenceOption[]; recorded: RecordedCondition[]; parts?: PartSpec[] | undefined; controller?: PublicController }) {
   const controller = useMemo(() => injected ?? createPublicController(createPublicTransport()), [injected]);
   const s = useSyncExternalStore(controller.subscribe, controller.get, controller.get);
   const [confirmRestart, setConfirmRestart] = useState(false), [waitS, setWaitS] = useState(0);
@@ -76,7 +77,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controlle
             {refusal && <p className="mf-verdict" data-kind="refused" role="status"><b>Not accepted.</b> {refusal.message}</p>}</div>
         : <>
           {mission === 'station-arrival' && <StationArrival snapshot={snap} claim={claim} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
-          {mission === 'bass-assembly' && <BassTraining view={view} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
+          {mission === 'bass-assembly' && <BassTraining view={view} parts={parts} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'flame-detective' && <FlameDetective snapshot={snap} claim={claim} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'claim-trial' && <ClaimTrial snapshot={snap} statements={view.trialStatements} evidence={evidence} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'lunar-habitat' && <LunarHabitat snapshot={snap} claim={claim} recorded={recorded} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}

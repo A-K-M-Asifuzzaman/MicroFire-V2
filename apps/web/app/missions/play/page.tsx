@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { catalog } from '@microfire/science';
 import { value } from '../../../components/page-kit';
 import { CampaignPlay } from '../../../game/campaign/campaign-play';
+import { partSpecs } from '../../../game/contract/parts';
 
 // Public visitor campaign UI. 404 unless the same reviewed-protocol opt-in as the public campaign API is set at
 // request time. The API additionally requires validated origin, credentials and durable PostgreSQL.
@@ -19,5 +20,5 @@ export default function Page() {
     ...(thick.status === 'known' ? [{ id: 'thickness', label: 'B20 sample thickness (recorded condition)', citation: thick.citation }] : []),
     ...(oxy.status === 'known' ? [{ id: 'oxygen', label: 'B20 calibrated oxygen (recorded condition)', citation: oxy.citation }] : [])];
   const recorded = (['gravity', 'oxygenPct', 'pressureKpa', 'flowCmS', 'material'] as const).map((k) => ({ label: ({ gravity: 'Gravity', oxygenPct: 'Oxygen', pressureKpa: 'Pressure', flowCmS: 'Airflow', material: 'Material' })[k], value: value(e, k) ?? 'Not recorded' }));
-  return <CampaignPlay claim={{ id: c.id, text: c.text, citations: c.citations }} sourceTitle={source.title} evidence={evidence} recorded={recorded} />;
+  return <CampaignPlay claim={{ id: c.id, text: c.text, citations: c.citations }} sourceTitle={source.title} evidence={evidence} recorded={recorded} parts={partSpecs()} />;
 }

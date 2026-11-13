@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { FaultCodeSchema, equipmentDefinitions, type CampaignAction } from '@microfire/shared';
 import { Objectives, PassportList, PixLine, Verdict, cite, emitter, type Feedback, type Objective, type Refusal } from '../missions/mission-kit';
 import type { PublicView } from './public-transport';
+import type { PartSpec } from '../contract';
+import { CampaignBench } from './campaign-bench';
 
 type Game = Extract<Extract<CampaignAction, { type: 'TRAINING' }>['action'], { type: 'GAME' }>['action'];
 const game = (action: Game): CampaignAction => ({ type: 'TRAINING', action: { type: 'GAME', action } });
@@ -18,10 +20,13 @@ const STEP: Record<string, [string, number]> = {
   'b20-inspection-required': ['Open the historical B20 result. The training rig does not measure it.', 5], 'passport-review': ['Review your Passport and complete the mission.', 6], complete: ['Training complete.', 7]
 };
 
-export function BassTraining({ view, sourceTitle, feedback, refusal, onIntent }: { view: PublicView; sourceTitle: string; feedback: Feedback; refusal: Refusal; onIntent: (a: CampaignAction) => void }) {
+export function BassTraining({ view, parts, sourceTitle, feedback, refusal, onIntent }: { view: PublicView; parts?: PartSpec[] | undefined; sourceTitle: string; feedback: Feedback; refusal: Refusal; onIntent: (a: CampaignAction) => void }) {
   const emit = emitter(onIntent), step = view.trainingStep, at = STEP[step]?.[1] ?? 0, d = view.diagnostic;
   const [mount, setMount] = useState<Record<string, string>>({}), [turn, setTurn] = useState<Record<string, 'correct' | 'reversed'>>({});
   const [dx, setDx] = useState<{ partId: string; faultCode: string }>({ partId: '', faultCode: '' });
+  const [selected, setSelected] = useState<string | null>(null);
+  const pickPart = (id: string) => { setSelected(id); document.querySelector(`tr[data-part="${id}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
+  const install = (partId: string, anchorId: string) => { setMount((m) => ({ ...m, [partId]: anchorId })); emit(game({ type: 'INSTALL_PART', partId: partId as 'fan', anchorId: anchorId as 'duct-inlet', orientation: turn[partId] ?? 'correct' })); };
   const objectives: Objective[] = ['Assemble the apparatus', 'Run the Training check and diagnose', 'Repair the fault', 'Qualify the training rig', 'Open the B20 result', 'Complete the mission']
     .map((label, i) => ({ id: String(i), label, done: view.completedMissions.includes('bass-assembly') || at > i + 1 }));
   const bench = ['assembly', 'diagnostic-required', 'repair-required', 'qualification-required'].includes(step);
@@ -32,17 +37,19 @@ export function BassTraining({ view, sourceTitle, feedback, refusal, onIntent }:
       <Verdict feedback={feedback} refusal={refusal} sourceTitle={sourceTitle} />
       <div className="mf-panel" aria-live="polite">
         {step === 'source-orientation' && <button type="button" className="btn btn-primary" onClick={() => emit(game({ type: 'START_MISSION', missionId: 'bass-assembly' }))}>Enter the training bay</button>}
+        {parts && step !== 'source-orientation' && <CampaignBench view={view} parts={parts} selected={selected} chosenMount={mount} orientation={(selected && turn[selected]) || 'correct'}
+          onSelectPart={pickPart} onSelectAnchor={(a) => { if (selected && !(view.installedPartIds as readonly string[]).includes(selected)) install(selected, a); }} onDrop={(id, a) => { if (!(view.installedPartIds as readonly string[]).includes(id)) install(id, a); }} />}
         {bench && <table className="mf-bench"><caption>Apparatus parts</caption><thead><tr><th scope="col">Part</th><th scope="col">Mount</th><th scope="col">Orientation</th><th scope="col">Status</th></tr></thead>
           <tbody>{equipmentDefinitions.map((p) => {
             const fitted = view.installedPartIds.includes(p.id);
-            return <tr key={p.id} data-part={p.id} data-installed={fitted}>
-              <th scope="row">{p.label}</th>
+            return <tr key={p.id} data-part={p.id} data-installed={fitted} data-selected={selected === p.id} onFocus={() => setSelected(p.id)}>
+              <th scope="row"><button type="button" className="mf-partname" aria-pressed={selected === p.id} onClick={() => setSelected(p.id)}>{p.label}</button></th>
               <td><select aria-label={`Mount for ${p.label}`} value={mount[p.id] ?? ''} disabled={fitted} onChange={(e) => setMount({ ...mount, [p.id]: e.target.value })}>
                 <option value="">Choose a mount…</option>{ANCHORS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></td>
               <td><select aria-label={`Orientation for ${p.label}`} value={turn[p.id] ?? 'correct'} disabled={fitted} onChange={(e) => setTurn({ ...turn, [p.id]: e.target.value as 'correct' })}>
                 <option value="correct">Standard orientation</option><option value="reversed">Rotated 180°</option></select></td>
               <td>{fitted ? <button type="button" className="btn" onClick={() => emit(game({ type: 'REMOVE_PART', partId: p.id }))}>Remove</button>
-                : <button type="button" className="btn btn-primary" disabled={!mount[p.id]} onClick={() => emit(game({ type: 'INSTALL_PART', partId: p.id, anchorId: mount[p.id]!, orientation: turn[p.id] ?? 'correct' }))}>Fit</button>}</td>
+                : <button type="button" className="btn btn-primary" disabled={!mount[p.id]} onClick={() => install(p.id, mount[p.id]!)}>Fit</button>}</td>
             </tr>;
           })}</tbody></table>}
         {['diagnostic-required', 'diagnosis-required', 'repair-required', 'qualification-required'].includes(step) &&
