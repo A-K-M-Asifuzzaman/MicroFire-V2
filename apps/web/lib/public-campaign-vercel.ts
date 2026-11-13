@@ -5,7 +5,7 @@ import { HttpFailureSchema } from '@microfire/shared';
 import { publicCampaignConfig, publicCampaignPool, createPublicCampaignHandler } from './public-campaign';
 import { CAMPAIGN_HEADERS } from './campaign-http';
 
-/** Unmounted candidate. Call once at module scope only after exact-commit approval of a Node.js Vercel route. */
+/** Hosting adapter; activation requires the reviewed-protocol opt-in and private database configuration. */
 export function createVercelPublicCampaignHandler(env: NodeJS.ProcessEnv) {
   let handler: ReturnType<typeof createPublicCampaignHandler> | undefined;
   return async (request: Request) => {

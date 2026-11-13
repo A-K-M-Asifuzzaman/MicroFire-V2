@@ -106,6 +106,8 @@ export class PublicCampaignService {
       activeMission: s.activeMission, completedMissions: s.completedMissions, trainingStep: trainingProgress(view).step,
       installedPartIds: s.setup.installedParts.map(p => p.partId), diagnostic: view.training.diagnosticRevision !== null ? trainingDiagnostic(view) : null,
       sourceReviewed: view.sourceReviewed, selectedExperimentId: view.selectedExperimentId, predictionLocked: s.predictions.length > 0, passport: s.passport,
+      inspectedExperimentIds: s.inspectedExperimentIds, prediction: s.predictions.at(-1)?.prediction ?? null,
+      explanation: view.explanation, appraisals: view.appraisals, habitat: view.habitat, decision: s.decision?.verdict ?? null, proposalCount: s.proposals.length,
       trialStatements: s.activeMission === 'claim-trial' ? claimTrialStatements.map(({ id, text, origin }) => ({ id, text, origin })) : [],
       scope: 'educational-progress-not-scientific-certification' });
   }

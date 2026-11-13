@@ -39,7 +39,7 @@ test('API contracts, errors and no-service fallback', async ({ request }) => {
   expect(ask.status()).toBe(200);
   expect((await ask.json()).data).toMatchObject({ abstained: true, code: 'unsupported-intent' });
   expect((await request.post('/api/constructor', { data: {} })).status()).toBe(404);
-  // Public campaign stays off by default: no play page, and neither campaign namespace is mounted in this build.
+  // Public campaign stays off by default; the mounted public adapter fails closed and loopback remains unmounted.
   expect((await request.get('/missions/play')).status()).toBe(404);
   const h = { 'X-MicroFire-Campaign': '1', 'Content-Type': 'application/json' }, uuid = '00000000-0000-4000-8000-000000000000';
   const routes: [string, string][] = [

@@ -29,3 +29,18 @@ it('has no memory fallback when the approved deployment lacks its private databa
   expect(response.status).toBe(503); expect(attachDatabasePool).not.toHaveBeenCalled();
   expect((await response.json()).error.message).toBe('Campaign storage or platform context is unavailable.');
 });
+it('mounts only the public adapter and fails closed for GET, POST, HEAD and OPTIONS by default', async () => {
+  vi.clearAllMocks();
+  vi.stubEnv('MICROFIRE_PUBLIC_CAMPAIGN_ENABLED', '0');
+  try {
+    const route = await import('../../apps/web/app/api/game/public-campaign/v1/[...action]/route');
+    expect(route.runtime).toBe('nodejs'); expect(route.dynamic).toBe('force-dynamic');
+    for (const method of ['GET', 'POST', 'HEAD', 'OPTIONS'] as const) {
+      const response = await route[method](new Request(request(), { method }));
+      expect(response.status).toBe(404);
+      expect(response.headers.get('set-cookie')).toBeNull();
+      expect(response.headers.get('access-control-allow-origin')).toBeNull();
+    }
+    expect(ipAddress).not.toHaveBeenCalled(); expect(attachDatabasePool).not.toHaveBeenCalled();
+  } finally { vi.unstubAllEnvs(); }
+});

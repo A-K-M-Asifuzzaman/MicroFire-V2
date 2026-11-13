@@ -1,6 +1,6 @@
 // Real Chromium on one HTTPS origin: pages come from the production Next build (`next start`, campaign UI opted in),
-// /api/game/public-campaign/v1/* goes to Codex's unmounted public handler with a disposable PostgreSQL. No Next API
-// route is mounted. Requires `npm run build` first.
+// /api/game/public-campaign/v1/* goes to the real public handler with disposable PostgreSQL through a test TLS gateway.
+// The mounted Next hosting adapter must remain disabled outside Vercel. Requires `npm run build` first.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -94,9 +94,9 @@ async function stationArrival(page: Page, touch: boolean, afterInspect?: () => P
 
 test('public campaign UI in Chromium: five missions end to end, reload recovery, stale tab, outage, expiry; desktop and mobile', { timeout: 300000 }, async () => {
   const s = await stack();
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true }).catch(async (error) => { await s.close(); throw error; });
   try {
-    // The UI opt-in does not mount an API: the Next server itself still answers 404 for both campaign namespaces.
+    // UI flags alone cannot activate the hosting adapter without Vercel and full validated configuration.
     for (const p of ['/api/game/public-campaign/v1/session', '/api/game/campaign/v1/capability']) {
       const r = await fetch(`http://127.0.0.1:${s.nextPort}${p}`, { method: 'POST', headers: { 'X-MicroFire-Campaign': '1', 'Content-Type': 'application/json' }, body: '{}' });
       assert.equal(r.status, 404, `Next must not serve ${p}`);
@@ -125,6 +125,7 @@ test('public campaign UI in Chromium: five missions end to end, reload recovery,
       // Reload mid-mission: the same durable case comes back (cookie + server), CSRF re-issued in memory.
       await page.reload(); await ready(page);
       assert.equal(await rev(page), 1); assert.equal(await sessionId(page), id);
+      assert.equal(await page.getByRole('region', { name: 'Station Arrival objectives' }).getByText('Open the source record at the research terminal').getAttribute('data-done'), 'true');
       // A second tab of the same visitor advances the case; the first tab's next intent is reconciled, not replayed.
       const tab2 = await desk.newPage(); await tab2.goto(s.origin + '/missions/play'); await ready(tab2);
       // (The same intent at the same revision would carry the same campaignIdentity and simply return the stored result.)
@@ -177,12 +178,16 @@ test('public campaign UI in Chromium: five missions end to end, reload recovery,
     await accepted(page, 'Start Flame Detective');
     await spot(page, /Test selector/); await page.getByLabel('Oxygen (vol%)').fill('17.4'); await accepted(page, 'Select this test');
     await spot(page, /Prediction panel/); await page.getByLabel('What do you predict happened to the sample?').fill('Some of the sample may remain.'); await accepted(page, 'Lock my prediction');
+    await page.reload(); await ready(page); await spot(page, /Prediction panel/);
+    assert.match((await page.locator('#mf-panel').textContent())!, /Locked prediction: “Some of the sample may remain\.”/);
     await spot(page, /Observation window/); await accepted(page, 'Reveal the documented result');
     await spot(page, /Analysis bench/);
     await page.getByLabel('The source documents this observation').check();
     for (const l of ['One run cannot show what caused the outcome', 'Pressure for this run is unknown', 'This is not evidence about a lunar habitat']) await page.getByLabel(l).check();
     await accepted(page, 'Submit my explanation');
     assert.equal(await page.locator('.mf-verdict[data-kind="correct"]').count(), 1);
+    await page.reload(); await ready(page);
+    assert.equal(await page.getByRole('region', { name: 'Flame Detective objectives' }).getByText('Explain it with the source and its limits').getAttribute('data-done'), 'true');
     await spot(page, /Case report/); await accepted(page, 'Complete Flame Detective');
 
     // Mission 04: statements come from the server DTO; the test (not the browser) knows the rubric.
@@ -203,6 +208,8 @@ test('public campaign UI in Chromium: five missions end to end, reload recovery,
       await accepted(page, 'Submit appraisal');
       assert.equal(await page.locator('.mf-verdict[data-kind="correct"]').count(), 1, `appraisal ${st.id}`);
     }
+    await page.reload(); await ready(page); await spot(page, /Statement board/);
+    assert.equal(await page.locator('.mf-statements li[data-status="correct"]').count(), 4, 'reload restores every appraisal');
     await spot(page, /Case lectern/); await accepted(page, 'File the case report');
     await shot(page, 'desktop-05-m4-done');
 
@@ -215,7 +222,14 @@ test('public campaign UI in Chromium: five missions end to end, reload recovery,
     await accepted(page, 'Submit assessment');
     await spot(page, /Decision station/); await page.getByRole('group', { name: 'Provisional decision' }).getByLabel('Insufficient evidence to decide').check(); await accepted(page, 'Record decision');
     await spot(page, /Airlock log/); await page.getByLabel('Proposed next test').fill('Measure PMMA flame spread at lunar gravity and habitat pressure.'); await accepted(page, 'Propose this test');
-    await accepted(page, 'File the case report');
+    await page.reload(); await ready(page);
+    const habitatObjectives = page.getByRole('region', { name: 'Lunar Habitat objectives' });
+    for (const label of ['Assessment accepted: evidence, gaps and next measurements', 'Provisional decision recorded', 'Next test proposed']) {
+      assert.equal(await habitatObjectives.getByText(label).getAttribute('data-done'), 'true', `reload restores ${label}`);
+    }
+    await spot(page, /Decision station/);
+    assert.match((await page.locator('#mf-panel').textContent())!, /Recorded decision: Insufficient evidence to decide/);
+    await spot(page, /Airlock log/); await accepted(page, 'File the case report');
     await page.getByRole('region', { name: 'Campaign complete' }).waitFor();
     assert.equal(await page.locator('.mf-rail li[data-state="done"]').count(), 5);
     assert.equal(await page.getByRole('region', { name: 'Evidence Passport' }).locator('li[data-scenario]').count(), 5);

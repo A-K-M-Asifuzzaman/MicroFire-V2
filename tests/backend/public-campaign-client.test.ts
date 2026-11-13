@@ -8,6 +8,7 @@ import type { CampaignAction } from '@microfire/shared';
 import { createPublicCampaignHandler } from '../../apps/web/lib/public-campaign';
 import { createPublicTransport, type Fetch } from '../../apps/web/game/campaign/public-transport';
 import { createPublicController, type PublicController } from '../../apps/web/game/campaign/public-controller';
+import { sceneSnapshot } from '../../apps/web/game/campaign/view-adapter';
 import { testDatabase } from './campaign-security-harness';
 import { review, core, detective, trial, habitat } from '../unit/campaign-helpers';
 import { episodeActions } from '../unit/training-helpers';
@@ -51,10 +52,11 @@ test('visitor client: full five-mission journey, reload recovery, retries, 409, 
     assert.equal(c1.get().phase, 'ready'); assert(a.hasCookie());
     const first = c1.get().view!; assert.equal(first.revision, 0);
     await play(c1, { type: 'TRAINING', action: episodeActions[0]! });
-    assert.deepEqual(c1.get().accepted.inspected, ['bass2-b20']);
+    assert.deepEqual(c1.get().view!.inspectedExperimentIds, ['bass2-b20']);
     const reloaded = a.controller(); await reloaded.boot();
     assert.equal(reloaded.get().view!.sessionId, first.sessionId); assert.equal(reloaded.get().view!.revision, 1);
-    assert.deepEqual(reloaded.get().accepted.inspected, [], 'tab memory is not persisted across reloads');
+    assert.deepEqual(reloaded.get().view!.inspectedExperimentIds, ['bass2-b20']);
+    assert.deepEqual(sceneSnapshot(reloaded.get().view!), sceneSnapshot(c1.get().view!), 'reload restores the server-held inspection');
 
     // A domain refusal returns the unchanged view; nothing is inferred locally.
     assert.equal(await reloaded.act(core({ type: 'COMPLETE_MISSION', missionId: 'lunar-habitat' })), true);
@@ -85,16 +87,36 @@ test('visitor client: full five-mission journey, reload recovery, retries, 409, 
     const rest: CampaignAction[] = [...episodeActions.slice(3).map((action) => ({ type: 'TRAINING' as const, action })), ...detective, ...trial,
       core({ type: 'START_MISSION', missionId: 'lunar-habitat' }), habitat, core({ type: 'RECORD_DECISION', verdict: 'insufficient-evidence' }),
       core({ type: 'PROPOSE_NEXT_TEST', question: 'Measure lunar gravity and pressure.', limitations: ['B20 is not lunar evidence.'] }), core({ type: 'COMPLETE_MISSION', missionId: 'lunar-habitat' })];
-    for (const action of rest) await play(c1, action);
+    for (const action of rest) {
+      await play(c1, action);
+      if (['EXPLAIN_OBSERVATION', 'APPRAISE_CLAIM', 'ASSESS_HABITAT'].includes(action.type) ||
+          (action.type === 'CORE' && ['PREDICT_OUTCOME', 'RECORD_DECISION', 'PROPOSE_NEXT_TEST'].includes(action.action.type))) {
+        const recovered = a.controller(); await recovered.boot();
+        assert.equal(recovered.get().phase, 'ready');
+        assert.deepEqual(sceneSnapshot(recovered.get().view!), sceneSnapshot(c1.get().view!), 'reload restores completed outcomes exactly');
+        assert.equal(recovered.get().last, null, 'latest-action feedback is not reconstructed from a local cache');
+      }
+    }
     const done = c1.get();
     assert.equal(done.view!.completedMissions.length, 5); assert.equal(done.view!.passport.entries.length, 5);
-    assert.equal(Object.keys(done.accepted.appraisals).length, 4); assert.equal(done.accepted.decision, 'insufficient-evidence');
+    assert.equal(Object.keys(done.view!.appraisals).length, 4); assert.equal(done.view!.decision, 'insufficient-evidence');
+    assert.equal(done.view!.prediction, 'The sample may not fully burn.');
+    assert.equal(done.view!.explanation?.correct, true); assert.equal(done.view!.habitat?.correct, true); assert.equal(done.view!.proposalCount, 1);
+    const snapshot = sceneSnapshot(done.view!);
+    assert.equal(snapshot.state.predictions[0]!.prediction, done.view!.prediction);
+    assert.deepEqual(snapshot.explanation, done.view!.explanation); assert.deepEqual(snapshot.appraisals, done.view!.appraisals);
+    assert.deepEqual(snapshot.habitat, done.view!.habitat); assert.equal(snapshot.state.proposals.length, 1);
+    // A stale controller adopts every durable outcome, and discards its obsolete domain-refusal display.
+    assert.equal(await reloaded.act(core({ type: 'START_MISSION', missionId: 'lunar-habitat' })), true);
+    assert.match(reloaded.get().notice!, /already moved on/); assert.equal(reloaded.get().last, null);
+    assert.deepEqual(sceneSnapshot(reloaded.get().view!), snapshot);
     const exported = await c1.exportPassport(); assert.equal(exported!.passport.entries.length, 5); assert.equal(exported!.sessionId, first.sessionId);
 
     // Database restart: the case survives; a reload recovers it.
     database.restart(); pool = new Pool(database.options); handler = createPublicCampaignHandler(env, pool);
     const afterRestart = a.controller(); await afterRestart.boot();
     assert.equal(afterRestart.get().view!.revision, done.view!.revision);
+    assert.deepEqual(sceneSnapshot(afterRestart.get().view!), snapshot, 'database restart preserves all scene outcomes');
 
     // Expiry: the server refuses and clears the cookie; the client asks for an explicit restart instead of minting silently.
     await database.pool.query("UPDATE microfire_campaign_visitors SET expires_at=clock_timestamp()-interval '1 second' WHERE session_id=$1", [first.sessionId]);

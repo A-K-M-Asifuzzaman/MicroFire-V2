@@ -5,7 +5,7 @@ import { value } from '../../../components/page-kit';
 import { CampaignPlay } from '../../../game/campaign/campaign-play';
 
 // Public visitor campaign UI. 404 unless the same reviewed-protocol opt-in as the public campaign API is set at
-// request time; this branch mounts no campaign API route, so enabling it alone cannot make missions playable.
+// request time. The API additionally requires validated origin, credentials and durable PostgreSQL.
 // Only citable source data is passed down: no rules, expected answers or training state.
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Missions', robots: { index: false, follow: false } };

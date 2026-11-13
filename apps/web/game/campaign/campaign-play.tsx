@@ -31,7 +31,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controlle
   const view = s.view, mission = view ? currentMission(view) : null;
   const last = s.last?.result;
   const feedback = last?.ok ? (last.feedback ?? null) : null, refusal = last && !last.ok ? { code: last.code, message: last.message } : null;
-  const snap = view ? sceneSnapshot(view, s.accepted) : null;
+  const snap = view ? sceneSnapshot(view) : null;
 
   const download = async () => {
     const data = await controller.exportPassport(); if (!data) return;
@@ -77,7 +77,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controlle
           {mission === 'claim-trial' && <ClaimTrial snapshot={snap} statements={view.trialStatements} evidence={evidence} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'lunar-habitat' && <LunarHabitat snapshot={snap} claim={claim} recorded={recorded} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
         </>}
-      <p className="mf-fine">Progress details marked in this tab (inspections, appraisals, decisions) are shown from the server&apos;s replies; after a reload only mission completion, Passport entries and the training step are re-read from the server.</p>
+      <p className="mf-fine">Your inspections, prediction, feedback, decisions and mission progress are saved on the server and restored when you reload this case.</p>
     </section>}
 
     {view && !mission && <section className="mf-done" aria-label="Campaign complete"><h2>All five missions complete</h2>

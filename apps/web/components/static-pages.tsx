@@ -89,20 +89,21 @@ function MissionArt({ id, glyph }: { id: string; glyph: React.ReactNode }) {
   </span>;
 }
 
-export function MissionsPage() {
+export function MissionsPage({ playable = false }: { playable?: boolean }) {
   const missions = missionDefinitions.map((m, i) => ({ ...m, n: i + 1, feature: feature(`/missions/${m.id}`)! }));
   return <div className="wrap page">
     <header className="page-head reveal">
-      <p className="eyebrow">Mission map · preview, none playable yet</p>
+      <p className="eyebrow">{playable ? 'Mission map · five-mission campaign' : 'Mission map · preview, none playable yet'}</p>
       <h1>Five places. One scientific mystery.</h1>
-      <p className="lede">An interactive research station is being built. Every decision will leave an evidence trail in your Passport.</p>
+      <p className="lede">{playable ? 'Explore the research station, follow the evidence and earn source-linked Passport entries. Progress is saved on the server for this browser.' : 'An interactive research station is being built. Every decision will leave an evidence trail in your Passport.'}</p>
+      {playable && <Link className="button" href="/missions/play">Enter or resume the campaign</Link>}
     </header>
-    <StatusBlock f={feature('/missions')!} />
-    <ol className="mission-route" aria-label="Mission map: five missions in order, none playable yet">{missions.map((m) => <li key={m.id}>
+    {!playable && <StatusBlock f={feature('/missions')!} />}
+    <ol className="mission-route" aria-label={playable ? 'Mission briefs: five missions in campaign order' : 'Mission map: five missions in order, none playable yet'}>{missions.map((m) => <li key={m.id}>
       <Link className="mission-card" href={`/missions/${m.id}`} data-mission={m.id}>
         <MissionArt id={m.id} glyph={briefs[m.id]!.glyph} />
         <span className="sticker-num" aria-hidden="true">{m.n}</span>
-        <span className="mission-card-state">Mission 0{m.n} · {featureLabels[m.feature.state]}</span>
+        <span className="mission-card-state">Mission 0{m.n} · {playable ? 'Mission brief' : featureLabels[m.feature.state]}</span>
         <b>{m.feature.title}</b>
         <span>{briefs[m.id]!.action}</span>
         {m.id === 'bass-assembly' && <em>3D bay tour open now</em>}
@@ -112,7 +113,7 @@ export function MissionsPage() {
     <div style={{ marginTop: 32 }}>
       <p className="eyebrow">Evidence Passport / persists between missions</p>
       <p className="path-steps">{['Explore', 'Assemble', 'Observe', 'Verify', 'Decide'].flatMap((s, i) => i ? [<span key={`a${i}`} aria-hidden="true">→</span>, <span key={s}>{s}</span>] : [<span key={s}>{s}</span>])}</p>
-      <p className="meta">No mission is playable yet. Mission rules exist and are tested. The BASS-II training bay is built and can be <Link href={BAY_TOUR}>toured now</Link>; its gameplay opens after server integration. <Link href="/passport">See how the Passport will work</Link>.</p>
+      {playable ? <p className="meta">Complete missions in order in the <Link href="/missions/play">campaign</Link>. Open your earned Passport there to review citations and export the case report. Clearing this browser’s session cookie loses access to its anonymous campaign.</p> : <p className="meta">No mission is playable yet. Mission rules exist and are tested. The BASS-II training bay is built and can be <Link href={BAY_TOUR}>toured now</Link>; its gameplay opens after server integration. <Link href="/passport">See how the Passport will work</Link>.</p>}
     </div>
   </div>;
 }

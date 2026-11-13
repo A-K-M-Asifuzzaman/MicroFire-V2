@@ -1,27 +1,16 @@
 // Visitor-side controller for public-campaign-v1. One write in flight; the CSRF proof lives only in this object's
 // memory; a reload bootstraps again and the server recovers the same durable case. Nothing here decides progression:
 // views, feedback and refusals are shown exactly as the server returned them.
-import type { CampaignAction, CampaignFeedbackSchema } from '@microfire/shared';
-import type { z } from 'zod';
+import type { CampaignAction } from '@microfire/shared';
 import { commandFor, type ActionResult, type PassportExport, type Problem, type PublicTransport, type PublicView, type Result } from './public-transport';
 
-type Feedback = z.infer<typeof CampaignFeedbackSchema>;
 export type Phase = 'booting' | 'ready' | 'sending' | 'expired' | 'missing' | 'disabled' | 'unavailable' | 'rate-limited';
-
-/**
- * Outcomes the server accepted in THIS tab that the public view does not project (it carries only mission
- * completion, Passport, source review, selection, prediction lock, training step/parts/diagnostic). Lost on reload by
- * design: they are display memory of server responses, never a substitute for the durable record.
- */
-export type Accepted = { inspected: string[]; prediction: string | null; explanation: Feedback | null; appraisals: Record<string, Feedback>;
-  habitat: Feedback | null; decision: string | null; proposals: number };
-const noneAccepted = (): Accepted => ({ inspected: [], prediction: null, explanation: null, appraisals: {}, habitat: null, decision: null, proposals: 0 });
 
 export type State = {
   phase: Phase; view: PublicView | null; expiresAt: string | null;
   /** The server's answer to the latest learner intent (accepted with feedback, or a domain refusal). */
   last: { action: CampaignAction; result: ActionResult } | null;
-  accepted: Accepted; notice: string | null; retryAt: number | null; canRetry: boolean;
+  notice: string | null; retryAt: number | null; canRetry: boolean;
 };
 
 const AUTO_RETRIES = 2;
@@ -29,15 +18,14 @@ const AUTO_RETRIES = 2;
 export function createPublicController(transport: PublicTransport, { sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms)), now = Date.now } = {}) {
   let csrf: string | null = null;
   let pending: { bytes: string; action: CampaignAction; expectedRevision: number } | null = null;
-  let state: State = { phase: 'booting', view: null, expiresAt: null, last: null, accepted: noneAccepted(), notice: null, retryAt: null, canRetry: false };
+  let state: State = { phase: 'booting', view: null, expiresAt: null, last: null, notice: null, retryAt: null, canRetry: false };
   const listeners = new Set<() => void>();
   const set = (patch: Partial<State>) => { state = { ...state, ...patch }; listeners.forEach((l) => l()); };
 
   function adopt(view: PublicView, notice: string | null = null) {
     const prev = state.view;
-    const sameCase = prev?.sessionId === view.sessionId;
     if (prev && prev.runtimeId !== view.runtimeId) notice = 'MicroFire was updated since your last action. Your case was reloaded from the server; choose your next step again.';
-    set({ view, notice, accepted: sameCase ? state.accepted : noneAccepted(), last: sameCase ? state.last : null });
+    set({ view, notice, last: null });
   }
 
   function fail(problem: Problem, keepPending: boolean) {
@@ -84,22 +72,8 @@ export function createPublicController(transport: PublicTransport, { sleep = (ms
       return fail(r.problem, ['rate-limited', 'unavailable', 'ambiguous'].includes(r.problem.kind));
     }
     const { action } = pending; pending = null;
-    if (r.data.ok) record(action, r.data.feedback ?? null);
     adopt(r.data.view);
     set({ phase: 'ready', last: { action, result: r.data }, canRetry: false, retryAt: null });
-  }
-
-  function record(action: CampaignAction, feedback: Feedback | null) {
-    const a = { ...state.accepted, appraisals: { ...state.accepted.appraisals } };
-    const core = action.type === 'CORE' ? action.action : action.type === 'TRAINING' && action.action.type === 'GAME' ? action.action.action : null;
-    if (core?.type === 'INSPECT_EVIDENCE' && !a.inspected.includes(core.experimentId)) a.inspected = [...a.inspected, core.experimentId];
-    if (core?.type === 'PREDICT_OUTCOME') a.prediction = core.prediction;
-    if (core?.type === 'RECORD_DECISION') a.decision = core.verdict;
-    if (core?.type === 'PROPOSE_NEXT_TEST') a.proposals += 1;
-    if (action.type === 'EXPLAIN_OBSERVATION' && feedback) a.explanation = feedback;
-    if (action.type === 'APPRAISE_CLAIM' && feedback) a.appraisals[action.statementId] = feedback;
-    if (action.type === 'ASSESS_HABITAT' && feedback) a.habitat = feedback;
-    state = { ...state, accepted: a };
   }
 
   return {
@@ -125,7 +99,7 @@ export function createPublicController(transport: PublicTransport, { sleep = (ms
     async restart() {
       if (csrf) { const r = await transport.revoke(csrf); if (!r.ok && r.problem.kind !== 'expired') return fail(r.problem, false); }
       csrf = null; pending = null;
-      state = { ...state, view: null, last: null, accepted: noneAccepted() };
+      state = { ...state, view: null, last: null };
       return boot();
     },
     async exportPassport(): Promise<PassportExport | null> {

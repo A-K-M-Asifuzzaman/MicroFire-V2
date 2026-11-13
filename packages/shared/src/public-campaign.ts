@@ -12,6 +12,9 @@ export const PublicCampaignViewSchema = z.strictObject({
   revision: z.number().int().nonnegative().max(256), activeMission: MissionIdSchema.nullable(), completedMissions: z.array(MissionIdSchema).max(5),
   trainingStep: TextSchema, installedPartIds: z.array(PartIdSchema).max(10), diagnostic: DiagnosticResultSchema.nullable(),
   sourceReviewed: z.boolean(), selectedExperimentId: IdSchema.nullable(), predictionLocked: z.boolean(), passport: PassportSchema,
+  inspectedExperimentIds: z.array(IdSchema).max(100), prediction: TextSchema.nullable(),
+  explanation: CampaignFeedbackSchema.nullable(), appraisals: z.record(IdSchema, CampaignFeedbackSchema).refine(a => Object.keys(a).length <= 4),
+  habitat: CampaignFeedbackSchema.nullable(), decision: z.literal('insufficient-evidence').nullable(), proposalCount: z.number().int().min(0).max(20),
   trialStatements: z.array(z.strictObject({ id: IdSchema, text: TextSchema, origin: z.enum(['research', 'authored-tutorial', 'fictional-scenario']) })).max(4),
   scope: z.literal('educational-progress-not-scientific-certification')
 });
