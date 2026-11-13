@@ -121,3 +121,9 @@
 .mf-conditions li[data-known="false"] { background: #ffe1e2; color: #c1272d; }
 @media (max-width: 700px) { .mf-compare { grid-template-columns: 1fr; } }
 .mf-recorded-action { margin: 6px 0; padding: 8px 12px; border-left: 4px solid #2a2bd6; background: #eef1ff; border-radius: 8px; }
+/* Mission 05 · source-vs-scenario board: facts side by side; B20's unrecorded values are flagged, never filled. */
+.mf-gapboard { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; background: #0f1220; color: #e8ecf6; border-radius: 12px; overflow: hidden; }
+.mf-gapboard caption { text-align: left; font-weight: 700; padding: 0 0 6px; color: inherit; }
+.mf-gapboard th, .mf-gapboard td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #2a3150; }
+.mf-gapboard thead th { background: #1a1f36; font-size: 12px; }
+.mf-gapboard td[data-unknown="true"] { color: #ffb3b6; font-weight: 700; }

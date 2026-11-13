@@ -43,6 +43,12 @@ export function LunarHabitat({ snapshot, claim, recorded, sourceTitle, feedback,
   const [gaps, setGaps] = useState<Dim[]>([]), [nextM, setNextM] = useState<Dim[]>([]);
   const [why, setWhy] = useState(''), [decision, setDecision] = useState<string | null>(null), [question, setQuestion] = useState('');
   const toggle = (list: Dim[], set: (v: Dim[]) => void, v: Dim, on: boolean) => set(on ? [...list, v] : list.filter((x) => x !== v));
+  const b20 = (label: string) => recorded.find((r) => r.label === label)?.value ?? 'Not recorded';
+  const rows: [string, string, string][] = [['Gravity', b20('Gravity'), 'Lunar (about 0.17 g)'], ['Oxygen', b20('Oxygen'), sc.oxygen ? `${sc.oxygen} vol%` : '—'],
+    ['Pressure', b20('Pressure'), sc.pressure ? `${sc.pressure} kPa` : '—'], ['Airflow / ventilation', b20('Airflow'), sc.ventilation || '—'], ['Material', b20('Material'), sc.material || '—']];
+  const gapBoard = <table className="mf-gapboard"><caption>Source vs your scenario · side by side, not graded</caption>
+    <thead><tr><th scope="col">Condition</th><th scope="col">NASA B20 (orbit)</th><th scope="col">Your fictional habitat</th></tr></thead>
+    <tbody>{rows.map(([k, a, b]) => <tr key={k}><th scope="row">{k}</th><td data-unknown={a === 'Not recorded'}>{a === 'Not recorded' ? 'unknown: not reported for this run' : a}</td><td>{b}</td></tr>)}</tbody></table>;
   const num = (v: string) => (v.trim() === '' || !Number.isFinite(Number(v)) ? null : Number(v));
   return <div className="mf-mission" data-mission="lunar-habitat">
     <div className="mf-main">
@@ -66,7 +72,8 @@ export function LunarHabitat({ snapshot, claim, recorded, sourceTitle, feedback,
             <div className="field"><label htmlFor="lh-p">Pressure (kPa)</label><input id="lh-p" type="number" min={0} step="any" value={sc.pressure} onChange={(e) => setSc({ ...sc, pressure: e.target.value })} /></div>
             <div className="field"><label htmlFor="lh-v">Ventilation</label><input id="lh-v" type="text" maxLength={200} value={sc.ventilation} onChange={(e) => setSc({ ...sc, ventilation: e.target.value })} /></div>
             <div className="field"><label htmlFor="lh-m">Material</label><input id="lh-m" type="text" maxLength={200} value={sc.material} onChange={(e) => setSc({ ...sc, material: e.target.value })} /></div>
-          </div><p className="mf-fine">Gravity: lunar. These values are yours; they are compared with B20, not measured.</p></>}
+          </div><p className="mf-fine">Gravity: lunar. These values are yours; they are compared with B20, not measured.</p>{gapBoard}</>}
+        {open === 'assess' && gapBoard}
         {open === 'assess' && <form onSubmit={(e) => { e.preventDefault(); if (!verdict || nextM.length === 0) return;
           emit({ type: 'ASSESS_HABITAT', scenario: { gravity: 'lunar', oxygenPct: num(sc.oxygen), pressureKpa: num(sc.pressure) === 0 ? null : num(sc.pressure), ventilation: sc.ventilation.trim() || 'Not specified', material: sc.material.trim() || 'Not specified' },
             verdict: verdict as 'insufficient-evidence', citations: claim.citations, gaps, nextMeasurements: nextM, learnerExplanation: why.trim() || 'No written reasoning.' }); }}>
