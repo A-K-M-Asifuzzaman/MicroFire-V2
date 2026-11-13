@@ -9,16 +9,16 @@ import { campaignIdentity, partDefinitions, CampaignSnapshotSchema, type Campaig
 import { catalog } from '@microfire/science';
 import { claimTrialStatements } from '@microfire/game-core';
 import { CampaignService } from '../apps/web/lib/campaign-service';
-import { PreviewAuthority, previewConfig } from '../apps/web/lib/game-preview-security';
+import { CampaignAuthority, campaignConfig } from '../apps/web/lib/campaign-security';
 
 const out = 'docs/campaign/fixtures';
 const at = '2026-11-12T10:00:00.000Z';
-const config = previewConfig({ MICROFIRE_LOCAL_GAME_PREVIEW: '1', MICROFIRE_PREVIEW_ORIGIN: 'http://127.0.0.1:3290', MICROFIRE_PREVIEW_ACCESS_TOKEN: randomBytes(32).toString('base64url'),
-  MICROFIRE_PREVIEW_SIGNING_KEY: randomBytes(32).toString('base64url'), MICROFIRE_PREVIEW_KEY_ID: 'fixtures', MICROFIRE_PREVIEW_REALM_ID: randomUUID() })!;
-const authority = new PreviewAuthority(config, () => Date.parse(at));
-const anon = new Request(config.origin, { method: 'POST', headers: { host: config.host, origin: config.origin } });
-const cookie = authority.authorize(anon, config.accessToken.toString('base64url')).cookie!.split(';')[0]!;
-const request = new Request(anon, { headers: { ...Object.fromEntries(anon.headers), cookie } });
+const config = campaignConfig({ MICROFIRE_LOCAL_CAMPAIGN: '1', MICROFIRE_CAMPAIGN_ORIGIN: 'http://127.0.0.1:3290', MICROFIRE_CAMPAIGN_ACCESS_TOKEN: randomBytes(32).toString('base64url'),
+  MICROFIRE_CAMPAIGN_SIGNING_KEY: randomBytes(32).toString('base64url'), MICROFIRE_CAMPAIGN_KEY_ID: 'fixtures', MICROFIRE_CAMPAIGN_REALM_ID: randomUUID() })!;
+const authority = new CampaignAuthority(config, () => Date.parse(at));
+const anon = new Request(config.origin, { method: 'POST', headers: { host: config.host, origin: config.origin, 'x-microfire-campaign': '1' } });
+const grant = authority.authorize(anon, config.accessToken.toString('base64url'));
+const request = new Request(anon, { headers: { ...Object.fromEntries(anon.headers), cookie: grant.cookie!.split(';')[0]!, 'x-microfire-campaign-csrf': grant.csrfToken } });
 const service = new CampaignService(authority, () => Date.parse(at));
 
 const claim = catalog.experiments[0]!.claims[0]!;

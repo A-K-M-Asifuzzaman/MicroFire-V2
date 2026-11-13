@@ -25,7 +25,7 @@ function browser(handler: () => (r: Request, a: string) => Promise<Response>) {
     if (init.method === 'POST') headers.set('origin', origin);
     if (cookie) headers.set('cookie', cookie);
     sent.push({ path, body: typeof init.body === 'string' ? init.body : null });
-    const res = await handler()(new Request(origin + path, { method: init.method, headers, body: init.body ?? null }), '127.0.0.1');
+    const res = await handler()(new Request(origin + path, { method: init.method ?? 'GET', headers, ...(init.body ? { body: init.body } : {}) }), '127.0.0.1');
     const set = res.headers.get('set-cookie');
     if (set) { const [pair] = set.split(';'); cookie = /Max-Age=0/i.test(set) ? null : pair!; }
     if (drop > 0) { drop--; throw new TypeError('network lost after commit'); }
