@@ -31,3 +31,40 @@
   .mf-bench tbody tr { margin-bottom: 10px; padding: 8px; border-radius: 14px; border: 2px solid var(--ink); }
   .mf-bench select { width: 100%; }
 }
+
+
+/* Judge-first briefing, distinct mission identification and visible next-action guidance.
+   This changes the presentation only. Server-checked gameplay and NASA evidence rules are untouched. */
+.mf-guide-intro { margin: 0 0 12px; max-width: 80ch; line-height: 1.55; }
+.mf-guide-intro a { font-weight: 800; text-underline-offset: 3px; }
+.mf-stage { --mission-ink: #243c99; --mission-soft: #eaf0ff; display: grid; gap: 20px; }
+.mf-stage[data-mission="station-arrival"] { --mission-ink: #2453bd; --mission-soft: #e4efff; }
+.mf-stage[data-mission="bass-assembly"] { --mission-ink: #a64b16; --mission-soft: #fff0df; }
+.mf-stage[data-mission="flame-detective"] { --mission-ink: #5535a3; --mission-soft: #eee9ff; }
+.mf-stage[data-mission="claim-trial"] { --mission-ink: #0d6873; --mission-soft: #dcf5f6; }
+.mf-stage[data-mission="lunar-habitat"] { --mission-ink: #435575; --mission-soft: #e8edf5; }
+.mf-guide { background: var(--mission-soft); border: 2px solid var(--mission-ink); border-radius: 24px; padding: clamp(16px, 3vw, 28px); box-shadow: 4px 4px 0 var(--ink); }
+.mf-guide-top { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+.mf-guide-copy { flex: 1; min-width: min(100%, 260px); }
+.mf-guide-type { display: inline-block; text-transform: uppercase; letter-spacing: .12em; font: 800 .73rem var(--body); color: var(--mission-ink); }
+.mf-guide h2 { font: 850 clamp(1.3rem, 2.5vw, 1.9rem)/1.15 var(--display); margin: 7px 0 12px; }
+.mf-guide-goal { max-width: 70ch; font-size: 1.03rem; margin: 0 0 10px; line-height: 1.55; }
+.mf-guide-progress { font-size: .82rem; margin: 0; font-weight: 700; color: var(--mission-ink); }
+.mf-guide-toggle { flex-shrink: 0; }
+.mf-guide-details { border-top: 1px solid var(--mission-ink); margin-top: 18px; padding-top: 18px; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 22px; }
+.mf-guide-details h3 { margin: 0 0 10px; font: 850 1.05rem var(--display); }
+.mf-guide-details ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.mf-guide-details li { line-height: 1.5; padding-left: 4px; }
+.mf-guide-details li::marker { font-weight: 800; color: var(--mission-ink); }
+.mf-guide-context { border-left: 3px solid var(--mission-ink); padding-left: 16px; }
+.mf-guide-context p { margin: 0 0 10px; line-height: 1.5; }
+.mf-guide-context a { font-size: .88rem; font-weight: 800; text-underline-offset: 4px; }
+.mf-guide-control { margin: 16px 0 0; padding: 11px; border-radius: 12px; background: #fff; line-height: 1.5; }
+.mf-stage > .mf-mission { border: 2px solid var(--mission-ink); background: var(--mission-soft); padding: clamp(10px, 2vw, 20px); border-radius: 24px; }
+.mf-stage .mf-mission .mf-panel { border-color: var(--mission-ink); }
+.mf-stage .mf-spot[data-next="true"] { outline: 3px solid var(--mission-ink); outline-offset: 2px; }
+.mf-passport h3 { font: 800 1rem var(--display); margin: 0 0 8px; }
+@media (max-width: 850px) {
+  .mf-guide-details { grid-template-columns: minmax(0, 1fr); }
+  .mf-guide-context { border-left: 0; border-top: 2px solid var(--mission-ink); padding: 14px 0 0; }
+}
