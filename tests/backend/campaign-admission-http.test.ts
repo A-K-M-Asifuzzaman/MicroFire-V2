@@ -149,3 +149,41 @@ test('admission real HTTP: SQL faults, global lock timeout and storage outage fa
     console.log('SQL fault/lock timeout roll back scopes; throttled IP avoids global lock; outage503; lost COMMIT ack fails closed and stays charged; retry cannot reclaim capacity.');
   } finally { await server.close(); await admin.end(); await db.close(); }
 });
+
+
+test('admission PostgreSQL: suspended worker cannot retain the shared global lock indefinitely', { timeout: 30000 }, async () => {
+  const db = await testDatabase(), frozenPool = new Pool(db.options), peerPool = new Pool(db.options), e = env();
+  frozenPool.on('error', () => {}); peerPool.on('error', () => {});
+  let resume!: () => void, paused!: () => void, killed!: () => void;
+  const suspended = new Promise<void>(resolve => { paused = resolve; }), released = new Promise<void>(resolve => { resume = resolve; });
+  const expired = new Promise<void>(resolve => { killed = resolve; });
+  const connect = frozenPool.connect.bind(frozenPool);
+  frozenPool.connect = (async () => {
+    const client = await connect();
+    client.once('end', () => killed()); // Do not add a test error listener that could hide a production crash.
+    return new Proxy(client, { get(target, key) {
+      if (key === 'query') return async (...args: unknown[]) => {
+        const result = await Reflect.apply(target.query, target, args);
+        if (typeof args[0] === 'string' && args[0].startsWith('INSERT INTO microfire_campaign_budgets') && Array.isArray(args[1]) && args[1][1] === hash(e, 'edge-global')) {
+          paused(); await released;
+        }
+        return result;
+      };
+      const value = Reflect.get(target, key); return typeof value === 'function' ? value.bind(target) : value;
+    } });
+  }) as Pool['connect'];
+  const frozen = new PublicCampaignService(publicCampaignConfig(e)!, frozenPool);
+  const server = await testServer(origin => { const handler = createPublicCampaignHandler({ ...e, MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN: origin }, peerPool); return r => handler(r, '198.51.100.1'); }, true);
+  const pending = frozen.admit('192.0.2.1').then(() => true, () => false);
+  try {
+    await suspended;
+    assert.equal((await wire(server.origin, base + '/session', {})).status, 503, 'Contended admission fails closed while the worker is suspended.');
+    await Promise.race([expired, delay(6000).then(() => { throw Error('Idle quota transaction did not expire.'); })]);
+    assert.equal(await hits(db.pool, e, 'edge-global'), 0); assert.equal(await hits(db.pool, e, 'edge:192.0.2.1'), 0);
+    resume(); assert.equal(await pending, false, 'A worker cannot acknowledge admission after its database transaction died.');
+    assert.equal(frozenPool.totalCount, 0, 'The failed leased connection must be discarded.');
+    assert.equal((await wire(server.origin, base + '/session', {})).status, 200);
+    assert.equal(await hits(db.pool, e, 'edge-global'), 1);
+    console.log('Suspended worker: waiter503; PostgreSQL idle deadline ends connection and rolls back both reservations without crashing; fresh visitor200/global1.');
+  } finally { resume(); await pending; await server.close(); await frozenPool.end(); await peerPool.end(); await db.close(); }
+});
