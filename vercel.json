@@ -3,7 +3,8 @@
   "git": {
     "deploymentEnabled": {
       "codex/review-campaign-security-20261113": false,
-      "codex/campaign-security-remediation-20261113": false
+      "codex/campaign-security-remediation-20261113": false,
+      "codex/fix-campaign-admission-20261113": false
     }
   }
 }

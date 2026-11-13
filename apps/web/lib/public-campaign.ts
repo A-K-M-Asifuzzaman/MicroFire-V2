@@ -59,13 +59,23 @@ export class PublicCampaignService {
     try { await client.query('BEGIN'); await client.query("SET LOCAL statement_timeout = '3s'"); const result = await fn(client); await client.query('COMMIT'); return result; }
     catch (error) { await client.query('ROLLBACK').catch(() => {}); throw error; } finally { client.release(); }
   }
-  async budget(subject: string, limit: number) {
-    const hash = createHmac('sha256', this.config.abuseKey).update(subject).digest('hex');
-    const result = await this.pool.query(`INSERT INTO microfire_campaign_budgets(realm,bucket_hash,window_at,hits,expires_at)
-      VALUES($1,$2,date_trunc('minute',clock_timestamp()),1,clock_timestamp()+interval '2 days')
-      ON CONFLICT(realm,bucket_hash,window_at) DO UPDATE SET hits=microfire_campaign_budgets.hits+1 RETURNING hits`, [this.config.realmId, hash]);
-    if (result.rows[0].hits > limit) throw new CampaignFailure(429, 'RATE_LIMITED', 'Campaign request budget reached.');
+  private async reserve(buckets: readonly (readonly [string, number])[]) {
+    // Address first, global last; commit before taking any visitor/head or bootstrap lock.
+    await this.transaction(async client => {
+      await client.query("SET LOCAL lock_timeout = '250ms'");
+      const window = (await client.query("SELECT date_trunc('minute',clock_timestamp()) AS window_at")).rows[0].window_at as Date;
+      for (const [subject, limit] of buckets) {
+        const hash = createHmac('sha256', this.config.abuseKey).update(subject).digest('hex');
+        const result = await client.query(`INSERT INTO microfire_campaign_budgets(realm,bucket_hash,window_at,hits,expires_at)
+          VALUES($1,$2,$3,1,$3::timestamptz+interval '2 days')
+          ON CONFLICT(realm,bucket_hash,window_at) DO UPDATE SET hits=microfire_campaign_budgets.hits+1
+          WHERE microfire_campaign_budgets.hits<$4 RETURNING hits`, [this.config.realmId, hash, window, limit]);
+        if (!result.rowCount) throw new CampaignFailure(429, 'RATE_LIMITED', 'Campaign request budget reached.');
+      }
+    });
   }
+  budget(subject: string, limit: number) { return this.reserve([[subject, limit]]); }
+  admit(trustedAddress: string) { return this.reserve([['edge:' + trustedAddress, 240], ['edge-global', 2000]]); }
   private async withOwner<T>(token: string | null, csrf: string | null, mutation: boolean, fn: (client: PoolClient, visitor: Visitor) => Promise<T>) {
     if (!token) throw new CampaignFailure(403, 'PREVIEW_UNAUTHORIZED', 'A visitor session is required.');
     const owner = this.owner(token);
@@ -98,7 +108,7 @@ export class PublicCampaignService {
   }
   async bootstrap(token: string | null, trustedAddress: string) {
     if (token) return this.withOwner(token, null, false, async (_client, row) => ({ token: null, csrfToken: this.csrf(row.owner_hash), expiresAt: row.expires_at.toISOString(), view: this.view(row.record) }));
-    await this.budget('new-address:' + trustedAddress, 5); await this.budget('new-global', 60);
+    await this.reserve([['new-address:' + trustedAddress, 5], ['new-global', 60]]);
     return this.transaction(async client => {
       await client.query('SELECT pg_advisory_xact_lock(hashtext($1)::bigint)', ['microfire-public-bootstrap:' + this.config.realmId]);
       const count = await client.query('SELECT count(*)::int AS n FROM microfire_campaign_visitors WHERE realm=$1 AND NOT revoked AND expires_at>clock_timestamp()', [this.config.realmId]);
@@ -162,8 +172,7 @@ export function createPublicCampaignHandler(env: NodeJS.ProcessEnv, pool: Pool) 
       if (!campaignRequestAllowed(request, config.origin, false) || !isIP(trustedAddress)) throw new CampaignFailure(403, 'PREVIEW_UNAUTHORIZED', 'Origin or CSRF validation failed.');
       const path = new URL(request.url).pathname.slice(PUBLIC_CAMPAIGN_BASE.length);
       if (!new URL(request.url).pathname.startsWith(PUBLIC_CAMPAIGN_BASE + '/')) throw missing();
-      await service.budget('edge-global', 2000);
-      await service.budget('edge:' + trustedAddress, 240);
+      await service.admit(trustedAddress);
       const token = uniqueCookie(request, PUBLIC_SESSION_COOKIE), csrf = request.headers.get('x-microfire-csrf');
       if (!token && request.headers.get('cookie')?.includes(PUBLIC_SESSION_COOKIE + '=')) throw new CampaignFailure(403, 'PREVIEW_UNAUTHORIZED', 'Ambiguous visitor cookie.');
       if (request.method === 'POST' && path === '/session') {
