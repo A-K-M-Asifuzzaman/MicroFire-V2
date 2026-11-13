@@ -123,7 +123,7 @@ function StatusBlock({ f }: { f: Feature }) {
 export const missionIds = missionDefinitions.map((m) => m.id);
 /** The two missions the local BASS-II training preview spans. Public state is unchanged: without ?preview=… nothing loads. */
 const previewMissions = new Set(['station-arrival', 'bass-assembly']);
-export function MissionPage({ id }: { id: string }) {
+export function MissionPage({ id, playable = false }: { id: string; playable?: boolean }) {
   const index = missionDefinitions.findIndex((m) => m.id === id);
   const m = missionDefinitions[index]!, f = feature(`/missions/${id}`)!, brief = briefs[id]!;
   const prev = m.prerequisite ? feature(`/missions/${m.prerequisite}`) : null;
@@ -134,25 +134,31 @@ export function MissionPage({ id }: { id: string }) {
       <p className="eyebrow">Mission 0{index + 1} · {m.mechanic.replaceAll('-', ' ')}</p>
       <h1>{f.title}</h1>
     </header>
-    <StatusBlock f={f} />
+    {playable
+      ? <div className="status-line"><span className="badge" data-state="available">Playable</span><p>Play this mission in the five-mission campaign. The MicroFire server checks every step.</p></div>
+      : <StatusBlock f={f} />}
     <div className="mission-brief">
       <div className="stack">
-      <figure className="mission-figure"><MissionArt id={id} glyph={brief.glyph} /><figcaption>Illustrative concept of the planned scene, made for MicroFire. Not NASA imagery, not a measurement and not a playable level.</figcaption></figure>
+      <figure className="mission-figure"><MissionArt id={id} glyph={brief.glyph} /><figcaption>{playable ? 'Illustrative concept of the scene, made for MicroFire. Not NASA imagery and not a measurement.' : 'Illustrative concept of the planned scene, made for MicroFire. Not NASA imagery, not a measurement and not a playable level.'}</figcaption></figure>
       <dl className="brief-dl">
         <div><dt>Scene</dt><dd>{brief.scene}</dd></div>
         <div><dt>What you will do</dt><dd>{brief.action}</dd></div>
         <div><dt>Carries forward</dt><dd>{brief.carries}</dd></div>
-        <div><dt>Unlocks after</dt><dd>{prev ? prev.title : 'Available as the first mission once released'}</dd></div>
+        <div><dt>Unlocks after</dt><dd>{prev ? prev.title : playable ? 'Available as the first mission' : 'Available as the first mission once released'}</dd></div>
       </dl>
       </div>
-      <div className="panel stack frame">
+      {playable ? <div className="panel stack frame">
+        <p className="eyebrow" style={{ margin: 0 }}>Playable now</p>
+        <p style={{ margin: 0 }}>Missions run in order in one campaign. Each accepted step is saved on the MicroFire server and earns a source-linked Passport entry. Your case lasts 24 hours in this browser; there is no account.</p>
+        <div className="actions"><Link className="btn btn-primary" href="/missions/play">Play the campaign</Link><Link className="btn btn-quiet btn-sm" href="/missions">Back to the map</Link><Link className="btn btn-quiet btn-sm" href={`/experiments/${b20.id}`}>Inspect the {b20.testId} record</Link></div>
+      </div> : <div className="panel stack frame">
         <p className="eyebrow" style={{ margin: 0 }}>Not playable yet</p>
         {previewMissions.has(id)
           ? <p style={{ margin: 0 }}>This mission&apos;s rules are implemented and tested, and its 3D training bay is built. Gameplay, training qualification and Passport entries open only after the mission&apos;s server integration is approved. The tour below is illustrative and records nothing.</p>
           : <p style={{ margin: 0 }}>This mission&apos;s rules are implemented and tested, but its scene and controls are still being built. Nothing here is simulated gameplay.</p>}
         <button className="btn btn-quiet" disabled>{featureLabels[f.state]}</button>
         <div className="actions"><Link className="btn btn-quiet btn-sm" href="/missions">Back to the map</Link><Link className="btn btn-primary btn-sm" href={`/experiments/${b20.id}`}>Inspect the {b20.testId} record</Link></div>
-      </div>
+      </div>}
     </div>
     {previewMissions.has(id) && <BayTeaser compact />}
     {previewMissions.has(id) && <Suspense fallback={null}><PreviewEntry data={{ parts: partSpecs(), b20: b20Data() }} /></Suspense>}

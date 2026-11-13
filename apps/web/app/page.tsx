@@ -5,8 +5,10 @@ import { BayTeaser, GravityDuel, PixIntro, TrustStrip } from '../components/home
 import { Ignition } from '../components/ignition/ignition';
 import { locatorText, value } from '../components/page-kit';
 import { BAY_TOUR } from '../components/routes';
+import { campaignPlayable } from '../lib/campaign-flags';
 
 export default function Home() {
+  const playable = campaignPlayable();
   const e = catalog.experiments[0]!;
   const cov = coverage();
   const href = `/experiments/${e.id}`;
@@ -22,15 +24,18 @@ export default function Home() {
       pix: 'Ask me about fire in space. I answer only from admitted records, with the page, or I say it is not known.' },
     { title: 'Research Frontier', href: '/gaps', description: 'See what this catalog does and does not document.', mood: 'gap',
       pix: 'This is where the records stop. I mark the gaps instead of guessing.' },
-    { title: 'Mission map', href: '/missions', description: 'Mission previews and the 3D training bay · none playable yet.', mood: 'guide',
-      pix: 'Five missions are on the map. None is playable yet, but the training bay is open for a tour.' }
+    playable
+      ? { title: 'Play the missions', href: '/missions/play', description: 'Five server-checked missions and a Research Passport.', mood: 'guide',
+          pix: 'Five missions put the B20 evidence to work. Every step is checked on the server, and your Passport keeps the sources.' }
+      : { title: 'Mission map', href: '/missions', description: 'Mission previews and the 3D training bay · none playable yet.', mood: 'guide',
+          pix: 'Five missions are on the map. None is playable yet, but the training bay is open for a tour.' }
   ];
   const steps = [
     { title: 'Discover', what: 'See gravity reshape a flame', href: '#gravity-lens' },
     { title: 'Explore the evidence', what: 'The Experiment Atlas', href: '/atlas' },
     { title: 'Check a real test', what: `${e.testId}, from NASA's BASS-II report`, href },
     { title: 'Enter the laboratory', what: 'Tour the BASS-II training bay', href: BAY_TOUR },
-    { title: 'Prepare for the mission', what: 'Five missions on the map', href: '/missions', locked: 'Not playable yet' }
+    playable ? { title: 'Prepare for the mission', what: 'Play the five missions', href: '/missions/play' } : { title: 'Prepare for the mission', what: 'Five missions on the map', href: '/missions', locked: 'Not playable yet' }
   ];
   return <>
     <Ignition />

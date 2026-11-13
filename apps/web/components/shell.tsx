@@ -86,7 +86,7 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
     <main id="main" tabIndex={-1}>{children}</main>
     <footer className="site-footer">
       <div className="wrap">
-        <p>Independent educational research project. No NASA endorsement and no operational fire-safety certification. Pre-release: public release is blocked.</p>
+        <p>Independent educational research project. No NASA endorsement and no operational fire-safety certification.</p>
         <nav aria-label="Project">
           <Link href="/sources">Sources &amp; rights</Link><Link href="/methodology">Methodology</Link><Link href="/roadmap">Progress</Link>
         </nav>
