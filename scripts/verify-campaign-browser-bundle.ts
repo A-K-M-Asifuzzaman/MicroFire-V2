@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { claimTrialStatements } from '@microfire/game-core';
-const names = ['MICROFIRE_CAMPAIGN_ACCESS_TOKEN', 'MICROFIRE_CAMPAIGN_SIGNING_KEY', 'MICROFIRE_PUBLIC_CAMPAIGN_CSRF_KEY', 'MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY', 'MICROFIRE_PUBLIC_CAMPAIGN_DATABASE_URL'];
+const names = ['MICROFIRE_CAMPAIGN_ACCESS_TOKEN', 'MICROFIRE_CAMPAIGN_SIGNING_KEY', 'MICROFIRE_PUBLIC_CAMPAIGN_CSRF_KEY', 'MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY', 'MICROFIRE_PUBLIC_CAMPAIGN_DATABASE_URL', 'MICROFIRE_PUBLIC_CAMPAIGN_DATABASE_CA_PEM'];
 const canaries = names.map(() => randomBytes(32).toString('base64url'));
 const env = { ...process.env, ...Object.fromEntries(names.map((name, i) => [name, canaries[i]!])), MICROFIRE_LOCAL_CAMPAIGN: '0', MICROFIRE_PUBLIC_CAMPAIGN_ENABLED: '0', NEXT_TELEMETRY_DISABLED: '1' };
 const result = spawnSync(process.execPath, [path.resolve('node_modules/next/dist/bin/next'), 'build', '--webpack'], { cwd: path.resolve('apps/web'), env, encoding: 'utf8', maxBuffer: 4000000 });

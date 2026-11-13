@@ -16,7 +16,7 @@ export function createVercelPublicCampaignHandler(env: NodeJS.ProcessEnv) {
       if (!handler) {
         const database = env.MICROFIRE_PUBLIC_CAMPAIGN_DATABASE_URL;
         if (!database) throw Error('Campaign database unavailable.');
-        const pool = publicCampaignPool(database); attachDatabasePool(pool);
+        const pool = publicCampaignPool(database, env.MICROFIRE_PUBLIC_CAMPAIGN_DATABASE_CA_PEM); attachDatabasePool(pool);
         handler = createPublicCampaignHandler(env, pool);
       }
       return await handler(request, address);

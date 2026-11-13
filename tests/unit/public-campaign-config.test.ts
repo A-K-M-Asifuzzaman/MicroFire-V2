@@ -17,6 +17,8 @@ it('public sessions require an explicitly reviewed HTTPS deployment and distinct
   expect(() => publicCampaignPool('postgres://user:' + token + '@database.example/db?sslmode=disable')).toThrow('Invalid campaign database configuration');
   const pool = publicCampaignPool('postgres://user:' + secret() + '@database.example/db?sslmode=require');
   expect(pool.options.ssl).toEqual({ rejectUnauthorized: true }); expect(pool.options.max).toBe(2); await pool.end();
+  const provider = publicCampaignPool('postgres://user:' + secret() + '@database.example/db?sslmode=verify-full', 'provider-public-ca');
+  expect(provider.options.ssl).toEqual({ rejectUnauthorized: true, ca: 'provider-public-ca' }); await provider.end();
 });
 it('public view schemas have no slots for private checkpoints, full state, training or answer rubrics', () => {
   const fields = Object.keys(PublicCampaignViewSchema.shape);

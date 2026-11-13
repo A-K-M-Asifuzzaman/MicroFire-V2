@@ -29,12 +29,12 @@ export function publicCampaignConfig(env: NodeJS.ProcessEnv): PublicCampaignConf
   } catch { return null; }
 }
 /** A managed PostgreSQL pooler is required on Vercel; never fall back to memory or /tmp. */
-export function publicCampaignPool(databaseUrl: string): Pool {
+export function publicCampaignPool(databaseUrl: string, ca?: string): Pool {
   let u: URL; try { u = new URL(databaseUrl); } catch { throw Error('Invalid campaign database configuration.'); }
   if (!['postgres:', 'postgresql:'].includes(u.protocol) || !u.hostname || !u.username || !u.password || u.pathname.length < 2 || u.hash ||
     [...u.searchParams].some(([k, v]) => k !== 'sslmode' || !['require', 'verify-full'].includes(v))) throw Error('Invalid campaign database configuration.');
   const pool = new Pool({ host: u.hostname, port: Number(u.port || 5432), user: decodeURIComponent(u.username), password: decodeURIComponent(u.password),
-    database: decodeURIComponent(u.pathname.slice(1)), ssl: { rejectUnauthorized: true }, max: 2, connectionTimeoutMillis: 5000, idleTimeoutMillis: 10000,
+    database: decodeURIComponent(u.pathname.slice(1)), ssl: { rejectUnauthorized: true, ...(ca ? { ca } : {}) }, max: 2, connectionTimeoutMillis: 5000, idleTimeoutMillis: 10000,
     statement_timeout: 3000, query_timeout: 5000, allowExitOnIdle: true, application_name: 'microfire-public-campaign' });
   pool.on('error', () => {}); // Request failures are sanitized; idle-client errors must not print credentials or crash a worker.
   return pool;
