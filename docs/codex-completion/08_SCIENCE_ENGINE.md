@@ -1,0 +1,11 @@
+# Scientific intelligence changes
+
+Implemented on the isolated candidate branch. Admission remains one B20 source record; 55 legacy rows and four new review items stay excluded.
+
+- GET /api/experiments adds exact gravity, oxygenPct, pressureKpa, flowCmS, sourceId and observation filters. Existing program/material/flowDirection/q remain. Numeric filters use source units, accept strict decimal query strings and never match unknown values. Observation filtering searches observed research claims. No per-run platform measurement is invented.
+- Ranked items now include original sourceIds even for unsupported questions. Existing matched/mismatched/unknown dimensions, reasons, relevance disclaimer and claim support remain separate. Ranking version p1-claim-support-v3. Strict consumers must adopt the changed shared schema; this is a review candidate, not a released backward-compatible shape.
+- POST /api/evidence/frontier uses RankRequestSchema and FrontierResponseSchema. Overall categories: evidence-present, related-evidence-only, conditions-differ, measurement-missing, not-in-audited-catalog. Existing /api/gaps retains its per-field statuses and wire semantics. Coverage is explicitly catalog-limited.
+- Pure comparison now refuses duplicate or invalid-size selections as HTTP already did. Controlled causal comparison remains unavailable; synthetic test records exercise confounding only, never scientific admission.
+- PIX retrieval version p1-grounded-template-v3 normalizes Unicode instruction attempts, refuses unavailable named investigations and inconsistent transcriptions for the same run, and confines any draft composer to exact deterministic template statements before lineage verification. A valid locator can no longer release arbitrary generated prose. The former documented-limitation regression now requires abstention. No model/provider/paid service is called.
+
+Tests: science-completion.test.ts plus existing science/Astra/API suites and evaluator. Broader retrieval quality, semantic entailment and scientific validity remain independently unmeasured. Relevance is neither confidence nor risk. Claude must review the new filter/frontier presentation and ranking DTO before integrating them.

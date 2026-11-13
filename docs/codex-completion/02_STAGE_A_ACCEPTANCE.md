@@ -1,0 +1,15 @@
+# Stage A review candidate
+
+Status: implemented and locally verified; independent Astra Stage A acceptance is pending. No release approval, frontend gameplay acceptance or writable save approval is claimed.
+
+Recovered without rebuilding from 6d1887b onto b82db9c; see 01_BACKEND_BASELINE.md. Added presence-based hosted-marker denial, including VERCEL_ENV alone and empty markers. The separate R4 credential patch is reviewed independently.
+
+Working endpoints: GET capability, POST authorize/revoke/start/action/resume, GET session/:id under /api/game/preview. Disabled by default. Launcher validates the source fixture before binding to 127.0.0.1. All protected operations require an opaque, runtime-bound, one-hour grant obtained with a server-configured operator credential. Host/Origin/forwarding checks only narrow requests. Changing config invalidates the runtime. Secrets remain server-only.
+
+Verified real HTTP: 11 tests passed, 0 failed, 0 skipped (Node 24.22.1/macOS/production Next 16.4.1/installed Chromium). Includes full source→ten-part assembly→seeded fan fault→diagnosis→manual repair→qualification→explicit observation→Passport→completion; session isolation/concurrent revision conflict; identical-command deduplication; lost acknowledgement reconciliation; restart/resume; old-cookie/runtime denial; key rotation and invalid signatures; impossible signed history; malformed/oversized/chunked bodies; maximum legal notes; eight mistakes and actual 429 recovery; unchanged shared research/preview POST allowance. Evidence: evidence/stage-a-http-local.log. No browser gameplay UI was driven by this HTTP suite.
+
+Commands: Node 24 npm ci (exit 0); npm run check (exit 1 only at build because sandbox DNS blocked existing Google Fonts; preceding lint/typecheck/unit/data/science/security passed); network-enabled npm run build (exit 0); node --import tsx --test tests/backend/training-http.test.ts with the installed PLAYWRIGHT_BROWSERS_PATH (exit 0, 11/0/0); npm audit --audit-level=high (exit 0, no high/critical; 10 moderate transitive development findings). Logs are retained with exact output. Initial sandbox HTTP run failed all 11 on server startup and is retained separately; its subsequent local-server run passed.
+
+Threat boundaries: one local operator realm, eight live cases/grants, in-process limits and session serialization. Restart loses live grants/heads; the last saved/downloaded signed checkpoint is the recovery boundary. An older signed checkpoint can be restored after restart because no durable anti-rollback ledger exists; this is local educational recovery, never protected public achievement. Runtime changes require reauthorization and explicit resume. Do not expose this process on a hosted service.
+
+Astra review: frozen contract equivalence and canonical vectors; local launcher trust; credential/key lifecycle; grant revocation racing body read/commit; command/revision isolation; rollback on signer/response-budget failure; signed history/research lineage; byte budgets and completion reserve; actual frontend adoption. Public mission flags and contractRuntime remain unchanged.

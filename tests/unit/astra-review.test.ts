@@ -131,12 +131,12 @@ it('a condition match is not direct evidence for an unmeasured requested outcome
   expect(result.items[0]!.evidenceLevel).not.toBe('direct');
 });
 
-it('documented limitation: a correct locator does not verify the truth of arbitrary generated prose', () => {
+it('withholds arbitrary generated prose even when its locator is correct', () => {
   const claim = catalog.experiments[0]!.claims[0]!;
   const answer = answerQuestion({ question: 'What happened in B20?', targetConditions: {} }, catalog, () => [{
     category: 'direct-observation', text: 'The measured B20 flame temperature was 9999 kelvin.', claimId: claim.id, citations: claim.citations
   }]);
-  expect(answer.abstained).toBe(false);
+  expect(answer).toMatchObject({abstained:true,code:'citation-verification-failed'});
 });
 
 it('future corpus gate: the B20 apparatus accepts an incompatible synthetic concurrent-flow record', () => {

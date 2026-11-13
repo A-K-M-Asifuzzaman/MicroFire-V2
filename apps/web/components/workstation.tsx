@@ -1,7 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { RankResponseSchema, type Coverage, type TargetConditions } from '@microfire/shared';
+import { IntelligenceResponseSchema, RankResponseSchema, type Coverage, type TargetConditions } from '@microfire/shared';
+import { AtAGlance, Method, SummaryBlock, TransferAnalysis, type IntelligenceData } from './intelligence-ui';
 import { callApi, Failure, useLatestRequest } from './client-api';
 import { CitationList, CoverageNote, Kind, Limitations, type SourceRef } from './evidence-ui';
 import { ConditionFields, fieldLabel, targetsFrom, withUnit, type Pending } from './tool-kit';
@@ -25,34 +26,38 @@ function ChainRail({ question, item }: { question: string; item: RankItem | unde
 }
 const describe = (t: TargetConditions) => Object.entries(t).map(([k, v]) => `${fieldLabel(k)} ${withUnit(k, v)}`).join(' · ') || 'none';
 
-type RankData = ReturnType<typeof RankResponseSchema.parse>['data'];
+type Environment = 'custom' | 'spacecraft' | 'moon' | 'mars' | 'earth';
+const ENVIRONMENTS: [Environment, string][] = [['custom', 'Custom'], ['spacecraft', 'Spacecraft'], ['moon', 'Moon'], ['mars', 'Mars'], ['earth', 'Earth']];
 export function Workstation({ sources, claims, coverage }: { sources: SourceRef[]; claims: Record<string, string>; coverage: Coverage }) {
-  const [state, setState] = useState<Pending<RankData>>({ status: 'idle' });
-  const [preset, setPreset] = useState<{ question: string; values: Record<string, string> } | null>(null);
+  const [state, setState] = useState<Pending<IntelligenceData>>({ status: 'idle' });
+  const [preset, setPreset] = useState<{ question: string; values: Record<string, string>; environment?: Environment } | null>(null);
   // The submitted snapshot travels with its result, so the chain shown always names the question that produced it.
-  const [request, setRequest] = useState<Readonly<{ question: string; targetConditions: TargetConditions }> | null>(null);
+  const [request, setRequest] = useState<Readonly<{ question: string; targetConditions: TargetConditions; environment: Environment }> | null>(null);
   const conditions = useRef<HTMLDetailsElement>(null);
   const begin = useLatestRequest();
   // Optional conditions are folded on phones (question first) and open beside the result on wider screens.
   useEffect(() => { if (conditions.current && matchMedia('(min-width: 901px)').matches) conditions.current.open = true; }, []);
-  const run = async (question: string, targetConditions: TargetConditions) => {
+  // scientific-intelligence-v1 (Codex): ranking + source-linked summary + nullable transfer, limit 4 per contract.
+  const run = async (question: string, targetConditions: TargetConditions, environment: Environment = 'custom') => {
     const r = begin();
-    const snapshot = Object.freeze({ question, targetConditions: Object.freeze({ ...targetConditions }) });
+    const snapshot = Object.freeze({ question, targetConditions: Object.freeze({ ...targetConditions }), environment });
     setRequest(snapshot);
     setState({ status: 'loading' });
-    const result = await callApi('/api/evidence/rank', RankResponseSchema, { ...snapshot, limit: 5 }, r.signal);
+    const result = await callApi('/api/intelligence', IntelligenceResponseSchema, { ...snapshot, limit: 4 }, r.signal);
     if (!r.isCurrent()) return;
     setState(result.ok ? { status: 'done', data: result.data } : { status: 'failed', failure: result });
   };
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    void run(String(form.get('question') ?? '').trim(), targetsFrom(form));
+    void run(String(form.get('question') ?? '').trim(), targetsFrom(form), (String(form.get('environment') ?? 'custom') as Environment));
   };
   const firstClaim = Object.values(claims)[0];
   const examples = [
     { label: 'What does airflow change? (PMMA)', question: 'What does airflow change?', values: { material: 'PMMA' } },
-    ...(firstClaim ? [{ label: 'The recorded B20 observation at 17.4 vol%', question: firstClaim, values: { oxygenPct: '17.4' } }] : [])
+    ...(firstClaim ? [{ label: 'The recorded B20 observation at 17.4 vol%', question: firstClaim, values: { oxygenPct: '17.4' } }] : []),
+    ...(firstClaim ? [{ label: 'Would B20 transfer to a Moon habitat?', question: firstClaim, values: { material: 'PMMA', oxygenPct: '26', pressureKpa: '55', gravity: 'lunar' }, environment: 'moon' as Environment }] : []),
+    { label: 'Is a lunar habitat fire-safe? (should abstain)', question: 'Can this certify a lunar habitat as fire safe?', values: {}, environment: 'moon' as Environment }
   ];
   return <div className="ws">
     <form className="panel ws-composer" onSubmit={submit} aria-label="Evidence question">
@@ -62,9 +67,12 @@ export function Workstation({ sources, claims, coverage }: { sources: SourceRef[
       </div>
       <button className="btn btn-primary" type="submit" style={{ width: '100%' }}>{state.status === 'loading' ? 'Trace again (replaces pending)' : 'Trace the evidence'}</button>
       <p className="meta" style={{ margin: '12px 0 0' }}>Try an example:</p>
-      <ul className="suggest">{examples.map((ex) => <li key={ex.label}><button type="button" onClick={() => { setPreset(ex); void run(ex.question, Object.fromEntries(Object.entries(ex.values).map(([k, v]) => [k, k === 'material' ? v : Number(v)]))); }}>{ex.label}</button></li>)}</ul>
+      <ul className="suggest">{examples.map((ex) => <li key={ex.label}><button type="button" onClick={() => { setPreset(ex); void run(ex.question, Object.fromEntries(Object.entries(ex.values).map(([k, v]) => [k, k === 'material' || k === 'gravity' || k === 'geometry' ? v : Number(v)])), 'environment' in ex ? ex.environment : 'custom'); }}>{ex.label}</button></li>)}</ul>
       <details className="ws-conditions" ref={conditions}>
         <summary>Target conditions <span>(optional)</span></summary>
+        <div className="field"><label htmlFor="ws-environment">Scenario environment</label>
+          <select id="ws-environment" name="environment" defaultValue={preset?.environment ?? 'custom'} key={preset?.environment ?? 'custom'}>{ENVIRONMENTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
+          <small>Labels your scenario. MicroFire inserts no hidden Moon or Mars values; enter the conditions you want compared.</small></div>
         <ConditionFields prefix="ws" values={preset?.values} />
         <button className="btn btn-quiet btn-sm" type="submit">Trace with these conditions</button>
       </details>
@@ -82,14 +90,16 @@ export function Workstation({ sources, claims, coverage }: { sources: SourceRef[
       </div>}
       {state.status !== 'idle' && request && <dl className="facts request-echo" id="ws-request" data-testid="ws-request">
         <div><dt>{state.status === 'loading' ? 'Tracing' : 'Question'}</dt><dd>“{request.question.length > 280 ? `${request.question.slice(0, 280)}…` : request.question}”</dd></div>
-        <div><dt>Target conditions</dt><dd>{describe(request.targetConditions)}</dd></div>
+        <div><dt>Target conditions</dt><dd>{describe(request.targetConditions)}{request.environment !== 'custom' ? ` · ${request.environment} scenario` : ''}</dd></div>
       </dl>}
       {state.status === 'loading' && <div className="loading-bar" aria-hidden="true" />}
-      {state.status === 'failed' && <Failure failure={state.failure} onRetry={request ? () => void run(request.question, request.targetConditions) : undefined} />}
-      {state.status === 'done' && request && <ChainRail question={request.question} item={state.data.items[0]} />}
+      {state.status === 'failed' && <Failure failure={state.failure} onRetry={request ? () => void run(request.question, request.targetConditions, request.environment) : undefined} />}
+      {state.status === 'done' && <AtAGlance data={state.data} sources={sources} />}
+      {state.status === 'done' && request && <ChainRail question={request.question} item={state.data.ranking.items[0]} />}
       {state.status === 'done' && <div className="stack">
-        {state.data.items.length === 0 && <div className="notice" data-tone="info"><p>No admitted record matched. Absence from this catalog is not evidence that a condition was never studied.</p></div>}
-        {state.data.items.map((item, i) => {
+        <h3 className="ws-section">1 · Ranked NASA evidence</h3>
+        {state.data.ranking.items.length === 0 && <div className="notice" data-tone="info"><p>No admitted record matched. Absence from this catalog is not evidence that a condition was never studied.</p></div>}
+        {state.data.ranking.items.map((item, i) => {
           const supported = item.support.kind !== 'unsupported' && !!item.support.claimId;
           return <article key={item.experimentId} className="ws-item" data-supported={supported}>
             <div className="verdict" id={i === 0 ? 'ws-verdict' : undefined}>
@@ -120,12 +130,17 @@ export function Workstation({ sources, claims, coverage }: { sources: SourceRef[
             <div id={i === 0 ? 'ws-limits' : undefined}><Limitations items={item.limitations} title="Limitations" /></div>
             <div className="results-meta" style={{ alignItems: 'center' }}>
               <span className="score"><span aria-hidden="true">Retrieval relevance</span> <meter min={0} max={1} value={item.relevanceScore} aria-label={`Retrieval relevance ${item.relevanceScore.toFixed(2)} of 1, a word-and-condition match score, not evidence strength`}>{item.relevanceScore}</meter> <span aria-hidden="true">{item.relevanceScore.toFixed(2)}</span></span>
-              <span>Ranking {state.data.rankingVersion} · scores are retrieval relevance, not fire risk, safety or scientific confidence.</span>
+              <span>Ranking {state.data.ranking.rankingVersion} · scores are retrieval relevance, not fire risk, safety or scientific confidence.</span>
             </div>
-            <details className="disclose"><summary>Why this score</summary><ul>{item.reasons.map((r) => <li key={r}>{r}</li>)}</ul></details>
+            <details className="disclose" open><summary>Why it ranks here</summary><ul>{item.reasons.map((r) => <li key={r}>{r}</li>)}</ul></details>
           </article>;
         })}
-        <CoverageNote coverage={state.data.coverage} />
+        <h3 className="ws-section">2 · Source-linked summary</h3>
+        <SummaryBlock summary={state.data.summary} sources={sources} />
+        <h3 className="ws-section">3 · Does it apply to your scenario?</h3>
+        <TransferAnalysis transfer={state.data.transfer} note={state.data.transferNote} sources={sources} />
+        <CoverageNote coverage={state.data.ranking.coverage} />
+        <Method data={state.data} />
       </div>}
     </section>
   </div>;

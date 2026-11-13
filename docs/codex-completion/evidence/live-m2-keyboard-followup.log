@@ -1,0 +1,18 @@
+TAP version 13
+# Disposable UI integration built from c276ee611bb5506eae03422550bb98cb0b57ceea; production checkout and public availability unchanged.
+# keyboard: real UI completed and resumed; 27 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+# Subtest: real M2 UI: keyboard completes, exports and resumes a server-confirmed case
+ok 1 - real M2 UI: keyboard completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 55268.457584
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 77114.301292

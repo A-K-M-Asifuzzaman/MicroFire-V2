@@ -1,0 +1,19 @@
+✔ production HTTP: preview defaults off and research routes retain their contracts (298.958917ms)
+✔ production HTTP: full mission, invalid assembly, mandatory diagnosis/repair, exact observation receipt, duplicate and lost-response recovery (613.335417ms)
+✔ production HTTP: restart requires reauthorization, resumes exact checkpoint and denies invalid signature (1068.25825ms)
+✔ production HTTP: eight wrong diagnoses recover through real429/Retry-After and complete (60741.924875ms)
+✔ production HTTP: rejects ambiguous JSON, invalid notes and altered command identity without corrupting the head (773.53025ms)
+✔ real Chromium uses the same canonical bytes and Web Crypto observation identity as Node (1784.681083ms)
+✔ production HTTP: four maximum legal notes preserve caveats and completion within all byte budgets (648.167958ms)
+✔ production HTTP: research and preview POSTs share the same unchanged 30-request allowance (525.681083ms)
+✔ production HTTP: signing-key rotation preserves raw recovery and refuses the old checkpoint (1008.381667ms)
+✔ production HTTP: signed restore rejects impossible phases, chronology and claimed achievements (1101.917792ms)
+✔ production HTTP: distinct sessions retain separate heads through invalid identities and concurrent edits (541.98ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 69255.481916

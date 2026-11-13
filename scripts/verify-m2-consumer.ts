@@ -1,0 +1,21 @@
+// Read-only check against Claude's supplied worktree; no merge or frontend edit.
+import {execFileSync} from 'node:child_process';
+import {mkdtempSync,writeFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+const root=process.argv[2];
+if(!root)throw Error('Usage: node --import tsx scripts/verify-m2-consumer.ts <Claude worktree>');
+const frontend=path.resolve(root),sha=execFileSync('git',['rev-parse','HEAD'],{cwd:frontend,encoding:'utf8'}).trim();
+if(execFileSync('git',['status','--porcelain'],{cwd:frontend,encoding:'utf8'}).trim())throw Error('Consumer worktree is dirty; pin and review its actual changes before claiming compatibility.');
+const file=path.join(mkdtempSync(path.join(tmpdir(),'microfire-m2-consumer-')),'compatibility.ts');
+const quoted=(p:string)=>JSON.stringify(p);
+writeFileSync(file,`import {ActionResponseSchema,AuthorizeResponseSchema,CapabilityResponseSchema,HttpFailureSchema,RevokeResponseSchema,StartResponseSchema,requestIdentity,noteIssue,type Snapshot} from ${quoted(path.resolve('packages/shared/src/index'))};
+import type {ContractRuntime} from ${quoted(path.join(frontend,'apps/web/game/contract'))};
+import {createHttpTransport} from ${quoted(path.join(frontend,'apps/web/game/transport'))};
+import {createController} from ${quoted(path.join(frontend,'apps/web/game/controller'))};
+const runtime:ContractRuntime={parse:{capability:v=>CapabilityResponseSchema.parse(v),authorize:v=>AuthorizeResponseSchema.parse(v),revoke:v=>RevokeResponseSchema.parse(v),snapshot:v=>StartResponseSchema.parse(v),action:v=>ActionResponseSchema.parse(v),failure:v=>HttpFailureSchema.parse(v)},identify:requestIdentity,noteIssue};
+const controller=createController({transport:createHttpTransport(runtime),identify:requestIdentity});
+const snapshot:Snapshot|null=controller.getState().snapshot;void snapshot;
+`);
+execFileSync(process.execPath,[path.resolve('node_modules/typescript/bin/tsc'),'--noEmit','--strict','--noUncheckedIndexedAccess','--exactOptionalPropertyTypes','--skipLibCheck','--moduleResolution','bundler','--module','ESNext','--target','ES2022','--resolveJsonModule','--esModuleInterop',file],{stdio:'inherit'});
+console.log(`Consumer runtime, transport and controller types pass against ${sha}. No frontend file changed.`);

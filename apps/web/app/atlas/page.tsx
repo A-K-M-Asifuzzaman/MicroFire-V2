@@ -9,8 +9,9 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 export default async function Page({ searchParams }: Props) {
   const sp = await searchParams;
   const pick = (k: string) => (typeof sp[k] === 'string' && sp[k] ? sp[k] : undefined);
-  const parsed = ExperimentQuerySchema.safeParse(Object.fromEntries(['q', 'program', 'material', 'flowDirection'].flatMap((k) => (pick(k) ? [[k, pick(k)]] : []))));
-  const query: AtlasQuery = parsed.success ? { q: parsed.data.q, program: parsed.data.program, material: parsed.data.material, flowDirection: parsed.data.flowDirection } : {};
+  const keys = ['q', 'program', 'material', 'flowDirection', 'gravity', 'sourceId', 'observation', 'oxygenPct', 'pressureKpa', 'flowCmS'] as const;
+  const parsed = ExperimentQuerySchema.safeParse(Object.fromEntries(keys.flatMap((k) => (pick(k) ? [[k, pick(k)]] : []))));
+  const query: AtlasQuery = parsed.success ? Object.fromEntries(Object.entries(parsed.data).filter(([, v]) => v !== undefined)) as AtlasQuery : {};
   const items = searchExperiments(query);
   const facet = (fn: (e: Experiment) => string | null) => [...new Set(catalog.experiments.map(fn).filter((v): v is string => !!v))];
   const cov = coverage();

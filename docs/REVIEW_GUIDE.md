@@ -1,5 +1,9 @@
 # MicroFire-V2: full review guide
 
+> **Historical review guide.** Written before the missions were released; the [README](../README.md) describes the current, judged state.
+
+Isolated 2026-11-12 backend candidate: see [completion status](codex-completion/FINAL_IMPLEMENTATION_STATUS.md). The main/deployment findings below are historical; the candidate adds Stage A, private campaign rules and a mandatory dedicated review-route credential. Independent acceptance, frontend runtime connection and public release remain pending.
+
 This guide is the starting point for an independent review of the whole repository. It tells you what the project is, how it is built, the rules it must never break, how to verify it, what is deliberately unfinished, and where scrutiny is most useful.
 
 | | |
@@ -166,7 +170,7 @@ Please don't count these as defects. They are known, but challenge them if you d
 
 ## 9. Document index
 
-- **Ground rules and plan:** `FINAL_MASTER_PROMPT.md`, `docs/00_REPO_RULES.md`, `docs/02_SYSTEM_ARCHITECTURE.md`, `docs/09_GAME_FIVE_MISSIONS.md`, `docs/OWNERSHIP.md`.
+- **Ground rules and plan:** `docs/internal/FINAL_MASTER_PROMPT.md`, `docs/00_REPO_RULES.md`, `docs/02_SYSTEM_ARCHITECTURE.md`, `docs/09_GAME_FIVE_MISSIONS.md`, `docs/OWNERSHIP.md`.
 - **Science and data:** `docs/DATA_PROVENANCE.md`, `docs/LEGACY_CALIBRATION_AUDIT.md`, `docs/PHASE_ONE_SCIENCE_REPORT.md`, `docs/API_CONTRACTS.md`.
 - **Milestones, in order:**
   1. `docs/PHASE_ZERO_REPORT.md`

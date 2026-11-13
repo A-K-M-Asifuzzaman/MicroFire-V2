@@ -19,3 +19,7 @@ Phase Zero implements **no external provider adapters**. Runtime uses the bundle
 Every future adapter must define: allowlisted hosts and redirect/IP checks; validated request/response DTOs; supported auth scope; no secret logging; timeout and response-size limits; bounded retries with 429/Retry-After handling; provenance timestamps and ETag/hash; immutable cache and stale/offline behavior; attribution/rights; deterministic failure tests. Retrieved content is untrusted data, never executable instructions. Do not send visitor/child identity or private data to providers.
 
 No FIRMS/weather integration: those do not supply the required microgravity combustion measurements. Asset generation stays physically separate from research runtime. A distributed limiter and real cost ceilings must exist before any paid runtime API is enabled.
+
+## 2026-11-12 candidate acquisition update
+
+The isolated completion branch adds explicit, hash-pinned, bounded NASA-only source acquisition via scripts/fetch-candidate-sources.ts and offline verification via scripts/verify-candidates.ts. Four primary PDFs were downloaded and visually inspected; no runtime provider or automated admission is enabled. The NTRS citation JSON for ACME supplied the actual poster link. PSI-98 was located but exposed no readable dataset files to the browsing tool; access/API/holdings were not inferred. See codex-completion/09_DATA_VERIFICATION.md. Paid/model/Meshy calls remain absent from this backend assignment.

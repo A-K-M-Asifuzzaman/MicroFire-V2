@@ -1,0 +1,387 @@
+{
+  "evaluationVersion": "intelligence-regression-v2",
+  "datasetVersion": "p0-bass-b20-v1",
+  "catalogSha256": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc",
+  "labels": "Codex implementation author; source-specific regression cases, pending independent scientific review",
+  "scope": "One admitted B20; no predictive accuracy, statistical confidence or multi-investigation retrieval metric",
+  "independentScientificAcceptance": false,
+  "admissionUnchanged": true,
+  "cases": [
+    {
+      "id": "calibrated-b20",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": null,
+        "abstentionCode": null,
+        "answerIncludes": true,
+        "dimensionStatuses": null
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": null,
+        "dimensionStatuses": null,
+        "abstentionCode": null,
+        "answerIncludes": true
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "lunar-unknown-gravity",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "source-not-recorded",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "exact-recorded",
+          "pressureKpa": "source-not-recorded",
+          "flowCmS": "target-unspecified"
+        }
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "dimensionStatuses": {
+          "gravity": "source-not-recorded",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "exact-recorded",
+          "pressureKpa": "source-not-recorded",
+          "flowCmS": "target-unspecified"
+        },
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "martian-unknown-pressure",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "source-not-recorded",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "exact-recorded",
+          "pressureKpa": "source-not-recorded",
+          "flowCmS": "target-unspecified"
+        }
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "dimensionStatuses": {
+          "gravity": "source-not-recorded",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "exact-recorded",
+          "pressureKpa": "source-not-recorded",
+          "flowCmS": "target-unspecified"
+        },
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "nearby-is-not-exact",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "non-exact-retrieval-match",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        }
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "non-exact-retrieval-match",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        },
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "unavailable-flex",
+      "expected": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null,
+        "dimensionStatuses": null
+      },
+      "actual": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "dimensionStatuses": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "quarantine-no-substitute",
+      "expected": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "abstentionCode": "quarantined-record",
+        "answerIncludes": null,
+        "dimensionStatuses": null
+      },
+      "actual": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "dimensionStatuses": null,
+        "abstentionCode": "quarantined-record",
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "irrelevant-question-despite-match",
+      "expected": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null,
+        "dimensionStatuses": null
+      },
+      "actual": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "dimensionStatuses": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "no-target-certification",
+      "expected": {
+        "abstained": true,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": "unsupported-intent",
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "conditions-differ",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        }
+      },
+      "actual": {
+        "abstained": true,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "conditions-differ",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        },
+        "abstentionCode": "unsupported-intent",
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "different-fuel",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "conditions-differ",
+          "geometry": "target-unspecified",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        }
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "conditions-differ",
+          "geometry": "target-unspecified",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        },
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "different-ventilation",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "conditions-differ"
+        }
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "conditions-differ"
+        },
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    },
+    {
+      "id": "different-geometry",
+      "expected": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "conditions-differ",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        }
+      },
+      "actual": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "conditions-differ",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        },
+        "abstentionCode": null,
+        "answerIncludes": null
+      },
+      "repeatable": true,
+      "lineageValid": true,
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "total": 11,
+  "citationCases": [
+    {
+      "id": "exact-observation-citation",
+      "expected": "lineage-verified",
+      "actual": "lineage-verified",
+      "passed": true
+    },
+    {
+      "id": "wrong-page",
+      "expected": "lineage-mismatch",
+      "actual": "lineage-mismatch",
+      "passed": true
+    },
+    {
+      "id": "unknown-source",
+      "expected": "lineage-mismatch",
+      "actual": "lineage-mismatch",
+      "passed": true
+    },
+    {
+      "id": "missing-citation",
+      "expected": "lineage-mismatch",
+      "actual": "lineage-mismatch",
+      "passed": true
+    },
+    {
+      "id": "observation-cannot-cite-unknown-pressure",
+      "expected": "lineage-mismatch",
+      "actual": "lineage-mismatch",
+      "passed": true
+    }
+  ],
+  "citationsPassed": 5,
+  "citationsTotal": 5
+}

@@ -16,14 +16,30 @@
 @keyframes ign-dissolve { 0% { opacity: .75; } 100% { opacity: 0; } }
 @keyframes ign-to-site { to { opacity: .9; } }
 
-/* Loading: the wordmark, a sticker progress bar and the percentage. */
-.ign-loading { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 16px; pointer-events: none; }
-.ign-loading p { margin: 0; max-width: none; font: 800 1.6rem/1 var(--display, sans-serif); font-variation-settings: 'wdth' 85; color: #fff; text-shadow: 3px 3px 0 #15153d; }
-.ign-loading p + progress + p { font: 700 .95rem/1 var(--body, sans-serif); font-variant-numeric: tabular-nums; text-shadow: none; color: rgb(255 255 255 / .85); }
-.ign-loading progress { appearance: none; width: min(280px, 64vw); height: 16px; border: 3px solid #fff; border-radius: 999px; overflow: hidden; background: rgb(255 255 255 / .12); }
-.ign-loading progress::-webkit-progress-bar { background: rgb(255 255 255 / .12); }
+/* Boot (loading, and before hydration): Design B, the same ultramarine sky, sparkle stars and Earth curve as the homepage
+   hero, with the wordmark on a paper sticker card. The dark space look begins only when the 3D film itself starts. */
+.ign[data-beat=""], .ign[data-beat="loading"], .ign[data-beat=""]::backdrop, .ign[data-beat="loading"]::backdrop { background: #2a2bd6; }
+.ign-loading { position: absolute; inset: 0; display: grid; place-content: center; pointer-events: none; }
+.ign-boot-sky { position: absolute; inset: 0; overflow: hidden; }
+.ign-boot-star { position: absolute; width: calc(22px * var(--s)); height: auto; fill: #fff; animation: ign-twinkle 2.8s ease-in-out var(--d) infinite; }
+.ign-boot-star:nth-child(3n) { fill: #ffb020; }
+@keyframes ign-twinkle { 50% { opacity: .35; transform: scale(.8) rotate(20deg); } }
+.ign-boot-earth { position: absolute; left: 50%; bottom: -125vmax; width: 150vmax; height: 150vmax; transform: translateX(-30%); border-radius: 50%;
+  background: radial-gradient(38% 9% at 34% 3%, #2ee6a6 0 60%, transparent 61%), radial-gradient(30% 7% at 70% 6%, #2ee6a6 0 60%, transparent 61%), #3d6dff;
+  border: 6px solid #15153d; box-shadow: 0 0 0 22px rgb(111 160 255 / .35); }
+.ign-boot { position: relative; display: grid; justify-items: center; gap: 10px; padding: 30px 40px 26px; border-radius: 28px; background: #fff; color: #15153d;
+  border: 3px solid #15153d; box-shadow: 8px 8px 0 #15153d; animation: ign-boot-in .5s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes ign-boot-in { from { opacity: 0; transform: translateY(14px) scale(.96); } }
+.ign-boot-mark { width: 64px; height: 64px; animation: ign-flicker 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes ign-flicker { 50% { transform: scale(1.05, .95) rotate(-2deg); } }
+.ign-boot p { margin: 0; max-width: none; }
+.ign-boot-word { font: 800 clamp(2.2rem, 1.6rem + 2vw, 3rem)/1 var(--display, sans-serif); font-variation-settings: 'wdth' 85; letter-spacing: -.02em; }
+.ign-boot-sub { padding: 3px 12px; border-radius: 999px; background: #2ee6a6; border: 2.5px solid #15153d; font: 800 .85rem/1.2 var(--display, sans-serif); rotate: -2deg; }
+.ign-loading progress { appearance: none; margin-top: 10px; width: min(300px, 64vw); height: 18px; border: 3px solid #15153d; border-radius: 999px; overflow: hidden; background: #eef1ff; }
+.ign-loading progress::-webkit-progress-bar { background: #eef1ff; }
 .ign-loading progress::-webkit-progress-value { background: #ffb020; transition: width .3s ease-out; }
 .ign-loading progress::-moz-progress-bar { background: #ffb020; }
+.ign-boot-pct { font: 700 .9rem/1 var(--body, sans-serif); font-variant-numeric: tabular-nums; color: #4a4a7a; }
 
 /* Captions: a paper balloon at the bottom centre, never over the subject's face. */
 .ign-caption { position: absolute; left: 50%; bottom: clamp(74px, 12vh, 120px); transform: translateX(-50%); width: fit-content; max-width: min(92vw, 760px); margin: 0; text-align: center;

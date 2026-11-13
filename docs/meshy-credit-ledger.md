@@ -120,3 +120,88 @@ The **70-credit art-direction cost was charged**, not proposed (2,783 → 2,713)
 | **Total** | **387** |
 
 3,100 − 387 = 2,713, which matches the live balance.
+
+## November 2026 production (owner plan: cap 1,500 across three batches)
+
+**Owner approval (2026-11-12):** "Full plan, cap 1,500".
+- Batch 1: 300 credits, 10 models. These are 5 mission dioramas plus 5 hero props for Missions 01, 03, 04 and 05.
+- Batch 2: 900 credits, 30 environment props. Runs only after Batch 1 passes QA.
+- Batch 3: 300 credits for revisions, rigging and animation.
+- That leaves about 189 credits for the owner's other project, which shares the pool.
+
+No top-ups and no automatic retries. Each job runs once with `--approved-cap 30`, sequentially, with a balance floor of 1,389 for Batch 1.
+
+**Starting balance:** 1,689 (monthly 1,689, permanent 0), read live on 2026-11-12. The monthly credits reset at 2026-12-11T08:11:47Z.
+
+**Gap from the October ledger:** the earlier ledger ended at 2,713. The 1,024 difference was spent by the owner's separate portfolio project, which shares this Meshy account. None of that spend is MicroFire assets.
+
+### Batch 1 (meshy-7.1 text-to-3D preview 20 + PBR refine 10 = 30 each)
+
+Task IDs, balance before and balance after for every job are in `tools/meshy/ledger.jsonl`. Source GLBs and textures are kept locally in `tools/meshy/incoming/<job>/`, which is git-ignored. QA used five-view turnarounds rendered by `tools/meshy/render-stills.mjs`.
+
+| Job | Destination | Credits | QA | Integration status |
+|---|---|---|---|---|
+| `m1-diorama-v1` | Mission map + Mission 01 page | 30 | Accepted | Card and page still (`public/media/missions/station-arrival.webp`) |
+| `m2-diorama-v1` | Mission map + Mission 02 page | 30 | Accepted | Card and page still |
+| `m3-diorama-v1` | Mission map + Mission 03 page | 30 | Accepted with note: the chamber renders opaque, with no visible flame | Card and page still, generic illustration only |
+| `m4-diorama-v1` | Mission map + Mission 04 page | 30 | Accepted | Card and page still |
+| `m5-diorama-v1` | Mission map + Mission 05 page | 30 | Accepted with note: the ground is pale blue, not grey regolith (fictional scene) | Card and page still |
+| `m1-science-rack-v1` | Mission 01 scene (glovebox rack) | 30 | Accepted | Generated + QA'd; not yet placed in a scene |
+| `m3-sample-carousel-v1` | Mission 03 scene | 30 | Accepted with note: the dome is opaque and open at the front | Generated + QA'd; not yet placed |
+| `m4-evidence-lectern-v1` | Mission 04 scene | 30 | Accepted with note: reads as a reading desk with a floating holo disc | Generated + QA'd; not yet placed |
+| `m5-ventilation-unit-v1` | Mission 05 scene | 30 | Accepted | Generated + QA'd; not yet placed |
+| `m5-airlock-v1` | Mission 05 scene | 30 | Accepted with note: a round hatch, not a full module; also serves Mission 01 | Generated + QA'd; not yet placed |
+
+**Batch 1 totals:** 10 jobs, 10 succeeded, 0 failed, 0 retries. Spent **300**, taking the balance from **1,689 to 1,389**; this matches the live balance.
+
+A generated model is not a game feature. The props join mission scenes only when those missions are built. None of them affects placement, qualification or any scientific outcome.
+
+### Batch 2 (started 2026-11-12 after Batch 1 QA passed)
+
+- **Jobs:** 29 of the 30 planned. `m1-airlock-hatch-v1` was dropped because it would duplicate `m5-airlock-v1`.
+- **Spend:** estimate 870, hard floor 519. That leaves 300 for Batch 3 plus about 219 in reserve.
+- **Results:** recorded per job in `tools/meshy/ledger.jsonl`, with QA results appended when the batch finishes.
+
+**Batch 2 result.** 29 of 29 succeeded with no failures or retries. Spent **870**, taking the balance from **1,389 to 519**; this matches the live balance.
+
+Five-view QA:
+- **27 accepted**, 4 of them with notes.
+- **2 rejected as corridors.** Both came out as flat panels and are kept as wall dressing only.
+
+The models are generated, QA'd and preserved in `tools/meshy/incoming/` (git-ignored). None is placed in a playable scene yet; each mission scene adopts its props when that mission is built.
+
+| Job | QA | Note |
+|---|---|---|
+| `m1-corridor-segment-v1` | rejected-as-corridor | Came out as a flat handrail/ladder frame (0.11 m deep), not a walk-through corridor. Kept as wall dressing only. |
+| `m1-research-console-v1` | accepted |  |
+| `m1-evidence-scanner-v1` | accepted |  |
+| `m1-storage-module-v1` | accepted |  |
+| `m1-stowage-bags-v1` | accepted |  |
+| `m2-diagnostic-housing-v1` | accepted |  |
+| `m2-specimen-case-v1` | accepted-with-note | Foam inserts empty; no sample cards visible. |
+| `m2-inspection-scope-v1` | accepted |  |
+| `m2-tool-wall-v1` | accepted |  |
+| `m2-parts-rack-v1` | accepted |  |
+| `m2-cable-reel-console-v1` | accepted |  |
+| `m3-camera-housing-v1` | accepted |  |
+| `m3-optical-bench-v1` | accepted |  |
+| `m3-observation-console-v1` | accepted |  |
+| `m3-inspection-microscope-v1` | accepted |  |
+| `m3-gauge-panel-v1` | accepted |  |
+| `m3-viewing-window-v1` | accepted |  |
+| `m4-archive-unit-v1` | accepted |  |
+| `m4-evidence-podium-v1` | accepted-with-note | Glass dome renders opaque. |
+| `m4-comparison-console-v1` | accepted-with-note | Screens read faintly. |
+| `m4-document-board-v1` | accepted |  |
+| `m4-filing-cart-v1` | accepted |  |
+| `m4-review-desk-v1` | accepted-with-note | Two small detached floating bulbs; trim or hide in scene. |
+| `m5-habitat-module-v1` | accepted |  |
+| `m5-corridor-module-v1` | rejected-as-corridor | Came out as a flat hatch/floor panel (0.06 m deep), not a corridor module. Kept as panel dressing only. |
+| `m5-life-support-housing-v1` | accepted |  |
+| `m5-utility-robot-v1` | accepted |  |
+| `m5-inspection-drone-v1` | accepted |  |
+| `m5-research-workstation-v1` | accepted |  |
+
+**Remaining:**
+- 519 credits, of which 300 is the approved Batch 3 for revisions, rigging and animation.
+- About 219 is reserved for the owner's other project. Nothing beyond Batch 3 is approved.

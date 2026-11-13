@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import type { DomainResult, Snapshot } from '../contract';
+import type { CapabilityResponse, DomainResult, Snapshot } from '../contract';
 import { checkpointReceipt, createController, type SaveAdapter } from '../controller';
 import type { PreviewTransport, TransportResult } from '../transport';
 import { domain, failure, fx, local, snap } from './fixtures';
@@ -37,6 +37,18 @@ test('boot: preview disabled is reported as unavailable, a required grant asks f
   b.script.capability.push(ok(fx<{ data: unknown }>('CAPABILITY_RESPONSE').data));
   await b.c.boot();
   expect(b.c.getState().link).toEqual({ status: 'authorization-required', reason: 'initial' });
+});
+
+test.each(['fresh', 'same-runtime', 'changed-runtime'] as const)('valid-cookie boot restores usable controls: %s', async (kind) => {
+  const seed = kind === 'fresh' ? undefined : snap('PENDING_REPAIR_A');
+  const { c, script } = rigged(seed);
+  const capability = fx<CapabilityResponse>('CAPABILITY_RESPONSE').data;
+  const runtimeId = kind === 'changed-runtime' ? '66666666-6666-4666-8666-666666666666' : capability.runtimeId;
+  script.capability.push(ok({ ...capability, runtimeId, grant: { status: 'valid', expiresAt: '2026-11-12T23:00:00.000Z' } }));
+  await c.boot();
+  expect(c.getState().link).toEqual(kind === 'fresh' ? { status: 'ready' } : kind === 'same-runtime' ? { status: 'confirmed' } : { status: 'runtime-changed', runtimeId });
+  expect(c.getState().runtimeId).toBe(runtimeId);
+  expect(c.getState().snapshot).toEqual(seed ?? null);
 });
 
 test('authorize then start: one exact start request with its command identity; snapshot confirmed', async () => {

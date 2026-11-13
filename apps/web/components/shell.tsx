@@ -5,13 +5,13 @@ import { useEffect, useRef } from 'react';
 
 const sections = [
   { label: 'Discover', href: '/', match: ['/', '/roadmap', '/challenge', '/impact', '/assets'] },
-  { label: 'Evidence', href: '/dashboard', match: ['/dashboard', '/ask', '/gaps', '/compare', '/sources', '/methodology'] },
+  { label: 'Evidence', href: '/dashboard', match: ['/dashboard', '/ask', '/gaps', '/investigations', '/compare', '/sources', '/methodology'] },
   { label: 'Experiments', href: '/atlas', match: ['/atlas', '/experiments'] },
   { label: 'Flame Lab', href: '/lab', match: ['/lab'] },
   { label: 'Missions', href: '/missions', match: ['/missions', '/passport'] }
 ] as const;
 const evidenceTools = [
-  ['/dashboard', 'Workstation'], ['/ask', 'Ask PIX'], ['/gaps', 'Frontier'], ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology']
+  ['/dashboard', 'Workstation'], ['/ask', 'Ask PIX'], ['/gaps', 'Frontier'], ['/investigations', 'Library'], ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology']
 ] as const;
 const missionTools = [['/missions', 'Mission map'], ['/missions/bass-assembly/tour', 'Training bay'], ['/passport', 'Evidence Passport']] as const;
 /** Unfinished destinations say so before arrival (state straight from the shared registry). */
@@ -86,7 +86,7 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
     <main id="main" tabIndex={-1}>{children}</main>
     <footer className="site-footer">
       <div className="wrap">
-        <p>Independent educational research project. No NASA endorsement and no operational fire-safety certification. Pre-release: public release is blocked.</p>
+        <p>Independent educational research project. No NASA endorsement and no operational fire-safety certification.</p>
         <nav aria-label="Project">
           <Link href="/sources">Sources &amp; rights</Link><Link href="/methodology">Methodology</Link><Link href="/roadmap">Progress</Link>
         </nav>

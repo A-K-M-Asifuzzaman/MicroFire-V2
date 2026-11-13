@@ -8,6 +8,7 @@ const envelope = (data: unknown) => ({ json: { apiVersion: '1', data } });
 const science = (fn: string, input: unknown): unknown => JSON.parse(execFileSync(process.execPath, ['--import', 'tsx', 'tests/e2e/science-oracle.ts', fn, JSON.stringify(input)], { encoding: 'utf8' }));
 async function oraclePosts(page: Page) {
   await page.route('**/api/ask', (r) => r.fulfill(envelope(science('ask', r.request().postDataJSON()))));
+  await page.route('**/api/intelligence', (r) => r.fulfill(envelope(science('intelligence', r.request().postDataJSON()))));
   await page.route('**/api/evidence/rank', (r) => r.fulfill(envelope(science('rank', r.request().postDataJSON()))));
   await page.route('**/api/gaps', (r) => r.fulfill(envelope(science('gaps', r.request().postDataJSON()))));
 }
@@ -60,7 +61,8 @@ test('first viewport: home gravity toggle, Ask input and Atlas B20 action sit wh
     await page.goto('/atlas');
     expect(await bottom(page, '.exhibit-actions .btn'), 'Inspect B20').toBeLessThanOrEqual(h);
     await expect(page.getByRole('link', { name: 'Inspect B20' })).toHaveAttribute('href', '/experiments/bass2-b20');
-    for (const [route, sel] of [['/dashboard', '#ws-question'], ['/gaps', '#gap-material']] as const) {
+    // /gaps: the Transferability Analyzer's question is now the page's first control (the coverage form follows it).
+    for (const [route, sel] of [['/dashboard', '#ws-question'], ['/gaps', '#tr-question']] as const) {
       await page.goto(route);
       expect(await top(page, sel), `${route} first control`).toBeLessThanOrEqual(h);
     }

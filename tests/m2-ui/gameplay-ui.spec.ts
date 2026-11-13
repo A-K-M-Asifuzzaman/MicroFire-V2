@@ -9,7 +9,7 @@ const open = async (page: Page, scenario: string) => {
 };
 const intentLog = (page: Page) => page.getByRole('region', { name: 'Intent log (fixture gallery)' }).or(page.locator('.m2-intents'));
 
-test('public mission pages stay locked; the preview loads only on explicit request and reports the missing backend', async ({ page }) => {
+test('public mission pages stay locked; the preview loads only on explicit request and reports the server has it disabled', async ({ page }) => {
   const scripts: string[] = [];
   page.on('request', (r) => { if (r.resourceType() === 'script') scripts.push(r.url()); });
   await page.goto('/missions/bass-assembly');
@@ -19,7 +19,8 @@ test('public mission pages stay locked; the preview loads only on explicit reque
   scripts.length = 0;
   await page.goto('/missions/bass-assembly?preview=bass-b20-training-v1');
   await expect(page.getByRole('heading', { name: 'Training preview not available here' })).toBeVisible();
-  await expect(page.getByText(/local preview API and shared contract runtime are not integrated yet/)).toBeVisible();
+  // With the Stage A runtime connected, a server without the credentialed local preview launch answers 404: disabled, never playable.
+  await expect(page.getByText('The local training preview is not enabled on this server. Public missions remain locked.')).toBeVisible();
   expect(scripts.length).toBeGreaterThan(plain); // the gameplay chunk is fetched only now
   await expect(page.getByRole('button', { name: /Start a new training case/ })).toHaveCount(0);
 });

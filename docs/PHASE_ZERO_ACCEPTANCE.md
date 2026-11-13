@@ -48,7 +48,7 @@ Status refers to the final reviewed state; failures found at the original baseli
 5. **Source-link integration (High when expanding the catalog):** dossier used a fixed page 112/source label instead of its citation DTO. It now consumes the cited source, locator section, physical/printed page and canonical URL. The B20 citation remains correct; screenshots/browser assertion reflect the actual source link.
 6. **Rate-limit integration clarity (Low):** 429 now includes an explicit Retry-After delay, tested with window recovery. No distributed limiter or paid service was added.
 
-No data value, dependency, app structure or available feature was introduced. Five new unit cases increased the original 19-test suite to 24; one source-URL check brings the final total to 25. Existing storage and browser cases were strengthened, not skipped. Historical PHASE_ZERO_REPORT.md and RELEASE_SCORECARD.md counts remain labelled as the original baseline rather than rewritten as new evidence.
+No data value, dependency, app structure or available feature was introduced. Five new unit cases increased the original 19-test suite to 24; one source-URL check brings the final total to 25. Existing storage and browser cases were strengthened, not skipped. Historical PHASE_ZERO_REPORT.md and docs/internal/RELEASE_SCORECARD.md counts remain labelled as the original baseline rather than rewritten as new evidence.
 
 ## Commands and actual results
 

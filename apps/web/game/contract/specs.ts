@@ -1,4 +1,4 @@
-import { equipmentCopy, equipmentDefinitions } from './equipment-copy';
+import { equipmentCopy, equipmentDefinitions } from '@microfire/shared';
 import type { PartSpec } from '../contract';
 
 /** The frozen equipment language as plain props (labels, anchors, dependencies, source notes). */

@@ -1,0 +1,143 @@
+{
+  "apiVersion": "1",
+  "data": {
+    "analysisVersion": "condition-transfer-v1",
+    "environment": "moon",
+    "targetConditions": {
+      "gravity": "lunar",
+      "oxygenPct": 17.4,
+      "pressureKpa": 70
+    },
+    "records": [
+      {
+        "experimentId": "bass2-b20",
+        "dimensions": [
+          {
+            "field": "gravity",
+            "status": "source-not-recorded",
+            "target": "lunar",
+            "source": null,
+            "unit": null,
+            "basis": "unknown",
+            "reason": "ISS microgravity context is described by the report; acceleration for this run was not extracted.",
+            "citations": []
+          },
+          {
+            "field": "material",
+            "status": "target-unspecified",
+            "target": null,
+            "source": "PMMA",
+            "unit": null,
+            "basis": "recorded",
+            "reason": "Target condition not supplied; no match is assumed.",
+            "citations": [
+              {
+                "sourceId": "nasa-bass-ii-20210011385",
+                "locator": {
+                  "kind": "pdf",
+                  "page": 112,
+                  "printedPage": "104",
+                  "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                }
+              }
+            ]
+          },
+          {
+            "field": "geometry",
+            "status": "target-unspecified",
+            "target": null,
+            "source": "2 cm wide film",
+            "unit": null,
+            "basis": "recorded",
+            "reason": "Target condition not supplied; no match is assumed.",
+            "citations": [
+              {
+                "sourceId": "nasa-bass-ii-20210011385",
+                "locator": {
+                  "kind": "pdf",
+                  "page": 112,
+                  "printedPage": "104",
+                  "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                }
+              }
+            ]
+          },
+          {
+            "field": "oxygenPct",
+            "status": "exact-recorded",
+            "target": 17.4,
+            "source": 17.4,
+            "unit": "vol%",
+            "basis": "recorded",
+            "reason": "Equal to the recorded condition; equality alone does not establish transferability.",
+            "citations": [
+              {
+                "sourceId": "nasa-bass-ii-20210011385",
+                "locator": {
+                  "kind": "pdf",
+                  "page": 112,
+                  "printedPage": "104",
+                  "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                }
+              }
+            ]
+          },
+          {
+            "field": "pressureKpa",
+            "status": "source-not-recorded",
+            "target": 70,
+            "source": null,
+            "unit": null,
+            "basis": "unknown",
+            "reason": "No per-test pressure in Table A.1; do not substitute a series range.",
+            "citations": []
+          },
+          {
+            "field": "flowCmS",
+            "status": "target-unspecified",
+            "target": null,
+            "source": 5,
+            "unit": "cm/s",
+            "basis": "recorded",
+            "reason": "Target condition not supplied; no match is assumed.",
+            "citations": [
+              {
+                "sourceId": "nasa-bass-ii-20210011385",
+                "locator": {
+                  "kind": "pdf",
+                  "page": 112,
+                  "printedPage": "104",
+                  "section": "Table A.1, B20 (as-run 50), 2014-07-02"
+                }
+              }
+            ]
+          }
+        ],
+        "conclusion": "insufficient-evidence",
+        "confounders": [
+          "gravity: ISS microgravity context is described by the report; acceleration for this run was not extracted.",
+          "material: Target condition not supplied; no match is assumed.",
+          "geometry: Target condition not supplied; no match is assumed.",
+          "pressureKpa: No per-test pressure in Table A.1; do not substitute a series range.",
+          "flowCmS: Target condition not supplied; no match is assumed."
+        ],
+        "limitations": [
+          "One BASS-II test, not a catalog of NASA combustion research.",
+          "This record cannot establish lunar fire safety or isolate airflow causation.",
+          "Air display mixes velocities and a potentiometer setting; pot 0.5 is not 0.5 cm/s.",
+          "Pressure and measurement uncertainty are not established for this individual row.",
+          "Environment labels describe user-proposed scenarios, not measured NASA mission conditions.",
+          "No partial-gravity result, causal effect, fire-risk probability, target safety or certification follows from condition matching."
+        ]
+      }
+    ],
+    "coverage": {
+      "datasetVersion": "p0-bass-b20-v1",
+      "validatedExperiments": 1,
+      "validatedSources": 1,
+      "quarantinedCandidates": 55,
+      "statement": "1 validated experiment from 1 source. 55 legacy candidate rows are quarantined pending primary-source review and are excluded. Absence from this catalog is not evidence that a condition was never studied."
+    },
+    "scope": "condition-comparison-not-safety-prediction"
+  }
+}

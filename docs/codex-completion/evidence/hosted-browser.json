@@ -1,0 +1,35 @@
+{
+  "origin": "https://microfire-v2-preview.vercel.app",
+  "checkedAt": "2026-11-12T10:49:00.822Z",
+  "results": [
+    {
+      "mobile": false,
+      "browser": "156.0.8078.4",
+      "realHttp": true,
+      "sourceLink": true,
+      "evidenceDownload": true,
+      "supportedPix": true,
+      "unsupportedPixAbstention": true,
+      "pageErrors": []
+    },
+    {
+      "mobile": true,
+      "browser": "156.0.8078.4",
+      "realHttp": true,
+      "sourceLink": true,
+      "evidenceDownload": true,
+      "supportedPix": true,
+      "unsupportedPixAbstention": true,
+      "pageErrors": []
+    }
+  ],
+  "exportChecks": {
+    "desktopEqualsMobile": true,
+    "records": 1,
+    "oxygenPct": 17.4,
+    "pressureUnknown": true,
+    "runAccelerationUnknown": true,
+    "citationPdfPage": 112,
+    "catalogSha256": "1f9d4883791da73e256af09eb3994805b53c3a394eff3db0f0d066fc558779dc"
+  }
+}

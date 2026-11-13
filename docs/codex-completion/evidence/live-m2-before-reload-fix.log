@@ -1,0 +1,149 @@
+TAP version 13
+# Disposable UI integration built from 0eb3fa3f3884d7fa7a3e489960421e7580416816; production checkout and public availability unchanged.
+# Subtest: real M2 UI: keyboard completes, exports and resumes a server-confirmed case
+not ok 1 - real M2 UI: keyboard completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 42665.442083
+  type: 'test'
+  location: '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:6:2596'
+  failureType: 'testCodeFailure'
+  error: |-
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Component')
+    Expected: "radiometer"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Component') with timeout 5000ms
+      - waiting for getByLabel('Component')
+        14 × locator resolved to <select required="">…</select>
+           - unexpected value ""
+
+        at captureRawStack (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+        at callMatcherAsStep (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13316:57)
+        at Object.toHaveValue (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13308:23)
+        at nativeSelect (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:108:57)
+        at async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:170:7)
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    captureRawStack (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    callMatcherAsStep (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    Object.toHaveValue (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    nativeSelect (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:108:57)
+    async TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:170:7)
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:228:11)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: real M2 UI: touch completes, exports and resumes a server-confirmed case
+not ok 2 - real M2 UI: touch completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 54878.229542
+  type: 'test'
+  location: '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:6:2596'
+  failureType: 'testCodeFailure'
+  error: |-
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Start a new training case' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Start a new training case' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Start a new training case' })
+
+        at captureRawStack (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+        at callMatcherAsStep (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13316:57)
+        at Object.toBeVisible (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13308:23)
+        at TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:206:104)
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    captureRawStack (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    callMatcherAsStep (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    Object.toBeVisible (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:206:104)
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:228:11)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: real M2 UI: no-webgl completes, exports and resumes a server-confirmed case
+not ok 3 - real M2 UI: no-webgl completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 54792.480041
+  type: 'test'
+  location: '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:6:2596'
+  failureType: 'testCodeFailure'
+  error: |-
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Start a new training case' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Start a new training case' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Start a new training case' })
+
+        at captureRawStack (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+        at callMatcherAsStep (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13316:57)
+        at Object.toBeVisible (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13308:23)
+        at TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:206:104)
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    captureRawStack (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    callMatcherAsStep (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    Object.toBeVisible (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:206:104)
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:228:11)
+    runNextTicks (node:internal/process/task_queues:65:5)
+    process.processImmediate (node:internal/timers:541:9)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: real M2 UI: 3d completes, exports and resumes a server-confirmed case
+not ok 4 - real M2 UI: 3d completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 55916.876333
+  type: 'test'
+  location: '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:6:2596'
+  failureType: 'testCodeFailure'
+  error: |-
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Start a new training case' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Start a new training case' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Start a new training case' })
+
+        at captureRawStack (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+        at callMatcherAsStep (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13316:57)
+        at Object.toBeVisible (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13308:23)
+        at TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:206:104)
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    captureRawStack (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    callMatcherAsStep (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    Object.toBeVisible (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:206:104)
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:228:11)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 232369.580625

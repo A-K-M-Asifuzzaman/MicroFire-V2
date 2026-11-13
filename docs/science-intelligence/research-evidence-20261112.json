@@ -1,0 +1,113 @@
+{
+  "checkedAtAsiaDhaka": "2026-11-12T22:09:01.698053+06:00",
+  "baseCommit": "d9a331304d315b5b14c2b29b9f1a127ccd13744f",
+  "branch": "codex/science-intelligence-20261112",
+  "scope": "Pre-event eligibility and primary-source resource research only",
+  "competitionImplementationAuthorized": false,
+  "decision": "Await owner/organizer confirmation of development start and reuse eligibility; today is before the listed November 13 local event.",
+  "publicPages": [
+    {
+      "url": "https://chattogram.nasaspaceappsbd.com/",
+      "transport": "HTTPS curl with certificate validation; HTTP 200",
+      "bytes": 128478,
+      "sha256": "768f237be57ff79c5cc6732c36355e2e53551f2f3396bbe84edac42b75e33542",
+      "localCapture": "/tmp/microfire-chattogram-20261112.html"
+    },
+    {
+      "url": "https://www.spaceappschallenge.org/legal/",
+      "transport": "HTTPS curl with certificate validation; HTTP 200",
+      "bytes": 97646,
+      "sha256": "4b12c31b82a599ca7d18b2f3105355713e5c8a8f96e1f6e92018501bd2b6f92c",
+      "localCapture": "/tmp/microfire-legal-20261112.html"
+    },
+    {
+      "url": "https://www.spaceappschallenge.org/2026/local-events/chattogram/",
+      "transport": "HTTPS curl with certificate validation; HTTP 200",
+      "bytes": 79062,
+      "sha256": "cb49ea51436cbe65327d89256c40b7c3958e33bf17e81ce8ecbff1373c8ee733",
+      "localCapture": "/tmp/microfire-official-local-20261112.html"
+    },
+    {
+      "url": "https://www.spaceappschallenge.org/resources/participant-faqs/",
+      "transport": "HTTPS curl with certificate validation; HTTP 200",
+      "bytes": 154359,
+      "sha256": "63d48eb98928265ff996b046156895a3210359db3c6114deadaa66f39b8c219c",
+      "localCapture": "/tmp/microfire-official-faq-20261112.html"
+    },
+    {
+      "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/",
+      "transport": "HTTPS curl with certificate validation; HTTP 200",
+      "bytes": 79072,
+      "sha256": "b3371362447220f25cf29616fa8a0270e92c5e69e4bf8e98669fd2fa8a88801b",
+      "localCapture": "/tmp/microfire-flame-official-20261112.html"
+    }
+  ],
+  "organizerGuidance": "https://github.com/nasa/spaceapps/discussions/1827",
+  "localPublishedEventDays": [
+    "2026-11-13",
+    "2026-11-14"
+  ],
+  "publicConfiguration": {
+    "video240slocal_start_date": "2026-11-13 00:00:00",
+    "video240slocal_end_date": "2026-11-13 18:00:00",
+    "video30sstart_date": null,
+    "video30send_date": null
+  },
+  "deadlineDiscrepancies": [
+    "Local home public configuration: local 240-second window November 13 00:00\u201318:00; no offset in these fields. Rendered home calls the countdown registration.",
+    "Official local listing declares UTC+6, schedules 240-second upload November 13 18:30 and 30-second upload November 14 09:00.",
+    "Official local listing key dates instead gives November 1 18:30 for the 240-second local video and November 14 12:00 for the 30-second final video.",
+    "Official local structured startDate/endDate/submissionDeadline are null.",
+    "Local FAQ repeats global November 14\u201315 and November 15 23:59 submission; owner earlier deadlines retain priority."
+  ],
+  "primaryPdfs": [
+    {
+      "id": "bass",
+      "url": "https://ntrs.nasa.gov/api/citations/20210011385/downloads/TM-20210011385.pdf",
+      "sha256": "5ffa911fd9b6356f204646003fb9342e341810dcdfdf5cb15756e7f01ec5f770",
+      "bytes": 48972416,
+      "verification": "Rehashed two preserved downloads; both match the existing quarantined manifest. No new download, independent science approval or promotion in this phase.",
+      "localCopies": [
+        "/tmp/microfire-nasa-20261112/bass.pdf",
+        "/tmp/microfire-nasa-script-20261112/bass.pdf"
+      ]
+    },
+    {
+      "id": "flex",
+      "url": "https://ntrs.nasa.gov/api/citations/20205008449/downloads/Effects%20of%20ambient%20inert%20gas%20properties%20-Combustion%20Science-Nayagam-FAW.pdf",
+      "sha256": "7bd5fad64cabb3d780b473a36cfeee4645861e7924814ff7eac722709cced43a",
+      "bytes": 909025,
+      "verification": "Rehashed two preserved downloads; both match the existing quarantined manifest. No new download, independent science approval or promotion in this phase.",
+      "localCopies": [
+        "/tmp/microfire-nasa-20261112/flex.pdf",
+        "/tmp/microfire-nasa-script-20261112/flex.pdf"
+      ]
+    },
+    {
+      "id": "saffire",
+      "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+      "sha256": "d25b394f43774ee79a3223b53e90571be299c8996d1cff2512c76e3308e107f5",
+      "bytes": 6518291,
+      "verification": "Rehashed two preserved downloads; both match the existing quarantined manifest. No new download, independent science approval or promotion in this phase.",
+      "localCopies": [
+        "/tmp/microfire-nasa-20261112/saffire.pdf",
+        "/tmp/microfire-nasa-script-20261112/saffire.pdf"
+      ]
+    },
+    {
+      "id": "acme",
+      "url": "https://ntrs.nasa.gov/api/citations/20220015583/downloads/PS-03790%20ACME%20poster%2013thUSNCM%202023.pdf",
+      "sha256": "d808902f62d814c02ac06904ad5a4ac50cc252af7d0513bfb27bbcba6223c322",
+      "bytes": 2898168,
+      "verification": "Rehashed two preserved downloads; both match the existing quarantined manifest. No new download, independent science approval or promotion in this phase.",
+      "localCopies": [
+        "/tmp/microfire-nasa-20261112/acme.pdf",
+        "/tmp/microfire-nasa-script-20261112/acme.pdf"
+      ]
+    }
+  ],
+  "newExperimentalRecordsAdmitted": 0,
+  "productChanges": false,
+  "dependenciesInstalled": false,
+  "testsOrBuildsRepeated": false
+}

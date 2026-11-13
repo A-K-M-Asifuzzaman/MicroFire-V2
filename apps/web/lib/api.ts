@@ -4,11 +4,14 @@ import {
   API_VERSION, ApiErrorSchema, AskRequestSchema, AskResponseSchema, CitationVerifyRequestSchema, CitationVerifyResponseSchema, CompareRequestSchema,
   CompareResponseSchema, ExperimentQuerySchema, ExperimentResponseSchema, ExperimentsResponseSchema, ExportQuerySchema, ExportResponseSchema,
   FeaturesResponseSchema, GapsRequestSchema, GapsResponseSchema, HealthResponseSchema, IdSchema, PassportSchema, PassportValidationResponseSchema,
-  RankRequestSchema, RankResponseSchema, SourceDetailResponseSchema, SourcesResponseSchema, features
+  RankRequestSchema, RankResponseSchema, FrontierResponseSchema, SourceDetailResponseSchema, SourcesResponseSchema, features,
+  InvestigationQuerySchema, InvestigationResponseSchema, InvestigationsResponseSchema, InvestigationCitationRequestSchema,
+  InvestigationCitationResponseSchema, TransferRequestSchema, TransferResponseSchema, IntelligenceRequestSchema, IntelligenceResponseSchema
 } from '@microfire/shared';
 import {
   answerQuestion, catalog, classifyGaps, compareExperiments, coverage, exportEvidence, isQuarantinedId, rankEvidence, searchExperiments,
-  sourceDetail, validatePassport, verifyCitations
+  sourceDetail, validatePassport, verifyCitations, researchFrontier, investigationLibrary, INVESTIGATION_LIBRARY_VERSION,
+  verifyInvestigationCitations, analyzeTransfer, scientificIntelligence
 } from '@microfire/science';
 
 type ErrorCode = z.infer<typeof ApiErrorSchema>['error']['code'];
@@ -37,6 +40,19 @@ export function readApi(path: string[], url: URL): Response {
   if (route === 'health') return success(HealthResponseSchema, { status: 'ok', phase: 'one', datasetVersion: catalog.datasetVersion });
   if (route === 'feature-status') return success(FeaturesResponseSchema, features);
   if (route === 'sources') return success(SourcesResponseSchema, catalog.sources);
+  if (route === 'investigations') {
+    const query = strictQuery(url, InvestigationQuerySchema);
+    if (query instanceof Response) return query;
+    return success(InvestigationsResponseSchema, { libraryVersion: INVESTIGATION_LIBRARY_VERSION, items: investigationLibrary(query.q), coverage: coverage() });
+  }
+  if (path.length === 2 && path[0] === 'investigations') {
+    const query = strictQuery(url, z.strictObject({}));
+    if (query instanceof Response) return query;
+    const id = IdSchema.safeParse(path[1]);
+    if (!id.success) return apiError(400, 'INVALID_REQUEST', 'Invalid investigation identifier.');
+    const entry = investigationLibrary().find(i => i.id === id.data);
+    return entry ? success(InvestigationResponseSchema, entry) : apiError(404, 'NOT_FOUND', 'Investigation description not found.');
+  }
   if (route === 'experiments') {
     const query = strictQuery(url, ExperimentQuerySchema);
     if (query instanceof Response) return query;
@@ -124,6 +140,15 @@ async function readJson(request: Request): Promise<unknown> {
 }
 
 const postRoutes: Record<string, { schema: z.ZodType; handle: (input: never) => Response }> = {
+  'investigations/verify': { schema: InvestigationCitationRequestSchema, handle: (r: z.infer<typeof InvestigationCitationRequestSchema>) =>
+    success(InvestigationCitationResponseSchema, verifyInvestigationCitations(r.investigationId, r.citations)) },
+  'evidence/transfer': { schema: TransferRequestSchema, handle: (r: z.infer<typeof TransferRequestSchema>) => {
+    const missing = r.experimentIds.filter(id => !catalog.experiments.some(e => e.id === id));
+    if (missing.length) return apiError(404, 'NOT_FOUND', missing.some(isQuarantinedId) ? quarantineMessage(missing.filter(isQuarantinedId)) : 'Transfer requires admitted experimental records; source descriptions are not runs.');
+    return success(TransferResponseSchema, analyzeTransfer(r));
+  } },
+  intelligence: { schema: IntelligenceRequestSchema, handle: (r: z.infer<typeof IntelligenceRequestSchema>) => success(IntelligenceResponseSchema, scientificIntelligence(r)) },
+  'evidence/frontier': { schema: RankRequestSchema, handle: (r: z.infer<typeof RankRequestSchema>) => success(FrontierResponseSchema, researchFrontier(r)) },
   'evidence/rank': { schema: RankRequestSchema, handle: (r: z.infer<typeof RankRequestSchema>) => success(RankResponseSchema, rankEvidence(r)) },
   'evidence/compare': { schema: CompareRequestSchema, handle: (r: z.infer<typeof CompareRequestSchema>) => {
     const result = compareExperiments(r.experimentIds);
@@ -159,5 +184,6 @@ export function createPostHandler(now: () => number = Date.now, limiter: RateLim
     }
   };
 }
-export const readApiLimited = createGetHandler();
-export const writeApi = createPostHandler();
+export const apiLimiter = createMemoryLimiter(LIMITS);
+export const readApiLimited = createGetHandler(apiLimiter);
+export const writeApi = createPostHandler(Date.now, apiLimiter);

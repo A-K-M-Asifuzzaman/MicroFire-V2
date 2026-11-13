@@ -1,31 +1,14 @@
 import {
   GameActionSchema, GameStateSchema, GameStateV1Schema, PassportSchema, features, missionDefinitions, resolveFeature,
-  type Catalog, type Citation, type EvidenceLevel, type GameState, type GameStateV1, type InstalledPart, type MissionId, type PartId,
+  partDefinitions, type Fault, type TransitionCode, type Catalog, type Citation, type EvidenceLevel, type GameState, type GameStateV1, type InstalledPart, type MissionId, type PartId,
   type Passport, type PassportEntry, type SessionMode, type StatementType
 } from '@microfire/shared';
 
+export { partDefinitions, equipmentDefinitions, BASS_HARDWARE_CITATION, type PartDefinition, type Fault, type TransitionCode } from '@microfire/shared';
 // ---------------- BASS-II apparatus model ----------------
-/** Hardware description used to justify the part list and placements. Placement order is an educational model, not a NASA procedure. */
-export const BASS_HARDWARE_CITATION: Citation = {
-  sourceId: 'nasa-bass-ii-20210011385',
-  locator: { kind: 'pdf', page: 12, printedPage: '4', section: 'Section 1.2 Experiment Description, BASS–II hardware' }
-};
-export type PartDefinition = { id: PartId; anchorId: string; requires: readonly PartId[]; orientationFault: { message: string; repair: string } | null; sourceNote: string };
-export const partDefinitions: readonly PartDefinition[] = [
-  { id: 'flow-duct', anchorId: 'msg-work-volume-mount', requires: [], orientationFault: null, sourceNote: '7.6 × 7.6 × 17 cm rectangular flow duct installed in the Microgravity Science Glovebox.' },
-  { id: 'fan', anchorId: 'duct-inlet', requires: ['flow-duct'], orientationFault: { message: 'The fan is reversed, so it would not blow flow through the duct toward the test section.', repair: 'Remove the fan and reinstall it at the duct inlet facing into the duct.' }, sourceNote: 'Flow was blown through the duct by a variable-speed fan.' },
-  { id: 'flow-straightener', anchorId: 'duct-honeycomb-slot', requires: ['flow-duct'], orientationFault: null, sourceNote: 'Flow passed through a honeycomb flow straightener and inlet screen to reduce swirl.' },
-  { id: 'nitrogen-nozzle', anchorId: 'test-section-n2-port', requires: ['flow-duct'], orientationFault: null, sourceNote: 'A nozzle for N2 flow was inside the test section.' },
-  { id: 'sample-holder', anchorId: 'top-mounting-rail', requires: ['flow-duct'], orientationFault: { message: 'The sample is mounted for concurrent flow, but the documented B20 run is opposed flow; its observation would not apply.', repair: 'Remove the sample holder and remount it in the opposed-flow orientation.' }, sourceNote: 'The top window was replaced by a mounting rail for solid samples; samples could be mounted for opposed or concurrent flow.' },
-  { id: 'igniter', anchorId: 'front-window-igniter-lever', requires: ['sample-holder'], orientationFault: null, sourceNote: 'A hot-wire igniter coil was moved into position with a deployment lever; sample and igniter were changed through the front window.' },
-  { id: 'still-camera', anchorId: 'top-window', requires: ['sample-holder'], orientationFault: { message: 'The still camera faces away from the top window, so the sample is out of view.', repair: 'Remove the still camera and reinstall it looking through the top window.' }, sourceNote: 'A still camera with a 60-mm lens used the top window.' },
-  { id: 'video-camera', anchorId: 'front-window-mirror', requires: ['sample-holder'], orientationFault: { message: 'The video camera faces away from the turning mirror, so it cannot see the front window.', repair: 'Remove the video camera and reinstall it facing the turning mirror at the front window.' }, sourceNote: 'A color video camera with a turning mirror looked in the front window.' },
-  { id: 'radiometer', anchorId: 'downstream-top-back-corner', requires: ['flow-duct'], orientationFault: { message: 'The radiometer faces downstream, but it must view the upstream direction where the flame is.', repair: 'Remove the radiometer and reinstall it in the downstream corner viewing upstream.' }, sourceNote: 'A thermopile detector sat in the downstream top back corner viewing upstream; its signal was not calibrated.' },
-  { id: 'exit-plate', anchorId: 'duct-exit', requires: ['flow-duct'], orientationFault: null, sourceNote: 'The duct exit contained a perforated copper plate followed by a brass screen.' }
-];
+
 const partDef = (id: PartId) => partDefinitions.find((p) => p.id === id)!;
 
-export type Fault = { partId: PartId; code: 'MISSING' | 'WRONG_ANCHOR' | 'MISSING_PREREQUISITE' | 'REVERSED'; message: string; repair: string };
 export function diagnose(installed: readonly InstalledPart[]): { qualified: boolean; faults: Fault[] } {
   const faults: Fault[] = [];
   for (const def of partDefinitions) {
@@ -45,7 +28,7 @@ const UNREACHABLE_FAULTS: readonly Fault['code'][] = ['WRONG_ANCHOR', 'MISSING_P
 /** Authored teaching statements. Only `research` statements quote the catalog; the others are labelled tutorial content, never evidence. */
 export const claimTrialStatements = [
   { id: 'trial-b20-burned-sample', origin: 'research', claimId: 'bass2-b20-burned-entire-sample', text: 'The B20 observation log reports that the flame burned the entire sample.', expected: { kind: 'observed', evidenceLevel: 'direct' }, hint: 'This sentence is recorded in the observation column of Table A.1 for B20.' },
-  { id: 'trial-b20-thickness', origin: 'research', claimId: null, text: 'The B20 sample was 0.1 mm thick.', expected: { kind: 'derived', evidenceLevel: 'direct' }, hint: 'The table states 100 µm; 0.1 mm is a unit conversion, so the value is derived, not transcribed.' },
+  { id: 'trial-b20-thickness', origin: 'research', claimId: null, text: 'The B20 sample was 0.1 mm thick.', expected: { kind: 'derived', evidenceLevel: 'analogous' }, hint: 'The table states 100 µm; 0.1 mm is a unit conversion, so the value is derived, not a directly transcribed observation.' },
   { id: 'trial-flow-caused-burnout', origin: 'authored-tutorial', claimId: null, text: 'Reducing the airflow from 5 to 3 cm/s caused B20 to burn the whole sample.', expected: { kind: 'hypothesis', evidenceLevel: 'gap' }, hint: 'The row lists a flow sequence and an outcome, but one run cannot isolate airflow as the cause.' },
   { id: 'trial-ai-lunar-claim', origin: 'authored-tutorial', claimId: null, text: 'A confident AI summary says: "B20 proves PMMA cannot burn in a lunar habitat."', expected: { kind: 'unknown', evidenceLevel: 'gap' }, hint: 'No validated record tested lunar gravity or habitat atmospheres; this claim is unsupported.' }
 ] as const satisfies readonly { id: string; origin: 'research' | 'authored-tutorial'; claimId: string | null; text: string; expected: { kind: StatementType; evidenceLevel: EvidenceLevel }; hint: string }[];
@@ -58,9 +41,6 @@ export function createGameState(datasetVersion: string, mode: SessionMode, at: s
     passport: { schemaVersion: 1, purpose: 'educational-research-record', entries: [] }, updatedAt: at });
 }
 
-export type TransitionCode = 'INVALID_ACTION' | 'UNAVAILABLE' | 'PREREQUISITE_MISSING' | 'WRONG_MISSION' | 'UNKNOWN_EXPERIMENT' | 'UNKNOWN_CLAIM' |
-  'NOT_INSPECTED' | 'NOT_AN_OBSERVATION' | 'WRONG_ANCHOR' | 'ALREADY_INSTALLED' | 'NOT_INSTALLED' | 'HAS_DEPENDENTS' | 'QUALIFICATION_FAILED' |
-  'NOT_QUALIFIED' | 'PREDICTION_REQUIRED' | 'UNSUPPORTED_DECISION' | 'COMPLETION_CRITERIA_UNMET' | 'LIMIT_REACHED' | 'SAVE_LIMIT_REACHED' | 'INVARIANT_VIOLATION';
 export type TransitionResult =
   | { ok: true; state: GameState; feedback?: { correct: boolean; hint: string } }
   | { ok: false; state: GameState; code: TransitionCode; message: string; faults?: Fault[] };
@@ -328,3 +308,6 @@ export function discardSave(storage: SaveStorage, mode: SessionMode, confirmatio
   if (confirmation !== 'discard-save-after-export') return { ok: false };
   try { storage.removeItem(saveKey(mode)); return { ok: true }; } catch { return { ok: false }; }
 }
+
+export * from './training';
+export * from './campaign';

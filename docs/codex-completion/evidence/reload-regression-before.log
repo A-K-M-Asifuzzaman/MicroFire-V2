@@ -1,0 +1,35 @@
+
+ RUN  v5.0.3 /Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion
+
+ ❯ apps/web/game/__tests__/controller.test.ts (15 tests | 1 failed) 64ms
+   × valid-cookie boot restores usable controls: fresh 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/web/game/__tests__/controller.test.ts > valid-cookie boot restores usable controls: fresh
+AssertionError: expected { status: 'idle' } to deeply equal { status: 'ready' }
+
+- Expected
++ Received
+
+  {
+-   "status": "ready",
++   "status": "idle",
+  }
+
+ ❯ apps/web/game/__tests__/controller.test.ts:49:29
+     47|   script.capability.push(ok({ ...capability, runtimeId, grant: { statu…
+     48|   await c.boot();
+     49|   expect(c.getState().link).toEqual(kind === 'fresh' ? { status: 'read…
+       |                             ^
+     50|   expect(c.getState().runtimeId).toBe(runtimeId);
+     51|   expect(c.getState().snapshot).toEqual(seed ?? null);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)
+   Start at  16:53:28
+   Duration  175ms (tests 63%, transform 27%, import 8%, worker 2%)
+

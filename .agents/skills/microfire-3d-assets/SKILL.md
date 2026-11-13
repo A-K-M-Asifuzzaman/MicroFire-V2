@@ -4,7 +4,7 @@ description: Produce and validate affordable Meshy GLB assets for the Living Sci
 ---
 
 # Meshy 3D asset production skill
-1. Confirm repository is MicroFire-V2 and read `FINAL_MASTER_PROMPT.md`, `docs/12_MESHY_ASSET_PIPELINE.md`, `docs/21_MESHY_REFERENCE_PROMPTS.md` and `docs/22_MESHY_SUBSCRIPTION_API_BILLING_CHECK.md`.
+1. Confirm repository is MicroFire-V2 and read `docs/internal/FINAL_MASTER_PROMPT.md`, `docs/12_MESHY_ASSET_PIPELINE.md`, `docs/21_MESHY_REFERENCE_PROMPTS.md` and `docs/22_MESHY_SUBSCRIPTION_API_BILLING_CHECK.md`.
 2. Prove the scene works with procedural placeholders first; ask whether Meshy is necessary.
 3. Check secure API entitlement/balance using an authorized read-only endpoint; if paid API demands extra payment, offer **manual Meshy web app GLB export** rather than new spend.
 4. Present one task, model choice, image/3D input, price estimate, optimization and quality plan. Wait for user-specific paid task approval.

@@ -1,6 +1,7 @@
 import { catalog, coverage } from '@microfire/science';
 import { FrontierKey } from '../../components/exhibits';
 import { Frontier } from '../../components/frontier';
+import { TransferabilityAnalyzer } from '../../components/transferability';
 import { feature, PageHero, Sheet, value } from '../../components/page-kit';
 
 export const metadata = { title: 'Research Frontier' };
@@ -13,6 +14,8 @@ export default function Page() {
     <PageHero compact eyebrow="Research Frontier" title="Coverage in this catalog" status={{ feature: feature('/gaps')!, built: true }}
       lede={`Check which of your conditions the ${cov.validatedExperiments} admitted record${cov.validatedExperiments === 1 ? '' : 's'} document${cov.validatedExperiments === 1 ? 's' : ''}. Absence here is not absence everywhere, and a blank is not proof of safety.`} />
     <Sheet>
+      <TransferabilityAnalyzer sourceTitles={Object.fromEntries(catalog.sources.map((s) => [s.id, s.title]))} />
+      <h2 className="frontier-sub">Condition-by-condition coverage</h2>
       <Frontier coverage={cov} records={records} />
       <details className="disclose frontier-key"><summary>How each status is classified</summary><FrontierKey /></details>
     </Sheet>

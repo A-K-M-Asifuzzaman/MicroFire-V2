@@ -1,0 +1,9 @@
+> microfire-v2@0.1.0 typecheck
+> tsc --noEmit && npm run typecheck --workspace @microfire/web
+
+
+> @microfire/web@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully

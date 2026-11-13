@@ -9,6 +9,7 @@ const envelope = (data: unknown) => ({ json: { apiVersion: '1', data } });
 const science = (fn: string, input: unknown): unknown => JSON.parse(execFileSync(process.execPath, ['--import', 'tsx', 'tests/e2e/science-oracle.ts', fn, JSON.stringify(input)], { encoding: 'utf8' }));
 async function scienceBackedPosts(page: Page) {
   await page.route('**/api/ask', (r) => r.fulfill(envelope(science('ask', r.request().postDataJSON()))));
+  await page.route('**/api/intelligence', (r) => r.fulfill(envelope(science('intelligence', r.request().postDataJSON()))));
   await page.route('**/api/evidence/rank', (r) => r.fulfill(envelope(science('rank', r.request().postDataJSON()))));
 }
 /** Counts real WebGL draw calls from any context. */
@@ -97,7 +98,7 @@ test('fix A: an initially offscreen lens does not render continuously; visibilit
 
 test('fix D: Retry waits for Retry-After and keeps the original request', async ({ page }) => {
   const bodies: unknown[] = [];
-  await page.route('**/api/ask', (r) => { bodies.push(r.request().postDataJSON()); return r.fulfill({ status: 429, headers: { 'Retry-After': '2' }, json: { apiVersion: '1', error: { code: 'RATE_LIMITED', message: 'Local request budget reached; retry after the indicated delay.', retryable: true } } }); });
+  await page.route('**/api/{ask,intelligence}', (r) => { bodies.push(r.request().postDataJSON()); return r.fulfill({ status: 429, headers: { 'Retry-After': '2' }, json: { apiVersion: '1', error: { code: 'RATE_LIMITED', message: 'Local request budget reached; retry after the indicated delay.', retryable: true } } }); });
   await page.goto('/ask');
   await page.getByRole('button', { name: 'What happened in B19?' }).click();
   const retry = page.getByTestId('retry');
@@ -180,7 +181,7 @@ test('Atlas exhibit, corpus strip and Workstation chain rail stay honest', async
 test('PIX interface states follow the deterministic API (no new abilities)', async ({ page }) => {
   let release!: () => void;
   const gate = new Promise<void>((r) => { release = r; });
-  await page.route('**/api/ask', async (r) => { if (r.request().postDataJSON().question === 'What happened in B19?') await gate; await r.fulfill(envelope(science('ask', r.request().postDataJSON()))); });
+  await page.route('**/api/{ask,intelligence}', async (r) => { if (r.request().postDataJSON().question === 'What happened in B19?') await gate; await r.fulfill(envelope(science((r.request().url().endsWith('/api/intelligence') ? 'intelligence' : 'ask'), r.request().postDataJSON()))); });
   await page.goto('/ask');
   const avatar = page.getByTestId('pix-panel').locator('svg');
   await expect(avatar).toHaveAttribute('data-state', 'idle');

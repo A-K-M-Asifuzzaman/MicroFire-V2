@@ -11,4 +11,4 @@
 9. P4: science provenance review, measured impact, mobile, accessibility, 2D fallback, WebGL, performance, Playwright, tests, and permissioned Vercel preview. Original site untouched.
 10. Final merge/release only on user approval. Report real tests, source URLs, asset costs, route readiness, actual screenshots and SHA per milestone.
 
-**Source of truth:** `FINAL_MASTER_PROMPT.md`, with detailed matching docs 07/08/09/12/19/21/22/23.
+**Source of truth:** `docs/internal/FINAL_MASTER_PROMPT.md`, with detailed matching docs 07/08/09/12/19/21/22/23.

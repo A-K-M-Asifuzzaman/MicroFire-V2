@@ -1,0 +1,56 @@
+TAP version 13
+# Disposable UI integration built from 0b17864c416669e6ec66072afcd4dea814cf812e; production checkout and public availability unchanged.
+# Subtest: real M2 UI: keyboard completes, exports and resumes a server-confirmed case
+not ok 1 - real M2 UI: keyboard completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 43779.084709
+  type: 'test'
+  location: '/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:6:2596'
+  failureType: 'testCodeFailure'
+  error: |-
+    AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+      assert(snapshot.training.pendingRepair)
+
+        at TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:178:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:178:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+    TestContext.<anonymous> (/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/tests/backend/m2-live-browser.test.ts:226:11)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# touch: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+# Subtest: real M2 UI: touch completes, exports and resumes a server-confirmed case
+ok 2 - real M2 UI: touch completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 50278.149458
+  type: 'test'
+  ...
+# no-webgl: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+# Subtest: real M2 UI: no-webgl completes, exports and resumes a server-confirmed case
+ok 3 - real M2 UI: no-webgl completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 50605.811625
+  type: 'test'
+  ...
+# 3d: real UI completed and resumed; 25 POSTs, 5/5 checks, two source entries. Public runtime remains disconnected.
+# Subtest: real M2 UI: 3d completes, exports and resumes a server-confirmed case
+ok 4 - real M2 UI: 3d completes, exports and resumes a server-confirmed case
+  ---
+  duration_ms: 51247.167167
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 218138.9575

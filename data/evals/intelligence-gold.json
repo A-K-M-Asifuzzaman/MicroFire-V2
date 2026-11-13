@@ -1,0 +1,266 @@
+{
+  "labelledBy": "Codex implementation author; source-specific regression cases, pending independent scientific review",
+  "scope": "One admitted B20; no predictive accuracy, statistical confidence or multi-investigation retrieval metric",
+  "cases": [
+    {
+      "id": "calibrated-b20",
+      "request": {
+        "question": "What calibrated oxygen was recorded in B20?",
+        "targetConditions": {},
+        "environment": "custom",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": null,
+        "abstentionCode": null,
+        "answerIncludes": "17.4",
+        "dimensionStatuses": null
+      }
+    },
+    {
+      "id": "lunar-unknown-gravity",
+      "request": {
+        "question": "What happened in B20?",
+        "targetConditions": {
+          "oxygenPct": 17.4,
+          "gravity": "lunar",
+          "pressureKpa": 70
+        },
+        "environment": "moon",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "source-not-recorded",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "exact-recorded",
+          "pressureKpa": "source-not-recorded",
+          "flowCmS": "target-unspecified"
+        }
+      }
+    },
+    {
+      "id": "martian-unknown-pressure",
+      "request": {
+        "question": "What happened in B20?",
+        "targetConditions": {
+          "oxygenPct": 17.4,
+          "gravity": "martian",
+          "pressureKpa": 70
+        },
+        "environment": "mars",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "source-not-recorded",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "exact-recorded",
+          "pressureKpa": "source-not-recorded",
+          "flowCmS": "target-unspecified"
+        }
+      }
+    },
+    {
+      "id": "nearby-is-not-exact",
+      "request": {
+        "question": "What happened in B20?",
+        "targetConditions": {
+          "oxygenPct": 17.5
+        },
+        "environment": "custom",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "non-exact-retrieval-match",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        }
+      }
+    },
+    {
+      "id": "unavailable-flex",
+      "request": {
+        "question": "What happened with PMMA in FLEX?",
+        "targetConditions": {
+          "oxygenPct": 17.4
+        },
+        "environment": "custom",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null,
+        "dimensionStatuses": null
+      }
+    },
+    {
+      "id": "quarantine-no-substitute",
+      "request": {
+        "question": "What happened in B19?",
+        "targetConditions": {
+          "oxygenPct": 17.4
+        },
+        "environment": "custom",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "abstentionCode": "quarantined-record",
+        "answerIncludes": null,
+        "dimensionStatuses": null
+      }
+    },
+    {
+      "id": "irrelevant-question-despite-match",
+      "request": {
+        "question": "Xenon on Venus",
+        "targetConditions": {
+          "oxygenPct": 17.4
+        },
+        "environment": "custom",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": true,
+        "topExperimentId": null,
+        "transferConclusion": null,
+        "abstentionCode": "no-relevant-evidence",
+        "answerIncludes": null,
+        "dimensionStatuses": null
+      }
+    },
+    {
+      "id": "no-target-certification",
+      "request": {
+        "question": "Can B20 certify a lunar habitat?",
+        "targetConditions": {
+          "oxygenPct": 30
+        },
+        "environment": "moon",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": true,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": "unsupported-intent",
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "conditions-differ",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        }
+      }
+    },
+    {
+      "id": "different-fuel",
+      "request": {
+        "question": "What happened in B20?",
+        "targetConditions": {
+          "material": "cotton"
+        },
+        "environment": "custom",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "conditions-differ",
+          "geometry": "target-unspecified",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        }
+      }
+    },
+    {
+      "id": "different-ventilation",
+      "request": {
+        "question": "What happened in B20?",
+        "targetConditions": {
+          "flowCmS": 20
+        },
+        "environment": "custom",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "target-unspecified",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "conditions-differ"
+        }
+      }
+    },
+    {
+      "id": "different-geometry",
+      "request": {
+        "question": "What happened in B20?",
+        "targetConditions": {
+          "geometry": "sphere"
+        },
+        "environment": "custom",
+        "limit": 4
+      },
+      "expect": {
+        "abstained": false,
+        "topExperimentId": "bass2-b20",
+        "transferConclusion": "insufficient-evidence",
+        "abstentionCode": null,
+        "answerIncludes": null,
+        "dimensionStatuses": {
+          "gravity": "target-unspecified",
+          "material": "target-unspecified",
+          "geometry": "conditions-differ",
+          "oxygenPct": "target-unspecified",
+          "pressureKpa": "target-unspecified",
+          "flowCmS": "target-unspecified"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+
+> microfire-v2@0.1.0 check
+> npm run lint && npm run typecheck && npm test && npm run validate:data && npm run eval:science && npm run security && npm run build
+
+
+> microfire-v2@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> microfire-v2@0.1.0 typecheck
+> tsc --noEmit && npm run typecheck --workspace @microfire/web
+
+
+> @microfire/web@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> microfire-v2@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 /Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion
+
+
+ Test Files  11 passed (11)
+      Tests  176 passed (176)
+   Start at  15:56:00
+   Duration  2.56s (tests 60%, transform 24%, import 16%, worker 1%)
+
+
+> microfire-v2@0.1.0 validate:data
+> node --import tsx scripts/validate-sources.ts
+
+Validated 1 source, 1 experiment; 55 legacy rows quarantined; local fixture SHA-256 matches. Remote links not rechecked.
+
+> microfire-v2@0.1.0 eval:science
+> node --import tsx scripts/eval-science.ts
+
+Ask 30/30, rank 7/7, faithful 13/13, forbidden 0, repeatable 30/30. Wrote docs/evals/report.md
+
+> microfire-v2@0.1.0 security
+> node scripts/security-check.mjs
+
+Basic secret/environment/provider/XSS/media-rights checks passed across 982 files. Pattern checks are not a complete secret audit.
+
+> microfire-v2@0.1.0 build
+> npm run build --workspace @microfire/web
+
+
+> @microfire/web@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.4.1 (webpack)
+✓ Running next.config.ts took 16ms
+
+  Creating an optimized production build ...
+⨯ Failed to find font override values for font `Big Shoulders`
+⨯ Failed to find font override values for font `Atkinson Hyperlegible Next`
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+Error: getaddrinfo ENOTFOUND fonts.googleapis.com
+    at ignore-listed frames {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Error: getaddrinfo ENOTFOUND fonts.googleapis.com
+    at ignore-listed frames {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Error: getaddrinfo ENOTFOUND fonts.googleapis.com
+    at ignore-listed frames {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Error: getaddrinfo ENOTFOUND fonts.googleapis.com
+    at ignore-listed frames {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Error: getaddrinfo ENOTFOUND fonts.googleapis.com
+    at ignore-listed frames {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Error: getaddrinfo ENOTFOUND fonts.googleapis.com
+    at ignore-listed frames {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Error: getaddrinfo ENOTFOUND fonts.googleapis.com
+    at ignore-listed frames {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Error: getaddrinfo ENOTFOUND fonts.googleapis.com
+    at ignore-listed frames {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Failed to compile.
+
+app/design/layout.tsx
+`next/font` error:
+Failed to fetch `Atkinson Hyperlegible Next` from Google Fonts.
+
+app/design/layout.tsx
+`next/font` error:
+Failed to fetch `Big Shoulders` from Google Fonts.
+
+app/design/layout.tsx
+`next/font` error:
+Failed to fetch `Bricolage Grotesque` from Google Fonts.
+
+app/design/layout.tsx
+`next/font` error:
+Failed to fetch `IBM Plex Mono` from Google Fonts.
+
+app/design/layout.tsx
+`next/font` error:
+Failed to fetch `IBM Plex Sans` from Google Fonts.
+
+
+> Build failed because of webpack errors
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/apps/web
+npm error workspace @microfire/web@0.1.0
+npm error location /Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/apps/web
+npm error command failed
+npm error command sh -c next build --webpack

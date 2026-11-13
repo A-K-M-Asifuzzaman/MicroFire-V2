@@ -1,0 +1,113 @@
+{
+  "checkedAtAsiaDhaka": "2026-11-12T22:31:47.849518+06:00",
+  "researchOnly": true,
+  "organizerAuthorizationEstablished": false,
+  "challengeResources": {
+    "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=resources",
+    "http": 200,
+    "htmlSha256": "97d1f9687311e0d87c08f06ebecfdc9bdcf324dd2a304e886335afea849ab7b5",
+    "currentNotice": "Resources will be available on Friday, November 13.",
+    "namedQualifyingResourceConfirmed": false,
+    "rule": "At least one NASA data source included in this challenge Resources is required for Global Awards; a particular named dataset cannot yet be selected from the unpublished tab.",
+    "ruleSource": "https://github.com/nasa/spaceapps/discussions/1827"
+  },
+  "psi25Candidate": {
+    "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+    "title": "Burning and Suppression of Solids - II (BASS-II)",
+    "version": 4,
+    "doi": "10.60555/4qc4-de67",
+    "licenseDisplayed": "CC0-1.0",
+    "tableRowsDisplayed": 130,
+    "scope": "Investigation metadata and existence of files/table observed. These 130 rows were not ingested, independently audited, or added to the app. Linked publication/media rights remain separate.",
+    "challengeResourceQualificationConfirmed": false,
+    "renderedCaptureSha256": "6aaf9b2a921276caa0d9e466c428bb665c5e922bfb6d863f8b18c3ee693ee11b",
+    "b20PrimaryCrossCheck": {
+      "testId": "B20",
+      "sourceDateCell": "7/2/2014",
+      "sampleCell": "152m",
+      "calibratedInitialOxygenVolPct": "17.4",
+      "calibratedFinalOxygenVolPct": "17.4",
+      "rawAirDisplay": "5 3 pot 0.5",
+      "captureSha256": "0ff6acb7aec9708a455fc569a28adc6012366d1addcc8248f8e12bc119b30e57",
+      "method": "Read the public experimental table after its B20 filter; no rows imported.",
+      "scope": "Corroborates the existing B20 oxygen transcription only. Table capture is not an immutable downloaded experimental file, independent science acceptance, or challenge-resource qualification."
+    }
+  },
+  "ntrsSources": [
+    {
+      "ntrsId": "20210011385",
+      "url": "https://ntrs.nasa.gov/citations/20210011385",
+      "apiUrl": "https://ntrs.nasa.gov/api/citations/20210011385",
+      "title": "Burning and Suppression of Solids\u2013II  (BASS-II) Summary Report",
+      "distribution": "PUBLIC",
+      "rightsDetermination": "GOV_PERMITTED",
+      "metadataSha256": "3fcf1e93014a6c0e210bc77714c5a7f95b0ccbedb7e28390184e051d517ab9e9",
+      "scientificAdmission": "unchanged; metadata research is not experimental verification or admission",
+      "rightsInterpretation": "Public access is not a blanket media redistribution license."
+    },
+    {
+      "ntrsId": "20205008449",
+      "url": "https://ntrs.nasa.gov/citations/20205008449",
+      "apiUrl": "https://ntrs.nasa.gov/api/citations/20205008449",
+      "title": "Effects of Ambient Inert Gas Properties on Cool-Flame Combustion of Normal-Alkane Droplets in Microgravity",
+      "distribution": "PUBLIC",
+      "rightsDetermination": "PUBLIC_USE_PERMITTED",
+      "metadataSha256": "b1565e097e1be56cb26be45973f53e9d0242411694b418a6225a766da09120b0",
+      "scientificAdmission": "unchanged; metadata research is not experimental verification or admission",
+      "rightsInterpretation": "Public access is not a blanket media redistribution license."
+    },
+    {
+      "ntrsId": "20210011521",
+      "url": "https://ntrs.nasa.gov/citations/20210011521",
+      "apiUrl": "https://ntrs.nasa.gov/api/citations/20210011521",
+      "title": "Fire Safety Implications of Preliminary Results from Saffire IV and V Experiments on Large Scale Spacecraft Fires",
+      "distribution": "PUBLIC",
+      "rightsDetermination": "MAY_INCLUDE_COPYRIGHT_MATERIAL",
+      "metadataSha256": "8a3e3273b0305a0b3a198b4d075e8d6f0e4723f42d515d698374aaa7c56e138a",
+      "scientificAdmission": "unchanged; metadata research is not experimental verification or admission",
+      "rightsInterpretation": "Public access is not a blanket media redistribution license."
+    },
+    {
+      "ntrsId": "20220015583",
+      "url": "https://ntrs.nasa.gov/citations/20220015583",
+      "apiUrl": "https://ntrs.nasa.gov/api/citations/20220015583",
+      "title": "ACME: Advanced Combustion via Microgravity Experiments",
+      "distribution": "PUBLIC",
+      "rightsDetermination": "GOV_PUBLIC_USE_PERMITTED",
+      "metadataSha256": "6cc90d6c20a1f03640190cb4485acd670e5840c106e5946887975812fe11f31c",
+      "scientificAdmission": "unchanged; metadata research is not experimental verification or admission",
+      "rightsInterpretation": "Public access is not a blanket media redistribution license."
+    }
+  ],
+  "fontLicenses": [
+    {
+      "name": "atkinsonhyperlegiblenext",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/atkinsonhyperlegiblenext/OFL.txt",
+      "sha256": "aca6a428580965d2297d1b718042dd427c2a9443ece3b0d02d758e161e0c4030",
+      "copyrightLine": "Copyright 2020-2024 The Atkinson Hyperlegible Next Project Authors (https://github.com/googlefonts/atkinson-hyperlegible-next)",
+      "declaredLicense": "SIL OFL 1.1",
+      "scope": "Published source license verified; exact built font binary and distribution notice packaging not inspected."
+    },
+    {
+      "name": "bricolagegrotesque",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bricolagegrotesque/OFL.txt",
+      "sha256": "4b5a7d8f37f5602621c8a8d7358a6a2e71317e6c231c661e15aef0275d3e07ba",
+      "copyrightLine": "Copyright 2022 The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage)",
+      "declaredLicense": "SIL OFL 1.1",
+      "scope": "Published source license verified; exact built font binary and distribution notice packaging not inspected."
+    }
+  ],
+  "additionalPrimaryReferences": [
+    "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "https://science.nasa.gov/science-research/psi-database-is-live-with-new-features-to-improve-user-experience/",
+    "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    "https://www.meshy.ai/terms-of-use",
+    "https://help.meshy.ai/en/articles/10137554-what-is-the-ownership-of-the-generated-models"
+  ],
+  "notes": [
+    "The NASA PSI research-area page ROSES eligibility is not Space Apps Global Awards eligibility.",
+    "The current Meshy ownership help page was read; entitlement on each original generation date and input rights were not independently verified.",
+    "No complete data archives downloaded, no credentials accessed, no model/provider calls, no data admission and no app changes."
+  ],
+  "researchRecordCompletedAtAsiaDhaka": "2026-11-12T22:38:09.832470+06:00"
+}

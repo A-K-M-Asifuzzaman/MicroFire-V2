@@ -1,0 +1,203 @@
+{
+  "capturedAtAsiaDhaka": "2026-11-12T22:27:43.678182+06:00",
+  "scope": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3",
+  "excludedDirectories": [
+    ".git",
+    ".next",
+    ".turbo",
+    ".venv",
+    "chromium",
+    "firefox",
+    "ms-playwright",
+    "node_modules",
+    "venv",
+    "webkit"
+  ],
+  "files": [
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-m2-integration/docs/qa/screenshots/m3/walkthrough-desktop.webm",
+      "bytes": 6527284,
+      "sha256": "e80e8dfa1db860c57c1edcadf5531ea9d565840ab04d6e2a8b546c98adff0096",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "18.080000"
+        }
+      }
+    },
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-missions/docs/qa/screenshots/m3/walkthrough-desktop.webm",
+      "bytes": 6527284,
+      "sha256": "e80e8dfa1db860c57c1edcadf5531ea9d565840ab04d6e2a8b546c98adff0096",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "18.080000"
+        }
+      }
+    },
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-sol-completion/docs/qa/screenshots/m3/walkthrough-desktop.webm",
+      "bytes": 6527284,
+      "sha256": "e80e8dfa1db860c57c1edcadf5531ea9d565840ab04d6e2a8b546c98adff0096",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "18.080000"
+        }
+      }
+    },
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-science-intelligence/docs/qa/screenshots/m3/walkthrough-desktop.webm",
+      "bytes": 6527284,
+      "sha256": "e80e8dfa1db860c57c1edcadf5531ea9d565840ab04d6e2a8b546c98adff0096",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "18.080000"
+        }
+      }
+    },
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-m2-claude/docs/qa/screenshots/ignition/recordings/opening-film-mobile.webm",
+      "bytes": 1353468,
+      "sha256": "c00df1b412a7a37b7e96d9d4d6a23fdded3d5b0220e59ca82107a0ea9609229c",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "11.560000"
+        }
+      }
+    },
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-m2-claude/docs/qa/screenshots/ignition/recordings/opening-film-desktop.webm",
+      "bytes": 4312604,
+      "sha256": "899dd01d69f951be261825632d52a2835e0c383c643c7c7ea9f67073949602ce",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "11.680000"
+        }
+      }
+    },
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-m2-claude/docs/qa/screenshots/m3/walkthrough-desktop.webm",
+      "bytes": 6527284,
+      "sha256": "e80e8dfa1db860c57c1edcadf5531ea9d565840ab04d6e2a8b546c98adff0096",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "18.080000"
+        }
+      }
+    },
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-m2-claude/docs/qa/screenshots/m4/recordings/design-b-walkthrough.webm",
+      "bytes": 14222012,
+      "sha256": "9f069ea33499a9d83895797920f0e9640dd3b36eb259cfde65532e807cfab58c",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "54.000000"
+        }
+      }
+    },
+    {
+      "path": "/Volumes/ssd(mac)2/NASA SPACE APP CHALLENGE 2026/untitled folder 3/MicroFire-V2-m2-claude/docs/qa/screenshots/m4/recordings/design-a-walkthrough.webm",
+      "bytes": 15920202,
+      "sha256": "a7a5b66fc5b558207c46aa648ef7297dcd894aedc04630be1f820d1bd1f659da",
+      "stableDuringRead": true,
+      "role": "Unclassified media; filename alone does not establish final-submission use, ownership, or consent",
+      "mediaMetadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video"
+          }
+        ],
+        "format": {
+          "duration": "60.600000"
+        }
+      }
+    }
+  ],
+  "limits": [
+    "No media rendered, edited, uploaded, transcribed or published.",
+    "Hashes and ffprobe metadata do not establish rights or contest eligibility.",
+    "Unknown paths outside this workspace, browser/provider caches and excluded dependency/build folders are not covered."
+  ]
+}

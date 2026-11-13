@@ -1,0 +1,13 @@
+
+> microfire-v2@0.1.0 check
+> npm run lint && npm run typecheck && npm test && npm run validate:data && npm run eval:science && npm run security && npm run build
+
+
+> microfire-v2@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> microfire-v2@0.1.0 typecheck
+> tsc --noEmit && npm run typecheck --workspace @microfire/web
+
+scripts/fetch-candidate-sources.ts(18,29): error TS2504: Type 'ReadableStream<Uint8Array<ArrayBuffer>>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.
