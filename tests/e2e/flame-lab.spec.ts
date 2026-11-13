@@ -15,7 +15,7 @@ test('Flame Lab is interactive and scientifically bounded', async ({ page }) => 
   await expect(page.locator('.flab-preset').getByRole('button', { name: 'Earth 1 g' })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.flab-steps li').first()).toHaveAttribute('data-done', 'true');
 
-  await page.getByRole('slider', { name: /Scenario oxygen/i }).fill('19.0');
+  await page.getByRole('slider', { name: /Scenario oxygen/i }).press('ArrowRight');
   await expect(page.locator('.flab-table')).toContainText('Different');
   await expect(page.locator('.flab-steps li').nth(1)).toHaveAttribute('data-done', 'true');
 
