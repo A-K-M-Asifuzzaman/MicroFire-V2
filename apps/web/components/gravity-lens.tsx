@@ -13,8 +13,10 @@ const explanations = {
 export type LensRecord = { href: string; title: string; flowDirection: string | null; initialFlow: string | null; locator: string };
 
 /** `onMotionChange` lets a host scene follow the same pause control; `decor` is drawn inside the stage behind the flame. */
-export function GravityLens({ record, onGravityChange, onMotionChange, decor }: { record: LensRecord; onGravityChange?: (g: number) => void; onMotionChange?: (on: boolean) => void; decor?: React.ReactNode }) {
-  const [g, setG] = useState(0);
+export function GravityLens({ record, gravity, onGravityChange, onMotionChange, decor }: { record: LensRecord; gravity?: number; onGravityChange?: (g: number) => void; onMotionChange?: (on: boolean) => void; decor?: React.ReactNode }) {
+  const [internalG, setInternalG] = useState(0);
+  const g = gravity ?? internalG;
+  const setG = (value: number) => { if (gravity === undefined) setInternalG(value); else onGravityChange?.(value); };
   const [renderer, setRenderer] = useState<'svg' | 'webgl' | 'unavailable' | 'lost'>('svg');
   const [animated, setAnimated] = useState(false);
   // Not visible until the observer says so: an offscreen lens must never start continuous rendering.
