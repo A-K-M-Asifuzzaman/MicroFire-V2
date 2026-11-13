@@ -15,25 +15,31 @@ const steps = [
     note: 'The gravity visual is an educational illustration, not a measured flame.'
   },
   {
-    number: '02', title: 'Inspect NASA evidence',
+    number: '02', title: 'Change a condition in the Flame Lab',
+    purpose: 'Move gravity, airflow and oxygen in an illustrated flame, then compare with what NASA actually recorded for B20.',
+    href: '/lab', action: 'Open the Flame Lab',
+    note: 'An authored toy model: it shows directions of effect, never measured values. Unknown B20 conditions stay unknown.'
+  },
+  {
+    number: '03', title: 'Inspect NASA evidence',
     purpose: 'See admitted BASS-II test B20, its 17.4 vol% calibrated oxygen value, and the primary-source citation.',
     href: '/experiments/bass2-b20', action: 'Open the B20 dossier',
     note: 'One experiment admitted; 55 legacy records quarantined pending verification.'
   },
   {
-    number: '03', title: 'Try the evidence dashboard',
+    number: '04', title: 'Try the evidence dashboard',
     purpose: 'Ask a research question, compare conditions, inspect ranked support and understand where the evidence stops.',
     href: '/dashboard', action: 'Open Evidence Workstation',
     note: 'Try the Moon-habitat example: the system must not claim safety certification.'
   },
   {
-    number: '04', title: 'Play five different scientific tasks',
+    number: '05', title: 'Play five different scientific tasks',
     purpose: 'Investigate a source, repair a training apparatus, lock a prediction, evaluate claims and assess a fictional habitat.',
     href: '/missions/play', action: 'Start the five missions',
     note: 'Follow the mission-by-mission guide above each interactive scene; progress is saved for this anonymous visitor.'
   },
   {
-    number: '05', title: 'Read the evidence trail',
+    number: '06', title: 'Read the evidence trail',
     purpose: 'After the final mission, review five source-linked Passport entries and download the case as JSON.',
     href: '/missions/play', action: 'View your Research Passport',
     note: 'The Passport records educational decisions, not an operational fire-safety approval.'
