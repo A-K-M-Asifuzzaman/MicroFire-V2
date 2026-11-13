@@ -17,10 +17,16 @@ const AUTO_RETRIES = 2;
 
 export function createPublicController(transport: PublicTransport, { sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms)), now = Date.now } = {}) {
   let csrf: string | null = null;
+  let busy = false;
   let pending: { bytes: string; action: CampaignAction; expectedRevision: number } | null = null;
   let state: State = { phase: 'booting', view: null, expiresAt: null, last: null, notice: null, retryAt: null, canRetry: false };
   const listeners = new Set<() => void>();
   const set = (patch: Partial<State>) => { state = { ...state, ...patch }; listeners.forEach((l) => l()); };
+  async function exclusive<T>(operation: () => Promise<T>): Promise<T | undefined> {
+    if (busy) return;
+    busy = true;
+    try { return await operation(); } finally { busy = false; }
+  }
 
   function adopt(view: PublicView, notice: string | null = null) {
     const prev = state.view;
@@ -61,17 +67,18 @@ export function createPublicController(transport: PublicTransport, { sleep = (ms
 
   async function send(): Promise<void> {
     if (!pending || !csrf) return;
+    const command = pending, proof = csrf;
     let r: Result<ActionResult> = { ok: false, problem: { kind: 'ambiguous' } };
     for (let attempt = 0; attempt <= AUTO_RETRIES; attempt++) {
       if (attempt) await sleep(400 * attempt);
-      r = await transport.action(pending.bytes, csrf); // identical bytes, identity and revision on every attempt
+      r = await transport.action(command.bytes, proof); // identical bytes, identity and revision on every attempt
       if (r.ok || r.problem.kind !== 'ambiguous') break;
     }
     if (!r.ok) {
       if (r.problem.kind === 'conflict') return reconcile();
       return fail(r.problem, ['rate-limited', 'unavailable', 'ambiguous'].includes(r.problem.kind));
     }
-    const { action } = pending; pending = null;
+    const { action } = command; pending = null;
     adopt(r.data.view);
     set({ phase: 'ready', last: { action, result: r.data }, canRetry: false, retryAt: null });
   }
@@ -79,33 +86,43 @@ export function createPublicController(transport: PublicTransport, { sleep = (ms
   return {
     get: () => state,
     subscribe(l: () => void) { listeners.add(l); return () => { listeners.delete(l); }; },
-    boot,
+    boot: () => exclusive(boot),
     /** Returns false when the intent was not sent (not ready, or another write is in flight). */
     async act(action: CampaignAction): Promise<boolean> {
-      if (state.phase !== 'ready' || !state.view || !csrf || pending) return false;
-      const { bytes, command } = await commandFor(state.view, action);
-      pending = { bytes, action, expectedRevision: command.expectedRevision };
-      set({ phase: 'sending', notice: null });
-      await send();
-      return true;
+      if (busy || state.phase !== 'ready' || !state.view || !csrf || pending) return false;
+      const view = state.view;
+      return await exclusive(async () => {
+        set({ phase: 'sending', notice: null });
+        try {
+          const { bytes, command } = await commandFor(view, action);
+          pending = { bytes, action, expectedRevision: command.expectedRevision };
+        } catch {
+          set({ phase: 'ready', notice: 'That action could not be prepared. Choose again.' });
+          return false;
+        }
+        await send();
+        return true;
+      }) ?? false;
     },
     /** Resend the identical command after 429/503/network ambiguity, or bootstrap again if there is no case yet. */
-    async retry() {
+    retry: () => exclusive(async () => {
       if (state.retryAt && state.retryAt > now()) return;
       if (pending && csrf) { set({ phase: 'sending' }); return send(); }
       return boot();
-    },
+    }),
     /** Explicit restart after the visitor has been told there is no account recovery. Revokes the old case first. */
-    async restart() {
+    restart: () => exclusive(async () => {
       if (csrf) { const r = await transport.revoke(csrf); if (!r.ok && r.problem.kind !== 'expired') return fail(r.problem, false); }
       csrf = null; pending = null;
       state = { ...state, view: null, last: null };
       return boot();
-    },
+    }),
     async exportPassport(): Promise<PassportExport | null> {
-      const r = await transport.exportPassport();
-      if (!r.ok) { fail(r.problem, false); return null; }
-      return r.data;
+      return await exclusive(async () => {
+        const r = await transport.exportPassport();
+        if (!r.ok) { fail(r.problem, false); return null; }
+        return r.data;
+      }) ?? null;
     }
   };
 }

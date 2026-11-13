@@ -51,7 +51,16 @@ test('visitor client: full five-mission journey, reload recovery, retries, 409, 
     const c1 = a.controller(); await c1.boot();
     assert.equal(c1.get().phase, 'ready'); assert(a.hasCookie());
     const first = c1.get().view!; assert.equal(first.revision, 0);
-    await play(c1, { type: 'TRAINING', action: episodeActions[0]! });
+    const sentBefore = a.sent.length;
+    const racing = await Promise.all([
+      c1.act({ type: 'TRAINING', action: episodeActions[0]! }), c1.act(review),
+      c1.retry(), c1.restart(), c1.exportPassport(), c1.boot()
+    ]);
+    assert.deepEqual(racing, [true, false, undefined, undefined, null, undefined]);
+    assert.equal(a.sent.length, sentBefore + 1, 'same-turn commands and lifecycle calls cannot send concurrently');
+    assert.equal(c1.get().view!.revision, 1);
+    assert.equal(await c1.act({ type: 'UNKNOWN' } as unknown as CampaignAction), false);
+    assert.equal(c1.get().phase, 'ready', 'failed command preparation releases the gate');
     assert.deepEqual(c1.get().view!.inspectedExperimentIds, ['bass2-b20']);
     const reloaded = a.controller(); await reloaded.boot();
     assert.equal(reloaded.get().view!.sessionId, first.sessionId); assert.equal(reloaded.get().view!.revision, 1);

@@ -26,4 +26,4 @@ function scan(directory: string) {
   }
 }
 scan('apps/web/.next/static'); assert(files > 0);
-console.log(`Scanned ${files} built browser artifacts: no campaign canaries, server credential names or private grading hints. Gameplay remains unmounted.`);
+console.log(`Scanned ${files} built browser artifacts: no campaign canaries, server credential names or private grading hints. Campaign activation remains disabled.`);
