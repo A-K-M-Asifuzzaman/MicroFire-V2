@@ -34,14 +34,17 @@ test('S1/S2: visible, hidden and accessible copy never overclaims; the still-air
   await expect(page.locator('.frontier-key')).toContainText('No value is documented for this field in the admitted record.');
 });
 
-test('S3: registry states are unchanged; built interfaces say what is true and keep the registry note', async ({ page }) => {
+test('S3: existing legacy states are preserved; the newly implemented Lab is functional', async ({ page }) => {
   const expected: [string, string][] = [['/atlas', 'Preview'], ['/experiments/bass2-b20', 'Preview'], ['/dashboard', 'Coming Soon'], ['/gaps', 'Coming Soon'],
-    ['/ask', 'Coming Soon'], ['/passport', 'Coming Soon'], ['/lab', 'Coming Soon'], ['/missions', 'Preview']];
+    ['/ask', 'Coming Soon'], ['/passport', 'Coming Soon'], ['/missions', 'Preview']];
   for (const [route, badge] of expected) {
     await page.goto(route);
     await expect(page.locator('.badge').first(), route).toHaveText(badge);
     await expect(page.getByText('Available', { exact: true }), route).toHaveCount(0);
   }
+  await page.goto('/lab');
+  await expect(page.getByTestId('flame-lab')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Compare, don\'t assume' })).toBeVisible();
   await page.goto('/dashboard');
   await expect(page.getByText('Interface implemented for review; release acceptance pending.')).toBeVisible();
   await expect(page.locator('.registry-note')).toContainText('registry wording update proposed for review');
@@ -137,10 +140,10 @@ test('Ask: one companion, a persistent no-AI caption and examples grouped by wha
   for (const label of ['What was observed?', 'What is not known?', 'Where PIX stops']) await expect(page.getByText(label, { exact: true })).toBeVisible();
 });
 
-test('navigation: unfinished destinations are tagged, Passport is reachable, the Lab hands off to the lens', async ({ page }, info) => {
+test('navigation: the interactive Lab is discoverable and Passport remains reachable', async ({ page }, info) => {
   await page.goto('/missions');
   if (info.project.name === 'desktop') {
-    await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Flame Lab/ })).toContainText('Soon');
+    await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Flame Lab/ })).toContainText('Preview');
     await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Missions/ })).toContainText('Preview');
     await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: 'Evidence', exact: true })).toHaveCount(1);
     await expect(page.getByRole('navigation', { name: 'Mission tools' }).getByRole('link', { name: 'Evidence Passport' })).toHaveAttribute('href', '/passport');
@@ -150,7 +153,9 @@ test('navigation: unfinished destinations are tagged, Passport is reachable, the
     await expect(page.locator('details.mobile-nav').getByRole('link', { name: 'Frontier' })).toBeVisible();
   }
   await page.goto('/lab');
-  await expect(page.getByRole('link', { name: 'Open the Gravity Lens illustration' })).toHaveAttribute('href', '/#gravity-lens');
+  await expect(page.getByTestId('flame-lab')).toBeVisible();
+  await expect(page.locator('.flab').locator('figure.lens')).toHaveCount(1);
+  await expect(page.getByRole('link', { name: 'Open cited B20 dossier' })).toHaveAttribute('href', '/experiments/bass2-b20');
   await page.goto('/');
   await expect(page.locator('#gravity-lens figure.lens')).toHaveCount(1);
 });
