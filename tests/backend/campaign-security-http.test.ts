@@ -6,7 +6,7 @@ import { chromium } from '@playwright/test';
 import { CampaignAuthorizeResponseSchema, CampaignHttpCapabilityResponseSchema, CampaignHttpSnapshotResponseSchema, CampaignHttpActionResponseSchema,
   PublicCampaignBootstrapResponseSchema, PublicCampaignViewResponseSchema, PublicCampaignActionResponseSchema, campaignIdentity, type CampaignAction } from '@microfire/shared';
 import { createLoopbackCampaignHandler } from '../../apps/web/lib/campaign-http';
-import { createPublicCampaignHandler } from '../../apps/web/lib/public-campaign';
+import { createPublicCampaignHandler, PublicCampaignService, publicCampaignConfig } from '../../apps/web/lib/public-campaign';
 import { campaignConfig } from '../../apps/web/lib/campaign-security';
 import { PreviewAuthority, previewConfig, localPreviewRequest } from '../../apps/web/lib/game-preview-security';
 import { testDatabase, testServer, wire } from './campaign-security-harness';
@@ -220,4 +220,48 @@ test('public real browser: Secure HttpOnly visitor sessions, independent context
     assert(server.events.some(e => e.site === 'same-site' && e.status === 403));
     await first.close(); await second.close();
   } finally { await browser.close(); await attacker.close(); await server.close(); await database.close(); }
+});
+
+
+test('public storage: bootstrap/action fault rollback and shared budgets persist across pools and database restart', { timeout: 120000 }, async () => {
+  const database = await testDatabase(), env = publicEnv();
+  const admin = new Pool({ ...database.options, user: 'microfire_test' });
+  let peerPool = new Pool(database.options);
+  admin.on('error', () => {}); peerPool.on('error', () => {});
+  const server = await testServer(origin => createPublicCampaignHandler({ ...env, MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN: origin }, database.pool), true);
+  const call = (path: string, body?: unknown, headers: Record<string, string> = {}) => wire(server.origin, publicBase + path, body, headers);
+  try {
+    // Deliberately fail the second write: the visitor inserted earlier in the transaction must disappear too.
+    await admin.query(`CREATE FUNCTION reject_campaign_write() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'test-only injected failure'; END $$;
+      CREATE TRIGGER reject_campaign_insert AFTER INSERT ON microfire_campaign_heads FOR EACH ROW EXECUTE FUNCTION reject_campaign_write()`);
+    const failedBootstrap = await call('/session', {});
+    assert.equal(failedBootstrap.status, 503); assert(!failedBootstrap.headers['set-cookie']);
+    assert(!JSON.stringify(failedBootstrap.body).includes('injected failure'));
+    assert.equal((await database.pool.query('SELECT count(*)::int AS n FROM microfire_campaign_visitors')).rows[0].n, 0);
+    assert.equal((await database.pool.query('SELECT count(*)::int AS n FROM microfire_campaign_heads')).rows[0].n, 0);
+    await admin.query('DROP TRIGGER reject_campaign_insert ON microfire_campaign_heads');
+    const boot = await call('/session', {}), visitor = PublicCampaignBootstrapResponseSchema.parse(boot.body).data;
+    const headers = { cookie: cookie(boot), 'x-microfire-csrf': visitor.csrfToken }, intent = await command(visitor.view, inspect);
+    await admin.query('CREATE TRIGGER reject_campaign_update AFTER UPDATE ON microfire_campaign_heads FOR EACH ROW EXECUTE FUNCTION reject_campaign_write()');
+    assert.equal((await call('/action', intent, headers)).status, 503);
+    const saved = (await database.pool.query('SELECT revision,record,last_command,last_response FROM microfire_campaign_heads')).rows[0];
+    assert.equal(saved.revision, 0); assert.equal(saved.record.events.length, 0); assert.equal(saved.last_command, null); assert.equal(saved.last_response, null);
+    assert.equal(PublicCampaignViewResponseSchema.parse((await call('/session', undefined, headers)).body).data.revision, 0);
+    await admin.query('DROP TRIGGER reject_campaign_update ON microfire_campaign_heads; DROP FUNCTION reject_campaign_write()');
+    assert.equal((await call('/action', intent, headers)).status, 200);
+    // A distinct realm isolates this budget probe from normal HTTP request windows.
+    const config = publicCampaignConfig({ ...env, MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID: randomUUID(), MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN: server.origin })!;
+    const a = new PublicCampaignService(config, database.pool), b = new PublicCampaignService(config, peerPool);
+    const raced = await Promise.allSettled(Array.from({ length: 12 }, (_, i) => (i % 2 ? a : b).budget('shared-probe', 4)));
+    assert.equal(raced.filter(r => r.status === 'fulfilled').length, 4);
+    assert(raced.filter(r => r.status === 'rejected').every(r => r.reason.status === 429));
+    assert.equal((await database.pool.query('SELECT sum(hits)::int AS n FROM microfire_campaign_budgets WHERE realm=$1', [config.realmId])).rows[0].n, 12);
+    await peerPool.end(); database.restart();
+    peerPool = new Pool(database.options); peerPool.on('error', () => {});
+    const rebuilt = new PublicCampaignService(config, peerPool);
+    await assert.rejects(rebuilt.budget('shared-probe', 4), (e: unknown) => e instanceof Error && 'status' in e && e.status === 429);
+    assert.equal((await peerPool.query('SELECT sum(hits)::int AS n FROM microfire_campaign_budgets WHERE realm=$1', [config.realmId])).rows[0].n, 13);
+    server.replace(origin => createPublicCampaignHandler({ ...env, MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN: origin }, peerPool));
+    assert.equal(PublicCampaignViewResponseSchema.parse((await call('/session', undefined, headers)).body).data.revision, 1);
+  } finally { await server.close(); await peerPool.end(); await admin.end(); await database.close(); }
 });
