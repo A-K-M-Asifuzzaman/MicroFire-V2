@@ -31,7 +31,8 @@ export const PRESETS: { id: string; label: string; note: string; cfg: LabConfig 
 ];
 
 export function toQuestion(c: LabConfig): MissionQuestion {
-  return { material: c.material, oxygen: c.o2, pressureKpa: c.kpa, flow: c.flow, gravity: ladderGravity(c.gravity) };
+  const gravity = ladderGravity(c.gravity);
+  return { material: c.material, oxygen: c.o2, pressureKpa: c.kpa, flow: c.flow, ...(gravity === undefined ? {} : { gravity }) };
 }
 
 /** Per-dimension distance from your condition to one NASA record. A MicroFire heuristic, not a NASA score. */
@@ -93,10 +94,10 @@ export function assess(c: LabConfig, records: EvidenceRecord[], findings: Findin
   else cls = "none";
 
   const groups = [...new Set(direct.map((r) => r.outcome))];
-  const observed = cls === "direct" ? (groups.length === 1 ? { group: groups[0], label: direct[0].outcomeLabel } : { group: "mixed" as const, label: `Matching NASA tests ended differently: ${[...new Set(direct.map((r) => r.outcomeLabel))].join("; ")}` }) : null;
+  const observed = cls === "direct" ? (groups.length === 1 ? { group: groups[0]!, label: direct[0]!.outcomeLabel } : { group: "mixed" as const, label: `Matching NASA tests ended differently: ${[...new Set(direct.map((r) => r.outcomeLabel))].join("; ")}` }) : null;
   // Earth flames are the textbook buoyant case, so they may be drawn conceptually; the lab never claims a NASA observation for them.
   const visual: Visual = cls === "direct" ? "nasa" : cls === "analog" || c.gravity === "earth" ? "conceptual" : "unknown";
-  const largest = misses.length ? [...misses].sort((a, b) => DIM_WEIGHT[b.dim] - DIM_WEIGHT[a.dim])[0].dim : null;
+  const largest = misses.length ? [...misses].sort((a, b) => DIM_WEIGHT[b.dim] - DIM_WEIGHT[a.dim])[0]!.dim : null;
   return {
     cls, visual, closest: best?.r ?? null, rows: best?.rows ?? [], direct, observed, largest,
     gaps: c.gravity === "earth" ? ["This atlas holds no 1-g test records: NASA screens materials in normal gravity with a separate standard test (NASA-STD-6001)."] : l.gaps.map((g) => g.text),

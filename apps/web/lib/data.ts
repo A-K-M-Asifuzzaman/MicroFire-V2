@@ -27,7 +27,7 @@ export const families = [...new Set(experiments.map((e) => e.family))];
 /** Colour follows what the flames looked like: near-limit microgravity flames are dim blue. */
 export type OutcomeStyle = { color: string; hollow: boolean; legend: string };
 
-export const OUTCOME_STYLE: Record<string, OutcomeStyle> = {
+export const OUTCOME_STYLE = {
   sustained_no_blowoff: { color: "var(--flame)", hollow: false, legend: "Kept burning" },
   burned_entire_sample: { color: "var(--flame)", hollow: false, legend: "Kept burning" },
   burned_outcome_not_stated: { color: "var(--flame)", hollow: true, legend: "Burned, end state not stated" },
@@ -36,7 +36,7 @@ export const OUTCOME_STYLE: Record<string, OutcomeStyle> = {
   no_sustained_flame: { color: "var(--quench)", hollow: true, legend: "Flashed, never sustained" },
   blowoff: { color: "var(--blowoff)", hollow: false, legend: "Blown out at high flow" },
   not_ignited: { color: "var(--inert)", hollow: false, legend: "Did not ignite" },
-};
+} satisfies Record<string, OutcomeStyle>;
 
 /** One legend row per distinct look, in reading order. */
 export const LEGEND: OutcomeStyle[] = [

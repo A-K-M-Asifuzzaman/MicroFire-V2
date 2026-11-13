@@ -19,3 +19,5 @@ test-results/
 tools/meshy/incoming/
 docs/qa/screenshots/m4/recordings/
 docs/qa/screenshots/ignition/recordings/
+.vercel
+.env*

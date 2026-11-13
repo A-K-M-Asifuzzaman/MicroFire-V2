@@ -33,3 +33,16 @@ export function sceneSnapshot(view: PublicView) {
     }
   };
 }
+
+/** What the learner did in each mission, built ONLY from server-confirmed fields of the public view (never tab memory). */
+export function recordedActions(view: PublicView): Partial<Record<string, string>> {
+  const done = (m: string) => view.completedMissions.includes(m as never);
+  const ok = Object.values(view.appraisals).filter((a) => a.correct).length, total = view.trialStatements.length || Object.keys(view.appraisals).length;
+  const out: Partial<Record<string, string>> = {};
+  if (view.sourceReviewed) out['station-arrival'] = 'Classified the B20 observation as documented research and the station alarm as authored fiction; the server accepted the source review.';
+  if (done('bass-assembly')) out['bass-assembly'] = `Fitted all ${view.installedPartIds.length} apparatus parts, diagnosed the authored training fault, repaired it and qualified the training rig; the server checked every step.`;
+  if (view.prediction) out['flame-detective'] = `Locked the prediction “${view.prediction}” before the reveal${view.explanation?.correct ? ', then explained the documented result with its source and limits; the server accepted the explanation' : ''}.`;
+  if (total) out['claim-trial'] = `Ruled correctly on ${ok} of ${total} exhibits: what kind of claim each is, how strong its evidence is, which source applies and what could confound it.`;
+  if (view.habitat?.correct) out['lunar-habitat'] = `Assessed the fictional habitat against B20${view.decision ? ', recorded “insufficient evidence to decide”' : ''}${view.proposalCount ? ` and proposed ${view.proposalCount} next test${view.proposalCount === 1 ? '' : 's'}` : ''}. The server refuses any fire-safety certification.`;
+  return out;
+}

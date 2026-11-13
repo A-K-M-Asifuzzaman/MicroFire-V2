@@ -118,7 +118,7 @@ export function rank(exps: Experiment[], s: Scenario, prm: RankParams = RANK_DEF
     }
     if (s.pressureKpa != null) {
       const p = e.pressure_kpa != null ? [e.pressure_kpa, e.pressure_kpa] : e.pressure_kpa_range ?? null;
-      const d = p == null ? null : s.pressureKpa < p[0] ? p[0] - s.pressureKpa : s.pressureKpa > p[1] ? s.pressureKpa - p[1] : 0;
+      const d = p == null ? null : s.pressureKpa < p[0]! ? p[0]! - s.pressureKpa : s.pressureKpa > p[1]! ? s.pressureKpa - p[1]! : 0;
       add("pressureKpa", d == null ? null : near(d, prm.pressureScaleKpa), p == null ? "—" : p[0] === p[1] ? `${p[0]} kPa` : `${p[0]}–${p[1]} kPa`);
     }
     if (s.gravity != null)

@@ -37,7 +37,7 @@ export function Chamber3D({ cfg, phase, shown }: { cfg: LabConfig; phase: Phase;
     outcome: outcomeFor(cfg, phase, shown, late), unknown: phase === "result" && shown?.visual === "unknown",
     igniter: phase === "ignition" || phase === "analyzing" || (phase === "result" && shown?.group === "not_ignited" && !late) ? 1 : 0,
     focus: true,
-    zoom: focus ? "flame" : undefined,
+    ...(focus ? { zoom: "flame" as const } : {}),
   };
 
   // eslint-disable-next-line react-hooks/set-state-in-effect -- WebGL support is only knowable in the browser
@@ -49,7 +49,7 @@ export function Chamber3D({ cfg, phase, shown }: { cfg: LabConfig; phase: Phase;
       if (!live || !canvas.current) return;
       scene.current = new FlameScene(canvas.current, state, { fit: true });
     });
-    const io = new IntersectionObserver(([e]) => scene.current?.setRunning(e.isIntersecting && !document.hidden));
+    const io = new IntersectionObserver(([e]) => scene.current?.setRunning(!!e?.isIntersecting && !document.hidden));
     io.observe(canvas.current);
     const vis = () => scene.current?.setRunning(!document.hidden);
     document.addEventListener("visibilitychange", vis);

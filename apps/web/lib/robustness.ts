@@ -30,7 +30,7 @@ export function rng(seed: number) {
   };
 }
 const draw = (r: () => number, [lo, hi]: readonly [number, number]) => lo + (hi - lo) * r();
-const pct = (xs: number[], q: number) => xs[Math.min(xs.length - 1, Math.floor(q * xs.length))];
+const pct = (xs: number[], q: number): number => { if (!xs.length) throw new Error("Cannot calculate stability without samples"); return xs[Math.min(xs.length - 1, Math.floor(q * xs.length))]!; };
 
 export type RankStability = { median: number; lo: number; hi: number; top3: number; level: "High" | "Moderate" | "Low" };
 

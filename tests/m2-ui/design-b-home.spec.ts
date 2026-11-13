@@ -15,7 +15,7 @@ test('Design B hero: the flame is an illustration in the module porthole; the on
   await expect(hero.locator('figure.lens .home-hull')).toHaveCount(1);
   await expect(hero.locator('.home-window-tag')).toHaveText('Illustration');
   await expect(hero.locator('figure.lens figcaption')).toContainText('educational illustration, not NASA footage or data');
-  await expect(page.getByRole('navigation', { name: 'Your route through MicroFire' }).getByRole('link')).toHaveCount(5);
+  await expect(page.getByRole('navigation', { name: 'Your route through MicroFire' }).getByRole('link')).toHaveCount(6);
   await expect(page.getByRole('navigation', { name: 'Research stations' }).getByRole('link')).toHaveCount(6);
   await expect(page.getByRole('link', { name: /Prepare for the mission/ })).toContainText('Not playable yet');
   await page.waitForTimeout(1500);

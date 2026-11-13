@@ -202,7 +202,7 @@ try {
     let wrongDone = false;
     for (const st of claimTrialStatements) {
       const a = appraise(st.id) as Extract<ReturnType<typeof appraise>, { type: 'APPRAISE_CLAIM' }>;
-      await select(page.getByLabel('Statement'), st.id); await wait(500);
+      await click(page.getByRole('group', { name: 'Statement on trial' }).locator(`button[data-statement="${st.id}"]`)); await wait(500);
       await check(page.getByLabel(KIND[a.kind]!, { exact: true })); await check(page.getByLabel(LEVEL[a.evidenceLevel]!, { exact: true }));
       for (const box of await page.getByRole('group', { name: /Which source evidence applies/ }).getByRole('checkbox').all()) if (await box.isChecked()) await check(box);
       await check(page.getByLabel(st.id === 'trial-b20-thickness' ? 'B20 sample thickness (recorded condition)' : 'B20 observation log (Table A.1)'));

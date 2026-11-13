@@ -137,10 +137,10 @@ test('Ask: one companion, a persistent no-AI caption and examples grouped by wha
   for (const label of ['What was observed?', 'What is not known?', 'Where PIX stops']) await expect(page.getByText(label, { exact: true })).toBeVisible();
 });
 
-test('navigation: unfinished destinations are tagged, Passport is reachable, the Lab hands off to the lens', async ({ page }, info) => {
+test('navigation: unfinished destinations are tagged, Passport is reachable, the Flame Lab works', async ({ page }, info) => {
   await page.goto('/missions');
   if (info.project.name === 'desktop') {
-    await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Flame Lab/ })).toContainText('Soon');
+    await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: 'Flame Lab', exact: true })).toHaveAttribute('href', '/lab');
     await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Missions/ })).toContainText('Preview');
     await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: 'Evidence', exact: true })).toHaveCount(1);
     await expect(page.getByRole('navigation', { name: 'Mission tools' }).getByRole('link', { name: 'Evidence Passport' })).toHaveAttribute('href', '/passport');
@@ -149,8 +149,14 @@ test('navigation: unfinished destinations are tagged, Passport is reachable, the
     await expect(page.locator('details.mobile-nav').getByRole('link', { name: 'Passport', exact: true })).toHaveAttribute('href', '/passport');
     await expect(page.locator('details.mobile-nav').getByRole('link', { name: 'Frontier' })).toBeVisible();
   }
+  // The Flame Lab is a working, honestly labelled toy model with a cited B20 comparison (no Coming Soon placeholder).
   await page.goto('/lab');
-  await expect(page.getByRole('heading', { name: 'MicroFire Flame Lab' })).toBeAttached();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Change a condition');
+  await expect(page.getByText('Authored toy model · qualitative · not a measurement or simulation')).toBeVisible();
+  await page.getByRole('button', { name: 'Compare with the real B20 test' }).click();
+  const b20 = page.getByRole('region', { name: 'What NASA actually recorded for BASS-II test B20' });
+  await expect(b20).toContainText('17.4 vol%'); await expect(b20).toContainText('PDF page 112');
+  await expect(b20.getByRole('row', { name: /Pressure/ })).toContainText('unknown');
   await page.goto('/');
   await expect(page.locator('#gravity-lens figure.lens')).toHaveCount(1);
 });

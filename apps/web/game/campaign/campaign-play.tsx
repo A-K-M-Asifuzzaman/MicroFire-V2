@@ -2,6 +2,7 @@
 // Public campaign shell: bootstraps the visitor's durable case, renders the server's projected view through the
 // existing mission scenes, and routes every learner intent through the controller. No rule runs here.
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import Link from 'next/link';
 import type { CampaignAction } from '@microfire/shared';
 import { ClaimTrial, type EvidenceOption } from '../missions/claim-trial';
 import { FlameDetective } from '../missions/flame-detective';
@@ -9,15 +10,17 @@ import { LunarHabitat, type RecordedCondition } from '../missions/lunar-habitat'
 import { StationArrival, type Claim } from '../missions/station-arrival';
 import { PassportList } from '../missions/mission-kit';
 import { BassTraining } from './bass-training';
+import type { PartSpec } from '../contract';
 import { createPublicController, type PublicController } from './public-controller';
 import { createPublicTransport } from './public-transport';
-import { MISSIONS, currentMission, needsStart, sceneSnapshot } from './view-adapter';
+import { MissionGuide } from './mission-guide';
+import { MISSIONS, currentMission, needsStart, sceneSnapshot, recordedActions } from './view-adapter';
 import '../missions/missions.css';
 import './campaign.css';
 
 const time = (iso: string) => new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
-export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controller: injected }: { claim: Claim; sourceTitle: string; evidence: EvidenceOption[]; recorded: RecordedCondition[]; controller?: PublicController }) {
+export function CampaignPlay({ claim, sourceTitle, evidence, recorded, parts, controller: injected }: { claim: Claim; sourceTitle: string; evidence: EvidenceOption[]; recorded: RecordedCondition[]; parts?: PartSpec[] | undefined; controller?: PublicController }) {
   const controller = useMemo(() => injected ?? createPublicController(createPublicTransport()), [injected]);
   const s = useSyncExternalStore(controller.subscribe, controller.get, controller.get);
   const [confirmRestart, setConfirmRestart] = useState(false), [waitS, setWaitS] = useState(0);
@@ -42,6 +45,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controlle
   return <div className="wrap page mf-play" aria-busy={s.phase === 'booting' || s.phase === 'sending'} data-phase={s.phase} data-revision={view?.revision}>
     <header className="mf-play-head">
       <h1>Flame in Freefall missions</h1>
+      <p className="mf-guide-intro">New here? Follow the highlighted next action and read each mission briefing. <Link href="/judge-guide">Open the full guided tour</Link> of the science tools and games.</p>
       {view && <ol className="mf-rail" aria-label="Mission progress (saved on the server)">{MISSIONS.map((m) => {
         const done = view.completedMissions.includes(m.id), here = m.id === mission;
         return <li key={m.id} data-state={done ? 'done' : here ? 'current' : 'upcoming'} aria-current={here ? 'step' : undefined}>
@@ -65,15 +69,16 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controlle
       {view && view.passport.entries.length > 0 && ' Your Passport entries are shown below for reference.'}
       <button type="button" className="btn btn-primary" onClick={() => void controller.restart()}>Start a new case</button></div>}
 
-    {view && snap && mission && s.phase !== 'expired' && s.phase !== 'missing' && <section className="mf-stage" aria-label={MISSIONS.find((m) => m.id === mission)!.title}>
+    {view && snap && mission && s.phase !== 'expired' && s.phase !== 'missing' && <section className="mf-stage" data-mission={mission} aria-label={MISSIONS.find((m) => m.id === mission)!.title}>
+      <MissionGuide mission={mission} completed={view.completedMissions.length} passportCount={view.passport.entries.length} />
       {needsStart(view, mission) && mission !== 'bass-assembly'
         ? <div className="mf-start"><h2>Mission {MISSIONS.find((m) => m.id === mission)!.n}: {MISSIONS.find((m) => m.id === mission)!.title}</h2>
             <button type="button" className="btn btn-primary" onClick={() => act({ type: 'CORE', action: { type: 'START_MISSION', missionId: mission } })}>Start {MISSIONS.find((m) => m.id === mission)!.title}</button>
             {refusal && <p className="mf-verdict" data-kind="refused" role="status"><b>Not accepted.</b> {refusal.message}</p>}</div>
         : <>
           {mission === 'station-arrival' && <StationArrival snapshot={snap} claim={claim} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
-          {mission === 'bass-assembly' && <BassTraining view={view} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
-          {mission === 'flame-detective' && <FlameDetective snapshot={snap} claim={claim} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
+          {mission === 'bass-assembly' && <BassTraining view={view} parts={parts} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
+          {mission === 'flame-detective' && <FlameDetective snapshot={snap} claim={claim} recorded={recorded} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'claim-trial' && <ClaimTrial snapshot={snap} statements={view.trialStatements} evidence={evidence} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
           {mission === 'lunar-habitat' && <LunarHabitat snapshot={snap} claim={claim} recorded={recorded} sourceTitle={sourceTitle} feedback={feedback} refusal={refusal} onIntent={act} />}
         </>}
@@ -82,7 +87,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controlle
 
     {view && !mission && <section className="mf-done" aria-label="Campaign complete"><h2>All five missions complete</h2>
       <p>The server recorded every mission and Passport entry. This is educational progress, not scientific certification.</p></section>}
-    {view && (!mission || s.phase === 'expired' || s.phase === 'missing') && <PassportList entries={view.passport.entries} sourceTitle={sourceTitle} />}
+    {view && (!mission || s.phase === 'expired' || s.phase === 'missing') && <PassportList entries={view.passport.entries} sourceTitle={sourceTitle} recorded={recordedActions(view)} />}
 
     {view && s.phase !== 'expired' && s.phase !== 'missing' && <footer className="mf-play-foot">
       <button type="button" className="btn" onClick={() => void download()} disabled={view.passport.entries.length === 0}>Download Passport (JSON)</button>

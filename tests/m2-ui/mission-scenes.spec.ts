@@ -96,7 +96,7 @@ test('Flame Detective: objectives follow the engine; a hypothetical condition is
   await expect(spot(page, /Analysis bench/)).toHaveAttribute('data-next', 'true');
   await spot(page, /Observation window/).click();
   await expect(page.locator('#mf-panel blockquote')).toContainText('burned the entire sample');
-  await expect(page.locator('#mf-panel')).toContainText('Your locked prediction was');
+  await expect(page.locator('#mf-panel')).toContainText('Your locked prediction'); await expect(page.locator('#mf-panel')).toContainText('NASA documented result');
 });
 
 test('Flame Detective: a causal over-claim gets the engine’s reasons; stations emit schema-valid intents only', async ({ page }, info) => {
@@ -167,7 +167,7 @@ test('Claim Trial: four statements, engine reasons on a wrong appraisal, correct
 test('Claim Trial: the review desk emits a schema-valid appraisal with real source citations only', async ({ page }) => {
   await page.goto(M4);
   await spot(page, /Review desk/).click();
-  await page.getByLabel('Statement').selectOption('trial-flow-caused-burnout');
+  await page.getByRole('group', { name: 'Statement on trial' }).locator('button[data-statement="trial-flow-caused-burnout"]').click();
   await page.getByLabel('Hypothesis').check();
   await page.getByLabel('Evidence gap').check();
   await page.getByLabel('B20 observation log (Table A.1)').check();

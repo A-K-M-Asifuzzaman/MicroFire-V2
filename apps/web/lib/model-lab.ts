@@ -59,7 +59,7 @@ export function buildDataset(exps: Experiment[]) {
       flow: e.flow_initial_cm_s!,
       y: NOT_ESTABLISHED.has(e.outcome) ? 0 : 1,
       // SIBAL test IDs carry the GMT day (one crew session); PMMA IDs carry none, so each PMMA run is its own group.
-      session: e.test_id.includes("-") ? e.test_id.split("-")[0] : e.test_id,
+      session: e.test_id.includes("-") ? e.test_id.split("-")[0]! : e.test_id,
       outcome: e.outcome_label,
       cite: { source_id: r.source_id, pdf_page: r.pdf_page, where: r.table ?? "test table" },
     });
@@ -84,66 +84,66 @@ const sigmoid = (z: number) => 1 / (1 + Math.exp(-z));
 
 /** Solve A x = v by Gaussian elimination (A is tiny and positive definite). */
 function solve(A: number[][], v: number[]) {
-  const n = v.length, M = A.map((row, i) => [...row, v[i]]);
+  const n = v.length, M = A.map((row, i) => [...row, v[i]!]);
   for (let c = 0; c < n; c++) {
     let p = c;
-    for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
-    [M[c], M[p]] = [M[p], M[c]];
+    for (let r = c + 1; r < n; r++) if (Math.abs(M[r]![c]!) > Math.abs(M[p]![c]!)) p = r;
+    const pivot = M[c]!; M[c] = M[p]!; M[p] = pivot;
     for (let r = c + 1; r < n; r++) {
-      const f = M[r][c] / M[c][c];
-      for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k];
+      const f = M[r]![c]! / M[c]![c]!;
+      for (let k = c; k <= n; k++) M[r]![k] = M[r]![k]! - f * M[c]![k]!;
     }
   }
   const x = new Array(n).fill(0);
-  for (let r = n - 1; r >= 0; r--) x[r] = (M[r][n] - M[r].slice(r + 1, n).reduce((s, a, k) => s + a * x[r + 1 + k], 0)) / M[r][r];
+  for (let r = n - 1; r >= 0; r--) x[r] = (M[r]![n]! - M[r]!.slice(r + 1, n).reduce((s, a, k) => s + a * x[r + 1 + k]!, 0)) / M[r]![r]!;
   return x;
 }
 
 /** L2-regularised logistic regression on standardised features (intercept not penalised), fitted by Newton's method. */
 export function fitLogit(X: number[][], y: number[], lambda = LAMBDA): Logit {
-  const d = X[0].length;
-  const mu = Array.from({ length: d }, (_, j) => X.reduce((s, x) => s + x[j], 0) / X.length);
-  const sd = mu.map((m, j) => Math.sqrt(X.reduce((s, x) => s + (x[j] - m) ** 2, 0) / X.length) || 1);
-  const Z = X.map((x) => [1, ...x.map((v, j) => (v - mu[j]) / sd[j])]);
+  const d = X[0]!.length;
+  const mu = Array.from({ length: d }, (_, j) => X.reduce((s, x) => s + x[j]!, 0) / X.length);
+  const sd = mu.map((m, j) => Math.sqrt(X.reduce((s, x) => s + (x[j]! - m) ** 2, 0) / X.length) || 1);
+  const Z = X.map((x) => [1, ...x.map((v, j) => (v - mu[j]!) / sd[j]!)]);
   let beta = new Array(d + 1).fill(0);
   for (let it = 0; it < 50; it++) {
     const g = new Array(d + 1).fill(0), H = Array.from({ length: d + 1 }, () => new Array(d + 1).fill(0));
     Z.forEach((z, i) => {
       const p = sigmoid(z.reduce((s, v, k) => s + v * beta[k], 0)), wt = p * (1 - p);
       for (let a = 0; a <= d; a++) {
-        g[a] += (p - y[i]) * z[a];
-        for (let c = 0; c <= d; c++) H[a][c] += wt * z[a] * z[c];
+        g[a] = g[a]! + (p - y[i]!) * z[a]!;
+        for (let c = 0; c <= d; c++) H[a]![c] = H[a]![c]! + wt * z[a]! * z[c]!;
       }
     });
-    for (let a = 1; a <= d; a++) { g[a] += lambda * beta[a]; H[a][a] += lambda; }
+    for (let a = 1; a <= d; a++) { g[a] = g[a]! + lambda * beta[a]!; H[a]![a] = H[a]![a]! + lambda; }
     const step = solve(H, g);
     beta = beta.map((b, k) => b - step[k]);
     if (Math.max(...step.map(Math.abs)) < 1e-9) break;
   }
   return { mu, sd, b: beta[0], w: beta.slice(1) };
 }
-export const logitP = (m: Logit, x: number[]) => sigmoid(m.b + x.reduce((s, v, j) => s + (m.w[j] * (v - m.mu[j])) / m.sd[j], 0));
+export const logitP = (m: Logit, x: number[]) => sigmoid(m.b + x.reduce((s, v, j) => s + (m.w[j]! * (v - m.mu[j]!)) / m.sd[j]!, 0));
 
 /** CART on Gini impurity, depth-limited; leaves hold a Laplace-smoothed rate so probabilities are never 0 or 1. */
 type Node = { p: number } | { f: number; t: number; l: Node; r: Node };
 function grow(X: number[][], y: number[], idx: number[], depth: number, pick: () => number[]): Node {
-  const pos = idx.reduce((s, i) => s + y[i], 0), p = (pos + 1) / (idx.length + 2);
+  const pos = idx.reduce((s, i) => s + y[i]!, 0), p = (pos + 1) / (idx.length + 2);
   if (depth === 0 || pos === 0 || pos === idx.length || idx.length < 4) return { p };
-  const gini = (ids: number[]) => { const q = ids.reduce((s, i) => s + y[i], 0) / ids.length; return ids.length * 2 * q * (1 - q); };
+  const gini = (ids: number[]) => { const q = ids.reduce((s, i) => s + y[i]!, 0) / ids.length; return ids.length * 2 * q * (1 - q); };
   let best: { f: number; t: number; g: number } | null = null;
   for (const f of pick()) {
-    const vals = [...new Set(idx.map((i) => X[i][f]))].sort((a, b) => a - b);
+    const vals = [...new Set(idx.map((i) => X[i]![f]!))].sort((a, b) => a - b);
     for (let k = 1; k < vals.length; k++) {
-      const t = (vals[k - 1] + vals[k]) / 2, L = idx.filter((i) => X[i][f] <= t), R = idx.filter((i) => X[i][f] > t);
+      const t = (vals[k - 1]! + vals[k]!) / 2, L = idx.filter((i) => X[i]![f]! <= t), R = idx.filter((i) => X[i]![f]! > t);
       if (L.length < 2 || R.length < 2) continue;
       const g = gini(L) + gini(R);
       if (!best || g < best.g - 1e-12) best = { f, t, g };
     }
   }
   if (!best || best.g >= gini(idx) - 1e-12) return { p };
-  return { f: best.f, t: best.t, l: grow(X, y, idx.filter((i) => X[i][best.f] <= best.t), depth - 1, pick), r: grow(X, y, idx.filter((i) => X[i][best.f] > best.t), depth - 1, pick) };
+  return { f: best.f, t: best.t, l: grow(X, y, idx.filter((i) => X[i]![best.f]! <= best.t), depth - 1, pick), r: grow(X, y, idx.filter((i) => X[i]![best.f]! > best.t), depth - 1, pick) };
 }
-const treeP = (n: Node, x: number[]): number => ("p" in n ? n.p : treeP(x[n.f] <= n.t ? n.l : n.r, x));
+const treeP = (n: Node, x: number[]): number => ("p" in n ? n.p : treeP(x[n.f]! <= n.t ? n.l : n.r, x));
 
 export type ModelId = "baseline" | "logit-o2-material" | "logit-o2-flow-material" | "tree-depth2" | "forest";
 export const MODELS: { id: ModelId; name: string; complexity: number; fs: FeatureSet }[] = [
@@ -161,7 +161,7 @@ export function train(id: ModelId, rows: Row[], seed = 11): Predictor {
   const X = rows.map((r) => feats(r, fs)), y = rows.map((r): number => r.y);
   if (id === "baseline") { const p = (y.reduce((s, v) => s + v, 0) + 1) / (y.length + 2); return () => p; }
   if (id.startsWith("logit")) { const m = fitLogit(X, y); return (x) => logitP(m, feats(x, fs)); }
-  const all = X[0].map((_, j) => j);
+  const all = X[0]!.map((_, j) => j);
   if (id === "tree-depth2") { const t = grow(X, y, X.map((_, i) => i), 2, () => all); return (x) => treeP(t, feats(x, fs)); }
   const r = rng(seed), trees: Node[] = [];
   for (let k = 0; k < 200; k++) {
@@ -193,12 +193,12 @@ export function metrics(p: number[], y: number[]): Metrics {
     p.forEach((a, i) => { if (y[i]) p.forEach((b, j) => { if (!y[j]) s += a > b ? 1 : a === b ? 0.5 : 0; }); });
     auc = s / (pos * neg);
   }
-  const brier = p.reduce((s, v, i) => s + (v - y[i]) ** 2, 0) / p.length;
+  const brier = p.reduce((s, v, i) => s + (v - y[i]!) ** 2, 0) / p.length;
   const logLoss = -p.reduce((s, v, i) => { const q = Math.min(1 - 1e-6, Math.max(1e-6, v)); return s + (y[i] ? Math.log(q) : Math.log(1 - q)); }, 0) / p.length;
   return { n: p.length, accuracy: (tp + tn) / p.length, balancedAccuracy: (tpr + tnr) / 2, precision, recall, f1, auc, brier, logLoss, confusion: { tp, fn, fp, tn } };
 }
 
-const pct = (xs: number[], q: number) => { const s = [...xs].sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.max(0, Math.round(q * (s.length - 1))))]; };
+const pct = (xs: number[], q: number): number => { const s = [...xs].sort((a, b) => a - b); if (!s.length) throw new Error("Cannot take a percentile of an empty sample"); return s[Math.min(s.length - 1, Math.max(0, Math.round(q * (s.length - 1))))]!; };
 export type Interval = { est: number; lo: number; hi: number };
 
 /** Percentile bootstrap over out-of-fold predictions: resample records, recompute the metric. */
@@ -208,10 +208,10 @@ function bootCI(p: number[], y: number[], get: (m: Metrics) => number | null, n 
   const r = rng(seed), vals: number[] = [];
   for (let k = 0; k < n; k++) {
     const idx = p.map(() => Math.floor(r() * p.length));
-    const v = get(metrics(idx.map((i) => p[i]), idx.map((i) => y[i])));
+    const v = get(metrics(idx.map((i) => p[i]!), idx.map((i) => y[i]!)));
     if (v != null && Number.isFinite(v)) vals.push(v);
   }
-  return { est, lo: pct(vals, 0.025), hi: pct(vals, 0.975) };
+  return vals.length ? { est, lo: pct(vals, 0.025), hi: pct(vals, 0.975) } : null;
 }
 
 /* ---------------------------------------------------------------- validation */
@@ -263,7 +263,7 @@ export function evaluate(rows: Row[]): Evaluation[] {
       grouped: { ...g, ci: { balancedAccuracy: bootCI(p, y, (x) => x.balancedAccuracy), brier: bootCI(p, y, (x) => x.brier), auc: m.id === "baseline" ? null : bootCI(p, y, (x) => x.auc) } },
       calibration: bins.map(([bin, lo, hi]) => {
         const ids = p.map((v, i) => (v >= lo && v < hi ? i : -1)).filter((i) => i >= 0);
-        return { bin, n: ids.length, meanP: ids.length ? ids.reduce((s, i) => s + p[i], 0) / ids.length : 0, observed: ids.length ? ids.reduce((s, i) => s + y[i], 0) / ids.length : 0 };
+        return { bin, n: ids.length, meanP: ids.length ? ids.reduce((s, i) => s + p[i]!, 0) / ids.length : 0, observed: ids.length ? ids.reduce((s, i) => s + y[i]!, 0) / ids.length : 0 };
       }),
     };
   });
@@ -293,7 +293,7 @@ export function chooseModel(evals: Evaluation[]): ModelId | null {
   const ok = evals.filter((e) => e.id !== "baseline" && e.grouped.brier < base.grouped.brier && e.grouped.logLoss < base.grouped.logLoss && (e.grouped.ci.auc?.lo ?? 0) > 0.5);
   if (!ok.length) return null;
   const best = Math.min(...ok.map((e) => e.grouped.brier));
-  return ok.filter((e) => e.grouped.brier <= best + 0.01).sort((a, b) => a.complexity - b.complexity)[0].id;
+  return ok.filter((e) => e.grouped.brier <= best + 0.01).sort((a, b) => a.complexity - b.complexity)[0]!.id;
 }
 
 /* ---------------------------------------------------------------- deployed model */
@@ -316,8 +316,8 @@ export function snapshot(rows: Row[], modelId: Snapshot["modelId"]): Snapshot {
   const X = rows.map((r) => feats(r, fs)), y = rows.map((r) => r.y);
   const r = rng(29), pos = rows.flatMap((x, i) => (x.y ? [i] : [])), neg = rows.flatMap((x, i) => (x.y ? [] : [i]));
   const boot = Array.from({ length: BOOTSTRAPS }, () => {
-    const idx = [...pos.map(() => pos[Math.floor(r() * pos.length)]), ...neg.map(() => neg[Math.floor(r() * neg.length)])];
-    return fitLogit(idx.map((i) => X[i]), idx.map((i) => y[i]));
+    const idx = [...pos.map(() => pos[Math.floor(r() * pos.length)]!), ...neg.map(() => neg[Math.floor(r() * neg.length)]!)];
+    return fitLogit(idx.map((i) => X[i]!), idx.map((i) => y[i]!));
   });
   const domain = Object.fromEntries(MODEL_MATERIALS.map((mat) => {
     const m = rows.filter((x) => x.material === mat);
@@ -377,7 +377,7 @@ export function gate(s: Snapshot, q: Query): { status: Status; checks: Check[]; 
     ? { dim: "Pressure", status: "in", text: `${q.kpa} kPa is ISS-cabin pressure (SIBAL tests state 1 atm; PMMA tests state no pressure)` }
     : { dim: "Pressure", status: "out", text: `${q.kpa} kPa is outside the training domain: SIBAL tests state 1 atm (101.3 kPa) and PMMA tests state no pressure` });
 
-  let neighbors: Neighbor[] = [], support = 0;
+  let support = 0;
   if (known) {
     range("Oxygen", q.o2, s.domain[mat].o2, NEAR.o2, "%");
     range("Airflow", q.flow, s.domain[mat].flow, NEAR.flow, "cm/s");
@@ -387,8 +387,8 @@ export function gate(s: Snapshot, q: Query): { status: Status; checks: Check[]; 
       checks.push(support >= LOCAL.min
         ? { dim: "Local support", status: "in", text: `${support} ${q.material} tests lie within ±${LOCAL.o2} pp oxygen and ±${LOCAL.flow} cm/s airflow` }
         : { dim: "Local support", status: "insufficient", text: `Only ${support} ${q.material} test${support === 1 ? "" : "s"} within ±${LOCAL.o2} pp oxygen and ±${LOCAL.flow} cm/s airflow; at least ${LOCAL.min} are required` });
-    neighbors = nearest(s, q);
-  } else neighbors = nearest(s, q);
+  }
+  const neighbors = nearest(s, q);
 
   const worst = (["out", "insufficient", "near", "in"] as Status[]).find((st) => checks.some((c) => c.status === st))!;
   return { status: worst, checks, neighbors, support };
@@ -419,7 +419,7 @@ export function predict(s: Snapshot, q: Query): Prediction | null {
     hi: pct(ps, 0.95),
     baseLogOdds: s.model.b,
     // Exact for a linear model: each feature's log-odds shift from the average training record.
-    contributions: x.map((v, j) => ({ feature: s.features[j], value: vals[j], logOdds: (s.model.w[j] * (v - s.model.mu[j])) / s.model.sd[j] })),
+    contributions: x.map((v, j) => ({ feature: s.features[j]!, value: vals[j]!, logOdds: (s.model.w[j]! * (v - s.model.mu[j]!)) / s.model.sd[j]! })),
   };
 }
 

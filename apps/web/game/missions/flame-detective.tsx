@@ -32,8 +32,8 @@ const PIX: Record<Station | 'done', string> = {
 const LIMITS: [string, string][] = [['single-run-no-causality', 'One run cannot show what caused the outcome'], ['pressure-unknown', 'Pressure for this run is unknown'], ['not-lunar-evidence', 'This is not evidence about a lunar habitat']];
 const RELATIONS: [string, string][] = [['source-observation', 'The source documents this observation'], ['flow-caused-outcome', 'The airflow caused this outcome'], ['lunar-proof', 'This proves a lunar habitat is fire safe']];
 
-export function FlameDetective({ snapshot, claim, sourceTitle, feedback, refusal, onIntent }: {
-  snapshot: DetectiveSnapshot; claim: Claim; sourceTitle: string; feedback: Feedback; refusal: Refusal; onIntent: (a: CampaignAction) => void;
+export function FlameDetective({ snapshot, claim, sourceTitle, feedback, refusal, onIntent, recorded }: {
+  snapshot: DetectiveSnapshot; claim: Claim; sourceTitle: string; feedback: Feedback; refusal: Refusal; recorded?: { label: string; value: string }[] | undefined; onIntent: (a: CampaignAction) => void;
 }) {
   const s = snapshot.state, emit = emitter(onIntent);
   const prediction = s.predictions.find((p) => p.experimentId === 'bass2-b20');
@@ -73,8 +73,12 @@ export function FlameDetective({ snapshot, claim, sourceTitle, feedback, refusal
         </form>}
         {open === 'reveal' && <>
           <h3>Observation window</h3>
-          {revealed ? <><blockquote>{claim.text}</blockquote><p className="mf-cite">{claim.citations.map((c) => cite(c, sourceTitle)).join('; ')}</p>
-            {prediction && <p>Your locked prediction was: “{prediction.prediction}”.</p>}</>
+          {revealed ? <><div className="mf-compare">
+              <div className="mf-compare-col" data-kind="prediction"><span className="mf-compare-h">Your locked prediction</span><p>{prediction ? `“${prediction.prediction}”` : 'No prediction recorded.'}</p><span className="mf-fine">Stored by the server before the reveal.</span></div>
+              <div className="mf-compare-col" data-kind="record"><span className="mf-compare-h">NASA documented result</span><blockquote>{claim.text}</blockquote><p className="mf-cite">{claim.citations.map((c) => cite(c, sourceTitle)).join('; ')}</p></div>
+            </div>
+            {recorded && <ul className="mf-conditions" aria-label="B20 recorded conditions">{recorded.map((r) => <li key={r.label} data-known={r.value !== 'Not recorded'}><b>{r.label}</b> {r.value === 'Not recorded' ? 'unknown' : r.value}</li>)}</ul>}
+            <p className="mf-fine">One run documents one outcome. It cannot show what caused it, and missing conditions stay unknown.</p></>
             : <><p>The documented result appears once the engine accepts the reveal.</p>
               <button type="button" className="btn btn-primary" onClick={() => emit({ type: 'CORE', action: { type: 'OBSERVE_DOCUMENTED_RESULT', experimentId: 'bass2-b20' } })}>Reveal the documented result</button></>}
         </>}

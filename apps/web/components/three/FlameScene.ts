@@ -294,7 +294,7 @@ export class FlameScene {
       for (const [by, bz] of [[-k, -k], [-k, 0], [-k, k], [0, -k], [0, k], [k, -k], [k, 0], [k, k]]) {
         const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.08, 6), this.mat.chrome);
         bolt.rotation.z = Math.PI / 2;
-        bolt.position.set(x + out, by, bz);
+        bolt.position.set(x + out, by!, bz!);
         ductPart.add(bolt);
       }
     }
@@ -926,17 +926,17 @@ export class FlameScene {
     const hot = new THREE.Color(0xfff1c4), mid = new THREE.Color(0xf0a044), red = new THREE.Color(0x8a2a12), blue = new THREE.Color(0x5b8cff), core = new THREE.Color(0xbfd2ff);
     const c = new THREE.Color();
     for (let i = 0; i < N; i++) {
-      if (this.age[i] >= this.life[i]) {
+      if (this.age[i]! >= this.life[i]!) {
         this.col[i * 4 + 3] = 0;
         continue;
       }
-      this.age[i] += dt;
-      const t = this.age[i] / this.life[i];
-      this.pos[i * 3] += this.vel[i * 3] * dt;
-      this.pos[i * 3 + 1] += this.vel[i * 3 + 1] * dt;
-      this.pos[i * 3 + 2] += this.vel[i * 3 + 2] * dt;
+      this.age[i] = this.age[i]! + dt;
+      const t = this.age[i]! / this.life[i]!;
+      this.pos[i * 3] = this.pos[i * 3]! + this.vel[i * 3]! * dt;
+      this.pos[i * 3 + 1] = this.pos[i * 3 + 1]! + this.vel[i * 3 + 1]! * dt;
+      this.pos[i * 3 + 2] = this.pos[i * 3 + 2]! + this.vel[i * 3 + 2]! * dt;
       // earth: plume narrows as it rises
-      this.pos[i * 3 + 2] *= 1 - dt * 1.2 * p.grav;
+      this.pos[i * 3 + 2] = this.pos[i * 3 + 2]! * (1 - dt * 1.2 * p.grav);
       // flame colour: hot core -> amber -> dark red; orbit and near-limit flames shift to blue
       // under gravity the plume stays bright for longer so the tall teardrop reads clearly
       const split = 0.3 + 0.3 * p.grav;
@@ -947,9 +947,9 @@ export class FlameScene {
       const a = Math.sin(Math.PI * Math.min(1, t * 1.1)) * (0.35 + 0.25 * (1 - b)) * (0.4 + 0.6 * p.life) * p.seek * (1 + p.flash);
       this.col.set([c.r, c.g, c.b, a], i * 4);
     }
-    this.geo.attributes.position.needsUpdate = true;
-    this.geo.attributes.aColor.needsUpdate = true;
-    this.geo.attributes.aSize.needsUpdate = true;
+    this.geo.attributes.position!.needsUpdate = true;
+    this.geo.attributes.aColor!.needsUpdate = true;
+    this.geo.attributes.aSize!.needsUpdate = true;
 
     const fx = this.sample.position.x - 1.2 + p.lift * 3.5;
     this.glow.position.set(fx, -0.1 + p.grav * 0.5, 0.55);
@@ -972,13 +972,13 @@ export class FlameScene {
     const sp = p.flow * 0.12 * p.fanDir;
     (this.streaks.material as THREE.LineBasicMaterial).opacity = Math.min(0.5, p.flow / 12) * (s.view === "duct" ? 1 : 0);
     for (let i = 0; i < 160; i++) {
-      let x = this.streakPos[i * 6] + sp * dt * 8;
+      let x = this.streakPos[i * 6]! + sp * dt * 8;
       if (x > 3.9) x = -3.9;
       if (x < -3.9) x = 3.9;
       this.streakPos[i * 6] = x;
       this.streakPos[i * 6 + 3] = x + 0.12 + sp * 0.08;
     }
-    this.streaks.geometry.attributes.position.needsUpdate = true;
+    this.streaks.geometry.attributes.position!.needsUpdate = true;
 
     // camera framing: fit the active object in the visible area. Wide screens with a side panel
     // push it right; portrait phones lift it above the bottom task sheet.
@@ -1024,7 +1024,7 @@ export class FlameScene {
     this.camera.updateProjectionMatrix();
     // pixels per world unit at distance 1: particle size stays physical under perspective
     const scale = h / (2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)));
-    (((this.flameGroup.children[1] as THREE.Points).material as THREE.ShaderMaterial).uniforms.uScale.value) = scale;
+    (((this.flameGroup.children[1] as THREE.Points).material as THREE.ShaderMaterial).uniforms.uScale!.value) = scale;
   }
 
   setRunning(on: boolean) {

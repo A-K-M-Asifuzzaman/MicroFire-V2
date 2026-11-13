@@ -83,9 +83,9 @@ export function parseQuestion(q: string): { scenario: Scenario; topics: Set<stri
   for (const [re, m] of MATERIAL_WORDS) if (re.test(q)) scenario.material = m;
   for (const [re, m] of UNTESTED_MATERIALS) if (re.test(q)) scenario.material = m;
   const topics = new Set(TOPIC_WORDS.filter(([re]) => re.test(q)).map(([, t]) => t));
-  const testIds = [...q.matchAll(TEST_ID)].map((m) => m[1].toUpperCase());
+  const testIds = [...q.matchAll(TEST_ID)].map((m) => m[1]!.toUpperCase());
   // "2-7" alone is too ambiguous; plain digit samples count only when the word Saffire is in the question
-  const saffireIds = [...q.matchAll(SAFFIRE_ID)].map((m) => m[1].toUpperCase()).filter((id) => /^[IV]/.test(id) || /saffire/i.test(q));
+  const saffireIds = [...q.matchAll(SAFFIRE_ID)].map((m) => m[1]!.toUpperCase()).filter((id) => /^[IV]/.test(id) || /saffire/i.test(q));
   return { scenario, topics, testIds, saffireIds };
 }
 
@@ -172,7 +172,7 @@ function findingItem(f: Finding): EvidenceItem {
   };
 }
 
-const toQuestion = (s: Scenario): MissionQuestion => ({ material: s.material, oxygen: s.oxygen, pressureKpa: s.pressureKpa, gravity: s.gravity, flow: s.flow });
+const toQuestion = (s: Scenario): MissionQuestion => ({ ...(s.material === undefined ? {} : { material: s.material }), ...(s.oxygen === undefined ? {} : { oxygen: s.oxygen }), ...(s.pressureKpa === undefined ? {} : { pressureKpa: s.pressureKpa }), ...(s.gravity === undefined ? {} : { gravity: s.gravity }), ...(s.flow === undefined ? {} : { flow: s.flow }) });
 
 /** Deterministic evidence package for a question. Saffire runs join when the question reaches their regime. */
 export function buildEvidence(q: string, exps: Experiment[], finds: Finding[], saffire: SaffireRun[] = [], luci: LuciRun[] = []) {
@@ -238,7 +238,7 @@ export function buildEvidence(q: string, exps: Experiment[], finds: Finding[], s
   if (scenario.gravity && scenario.gravity !== "microgravity")
     for (const e of named) gaps.push({ dim: "premise", text: `Test ${e.test_id} ran in microgravity aboard the ISS, not at ${scenario.gravity} gravity.` });
   const flight = q.match(/\bsaffire[\s-]*(vii+|ix|x|[7-9]|1\d)\b/i);
-  if (flight) gaps.push({ dim: "record", text: `This atlas holds Saffire I to VI only; it has no Saffire ${flight[1].toUpperCase()} record.` });
+  if (flight) gaps.push({ dim: "record", text: `This atlas holds Saffire I to VI only; it has no Saffire ${flight[1]!.toUpperCase()} record.` });
   // a question about a concept rather than conditions or named records reads NASA's own words first
   const conceptual = scenario.oxygen == null && scenario.flow == null && scenario.pressureKpa == null && !named.length && !saffireIds.length;
   const quoteItems = scored.map(findingItem);
@@ -357,13 +357,13 @@ export function checkAnswer(raw: RawAnswer, items: EvidenceItem[], question = ""
       for (const [n, unit] of pairs(c.text)) {
         const sameNumber = cited.filter(([m]) => m === n);
         if (sameNumber.length && !sameNumber.some(([, u]) => u === unit))
-          issues.push(`Unit mismatch: the evidence gives ${n} in ${sameNumber[0][1]}, not ${unit}`);
+          issues.push(`Unit mismatch: the evidence gives ${n} in ${sameNumber[0]![1]!}, not ${unit}`);
       }
       if (OTHER_GRAVITY.test(c.text) && !NEGATED.test(c.text) && cites.every((k) => byKey.get(k)!.gravity !== "partial"))
         issues.push("Describes microgravity evidence as a Moon or Mars result");
     }
     const causal = negCausal.test(c.text) ? null : c.text.match(CAUSAL); // "does not prove it is safe" is the honest sentence
-    if (causal && !cites.some((k) => byKey.get(k)!.text.toLowerCase().includes(causal[1].toLowerCase().slice(0, 5))))
+    if (causal && !cites.some((k) => byKey.get(k)!.text.toLowerCase().includes(causal[1]!.toLowerCase().slice(0, 5))))
       issues.push(`Causal or safety wording ("${causal[0]}") that no cited NASA item states`);
     if (c.type !== "DATA_GAP" && PREDICTION.test(c.text) && !UNCERTAIN.test(c.text))
       issues.push("Turns a past test outcome into a prediction");
