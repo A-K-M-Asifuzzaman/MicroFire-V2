@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { publicCampaignPool } from '../apps/web/lib/public-campaign';
 const mode = process.argv[2], database = process.env.MICROFIRE_PUBLIC_CAMPAIGN_DATABASE_URL;
 if (!database || !['migrate', 'cleanup'].includes(mode ?? '')) throw Error('Set the private campaign database environment and choose migrate or cleanup.');
-const pool = publicCampaignPool(database);
+const pool = publicCampaignPool(database, process.env.MICROFIRE_PUBLIC_CAMPAIGN_DATABASE_CA_PEM);
 try {
   const client = await pool.connect();
   try {
