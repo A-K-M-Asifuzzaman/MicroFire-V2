@@ -4,7 +4,7 @@ import { features } from '@microfire/shared';
 import { LabPage, MethodologyPage, RoadmapPage, SourcesPage, StatusPage } from '../../components/static-pages';
 
 // Remaining registry routes without dedicated folders. Anything else is a real 404 (no streamed soft not-found).
-const own = new Set(['/', '/atlas', '/experiments/[id]', '/dashboard', '/ask', '/gaps', '/compare', '/passport', '/missions']);
+const own = new Set(['/', '/atlas', '/experiments/[id]', '/dashboard', '/ask', '/gaps', '/compare', '/passport', '/missions', '/lab']);
 const routes = features.filter((f) => !own.has(f.route) && !f.route.startsWith('/missions/'));
 export const dynamicParams = false;
 export function generateStaticParams() { return routes.map((f) => ({ path: f.route.slice(1).split('/') })); }
