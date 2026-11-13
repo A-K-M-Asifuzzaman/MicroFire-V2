@@ -4,7 +4,9 @@
     "deploymentEnabled": {
       "codex/review-campaign-security-20261113": false,
       "codex/campaign-security-remediation-20261113": false,
-      "claude/public-campaign-integration-20261113": false
+      "claude/public-campaign-integration-20261113": false,
+      "codex/fix-campaign-admission-20261113": false,
+      "codex/release-staging-20261113": false
     }
   }
 }

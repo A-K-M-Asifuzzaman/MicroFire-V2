@@ -255,12 +255,12 @@ test('public storage: bootstrap/action fault rollback and shared budgets persist
     const raced = await Promise.allSettled(Array.from({ length: 12 }, (_, i) => (i % 2 ? a : b).budget('shared-probe', 4)));
     assert.equal(raced.filter(r => r.status === 'fulfilled').length, 4);
     assert(raced.filter(r => r.status === 'rejected').every(r => r.reason.status === 429));
-    assert.equal((await database.pool.query('SELECT sum(hits)::int AS n FROM microfire_campaign_budgets WHERE realm=$1', [config.realmId])).rows[0].n, 12);
+    assert.equal((await database.pool.query('SELECT sum(hits)::int AS n FROM microfire_campaign_budgets WHERE realm=$1', [config.realmId])).rows[0].n, 4);
     await peerPool.end(); database.restart();
     peerPool = new Pool(database.options); peerPool.on('error', () => {});
     const rebuilt = new PublicCampaignService(config, peerPool);
     await assert.rejects(rebuilt.budget('shared-probe', 4), (e: unknown) => e instanceof Error && 'status' in e && e.status === 429);
-    assert.equal((await peerPool.query('SELECT sum(hits)::int AS n FROM microfire_campaign_budgets WHERE realm=$1', [config.realmId])).rows[0].n, 13);
+    assert.equal((await peerPool.query('SELECT sum(hits)::int AS n FROM microfire_campaign_budgets WHERE realm=$1', [config.realmId])).rows[0].n, 4);
     server.replace(origin => createPublicCampaignHandler({ ...env, MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN: origin }, peerPool));
     assert.equal(PublicCampaignViewResponseSchema.parse((await call('/session', undefined, headers)).body).data.revision, 1);
   } finally { await server.close(); await peerPool.end(); await admin.end(); await database.close(); }
