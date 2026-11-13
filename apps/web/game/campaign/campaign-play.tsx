@@ -39,7 +39,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, controlle
     const a = document.createElement('a'); a.href = url; a.download = `microfire-passport-${data.sessionId.slice(0, 8)}.json`; a.click(); URL.revokeObjectURL(url);
   };
 
-  return <div className="wrap page mf-play" aria-busy={s.phase === 'booting' || s.phase === 'sending'} data-phase={s.phase}>
+  return <div className="wrap page mf-play" aria-busy={s.phase === 'booting' || s.phase === 'sending'} data-phase={s.phase} data-revision={view?.revision}>
     <header className="mf-play-head">
       <h1>Flame in Freefall missions</h1>
       {view && <ol className="mf-rail" aria-label="Mission progress (saved on the server)">{MISSIONS.map((m) => {

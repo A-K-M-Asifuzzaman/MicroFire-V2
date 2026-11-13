@@ -39,6 +39,15 @@ test('API contracts, errors and no-service fallback', async ({ request }) => {
   expect(ask.status()).toBe(200);
   expect((await ask.json()).data).toMatchObject({ abstained: true, code: 'unsupported-intent' });
   expect((await request.post('/api/constructor', { data: {} })).status()).toBe(404);
+  // Public campaign stays off by default: no play page, and neither campaign namespace is mounted in this build.
+  expect((await request.get('/missions/play')).status()).toBe(404);
+  const h = { 'X-MicroFire-Campaign': '1', 'Content-Type': 'application/json' }, uuid = '00000000-0000-4000-8000-000000000000';
+  const routes: [string, string][] = [
+    ['POST', '/api/game/public-campaign/v1/session'], ['GET', '/api/game/public-campaign/v1/session'], ['POST', '/api/game/public-campaign/v1/action'],
+    ['POST', '/api/game/public-campaign/v1/resume'], ['POST', '/api/game/public-campaign/v1/revoke'], ['GET', '/api/game/public-campaign/v1/export'],
+    ['GET', '/api/game/campaign/v1/capability'], ['POST', '/api/game/campaign/v1/authorize'], ['POST', '/api/game/campaign/v1/revoke'], ['POST', '/api/game/campaign/v1/start'],
+    ['GET', `/api/game/campaign/v1/session/${uuid}`], ['POST', '/api/game/campaign/v1/action'], ['POST', '/api/game/campaign/v1/resume'], ['GET', `/api/game/campaign/v1/export/${uuid}`]];
+  for (const [method, p] of routes) expect((await request.fetch(p, { method, headers: h, ...(method === 'POST' ? { data: {} } : {}) })).status(), `${method} ${p}`).toBe(404);
   const record = body.data.items[0];
   const mismatchedPassport = { schemaVersion: 1, purpose: 'educational-research-record', entries: [{
     id: 'mismatched-entry', missionId: 'station-arrival', experimentIds: [record.id], claimIds: [record.claims[0].id],
