@@ -1,6 +1,6 @@
 # 24 — PREMIER PRODUCT QUALITY STANDARD (AUTHORITATIVE QUALITY ADDENDUM)
 
-**Status:** Added after the Meshy/Living Observatory master review. Read this with `FINAL_MASTER_PROMPT.md`, `AGENTS.md`, `CLAUDE.md`, and `docs/19_VISUAL_DIRECTION_LIVING_OBSERVATORY.md`. It adds enforceable **quality gates**, not a new feature wishlist. In any conflict: repository safety/scientific integrity always wins; the newest *Living Observatory* references win over old visual mockups. This is an original NASA-inspired educational/scientific product, **not an officially endorsed NASA safety system**.
+**Status:** Added after the Meshy/Living Observatory master review. Read this with `docs/internal/FINAL_MASTER_PROMPT.md`, `AGENTS.md`, `CLAUDE.md`, and `docs/19_VISUAL_DIRECTION_LIVING_OBSERVATORY.md`. It adds enforceable **quality gates**, not a new feature wishlist. In any conflict: repository safety/scientific integrity always wins; the newest *Living Observatory* references win over old visual mockups. This is an original NASA-inspired educational/scientific product, **not an officially endorsed NASA safety system**.
 
 ## A. The ambition and the boundary
 Build a distinct, genuinely excellent **microgravity fire-science observatory**, not a space-game template or a science-dashboard clone. Meet or exceed the engineering polish of the friend's Exovisionaries public project while solving a **different problem**: explain and responsibly compare microgravity combustion evidence. The quality reference is its tested gameplay properties—state transitions, meaningful consequences, correction/retry, responsive storytelling, save/recovery—not its copyrighted UI, characters, assets or scenes. Never make a claim of guaranteed contest victory, scientific validation or operational fire safety.
@@ -65,7 +65,7 @@ The judge / first-visit tour must be runnable in approximately 90 seconds as a s
 Claude owns visual quality, interaction scenes and human experience; Codex owns scientific contracts, data correctness, deterministic rules and verification. They share interface schemas and integration tests; neither may silently change source IDs or claim classifications. Both must independently audit the other's output at integration gates. Prioritized blockers: fake/unsupported science > broken safety/permissions > non-playable released feature > lost evidence/persistence > inaccessible core > slow/inconsistent UX > visual polish > new features. Owner approves purchases and production deployment. Never hide scope slippage behind an attractive Coming Soon illustration.
 
 ## J. Mandatory deliverables at each release gate
-1. A `RELEASE_SCORECARD.md` with actual PASS/FAIL/NOT TESTED evidence, no made-up test results.
+1. A `docs/internal/RELEASE_SCORECARD.md` with actual PASS/FAIL/NOT TESTED evidence, no made-up test results.
 2. Screenshot set for home, a source dossier, comparison, scene, passport at desktop and mobile sizes.
 3. Scientific claim-provenance audit sample, retrieval test outputs and an honest incomplete-data list.
 4. A tested E2E flow transcript/video reference including an intentionally failed interaction and recovery.

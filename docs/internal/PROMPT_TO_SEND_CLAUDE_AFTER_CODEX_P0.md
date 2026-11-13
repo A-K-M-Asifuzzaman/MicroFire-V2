@@ -4,7 +4,7 @@ You are the creative and frontend owner of **MicroFire-V2: The Living Science Ob
 
 **Writable repository:** `https://github.com/A-K-M-Asifuzzaman/MicroFire-V2` ONLY. The original `MicroFire-Atlas` and friend `exovisionaries2026` are read-only reference material. Before any edits: show `pwd`, `git remote -v`, current branch/status. Verify that Codex Phase Zero contracts are actually merged; if not, follow the P0 handoff gate.
 
-Read completely: `CLAUDE.md`, `AGENTS.md`, `FINAL_MASTER_PROMPT.md`, `docs/19_VISUAL_DIRECTION_LIVING_OBSERVATORY.md`, `docs/24_PREMIUM_PRODUCT_QUALITY_STANDARD.md`, `docs/25_RELEASE_SCORECARD_TEMPLATE.md`, `docs/26_VISUAL_AND_GAME_ACCEPTANCE_CASES.md` plus the rest of the applicable documentation and **all 10 images** in `docs/visual-references/living-observatory/`.
+Read completely: `CLAUDE.md`, `AGENTS.md`, `docs/internal/FINAL_MASTER_PROMPT.md`, `docs/19_VISUAL_DIRECTION_LIVING_OBSERVATORY.md`, `docs/24_PREMIUM_PRODUCT_QUALITY_STANDARD.md`, `docs/25_RELEASE_SCORECARD_TEMPLATE.md`, `docs/26_VISUAL_AND_GAME_ACCEPTANCE_CASES.md` plus the rest of the applicable documentation and **all 10 images** in `docs/visual-references/living-observatory/`.
 
 Treat `docs/24` as a mandatory quality addendum. Preserve all earlier project security, science integrity, feature state, owner-approval and cost rules.
 

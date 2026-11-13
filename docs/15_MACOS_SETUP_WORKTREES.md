@@ -29,7 +29,7 @@ Unzip this ZIP to a folder alongside your clone. Copy the **contents** of the ex
 ```
 rsync -a --exclude '.DS_Store' ~/Downloads/MicroFire_V2_Independent_Agent_Pack/ ./
 git status --short
-git add README.md README_START_HERE.md docs CLAUDE.md AGENTS.md .claude .agents .github .gitignore .env.example
+git add README.md docs/internal/README_START_HERE.md docs CLAUDE.md AGENTS.md .claude .agents .github .gitignore .env.example
 # review staged changes, no credentials
 git diff --cached --stat
 git commit -m "docs: initialize science-first v2 agent workflow"

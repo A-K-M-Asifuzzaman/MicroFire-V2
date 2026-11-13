@@ -19,7 +19,7 @@ All share the sole origin `https://github.com/A-K-M-Asifuzzaman/MicroFire-V2.git
 
 ## Read and evidence basis
 
-Read AGENTS.md, CLAUDE.md, FINAL_MASTER_PROMPT.md; docs/OWNERSHIP.md, API_CONTRACTS.md, M15_REPORT.md, SOL_HANDOFF_M15_CORRECTIONS.md, ASTRA_FIXES_INTEGRATION_REPORT.md; the five-mission specifications, game/shared schemas, reducer, persistence, current registry, API adapter, science catalog/validator, asset-rights ledger, credit ledger and relevant tests. The repository science-integrity and game-QA skills informed this plan. Historical P0-stop instructions are superseded by this explicit M2 planning assignment; implementation remains outside scope.
+Read AGENTS.md, CLAUDE.md, docs/internal/FINAL_MASTER_PROMPT.md; docs/OWNERSHIP.md, API_CONTRACTS.md, M15_REPORT.md, SOL_HANDOFF_M15_CORRECTIONS.md, ASTRA_FIXES_INTEGRATION_REPORT.md; the five-mission specifications, game/shared schemas, reducer, persistence, current registry, API adapter, science catalog/validator, asset-rights ledger, credit ledger and relevant tests. The repository science-integrity and game-QA skills informed this plan. Historical P0-stop instructions are superseded by this explicit M2 planning assignment; implementation remains outside scope.
 
 Astra's final M1.5 acceptance and supporting local evidence are at `/Users/asifzaman/.codex/visualizations/2026/10/14/01a13b66-4da0-7bc2-a7ec-1e54cfa974fd/astra-m15-final-review/FINAL_M15_ACCEPTANCE_REVIEW.md`. That review approves M2 planning, not public release or human science signoff. Required documents were available; no substitute GitHub branch was used.
 

@@ -2,7 +2,7 @@
 
 You are the principal architecture, science and reliability owner for **MicroFire-V2: The Living Science Observatory**. Writable remote is only `https://github.com/A-K-M-Asifuzzaman/MicroFire-V2`. `MicroFire-Atlas` and `exovisionaries2026` are read-only. Verify branch, status and remotes before editing.
 
-Read `AGENTS.md`, `CLAUDE.md`, `FINAL_MASTER_PROMPT.md`, `docs/24_PREMIUM_PRODUCT_QUALITY_STANDARD.md`, `docs/25_RELEASE_SCORECARD_TEMPLATE.md`, `docs/26_VISUAL_AND_GAME_ACCEPTANCE_CASES.md`, and all science, game, testing and ownership specs relevant to your phase. Preserve the existing phase gates and Claude frontend ownership.
+Read `AGENTS.md`, `CLAUDE.md`, `docs/internal/FINAL_MASTER_PROMPT.md`, `docs/24_PREMIUM_PRODUCT_QUALITY_STANDARD.md`, `docs/25_RELEASE_SCORECARD_TEMPLATE.md`, `docs/26_VISUAL_AND_GAME_ACCEPTANCE_CASES.md`, and all science, game, testing and ownership specs relevant to your phase. Preserve the existing phase gates and Claude frontend ownership.
 
 **Strengthen evidence-to-action quality without spending money:**
 1. Audit every selected primary source and compare ingested records against real page/section locators. Flag missing measurement fields honestly.
