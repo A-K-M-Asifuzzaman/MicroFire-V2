@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "status": "PRIMARY_NASA_PSI_TABLE_TRANSCRIPTION_NEEDS_INDEPENDENT_SCIENCE_REVIEW",
+  "purpose": "Candidate rows only. Not the admitted runtime catalog; no change to the B20-only evidence gate or 55 quarantined legacy rows.",
+  "retrievedAt": "2026-11-13",
+  "sourceMethod": "Direct transcription of the visible official NASA PSI Experimental Table rows 1–5 as returned by NASA PSI page indexing. Exact table row keys and units retained. Independent page rendering and dataset-file byte hash are not yet complete.",
+  "sources": [
+    {
+      "id": "PSI-25",
+      "investigation": "BASS-II",
+      "version": "4",
+      "doi": "10.60555/4qc4-de67",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+      "table": "Experimental Table"
+    },
+    {
+      "id": "PSI-69",
+      "investigation": "FLEX",
+      "version": "5",
+      "doi": "10.60555/mbq8-0451",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69",
+      "table": "Experimental Table"
+    }
+  ],
+  "count": {
+    "bassIIConditionOnly": 4,
+    "flexExperimentalRows": 5,
+    "addedAdmittedRuns": 0
+  },
+  "records": [
+    {
+      "candidateId": "psi25-b1",
+      "sourceId": "PSI-25",
+      "rowKey": "B1",
+      "observedCells": {
+        "id": "B1",
+        "date": "2014-02-19",
+        "sampleNo": "147",
+        "fuelSampleMaterial": "100 micron PMMA film 2 cm wide",
+        "flowRestrictor": "2",
+        "fanDisplay": "62",
+        "airDisplay": "5",
+        "calibratedInitialOxygenVolPct": 22.2,
+        "calibratedFinalOxygenVolPct": 22.2,
+        "initialCo2VolPct": 0.44,
+        "finalCo2VolPct": 0.44,
+        "initialCoPpm": 0,
+        "finalCoPpm": 6
+      },
+      "scope": "experiment-conditions-and-gas-values-only",
+      "limitations": [
+        "No run-specific flame outcome given by this table extract; do not invent it.",
+        "No measured run acceleration, uncertainty, or exact airflow speed established by these columns.",
+        "Film material must preserve the exact displayed row wording; do not infer PMMA if absent."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    },
+    {
+      "candidateId": "psi25-b3",
+      "sourceId": "PSI-25",
+      "rowKey": "B3",
+      "observedCells": {
+        "id": "B3",
+        "date": "2014-02-19",
+        "sampleNo": "148",
+        "fuelSampleMaterial": "100 micron film 2 cm wide",
+        "flowRestrictor": "2",
+        "fanDisplay": "47",
+        "airDisplay": "2",
+        "calibratedInitialOxygenVolPct": 22.2,
+        "calibratedFinalOxygenVolPct": 21.8,
+        "initialCo2VolPct": 0.43,
+        "finalCo2VolPct": 0.49,
+        "initialCoPpm": 12,
+        "finalCoPpm": 19
+      },
+      "scope": "experiment-conditions-and-gas-values-only",
+      "limitations": [
+        "No run-specific flame outcome given by this table extract; do not invent it.",
+        "No measured run acceleration, uncertainty, or exact airflow speed established by these columns.",
+        "Film material must preserve the exact displayed row wording; do not infer PMMA if absent."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    },
+    {
+      "candidateId": "psi25-b4",
+      "sourceId": "PSI-25",
+      "rowKey": "B4",
+      "observedCells": {
+        "id": "B4",
+        "date": "2014-02-19",
+        "sampleNo": "159",
+        "fuelSampleMaterial": "300 micron PMMA film 2 cm wide",
+        "flowRestrictor": "2",
+        "fanDisplay": "61",
+        "airDisplay": "5",
+        "calibratedInitialOxygenVolPct": 22.2,
+        "calibratedFinalOxygenVolPct": 22.2,
+        "initialCo2VolPct": 0.44,
+        "finalCo2VolPct": 0.51,
+        "initialCoPpm": -1,
+        "finalCoPpm": 10
+      },
+      "scope": "experiment-conditions-and-gas-values-only",
+      "limitations": [
+        "No run-specific flame outcome given by this table extract; do not invent it.",
+        "No measured run acceleration, uncertainty, or exact airflow speed established by these columns.",
+        "Film material must preserve the exact displayed row wording; do not infer PMMA if absent."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    },
+    {
+      "candidateId": "psi25-b5",
+      "sourceId": "PSI-25",
+      "rowKey": "B5",
+      "observedCells": {
+        "id": "B5",
+        "date": "2014-02-19",
+        "sampleNo": "156",
+        "fuelSampleMaterial": "200 micron 2 cm wide",
+        "flowRestrictor": "2",
+        "fanDisplay": "59",
+        "airDisplay": "5",
+        "calibratedInitialOxygenVolPct": 22.2,
+        "calibratedFinalOxygenVolPct": 21.9,
+        "initialCo2VolPct": 0.43,
+        "finalCo2VolPct": 0.43,
+        "initialCoPpm": 0,
+        "finalCoPpm": 12
+      },
+      "scope": "experiment-conditions-and-gas-values-only",
+      "limitations": [
+        "No run-specific flame outcome given by this table extract; do not invent it.",
+        "No measured run acceleration, uncertainty, or exact airflow speed established by these columns.",
+        "Film material must preserve the exact displayed row wording; do not infer PMMA if absent."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    },
+    {
+      "candidateId": "psi69-20cal08",
+      "sourceId": "PSI-69",
+      "rowKey": "1",
+      "observedCells": {
+        "testNumber": 1,
+        "identifier": "20CAL08",
+        "date": "2009-03-05",
+        "timeGMT": "17:22:03",
+        "fuel": "Methanol",
+        "ambientPressureMmHg": 757.7,
+        "oxygenInitialMoleFraction": 0.21,
+        "nitrogenInitialMoleFraction": 0.79,
+        "co2InitialMoleFraction": 0,
+        "heliumInitialMoleFraction": 0,
+        "dropletInitialDiameterMm": 1.69,
+        "visibleFlameExtinctionDiameterMm": 0.89,
+        "burningRateTableValue": 0.52,
+        "burnTimeSeconds": 4.3,
+        "testEnd": "Disruption"
+      },
+      "scope": "single-liquid-droplet-outcome",
+      "limitations": [
+        "FLEX liquid-droplet extinction or disruption is not comparable to BASS-II solid sample flame spread.",
+        "The PSI table shows burning rate under 'Burning rate; mm' without a complete unit specification; preserve raw value, do not convert.",
+        "Test 4 has blank visible flame extinction diameter; null is not zero.",
+        "Individual-run uncertainty not extracted.",
+        "Outcome field is a table label, not a proof of future habitat safety."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    },
+    {
+      "candidateId": "psi69-20cal10",
+      "sourceId": "PSI-69",
+      "rowKey": "2",
+      "observedCells": {
+        "testNumber": 2,
+        "identifier": "20CAL10",
+        "date": "2009-03-05",
+        "timeGMT": "19:20:06",
+        "fuel": "Methanol",
+        "ambientPressureMmHg": 762,
+        "oxygenInitialMoleFraction": 0.21,
+        "nitrogenInitialMoleFraction": 0.79,
+        "co2InitialMoleFraction": 0,
+        "heliumInitialMoleFraction": 0,
+        "dropletInitialDiameterMm": 1.86,
+        "visibleFlameExtinctionDiameterMm": 0.94,
+        "burningRateTableValue": 0.6,
+        "burnTimeSeconds": 5,
+        "testEnd": "Extinction"
+      },
+      "scope": "single-liquid-droplet-outcome",
+      "limitations": [
+        "FLEX liquid-droplet extinction or disruption is not comparable to BASS-II solid sample flame spread.",
+        "The PSI table shows burning rate under 'Burning rate; mm' without a complete unit specification; preserve raw value, do not convert.",
+        "Test 4 has blank visible flame extinction diameter; null is not zero.",
+        "Individual-run uncertainty not extracted.",
+        "Outcome field is a table label, not a proof of future habitat safety."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    },
+    {
+      "candidateId": "psi69-20cal12",
+      "sourceId": "PSI-69",
+      "rowKey": "3",
+      "observedCells": {
+        "testNumber": 3,
+        "identifier": "20CAL12",
+        "date": "2009-03-05",
+        "timeGMT": "21:17:46",
+        "fuel": "Methanol",
+        "ambientPressureMmHg": 764.2,
+        "oxygenInitialMoleFraction": 0.21,
+        "nitrogenInitialMoleFraction": 0.79,
+        "co2InitialMoleFraction": 0,
+        "heliumInitialMoleFraction": 0,
+        "dropletInitialDiameterMm": 1.61,
+        "visibleFlameExtinctionDiameterMm": 0.92,
+        "burningRateTableValue": 0.58,
+        "burnTimeSeconds": 3.2,
+        "testEnd": "Extinction"
+      },
+      "scope": "single-liquid-droplet-outcome",
+      "limitations": [
+        "FLEX liquid-droplet extinction or disruption is not comparable to BASS-II solid sample flame spread.",
+        "The PSI table shows burning rate under 'Burning rate; mm' without a complete unit specification; preserve raw value, do not convert.",
+        "Test 4 has blank visible flame extinction diameter; null is not zero.",
+        "Individual-run uncertainty not extracted.",
+        "Outcome field is a table label, not a proof of future habitat safety."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    },
+    {
+      "candidateId": "psi69-30cal02",
+      "sourceId": "PSI-69",
+      "rowKey": "4",
+      "observedCells": {
+        "testNumber": 4,
+        "identifier": "30CAL02",
+        "date": "2009-03-31",
+        "timeGMT": "17:16:18",
+        "fuel": "Methanol",
+        "ambientPressureMmHg": 760,
+        "oxygenInitialMoleFraction": 0.21,
+        "nitrogenInitialMoleFraction": 0.79,
+        "co2InitialMoleFraction": 0,
+        "heliumInitialMoleFraction": 0,
+        "dropletInitialDiameterMm": 2.06,
+        "visibleFlameExtinctionDiameterMm": null,
+        "burningRateTableValue": 0.6,
+        "burnTimeSeconds": 7.64,
+        "testEnd": "Extinction"
+      },
+      "scope": "single-liquid-droplet-outcome",
+      "limitations": [
+        "FLEX liquid-droplet extinction or disruption is not comparable to BASS-II solid sample flame spread.",
+        "The PSI table shows burning rate under 'Burning rate; mm' without a complete unit specification; preserve raw value, do not convert.",
+        "Test 4 has blank visible flame extinction diameter; null is not zero.",
+        "Individual-run uncertainty not extracted.",
+        "Outcome field is a table label, not a proof of future habitat safety."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    },
+    {
+      "candidateId": "psi69-30cal03",
+      "sourceId": "PSI-69",
+      "rowKey": "5",
+      "observedCells": {
+        "testNumber": 5,
+        "identifier": "30CAL03",
+        "date": "2009-03-31",
+        "timeGMT": "19:00:48",
+        "fuel": "Methanol",
+        "ambientPressureMmHg": 760,
+        "oxygenInitialMoleFraction": 0.21,
+        "nitrogenInitialMoleFraction": 0.79,
+        "co2InitialMoleFraction": 0,
+        "heliumInitialMoleFraction": 0,
+        "dropletInitialDiameterMm": 1.92,
+        "visibleFlameExtinctionDiameterMm": 0.81,
+        "burningRateTableValue": 0.48,
+        "burnTimeSeconds": 6.34,
+        "testEnd": "Extinction"
+      },
+      "scope": "single-liquid-droplet-outcome",
+      "limitations": [
+        "FLEX liquid-droplet extinction or disruption is not comparable to BASS-II solid sample flame spread.",
+        "The PSI table shows burning rate under 'Burning rate; mm' without a complete unit specification; preserve raw value, do not convert.",
+        "Test 4 has blank visible flame extinction diameter; null is not zero.",
+        "Individual-run uncertainty not extracted.",
+        "Outcome field is a table label, not a proof of future habitat safety."
+      ],
+      "status": "TRANSCRIBED_REQUIRES_REVIEW"
+    }
+  ],
+  "reviewerGate": [
+    "Fetch primary source dataset bytes/export and log SHA-256 and stable row locators.",
+    "Independently inspect all numeric columns and units against the actual PSI table/PDF.",
+    "Resolve BASS ambiguous sample material wording and missing run outcomes; do not infer.",
+    "Run dedicated cited positive and negative tests including cross-fuel abstention and false gravity/pressure assertions.",
+    "Promote only individually signed-off rows via owner-approved dataset-version update and science integrity validation."
+  ],
+  "directReferenceUrls": [
+    "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+    "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+  ]
+}
