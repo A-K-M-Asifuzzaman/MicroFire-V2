@@ -120,7 +120,7 @@ export function FlameLab({ snap }: { snap: Snapshot }) {
   const edge = a.cls === "mechanistic" || a.cls === "none";
 
   const stateTag = phase !== "result" || !shown ? (phase === "idle" ? "Ready: press Run experiment" : "Running…")
-    : shown.visual === "nasa" ? `NASA observation · ${a.direct[0]!?.label ?? ""}` : shown.visual === "conceptual" ? "Conceptual visualization" : "Insufficient experimental evidence";
+    : shown.visual === "nasa" ? `NASA observation · ${a.direct[0]?.label ?? ""}` : shown.visual === "conceptual" ? "Conceptual visualization" : "Insufficient experimental evidence";
 
   /* ---------------- panels ---------------- */
   const setup = (
