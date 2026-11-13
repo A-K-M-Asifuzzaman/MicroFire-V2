@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 const sections = [
-  { label: 'Discover', href: '/', match: ['/', '/roadmap', '/challenge', '/impact', '/assets'] },
+  { label: 'Discover', href: '/', match: ['/', '/judge-guide', '/roadmap', '/challenge', '/impact', '/assets'] },
   { label: 'Evidence', href: '/dashboard', match: ['/dashboard', '/ask', '/gaps', '/investigations', '/compare', '/sources', '/methodology'] },
   { label: 'Experiments', href: '/atlas', match: ['/atlas', '/experiments'] },
   { label: 'Flame Lab', href: '/lab', match: ['/lab'] },
@@ -62,11 +62,13 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
           <BrandMark /><span className="brand-text" aria-hidden="true"><b>MicroFire</b><small>The Living Science Observatory</small></span>
         </Link>
         <nav className="primary-nav" aria-label="Main">{links}</nav>
-        <Link className="btn btn-primary btn-sm header-cta" href="/ask">Ask PIX</Link>
+        <Link className="btn btn-primary btn-sm header-cta" href="/judge-guide">Start Here · Judges</Link>
         {/* Keyed by path so client navigation closes the menu. Works without JavaScript. */}
         <details className="mobile-nav" key={path}>
           <summary>Menu <span aria-hidden="true">☰</span></summary>
           <nav aria-label="Main">{links}
+            <p className="menu-group">Start here</p>
+            <Link className="nav-link sub" href="/judge-guide">Guided judge tour</Link>
             <p className="menu-group">Evidence tools</p>
             {evidenceTools.map(([href, label]) => <Link key={href} className="nav-link sub" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}
             <p className="menu-group">Missions</p>
