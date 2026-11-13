@@ -49,8 +49,8 @@ test("explanations cite real findings and both voices rest on the same evidence"
 
 test("notebook records abstentions; missions and patches follow the runs", () => {
   const runs = [p("earth"), { ...p("earth"), gravity: "orbit" as const }, p("moon")].map((c, i) => recordRun(i + 1, c, a(c)));
-  assert.equal(runs[2].abstained, true);
-  assert.match(runs[2].result, /Abstained/);
+  assert.equal(runs[2]!.abstained, true);
+  assert.match(runs[2]!.result, /Abstained/);
   assert.deepEqual(differing(runs.slice(0, 2)), ["gravity"]);
   const done = new Set(MISSIONS.filter((m) => m.done(runs)).map((m) => m.id));
   assert.ok(done.has("buoyancy") && done.has("limit"));

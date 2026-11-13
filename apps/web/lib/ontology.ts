@@ -110,7 +110,7 @@ export function fromBass(e: Experiment): EvidenceRecord {
     flowDirection: e.flow_direction,
     outcome: e.outcome_group,
     outcomeLabel: e.outcome_label,
-    cite: { source_id: e.provenance.record.source_id, pdf_page: e.provenance.record.pdf_page, table: e.provenance.record.table },
+    cite: { source_id: e.provenance.record.source_id, pdf_page: e.provenance.record.pdf_page, ...(e.provenance.record.table === undefined ? {} : { table: e.provenance.record.table }) },
   };
 }
 
@@ -154,7 +154,7 @@ export function fromSaffire(r: SaffireRun): EvidenceRecord {
     flowDirection: r.flow_direction,
     outcome: r.outcome_group,
     outcomeLabel: r.outcome_label,
-    cite: (() => { const c = r.provenance.conditions ?? r.provenance.results ?? r.provenance.outcome; return c ? { source_id: c.source_id, pdf_page: c.pdf_page, table: c.table } : null; })(),
+    cite: (() => { const c = r.provenance.conditions ?? r.provenance.results ?? r.provenance.outcome; return c ? { source_id: c.source_id, pdf_page: c.pdf_page, ...(c.table === undefined ? {} : { table: c.table }) } : null; })(),
   };
 }
 
