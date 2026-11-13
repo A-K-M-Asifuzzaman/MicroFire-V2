@@ -1,0 +1,61 @@
+import assert from 'node:assert/strict';
+import { createHmac, randomBytes, randomUUID } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
+const repo=process.cwd();
+const {createPublicCampaignHandler,PublicCampaignService,publicCampaignConfig}=await import(repo+'/apps/web/lib/public-campaign.ts');
+const {testDatabase}=await import(repo+'/tests/backend/campaign-security-harness.ts');
+const {Pool}=(await import(repo+'/node_modules/pg/lib/index.js')).default;
+const secret=()=>randomBytes(32).toString('base64url');
+const env=()=>({MICROFIRE_PUBLIC_CAMPAIGN_ENABLED:'1',MICROFIRE_PUBLIC_CAMPAIGN_REVIEWED_PROTOCOL:'public-campaign-v1',MICROFIRE_PUBLIC_CAMPAIGN_ORIGIN:'https://quota.example',MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID:randomUUID(),MICROFIRE_PUBLIC_CAMPAIGN_RUNTIME_ID:randomUUID(),MICROFIRE_PUBLIC_CAMPAIGN_CSRF_KEY:secret(),MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY:secret()});
+const req=(path='/absent',post=false)=>new Request('https://quota.example/api/game/public-campaign/v1'+path,{method:post?'POST':'GET',headers:{host:'quota.example','x-microfire-campaign':'1',...(post?{origin:'https://quota.example','content-type':'application/json'}:{})},...(post?{body:'{}'}:{})});
+const h=(e,s)=>createHmac('sha256',Buffer.from(e.MICROFIRE_PUBLIC_CAMPAIGN_ABUSE_KEY,'base64url')).update(s).digest('hex');
+const db=await testDatabase(),peer=new Pool(db.options);peer.on('error',()=>{});
+const hits=async(e,s)=>(await peer.query('SELECT coalesce(sum(hits),0)::int n FROM microfire_campaign_budgets WHERE realm=$1 AND bucket_hash=$2',[e.MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID,h(e,s)])).rows[0].n;
+const results={};
+try{
+ const secs=Number((await peer.query('SELECT extract(second FROM clock_timestamp()) AS s')).rows[0].s);if(secs>40)await delay((60-secs+.1)*1000);
+ const e=env(),handler=createPublicCampaignHandler(e,db.pool),counts={};
+ for(let i=0;i<2000;i++){const r=await handler(req(),'192.0.2.1');counts[r.status]=(counts[r.status]??0)+1;}
+ const fresh=await handler(req('/session',true),'192.0.2.2');
+ assert.deepEqual(counts,{404:240,429:1760});assert.equal(fresh.status,200);assert.equal(await hits(e,'edge-global'),241);assert.equal(await hits(e,'edge:192.0.2.1'),240);
+ results.originalF1={counts,freshStatus:fresh.status,globalHits:await hits(e,'edge-global')};
+ const capped=env(),capConfig=publicCampaignConfig(capped),c1=new PublicCampaignService(capConfig,db.pool),c2=new PublicCampaignService(capConfig,peer);
+ await peer.query("INSERT INTO microfire_campaign_budgets VALUES($1,$2,date_trunc('minute',clock_timestamp()),1997,clock_timestamp()+interval '2 days')",[capped.MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID,h(capped,'edge-global')]);
+ const capRace=await Promise.allSettled(Array.from({length:30},(_,i)=>(i%2?c1:c2).admit('198.51.100.'+(i+1))));
+ assert.equal(capRace.filter(r=>r.status==='fulfilled').length,3);assert(capRace.filter(r=>r.status==='rejected').every(r=>r.reason.status===429));assert.equal(await hits(capped,'edge-global'),2000);
+ const addressRows=(await peer.query('SELECT count(*)::int n,sum(hits)::int hits FROM microfire_campaign_budgets WHERE realm=$1 AND bucket_hash<>$2',[capped.MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID,h(capped,'edge-global')])).rows[0];
+ assert.deepEqual(addressRows,{n:3,hits:3});results.globalCap={accepted:3,rejected:27,globalHits:2000,committedAddressRows:3};
+ const uncertain=env();let dropAck=true;
+ const lostAckPool={connect:async()=>{const c=await db.pool.connect();return new Proxy(c,{get(target,key){if(key==='query')return async(...args)=>{const r=await target.query(...args);if(args[0]==='COMMIT'&&dropAck){dropAck=false;throw Error('review-only lost commit acknowledgement');}return r;};const v=Reflect.get(target,key);return typeof v==='function'?v.bind(target):v;}});}};
+ const lost=await createPublicCampaignHandler(uncertain,lostAckPool)(req('/session',true),'192.0.2.30');assert.equal(lost.status,503);assert.equal(lost.headers.get('set-cookie'),null);assert.equal(await hits(uncertain,'edge-global'),1);
+ assert.equal((await peer.query('SELECT count(*)::int n FROM microfire_campaign_visitors WHERE realm=$1',[uncertain.MICROFIRE_PUBLIC_CAMPAIGN_REALM_ID])).rows[0].n,0);
+ const retry=await createPublicCampaignHandler(uncertain,peer)(req('/session',true),'192.0.2.30');assert.equal(retry.status,200);assert.equal(await hits(uncertain,'edge-global'),2);
+ results.lostCommitAck={status:lost.status,cookie:false,retainedCharge:1,retryStatus:retry.status,globalAfterRetry:2};
+ const enroll=env(),a=new PublicCampaignService(publicCampaignConfig(enroll),db.pool),b=new PublicCampaignService(publicCampaignConfig(enroll),peer);
+ const minted=[];for(let i=0;i<70;i++){try{await a.bootstrap(null,'192.0.2.7');minted.push(true);}catch(err){assert.equal(err.status,429);}}
+ assert.equal(minted.length,5);assert.equal(await hits(enroll,'new-global'),5);await b.bootstrap(null,'192.0.2.8');assert.equal(await hits(enroll,'new-global'),6);
+ results.enrollment={acceptedAtAbusiveSource:minted.length,globalAfterFresh:6};
+ const visitor=env(),v1=new PublicCampaignService(publicCampaignConfig(visitor),db.pool),v2=new PublicCampaignService(publicCampaignConfig(visitor),peer);
+ const race=await Promise.allSettled(Array.from({length:150},(_,i)=>(i%2?v1:v2).budget('visitor:independent-test',120)));
+ assert.equal(race.filter(r=>r.status==='fulfilled').length,120);assert(race.filter(r=>r.status==='rejected').every(r=>r.reason.status===429));assert.equal(await hits(visitor,'visitor:independent-test'),120);
+ results.visitor={successes:120,rejected:30};
+ const idle=env(),globalHash=h(idle,'edge-global'),frozenPool=new Pool(db.options),connect=frozenPool.connect.bind(frozenPool);let unfreeze,ready,ended;
+ frozenPool.on('error',()=>{});const disconnected=new Promise(resolve=>ended=resolve);
+ const frozen=new Promise(resolve=>unfreeze=resolve),reached=new Promise(resolve=>ready=resolve);
+ const borrowed={connect:async()=>{const c=await connect();c.once('end',()=>ended());return new Proxy(c,{get(target,key){if(key==='query')return async(...args)=>{const r=await target.query(...args);if(typeof args[0]==='string'&&args[0].includes('INSERT INTO microfire_campaign_budgets')&&args[1]?.[1]===globalHash){ready();await frozen;}return r;};const v=Reflect.get(target,key);return typeof v==='function'?v.bind(target):v;}});}};
+ const held=createPublicCampaignHandler(idle,borrowed)(req(),'192.0.2.20');await reached;
+ const started=performance.now();
+ try{
+  const blocked=await createPublicCampaignHandler(idle,peer)(req('/session',true),'192.0.2.21');
+  assert.equal(blocked.status,503);assert.equal(await hits(idle,'edge:192.0.2.21'),0);
+  await Promise.race([disconnected,delay(6000).then(()=>{throw Error('Idle leased backend survived deadline');})]);
+  const expiredMs=Math.round(performance.now()-started);
+  assert(expiredMs<6000);assert.equal(await hits(idle,'edge-global'),0);assert.equal(await hits(idle,'edge:192.0.2.20'),0);
+  const fresh=await createPublicCampaignHandler(idle,peer)(req('/session',true),'192.0.2.21');
+  assert.equal(fresh.status,200);assert.equal(await hits(idle,'edge-global'),1);
+  unfreeze();const failed=await held;
+  assert.equal(failed.status,503);assert.equal(failed.headers.get('set-cookie'),null);assert.equal(frozenPool.totalCount,0);
+  results.idleHolder={initialFreshStatus:blocked.status,backendExpiredMs:expiredMs,freshStatus:fresh.status,frozenRequestStatus:failed.status,failedLeasePoolCount:frozenPool.totalCount,globalHits:await hits(idle,'edge-global')};
+ }finally{unfreeze();await held;await frozenPool.end();}
+ console.log(JSON.stringify(results));
+}finally{await peer.end();await db.close();}
