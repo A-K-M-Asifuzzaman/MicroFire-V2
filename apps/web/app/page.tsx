@@ -31,6 +31,7 @@ export default function Home() {
           pix: 'Five missions are on the map. None is playable yet, but the training bay is open for a tour.' }
   ];
   const steps = [
+    { title: 'Start here', what: 'A judge-friendly guide through science, games and evidence', href: '/judge-guide' },
     { title: 'Discover', what: 'See gravity reshape a flame', href: '#gravity-lens' },
     { title: 'Explore the evidence', what: 'The Experiment Atlas', href: '/atlas' },
     { title: 'Check a real test', what: `${e.testId}, from NASA's BASS-II report`, href },
