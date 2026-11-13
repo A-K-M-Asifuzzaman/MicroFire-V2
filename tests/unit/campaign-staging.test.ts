@@ -12,6 +12,7 @@ it('keeps staging isolated, protected, unlinked and disabled before independent 
   expect(env.sensitiveNames.every((n: string) => !n.startsWith('NEXT_PUBLIC_'))).toBe(true);
   for (const file of ['vercel.json', 'apps/web/vercel.json']) expect(read(file).git.deploymentEnabled).toEqual({
     'codex/review-campaign-security-20261113': false, 'codex/campaign-security-remediation-20261113': false,
+    'codex/fix-campaign-admission-20261113': false,
     'claude/public-campaign-integration-20261113': false,
   });
 });
