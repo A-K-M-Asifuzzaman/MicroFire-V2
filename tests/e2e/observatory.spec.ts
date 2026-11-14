@@ -216,7 +216,9 @@ test('workstation, frontier and comparison keep support, gaps and refusals expli
   await expect(page.getByText('Record B · none admitted')).toBeVisible();
   await page.getByRole('button', { name: /Request comparison/ }).click();
   await expect(page.getByText('Comparison refused by the evidence service.')).toBeVisible();
-  await expect(page.locator('table')).toHaveCount(0);
+  // The record-to-record request shows no table; the studio's illustration tables above are labelled toy/engine views.
+  await expect(page.getByTestId('compare-probe').locator('table')).toHaveCount(0);
+  await expect(page.locator('section[aria-labelledby="cs-rec-h"] table')).toHaveCount(0);
   await shot(page, 'compare', info.project.name);
 });
 

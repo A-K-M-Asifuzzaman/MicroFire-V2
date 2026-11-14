@@ -54,8 +54,8 @@ export function guideFor(path: string): Guide {
     now: ['Describe your case and fill in the conditions you know.', 'Press “Analyse transfer” to see matches, differences and gaps, condition by condition.'], next: { href: '/dashboard', label: 'the Evidence Workstation' } };
   if (path.startsWith('/investigations')) return { where: 'The investigation library: descriptions of NASA fire studies, labelled by review status.',
     now: ['Search by topic (for example “droplet” or “flame spread”).', 'Only reviewed records count as evidence; the rest are leads.'], next: { href: '/dashboard', label: 'the Evidence Workstation' } };
-  if (path === '/compare') return { mood: 'gap', where: 'Comparison needs two admitted records. There is one today, so I will not invent a second.',
-    now: ['Request a comparison to see the evidence service refuse it and explain why.'], next: { href: '/dashboard', label: 'the Evidence Workstation' } };
+  if (path === '/compare') return { where: 'The Comparison Studio. Fair comparisons change one thing at a time; the flames are a labelled toy illustration.',
+    now: ['Press “Only gravity changes” and read the green verdict: one variable, a fair test.', 'Press “Everything changes (unfair)” and see why a confounded comparison names no cause.', 'Scroll to compare three NASA investigations, then ask for a record-to-record comparison and watch the service refuse to invent one.'], next: { href: '/dashboard', label: 'the Evidence Workstation' } };
   if (path === '/passport') return { where: 'This page is a local notebook. Your earned Passport lives with your mission case.',
     now: ['Play the missions: each accepted mission adds a cited Passport entry.', 'At the end, press “Download Passport (JSON)” on the mission page.'], next: { href: '/missions/play', label: 'the five missions' } };
   if (path === '/sources') return { mood: 'cite', where: 'Sources and rights: every claim starts on a page you can open.', now: ['Open the NASA report and check any page cited on this site.'], next: { href: '/methodology', label: 'the methodology' } };
