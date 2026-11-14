@@ -87,8 +87,8 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
     {current?.label === 'Missions' && <nav className="subnav" aria-label="Mission tools">
       <div className="wrap">{missionTools.map(([href, label]) => <Link key={href} className="nav-link" href={href} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}</div>
     </nav>}
-    <main id="main" tabIndex={-1}>{children}</main>
     <PixGuide />
+    <main id="main" tabIndex={-1}>{children}</main>
     <footer className="site-footer">
       <div className="wrap">
         <p>Independent educational research project. No NASA endorsement and no operational fire-safety certification.</p>
