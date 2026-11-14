@@ -115,7 +115,7 @@ export function PixGuide() {
   const step = path === '/' ? 1 : PATH.findIndex((s) => s.match(path)) + 1;
 
   const stepTag = step >= 1 && path !== '/judge-guide' ? <span> · step {step} of 6</span> : null;
-  return <aside className="pixg" data-mode={mode} aria-label="PIX guide">
+  return <aside className="pixg" data-mode={mode} data-route={path} aria-label="PIX guide">
     {mode === 'full' ? <div className="pixg-card" id={id}>
       <div className="pixg-head">
         <PixAvatar mood={mood} className="pixg-face" />

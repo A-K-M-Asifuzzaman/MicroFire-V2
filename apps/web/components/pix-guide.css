@@ -47,6 +47,8 @@
   .pixg-face.pix-avatar { width: 48px; }
   .pixg-fab { min-height: 44px; }
   .site-footer { padding-bottom: 28px; }
+  /* Ask is PIX's own page: on phones its question field keeps the first screen. */
+  .pixg[data-route="/ask"] { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .pixg .pix-float { animation: none; } }
 @media print { .pixg { display: none; } }
