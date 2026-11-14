@@ -18,7 +18,7 @@
 .proof-kind[data-kind="observed"], .proof-kind[data-kind="match"] { background: var(--mint-soft); color: var(--mint-ink); }
 .proof-kind[data-kind="derived"], .proof-kind[data-kind="differ"] { background: var(--sun-soft); color: var(--sun-ink); }
 .proof-kind[data-kind="unknown"] { background: #ffe1e2; color: var(--coral-ink); }
-.proof-kind[data-kind="fiction"] { background: var(--lav); color: var(--violet-ink); }
+.proof-kind[data-kind="fiction"] { background: var(--lav); color: var(--ink); }
 .proof-scroll { overflow-x: auto; max-width: 100%; }
 .proof-scroll:focus-visible { outline: 3px solid var(--ultra); outline-offset: 2px; }
 .proof-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
