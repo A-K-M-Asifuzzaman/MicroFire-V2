@@ -937,3 +937,4 @@ main > * { animation: fade .35s var(--ease) both; }
 .music-toggle[aria-pressed="true"] { background: var(--mint); }
 .music-toggle:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
 @media (max-width: 1100px) { .music-label { display: none; } .music-toggle { padding: 4px 10px; } }
+@media (max-width: 400px) { .site-header .wrap { gap: 8px; } .brand { gap: 6px; } .brand b { font-size: 1.3rem; } .music-toggle { padding: 4px 8px; } .mobile-nav summary { padding: 0 12px; } }
