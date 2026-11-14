@@ -1,0 +1,45 @@
+.fa { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; }
+.fa > *, .fa-two > * { min-width: 0; }
+.fa h2 { margin: 0 0 10px; font: 800 clamp(1.2rem, 2.4vw, 1.6rem)/1.15 var(--display); }
+.fa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.fa-stats div { display: grid; gap: 2px; padding: 12px 14px; background: var(--paper); border: 3px solid var(--ink); border-radius: 18px; box-shadow: 4px 4px 0 var(--ink); }
+.fa-stats b { font: 800 2rem/1 var(--display); color: var(--ultra); }
+.fa-stats div[data-p="prevention"] b { color: var(--sun-ink); } .fa-stats div[data-p="detection"] b { color: var(--mint-ink); } .fa-stats div[data-p="suppression"] b { color: var(--coral-ink); }
+.fa-stats span { font-size: .85rem; color: var(--ink-2); }
+.fa-env { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.fa-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 10px; }
+.fa-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) 54px; gap: 12px; align-items: start; padding: 12px 14px; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; }
+.fa-pos { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--sun); border: 2px solid var(--ink); font: 800 1rem var(--display); }
+.fa-name { margin: 0 0 6px; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.fa-name b { font-family: var(--display); }
+.fa-tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--lav); color: var(--ink); }
+.fa-tag[data-k="admitted"], .fa-tag[data-k="same"] { background: var(--mint-soft); color: var(--mint-ink); }
+.fa-tag[data-k="current"] { background: var(--sun-soft); color: var(--sun-ink); }
+.fa-tag[data-k="diff"] { background: #ffe1e2; color: var(--coral-ink); }
+.fa-bar { height: 8px; border-radius: 999px; background: var(--cloud); overflow: hidden; margin-bottom: 8px; }
+.fa-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--ultra), var(--sun)); border-radius: 999px; transition: width .4s; }
+.fa-nasa { margin: 0 0 6px; line-height: 1.45; }
+.fa-row details summary { cursor: pointer; font-weight: 700; font-size: .9rem; }
+.fa-row details ul { margin: 6px 0; padding-left: 18px; font-size: .9rem; }
+.fa-score { display: grid; place-items: center; height: 54px; border-radius: 14px; background: var(--ultra); color: #fff; font: 800 1.5rem var(--display); }
+.fa-scroll { overflow-x: auto; max-width: 100%; }
+.fa-scroll:focus-visible { outline: 3px solid var(--ultra); outline-offset: 2px; }
+.fa-matrix, .fa-cmp { width: 100%; border-collapse: collapse; font-size: .92rem; background: var(--paper); }
+.fa-matrix th, .fa-matrix td, .fa-cmp th, .fa-cmp td { padding: 7px 10px; border-bottom: 1px solid var(--lav); text-align: left; }
+.fa-matrix td[data-on="true"] { color: var(--ultra); font-size: 1.2rem; }
+.fa-matrix td[data-on="false"] { color: var(--ink-3); }
+.fa-pick { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; }
+.fa-pick label { display: grid; gap: 4px; font-weight: 700; }
+.fa-pick select { min-height: 40px; padding: 4px 10px; border: 2px solid var(--ink); border-radius: 10px; background: var(--paper); font: inherit; }
+.fa-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; }
+.fa-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.fa-cards li { padding: 12px 14px; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; }
+.fa-cards p { margin: 4px 0; }
+.fa-earth { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.fa-time { list-style: none; margin: 0; padding: 0 0 0 10px; display: grid; gap: 10px; border-left: 4px solid var(--coral); }
+.fa-time li { display: grid; grid-template-columns: 56px 1fr; gap: 10px; }
+.fa-time span { font: 800 1.1rem var(--display); color: var(--coral-ink); }
+.fa-time p { margin: 2px 0 0; }
+.fa-sources ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+@media (max-width: 760px) { .fa-two { grid-template-columns: 1fr; } .fa-row { grid-template-columns: 30px minmax(0, 1fr); } .fa-score { grid-column: 2; justify-self: start; height: auto; padding: 2px 12px; font-size: 1rem; } .fa-pos { width: 28px; height: 28px; font-size: .85rem; } }
+@media (prefers-reduced-motion: reduce) { .fa-bar span { transition: none; } }

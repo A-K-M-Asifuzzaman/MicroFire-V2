@@ -28,3 +28,9 @@
   .step { grid-template-columns: 42px minmax(0, 1fr); padding: 16px; }
   .hero { border-radius: 20px; }
 }
+
+.briefMap { overflow-x: auto; max-width: 100%; margin: 12px 0; }
+.briefMap:focus-visible { outline: 3px solid var(--ultra); outline-offset: 2px; }
+.briefMap table { width: 100%; border-collapse: collapse; background: var(--paper); border: 2px solid var(--ink); border-radius: 14px; overflow: hidden; }
+.briefMap th, .briefMap td { padding: 9px 12px; border-bottom: 1px solid var(--lav); text-align: left; vertical-align: top; }
+.briefMap thead th { background: var(--ultra); color: #fff; }

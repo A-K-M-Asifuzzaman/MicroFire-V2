@@ -37,6 +37,8 @@ export function guideFor(path: string): Guide {
     now: ['Type a question or press an example, then press “Trace the evidence”.', 'Add target conditions (for example Moon) to see what matches, differs or was never recorded.', 'Try “Is a lunar habitat fire-safe?”: I withhold answers the evidence cannot support.'], next: after(path) };
   if (path === '/missions/play') return { where: 'The five missions. Your case is saved on the MicroFire server for this browser; no account.',
     now: ['Read the mission briefing, then follow the highlighted objective.'], next: { href: '/judge-guide', label: 'the judge guide' } };
+  if (path === '/fire-safety') return { mood: 'cite', where: 'The Fire-Safety Atlas: NASA combustion investigations ranked for a crew environment.',
+    now: ['Choose a crew environment (for example Lunar base) to re-rank the investigations.', 'Open “Why … points” on any row: every point of the ranking is explained.', 'Use “Compare two investigations” to see what is the same and what differs.'], next: { href: '/dashboard', label: 'the Evidence Workstation' } };
   if (path === '/adventure') return { where: 'The ISS Adventure: a 3D microgravity lab built around one real NASA test.',
     now: ['Press “Start the adventure”, then follow the glowing beacon. “Guide me to the objective” floats you there.', 'Press E (or the on-screen button) to read the record, collect parts, run B20 and answer Mission Control.'], next: { href: '/missions/play', label: 'the five missions' } };
   if (path === '/missions') return { where: 'The mission map: five short missions built on the same real NASA test.',

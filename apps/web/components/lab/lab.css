@@ -14,7 +14,11 @@
 .lab-rail li[data-state="now"] { background: var(--sun); box-shadow: 3px 3px 0 var(--ink); }
 .lab2-say { margin: 0; min-height: 1.5em; }
 
-.lab2-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); gap: 18px; align-items: start; }
+.lab2-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); grid-template-areas: "stage rack" "gauges rack"; gap: 18px; align-items: start; }
+.lab2-grid > .lab2-stage { grid-area: stage; }
+.lab2-grid > .lab2-rack { grid-area: rack; }
+.lab2-grid > .lab2-gauges-wrap { grid-area: gauges; }
+.lab2-phone-hint { display: none; margin: 0; font-size: .85rem; color: var(--ink-3); }
 .lab2-stage { display: grid; gap: 12px; }
 .lab-chamber { position: relative; aspect-ratio: 16 / 10; border: 3px solid var(--ink); border-radius: 22px; overflow: hidden; background: #070829; box-shadow: 6px 6px 0 var(--ink); }
 .lab-canvas, .lab-svgflame { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -117,12 +121,25 @@
 .nasa-cap { font-size: .9rem; line-height: 1.45; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; }
 
 @media (max-width: 900px) {
-  .lab2-grid, .lab2-cols, .lab2-viz, .nasa-hero { grid-template-columns: 1fr; }
+  .lab2-grid { grid-template-columns: 1fr; grid-template-areas: "stage" "rack" "gauges"; }
+  /* Vertical layout on phones: the chamber stays in view while the controls scroll underneath it. */
+  .lab2-grid > .lab2-stage { position: sticky; top: 6px; z-index: 4; background: var(--cloud); padding-bottom: 6px; }
+  .lab-chamber { aspect-ratio: 16 / 9; }
+  .lab2-phone-hint { display: block; }
+  .lab-chamber-tag { font-size: .7rem; }
+  .lab-chamber-bar button { min-height: 32px; padding: 2px 10px; font-size: .78rem; }
+  .lab2-cols, .lab2-viz, .nasa-hero { grid-template-columns: 1fr; }
   .lab2-gauges { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .lab-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .nasa-gallery { grid-template-columns: 1fr; }
 }
-@media (max-width: 420px) { .lab2-gauges { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lab-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) {
+  .lab2-gauges { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .lab-gauge { padding: 6px 2px; } .lab-gauge svg { width: 56px; height: 44px; } .lab-gauge figcaption { font-size: .7rem; } .lab-gauge figcaption b { font-size: .82rem; }
+  .lab-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; } .lab-mini figcaption { font-size: .66rem; }
+  .lab2-rack { padding: 12px; } .lab2-seg .btn, .lab2-presets .btn { font-size: .8rem; }
+  .lab-rail li { padding: 6px 8px; font-size: .8rem; }
+}
 @media (prefers-reduced-motion: reduce) { .lab-gauge-fill { transition: none; } }
 
 /* Mission 03 test run */
