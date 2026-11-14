@@ -27,7 +27,7 @@ const definitions = [
   ['dashboard', '/dashboard', 'Evidence Workstation', 'preview', 'Traces a question to cited observations, their conditions and limits over the one admitted record. A machine-learning classifier was evaluated and not deployed.'],
   ['atlas', '/atlas', 'Experiment Atlas', 'preview', 'One audited BASS-II record; search API exists, search UI and broader coverage are pending.'],
   ['experiment', '/experiments/[id]', 'Experiment Dossier', 'preview', 'One cited record with field-level provenance; export API exists, export UI is pending.'],
-  ['compare', '/compare', 'Controlled Comparison', 'preview', 'Explains why a comparison is refused until a second record passes source review; it never invents one.'],
+  ['compare', '/compare', 'Comparison Studio', 'preview', 'Fair-test flame comparator (labelled toy illustration), gravity and oxygen ladders, three-way NASA investigation comparison and NASA imagery; record-to-record comparison is refused until a second record passes source review.'],
   ['lab', '/lab', 'Flame Lab', 'preview', 'Interactive authored toy model with accessible controls and a cited B20 comparison; an illustration, not a simulation.'],
   ['gaps', '/gaps', 'Research Frontier', 'preview', 'Condition-by-condition coverage and transfer analysis over the admitted record; unknowns stay unknown.'],
   ['ask', '/ask', 'Ask PIX', 'preview', 'Deterministic, catalog-grounded answers with page citations and refusals of unsupported questions (no AI model).'],

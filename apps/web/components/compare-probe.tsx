@@ -17,7 +17,7 @@ export function CompareProbe({ admittedId }: { admittedId: string }) {
     // A successful comparison is impossible with one admitted record; render it plainly if the corpus ever grows.
     setState(result.ok ? { status: 'done', data: `Comparability: ${result.data.comparability}. ${result.data.limitations.join(' ')}` } : { status: 'failed', failure: result });
   };
-  return <div className="panel stack">
+  return <div className="panel stack" data-testid="compare-probe">
     <div className="field" style={{ marginBottom: 0 }}>
       <label htmlFor="cmp-other">Second record</label>
       <select id="cmp-other" value={other} onChange={(e) => setOther(e.target.value)}>
