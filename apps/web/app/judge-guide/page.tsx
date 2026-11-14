@@ -46,6 +46,16 @@ const steps = [
   }
 ] as const;
 
+const BRIEF: [string, string, string][] = [
+  ['Summarise, rank and interpret NASA combustion investigations', 'Fire-Safety Atlas: 14 investigations, ranked with every point explained', '/fire-safety'],
+  ['Relevance to spacecraft, stations, lunar and Martian bases and rovers', 'Atlas crew-environment ranking; Mission 05 and the 60-second proof', '/fire-safety'],
+  ['Data that supports predictive modelling of flammability', 'B20 conditions checked cell by cell, with JSON export and the Flame Lab notebook (CSV)', '/experiments/bass2-b20'],
+  ['Research for next-generation fire-safety controls and equipment', 'Atlas pillars: prevention, detection (SAME, DAFT), suppression (FLEX)', '/fire-safety'],
+  ['Applications of the research to fire safety on Earth', 'Atlas spinoffs: firefighter air tanks, smoke detection, protective clothing, water mist', '/fire-safety'],
+  ['An SI-powered dashboard that turns complex data into clear answers', 'Evidence Workstation: deterministic retrieval, citation checks and refusals; ML evaluated and documented', '/dashboard'],
+  ['Audience: professors, students, researchers and engineers', 'Researchers: Workstation, Atlas, dossier. Students: Flame Lab, missions, ISS Adventure', '/lab'],
+];
+
 export default function JudgeGuidePage() {
   const playable = campaignPlayable();
   return <div className={styles.page}>
@@ -55,6 +65,7 @@ export default function JudgeGuidePage() {
       <p>MicroFire connects real NASA combustion records, evidence-aware dashboard tools and a five-mission learning experience. This tour shows what is real, what is illustrated and what remains unknown.</p>
       <div className={styles.actions}>
         <Link className="btn btn-primary" href="/proof">Watch the 60-second proof</Link>
+        <Link className="btn" href="/adventure">Play the 3D ISS Adventure</Link>
         <Link className="btn" href="/dashboard">Explore the science dashboard</Link>
         <Link className="btn" href={playable ? '/missions/play' : '/missions'}>{playable ? 'Play the five missions' : 'See the mission map'}</Link>
       </div>
@@ -79,6 +90,14 @@ export default function JudgeGuidePage() {
           </li>;
         })}
       </ol>
+    </section>
+    <section className={styles.guidance} aria-labelledby="judge-brief">
+      <h2 id="judge-brief">How MicroFire answers the Flame in Freefall brief</h2>
+      <div className={`brief-map ${styles.briefMap}`} role="region" aria-label="Challenge brief mapped to MicroFire" tabIndex={0}>
+        <table><thead><tr><th scope="col">What the brief asks</th><th scope="col">Where to see it</th></tr></thead>
+          <tbody>{BRIEF.map(([ask, where, href]) => <tr key={ask}><th scope="row">{ask}</th><td><Link href={href}>{where}</Link></td></tr>)}</tbody></table>
+      </div>
+      <p className={styles.note}><b>Judging criteria.</b> Impact: fire safety for crews and spinoffs on Earth. Creativity: a lab, five missions and a 3D adventure built on one verified test. Validity: every value cites its NASA page, unknowns stay unknown, and unsupported claims are refused. Relevance: the brief&apos;s crew environments, investigations and Earth applications. Presentation: the 60-second proof and the guided path above.</p>
     </section>
     <section className={styles.guidance} aria-labelledby="judge-how">
       <h2 id="judge-how">How to play without getting lost</h2>

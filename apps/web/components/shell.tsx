@@ -3,18 +3,19 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { PixGuide } from './pix-guide';
+import { MusicToggle } from './ambient-music';
 
 const sections = [
   { label: 'Discover', href: '/', match: ['/', '/judge-guide', '/proof', '/roadmap', '/impact', '/assets'] },
-  { label: 'Evidence', href: '/dashboard', match: ['/dashboard', '/ask', '/gaps', '/investigations', '/compare', '/sources', '/methodology'] },
+  { label: 'Evidence', href: '/dashboard', match: ['/dashboard', '/fire-safety', '/ask', '/gaps', '/investigations', '/compare', '/sources', '/methodology'] },
   { label: 'Experiments', href: '/atlas', match: ['/atlas', '/experiments'] },
   { label: 'Flame Lab', href: '/lab', match: ['/lab'] },
-  { label: 'Missions', href: '/missions', match: ['/missions', '/passport'] }
+  { label: 'Missions', href: '/missions', match: ['/missions', '/passport', '/adventure'] }
 ] as const;
 const evidenceTools = [
-  ['/dashboard', 'Workstation'], ['/ask', 'Ask PIX'], ['/gaps', 'Frontier'], ['/investigations', 'Library'], ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology']
+  ['/dashboard', 'Workstation'], ['/fire-safety', 'Fire-safety atlas'], ['/ask', 'Ask PIX'], ['/gaps', 'Frontier'], ['/investigations', 'Library'], ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology']
 ] as const;
-const missionTools = [['/missions', 'Mission map'], ['/missions/bass-assembly/tour', 'Training bay'], ['/passport', 'Evidence Passport']] as const;
+const missionTools = [['/missions', 'Mission map'], ['/adventure', 'ISS Adventure (3D)'], ['/missions/bass-assembly/tour', 'Training bay'], ['/passport', 'Evidence Passport']] as const;
 /** Unfinished destinations say so before arrival (state straight from the shared registry). */
 
 
@@ -63,6 +64,7 @@ export function Shell({ children, tags = {} }: { children: React.ReactNode; tags
           <BrandMark /><span className="brand-text" aria-hidden="true"><b>MicroFire</b><small>The Living Science Observatory</small></span>
         </Link>
         <nav className="primary-nav" aria-label="Main">{links}</nav>
+        <MusicToggle />
         <Link className="btn btn-primary btn-sm header-cta" href="/judge-guide">Start Here · Judges</Link>
         {/* Keyed by path so client navigation closes the menu. Works without JavaScript. */}
         <details className="mobile-nav" key={path}>

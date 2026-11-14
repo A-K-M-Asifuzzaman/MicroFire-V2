@@ -57,14 +57,7 @@ export function LabConsole({ b20 }: { b20: B20Facts }) {
       <section className="lab2-stage" aria-labelledby="lab2-stage-h">
         <h2 id="lab2-stage-h" className="sr-only">Experiment chamber</h2>
         <LabChamber s={s} phase={phase} />
-        <div className="lab2-gauges" aria-label="Instruments">
-          <Gauge label="Gravity" value={GRAVITY[s.gravity].g} unit="g" min={0} max={1} />
-          <Gauge label="Oxygen" value={s.o2} unit="vol%" min={15} max={30} />
-          <Gauge label="Opposed airflow" value={s.flow} unit="cm/s" min={0} max={20} />
-          <Gauge label="Pressure" value={s.pressure} unit="kPa" min={30} max={110} />
-          <Gauge label="Burn clock" value={phase === 'observe' || done ? clock : 0} unit="s" min={0} max={3.8} tone="clock" display={`${(phase === 'observe' || done ? clock : 0).toFixed(1)} s`} />
-          <Gauge label="Flame height index" value={+(toy.size * toy.stretch).toFixed(2)} unit="" min={0} max={3.5} tone="toy" />
-        </div>
+        <p className="lab2-phone-hint">Scroll the controls below; the chamber stays in view. Turn your phone sideways for a wider chamber.</p>
       </section>
 
       <section className="lab2-rack" aria-labelledby="lab2-rack-h">
@@ -91,6 +84,16 @@ export function LabConsole({ b20 }: { b20: B20Facts }) {
           <button type="button" className="btn" disabled={running} onClick={() => { change(B20_SETTINGS); setB20Open(true); }}>Compare with the real B20 test</button>
         </div>
       </section>
+      <div className="lab2-gauges-wrap">
+        <div className="lab2-gauges" aria-label="Instruments">
+          <Gauge label="Gravity" value={GRAVITY[s.gravity].g} unit="g" min={0} max={1} />
+          <Gauge label="Oxygen" value={s.o2} unit="vol%" min={15} max={30} />
+          <Gauge label="Opposed airflow" value={s.flow} unit="cm/s" min={0} max={20} />
+          <Gauge label="Pressure" value={s.pressure} unit="kPa" min={30} max={110} />
+          <Gauge label="Burn clock" value={phase === 'observe' || done ? clock : 0} unit="s" min={0} max={3.8} tone="clock" display={`${(phase === 'observe' || done ? clock : 0).toFixed(1)} s`} />
+          <Gauge label="Flame height index" value={+(toy.size * toy.stretch).toFixed(2)} unit="" min={0} max={3.5} tone="toy" />
+        </div>
+      </div>
     </div>
 
     {done && <section className="lab2-result panel" aria-labelledby="lab2-res-h">

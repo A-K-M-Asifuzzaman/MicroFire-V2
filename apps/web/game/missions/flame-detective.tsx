@@ -6,6 +6,7 @@ import { useState } from 'react';
 import type { CampaignAction, Citation } from '@microfire/shared';
 import { Objectives, PassportList, PixLine, Verdict, cite, emitter, type Feedback, type Objective, type Refusal } from './mission-kit';
 import { SceneViewport } from './scene-viewport';
+import { TestRun } from './test-run';
 import type { Claim } from './station-arrival';
 
 type Station = 'select' | 'predict' | 'reveal' | 'explain' | 'report';
@@ -73,7 +74,8 @@ export function FlameDetective({ snapshot, claim, sourceTitle, feedback, refusal
         </form>}
         {open === 'reveal' && <>
           <h3>Observation window</h3>
-          {revealed ? <><div className="mf-compare">
+          <TestRun key={String(revealed)} revealed={revealed} onFinished={() => { if (!revealed) emit({ type: 'CORE', action: { type: 'OBSERVE_DOCUMENTED_RESULT', experimentId: 'bass2-b20' } }); }} />
+          {revealed ? <><div className="mf-compare mf-unlocked">
               <div className="mf-compare-col" data-kind="prediction"><span className="mf-compare-h">Your locked prediction</span><p>{prediction ? `“${prediction.prediction}”` : 'No prediction recorded.'}</p><span className="mf-fine">Stored by the server before the reveal.</span></div>
               <div className="mf-compare-col" data-kind="record"><span className="mf-compare-h">NASA documented result</span><blockquote>{claim.text}</blockquote><p className="mf-cite">{claim.citations.map((c) => cite(c, sourceTitle)).join('; ')}</p></div>
             </div>

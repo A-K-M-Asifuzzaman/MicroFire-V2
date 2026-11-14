@@ -931,3 +931,10 @@ main > * { animation: fade .35s var(--ease) both; }
 .checker-result[data-valid="false"] { background: #ffe3e4; }
 .checker-verdict { margin: 0 0 6px; font: 800 1.05rem var(--display); }
 @media (max-width: 900px) { .library-detail { grid-template-columns: minmax(0, 1fr); } }
+
+/* Background music toggle (header) */
+.music-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 4px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font: 800 .85rem var(--display); cursor: pointer; flex: none; }
+.music-toggle[aria-pressed="true"] { background: var(--mint); }
+.music-toggle:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+@media (max-width: 1100px) { .music-label { display: none; } .music-toggle { padding: 4px 10px; } }
+@media (max-width: 400px) { .site-header .wrap { gap: 8px; } .brand { gap: 6px; } .brand b { font-size: 1.3rem; } .music-toggle { padding: 4px 8px; } .mobile-nav summary { padding: 0 12px; } }

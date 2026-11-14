@@ -6,7 +6,9 @@ import type { FlameScene, SceneState } from '../three/FlameScene';
 import { GRAVITY, regime, toyFlame, type Phase, type Settings } from '../../lib/lab-engine';
 
 const never = () => () => {};
-const hasGl = () => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } };
+// Probed ONCE: probing per render (the lab re-renders on every clock tick) would exhaust the WebGL context limit.
+let glCache: boolean | null = null;
+const hasGl = () => { if (glCache === null) { try { const c = document.createElement('canvas'); glCache = !!(c.getContext('webgl2') || c.getContext('webgl')); c.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext(); } catch { glCache = false; } } return glCache; };
 
 function sceneState(s: Settings, phase: Phase, focus: boolean): SceneState {
   const lit = phase === 'observe' || phase === 'record', r = regime(s).id;
@@ -14,8 +16,8 @@ function sceneState(s: Settings, phase: Phase, focus: boolean): SceneState {
     outcome: !lit ? 'none' : r === 'starved' || r === 'pushed' ? 'dim' : 'burning', igniter: phase === 'ignite' ? 1 : 0 };
 }
 
-export function LabChamber({ s, phase }: { s: Settings; phase: Phase }) {
-  const gl = useSyncExternalStore(never, hasGl, () => true);
+export function LabChamber({ s, phase, flat = false }: { s: Settings; phase: Phase; flat?: boolean }) {
+  const gl = useSyncExternalStore(never, hasGl, () => true) && !flat;
   const canvas = useRef<HTMLCanvasElement>(null), scene = useRef<FlameScene | null>(null);
   const [focus, setFocus] = useState(true), [ready, setReady] = useState(false);
   const state = sceneState(s, phase, focus), stateRef = useRef(state);
