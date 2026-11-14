@@ -196,7 +196,7 @@ export class FlameScene {
 
   private fit = false; // frame the subject by distance (zoom) as well as target, without a side-panel shift
 
-  constructor(private canvas: HTMLCanvasElement, initial: SceneState, opts: { compact?: boolean; panelLeft?: boolean; fit?: boolean } = {}) {
+  constructor(private canvas: HTMLCanvasElement, initial: SceneState, opts: { compact?: boolean; panelLeft?: boolean; fit?: boolean; models?: boolean } = {}) {
     this.panelLeft = !!opts.panelLeft;
     this.fit = !!opts.fit;
     this.state = initial;
@@ -242,7 +242,8 @@ export class FlameScene {
     new ResizeObserver(() => this.resize()).observe(canvas);
     this.setState(initial, true);
     this.loop();
-    void this.loadModels();
+    // models: false skips the downloaded camera/glove meshes (their embedded textures need img-src blob:, which this site's CSP does not allow).
+    if (opts.models !== false) void this.loadModels();
   }
 
   /* ---------------- construction ---------------- */

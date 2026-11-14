@@ -157,6 +157,17 @@ test('navigation: unfinished destinations are tagged, Passport is reachable, the
   const b20 = page.getByRole('region', { name: 'What NASA actually recorded for BASS-II test B20' });
   await expect(b20).toContainText('17.4 vol%'); await expect(b20).toContainText('PDF page 112');
   await expect(b20.getByRole('row', { name: /Pressure/ })).toContainText('unknown');
+  // A full run: predict, run the six-step sequence, then the engine's comparison with B20 and a notebook entry.
+  await page.getByRole('radio', { name: 'Leaning into the airflow' }).check();
+  await page.getByRole('button', { name: 'Run experiment' }).click();
+  const result = page.getByRole('region', { name: 'What happened, and what the record says' });
+  await expect(result).toBeVisible({ timeout: 15_000 });
+  await expect(result).toContainText('Your prediction matches the toy illustration');
+  await expect(result.getByRole('row', { name: /Oxygen/ })).toContainText('same as B20');
+  await expect(result).toContainText('withheld · unsupported-intent');
+  await expect(page.locator('.lab2-notebook tbody tr')).toHaveCount(1);
+  await expect(page.getByRole('heading', { name: 'From real space experiments to the toy chamber' })).toBeVisible();
+  await expect(page.locator('.nasa-item')).toHaveCount(4);
   await page.goto('/');
   await expect(page.locator('#gravity-lens figure.lens')).toHaveCount(1);
 });

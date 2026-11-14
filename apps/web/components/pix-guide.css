@@ -16,7 +16,7 @@
 .pixg-fine { margin: 0; font-size: .82rem; line-height: 1.4; color: var(--ink-3); }
 .pixg-next { justify-self: start; padding: 8px 14px; border: 3px solid var(--ink); border-radius: 999px; background: var(--sun); color: var(--ink);
   font: 800 .9rem var(--display); text-decoration: none; box-shadow: 3px 3px 0 var(--ink); }
-.pixg-mini { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; width: 420px; max-width: 100%; padding: 8px 10px 8px 8px;
+.pixg-mini { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; width: 380px; max-width: 100%; padding: 8px 10px 8px 8px;
   background: var(--paper); color: var(--ink); border: 3px solid var(--ink); border-radius: 20px; box-shadow: 4px 4px 0 var(--ink); }
 .pixg-mini .pixg-face.pix-avatar { width: 44px; }
 .pixg-say { margin: 0; font-size: .92rem; line-height: 1.35; }
