@@ -140,7 +140,7 @@ test('Ask: one companion, a persistent no-AI caption and examples grouped by wha
 test('navigation: unfinished destinations are tagged, Passport is reachable, the Flame Lab works', async ({ page }, info) => {
   await page.goto('/missions');
   if (info.project.name === 'desktop') {
-    await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Flame Lab/ })).toContainText('Preview');
+    await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: 'Flame Lab', exact: true })).toHaveAttribute('href', '/lab');
     await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: /Missions/ })).toContainText('Preview');
     await expect(page.getByRole('navigation', { name: 'Main' }).first().getByRole('link', { name: 'Evidence', exact: true })).toHaveCount(1);
     await expect(page.getByRole('navigation', { name: 'Mission tools' }).getByRole('link', { name: 'Evidence Passport' })).toHaveAttribute('href', '/passport');
