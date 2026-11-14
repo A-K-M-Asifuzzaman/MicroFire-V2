@@ -1,10 +1,10 @@
 // Reproducible hosted performance probe (no login). Usage: ORIGIN=https://… OUT=report.json node tests/visual/hosted-perf.mjs
 // Profiles: desktop (no CPU throttle, 10 Mbps / 40 ms) and mobile-sim (iPhone 13 viewport, 4× CPU slowdown, Slow 4G 1.6 Mbps / 150 ms).
-// Cold cache per page. Measures LCP, CLS, interaction latency (Event Timing, scripted click), bytes by type, 3D asset load times,
+// Cold cache per page. LITE=1 measures lightweight mission mode; ONLY=/path limits the pages. Measures LCP, CLS, interaction latency (Event Timing, scripted click), bytes by type, 3D asset load times,
 // JS heap, scene frame times and console errors. The host machine's GPU renders WebGL; mobile-sim is NOT a real phone.
 import { chromium, devices } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
-const ORIGIN = process.env.ORIGIN, OUT = process.env.OUT ?? 'perf.json';
+const ORIGIN = process.env.ORIGIN, OUT = process.env.OUT ?? 'perf.json', LITE = process.env.LITE === '1', ONLY = process.env.ONLY;
 if (!ORIGIN) throw new Error('ORIGIN required');
 const PROFILES = {
   desktop: { ctx: { viewport: { width: 1366, height: 860 } }, cpu: 1, net: { latency: 40, downloadThroughput: 10e6 / 8, uploadThroughput: 10e6 / 8 } },
@@ -22,7 +22,7 @@ new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecen
 new PerformanceObserver((l) => { for (const e of l.getEntries()) __perf.inp = Math.max(__perf.inp, e.duration); }).observe({ type: 'event', buffered: true, durationThreshold: 16 });`;
 const browser = await chromium.launch();
 const results = [];
-for (const [profile, cfg] of Object.entries(PROFILES)) for (const pg of PAGES) {
+for (const [profile, cfg] of Object.entries(PROFILES)) for (const pg of PAGES.filter((x) => !ONLY || x.path === ONLY)) {
   const ctx = await browser.newContext(cfg.ctx), page = await ctx.newPage(), cdp = await ctx.newCDPSession(page);
   await cdp.send('Network.enable'); await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
   await cdp.send('Network.emulateNetworkConditions', { offline: false, ...cfg.net }); await cdp.send('Emulation.setCPUThrottlingRate', { rate: cfg.cpu });
@@ -30,6 +30,7 @@ for (const [profile, cfg] of Object.entries(PROFILES)) for (const pg of PAGES) {
   const errors = []; page.on('pageerror', (e) => errors.push(String(e))); page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 160)); });
   const failed = []; page.on('response', (r) => { if (r.status() >= 400) failed.push(`${r.status()} ${new URL(r.url()).pathname}`); });
   await page.addInitScript(OBSERVE);
+  if (LITE) await page.addInitScript(() => { try { localStorage.setItem('microfire-lite', '1'); } catch {} }); // lightweight mission mode
   const t0 = Date.now();
   await page.goto(ORIGIN + pg.path, { waitUntil: 'load', timeout: 120000 });
   const loadMs = Date.now() - t0;
@@ -53,7 +54,7 @@ for (const [profile, cfg] of Object.entries(PROFILES)) for (const pg of PAGES) {
   const sum = (f) => Math.round(res.filter(f).reduce((a, r) => a + (r.b || r.e), 0) / 1024);
   const models = res.filter((r) => r.n.startsWith('/models/'));
   const loadEnd = await page.evaluate(() => Math.round(performance.getEntriesByType('navigation')[0].loadEventEnd));
-  results.push({ profile, path: pg.path, loadMs, ttfbMs: nav.ttfb, dclMs: nav.dcl, lcpMs: Math.round(vit.lcp), cls: +vit.cls.toFixed(4), interactionMs: pg.click ? Math.round(vit.inp) : null,
+  results.push({ profile, lite: LITE, path: pg.path, loadMs, ttfbMs: nav.ttfb, dclMs: nav.dcl, lcpMs: Math.round(vit.lcp), cls: +vit.cls.toFixed(4), interactionMs: pg.click ? Math.round(vit.inp) : null,
     totalKB: sum(() => true) + Math.round(nav.b / 1024), jsKB: sum((r) => r.n.endsWith('.js')), initialJsKB: sum((r) => r.n.endsWith('.js') && r.s <= loadEnd), cssKB: sum((r) => r.n.endsWith('.css')),
     imgKB: sum((r) => /\.(png|jpe?g|webp|avif|svg)$/.test(r.n) && !r.n.startsWith('/models/')), fontKB: sum((r) => /\.(woff2?|ttf)$/.test(r.n)), mediaKB: sum((r) => /\.(mp4|webm|mp3|ogg)$/.test(r.n)),
     models3dKB: sum((r) => r.n.startsWith('/models/')), models3dFiles: models.length, slowest3dMs: models.reduce((m, r) => Math.max(m, r.s + r.d), 0) || null, sceneReadyMs,
