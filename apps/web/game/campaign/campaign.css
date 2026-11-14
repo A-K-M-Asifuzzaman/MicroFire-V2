@@ -81,3 +81,21 @@
 .mf-lite { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 0 0 12px; }
 .mf-lite .mf-fine { margin: 0; flex: 1 1 260px; }
 .mf-lite[data-on="true"] .btn { background: var(--mint-soft); }
+/* Mission-complete moment (server-confirmed) */
+.mf-celebrate { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; pointer-events: none; background: radial-gradient(circle, rgb(42 43 214 / .18), transparent 60%); animation: mf-cel-in .35s ease-out; }
+.mf-celebrate-card { pointer-events: auto; position: relative; display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; max-width: min(560px, calc(100vw - 32px)); padding: 22px 26px; background: var(--paper); border: 4px solid var(--ink); border-radius: 26px; box-shadow: 8px 8px 0 var(--ink); animation: mf-cel-pop .5s cubic-bezier(.2, 1.4, .4, 1); }
+.mf-badge { width: 120px; height: 120px; }
+.mf-badge-ring { fill: var(--sun); stroke: var(--ink); stroke-width: 5; animation: mf-cel-spin 1.2s ease-out; transform-origin: 60px 60px; }
+.mf-badge-core { fill: var(--ultra); stroke: var(--ink); stroke-width: 4; }
+.mf-badge-n { font: 800 18px var(--display); fill: #fff; }
+.mf-celebrate-k { margin: 0; font: 800 .9rem var(--display); color: var(--sun-ink); }
+.mf-celebrate-t { margin: 2px 0 8px; font: 800 1.6rem/1.1 var(--display); }
+.mf-celebrate-stamp { display: inline-block; margin: 0; padding: 4px 12px; border: 3px solid var(--mint-ink); border-radius: 10px; color: var(--mint-ink); font-weight: 800; transform: rotate(-3deg); animation: mf-cel-stamp .45s .35s both; }
+.mf-celebrate-all { margin: 10px 0 0; font-weight: 700; }
+.mf-celebrate-x { position: absolute; top: 10px; right: 10px; min-height: 36px; padding: 4px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--cloud); font: 700 .85rem var(--body); cursor: pointer; }
+@keyframes mf-cel-in { from { opacity: 0; } }
+@keyframes mf-cel-pop { from { transform: scale(.7) translateY(20px); opacity: 0; } }
+@keyframes mf-cel-spin { from { transform: rotate(-200deg) scale(.6); } }
+@keyframes mf-cel-stamp { from { transform: rotate(-3deg) scale(2.2); opacity: 0; } }
+@media (max-width: 520px) { .mf-celebrate-card { grid-template-columns: 1fr; justify-items: center; text-align: center; } }
+@media (prefers-reduced-motion: reduce) { .mf-celebrate, .mf-celebrate-card, .mf-badge-ring, .mf-celebrate-stamp { animation: none; } }

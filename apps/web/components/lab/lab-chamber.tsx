@@ -14,8 +14,8 @@ function sceneState(s: Settings, phase: Phase, focus: boolean): SceneState {
     outcome: !lit ? 'none' : r === 'starved' || r === 'pushed' ? 'dim' : 'burning', igniter: phase === 'ignite' ? 1 : 0 };
 }
 
-export function LabChamber({ s, phase }: { s: Settings; phase: Phase }) {
-  const gl = useSyncExternalStore(never, hasGl, () => true);
+export function LabChamber({ s, phase, flat = false }: { s: Settings; phase: Phase; flat?: boolean }) {
+  const gl = useSyncExternalStore(never, hasGl, () => true) && !flat;
   const canvas = useRef<HTMLCanvasElement>(null), scene = useRef<FlameScene | null>(null);
   const [focus, setFocus] = useState(true), [ready, setReady] = useState(false);
   const state = sceneState(s, phase, focus), stateRef = useRef(state);

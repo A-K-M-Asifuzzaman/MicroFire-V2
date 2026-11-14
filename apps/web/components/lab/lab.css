@@ -124,3 +124,15 @@
 }
 @media (max-width: 420px) { .lab2-gauges { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lab-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (prefers-reduced-motion: reduce) { .lab-gauge-fill { transition: none; } }
+
+/* Mission 03 test run */
+.mf-testrun { display: grid; gap: 10px; margin: 0 0 14px; }
+.mf-testrun h4 { margin: 0; font: 800 1.05rem var(--display); }
+.mf-testrun .lab-rail { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.mf-testrun .lab-chamber { aspect-ratio: 16 / 9; box-shadow: 4px 4px 0 var(--ink); }
+.mf-testrun-gauges { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.mf-testrun-gauges .lab-gauge svg { width: 64px; height: 50px; }
+.mf-unlocked { animation: mf-unlock .6s ease-out 1; }
+@keyframes mf-unlock { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (max-width: 640px) { .mf-testrun .lab-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); } .mf-testrun-gauges { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .mf-unlocked { animation: none; } }

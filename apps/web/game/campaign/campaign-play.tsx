@@ -16,6 +16,7 @@ import { createPublicTransport } from './public-transport';
 import { MissionGuide } from './mission-guide';
 import { guide } from '../missions/mission-kit';
 import { LiteToggle } from './lite-toggle';
+import { Celebrate } from './celebrate';
 import { MISSIONS, currentMission, needsStart, sceneSnapshot, recordedActions } from './view-adapter';
 import '../missions/missions.css';
 import './campaign.css';
@@ -51,6 +52,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, parts, co
       <h1>Flame in Freefall missions</h1>
       <LiteToggle />
       <p className="mf-guide-intro">New here? Follow the highlighted next action and read each mission briefing. <Link href="/judge-guide">Open the full guided tour</Link> of the science tools and games.</p>
+      {view && <Celebrate completed={view.completedMissions} />}
       {view && <ol className="mf-rail" aria-label="Mission progress (saved on the server)">{MISSIONS.map((m) => {
         const done = view.completedMissions.includes(m.id), here = m.id === mission;
         return <li key={m.id} data-state={done ? 'done' : here ? 'current' : 'upcoming'} aria-current={here ? 'step' : undefined}>
