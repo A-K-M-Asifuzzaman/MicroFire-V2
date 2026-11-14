@@ -1,7 +1,7 @@
 'use client';
 // Peaceful background music, generated in the browser (Web Audio): slow, soft chords through a gentle reverb.
-// No audio file, so nothing to license. Off by default (WCAG 1.4.2); the visitor's choice is remembered, and because
-// browsers block sound until the visitor interacts, a remembered "on" resumes at the first click or key press.
+// No audio file, so nothing to license. It starts softly at the visitor's first click or key press (browsers block sound
+// before one) unless they turned it off; the header button stops it at any time and the choice is remembered (WCAG 1.4.2).
 import { useEffect, useSyncExternalStore } from 'react';
 
 const KEY = 'microfire-music';
@@ -20,7 +20,7 @@ function impulse(ctx: AudioContext, seconds = 3.2) {
   return buf;
 }
 function start() {
-  if (engine) { void engine.ctx.resume(); engine.master.gain.setTargetAtTime(0.055, engine.ctx.currentTime, 1.2); return; }
+  if (engine) { void engine.ctx.resume(); engine.master.gain.setTargetAtTime(0.09, engine.ctx.currentTime, 1.2); return; }
   const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext; if (!Ctx) return;
   const ctx = new Ctx(), master = ctx.createGain(); master.gain.value = 0;
   const verb = ctx.createConvolver(); verb.buffer = impulse(ctx);
@@ -41,7 +41,7 @@ function start() {
     });
   };
   play(); const timer = window.setInterval(play, BAR * 1000);
-  master.gain.setTargetAtTime(0.055, ctx.currentTime, 1.5);
+  master.gain.setTargetAtTime(0.09, ctx.currentTime, 1.5);
   engine = { ctx, master, timer };
 }
 function stop() { if (!engine) return; engine.master.gain.setTargetAtTime(0, engine.ctx.currentTime, 0.4); const e = engine; window.setTimeout(() => { if (!on) void e.ctx.suspend(); }, 1500); }
@@ -50,12 +50,14 @@ const subscribe = (f: () => void) => { subs.add(f); return () => { subs.delete(f
 
 export function MusicToggle() {
   const playing = useSyncExternalStore(subscribe, () => on, () => false);
-  // A remembered "on" resumes at the visitor's first interaction (browsers do not allow sound before one).
+  // Music starts at the visitor's first interaction (browsers do not allow sound before one) unless they turned it off.
   useEffect(() => {
-    let want = false; try { want = localStorage.getItem(KEY) === 'on'; } catch { /* storage blocked */ }
+    let want = false; try { want = localStorage.getItem(KEY) !== 'off'; } catch { /* storage blocked */ }
     if (!want || on) return;
-    const go = () => { setMusic(true); window.removeEventListener('pointerdown', go); window.removeEventListener('keydown', go); };
-    window.addEventListener('pointerdown', go, { once: true }); window.addEventListener('keydown', go, { once: true });
+    const drop = () => { window.removeEventListener('pointerdown', go); window.removeEventListener('keydown', go); };
+    // A first click on the music button itself is the visitor's own choice, so auto-start steps aside.
+    function go(e: Event) { drop(); if (!(e.target as Element | null)?.closest?.('.music-toggle')) setMusic(true); }
+    window.addEventListener('pointerdown', go); window.addEventListener('keydown', go);
     return () => { window.removeEventListener('pointerdown', go); window.removeEventListener('keydown', go); };
   }, []);
   return <button type="button" className="music-toggle" aria-pressed={playing} onClick={() => setMusic(!playing)} title={playing ? 'Turn background music off' : 'Play calm background music'}>

@@ -155,7 +155,7 @@ export function startAdventure(canvas: HTMLCanvasElement, opts: { lite: boolean;
     for (const id of Object.keys(beacons) as TargetId[]) { const b = beacons[id]!; if (!b.visible) continue; const k = id === active ? 1.15 + Math.sin(t * 4) * 0.12 : 0.85; b.scale.setScalar(k); b.rotation.y += dt; }
     if (ignited) { const f = opts.reduced ? 1 : 1 + Math.sin(t * 13) * 0.05 + Math.sin(t * 7.3) * 0.04; flame.scale.set(f, f * 0.96, f); flameLight.intensity = 3.2 * f; }
     // what is near, and which way is the active objective
-    const dist: Record<string, number> = {}; let near: TargetId | null = null, best = 1.6;
+    const dist: Record<string, number> = {}; let near: TargetId | null = null, best = 2.2;
     for (const id of Object.keys(objects) as TargetId[]) { if (!objects[id].visible && id.startsWith('part')) continue; const d = camera.position.distanceTo(TARGETS[id]); dist[id] = d; if (d < best) { best = d; near = id; } }
     let heading: number | null = null;
     if (active) { const to = TARGETS[active].clone().sub(camera.position); to.applyQuaternion(camera.quaternion.clone().invert()); heading = Math.atan2(to.x, -to.z); }

@@ -12,16 +12,17 @@ test('ISS Adventure: read the NASA record, collect four parts, install them, run
   await expect(start).toBeEnabled({ timeout: 60_000 });
   await start.click();
   // Guide me floats to the objective; wait until the HUD says it is in reach, then interact.
-  const go = async () => {
+  // key=true presses E while focus is still on the Guide me button (players do exactly this).
+  const go = async (key = false) => {
     await page.getByRole('button', { name: 'Guide me to the objective' }).click();
     await expect.poll(async () => parseFloat(await page.locator('.adv-dist').innerText()), { timeout: 10_000 }).toBeLessThan(1.5);
-    await page.getByRole('button', { name: 'Interact' }).click();
+    if (key) await page.keyboard.press('e'); else await page.getByRole('button', { name: 'Interact' }).click();
   };
   await go();
   const dialog = page.getByRole('dialog', { name: 'BASS-II test B20' });
   await expect(dialog).toContainText('17.4 vol%');
   await dialog.getByRole('button', { name: 'Log the record' }).click();
-  for (let i = 0; i < 4; i++) await go();
+  for (let i = 0; i < 4; i++) await go(true);
   await expect(page.locator('.adv-obj')).toContainText('glovebox');
   await go();
   await page.getByRole('button', { name: 'Start test B20' }).click();

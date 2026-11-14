@@ -61,7 +61,9 @@ export function AdventureGame({ facts }: { facts: AdventureFacts }) {
   const interact = useCallback(() => {
     const near = frame?.near; if (!near) { say('Nothing in reach. Follow the glowing beacon.'); return; }
     if (near.startsWith('part-')) {
-      if (step !== 'collect' || have.has(near)) return;
+      if (have.has(near)) return;
+      if (step === 'terminal') { say('First read the NASA record at the terminal: follow the glowing beacon, then press E.'); return; }
+      if (step !== 'collect') return;
       const next = new Set(have); next.add(near); setHave(next); api.current?.setVisible(near, false);
       const p = PARTS.find((x) => x.id === near)!; say(`Collected: ${p.name}. ${p.what}`);
       if (next.size === PARTS.length) { setStep('install'); say('All four parts collected. Take them to the glovebox.'); }
@@ -79,8 +81,11 @@ export function AdventureGame({ facts }: { facts: AdventureFacts }) {
   // keyboard: WASD/arrows move, R/F or Space/Shift up and down, E interacts
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (!started || (e.target as HTMLElement).closest('input, textarea, select, button, a, [role=dialog]')) return;
-      const k = e.key.toLowerCase(); if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'r', 'f', ' ', 'shift', 'q', 'z'].includes(k)) { keys.current.add(k); e.preventDefault(); }
+      // Game keys work even after clicking an on-screen button (focus stays on it); only typing fields and open panels
+      // keep their keys, and Enter/Space still press a focused button or link.
+      const k = e.key.toLowerCase(), t = e.target as HTMLElement;
+      if (!started || panel || t.closest('input, textarea, select, [contenteditable], [role=dialog]')) return;
+      if ((k === 'enter' || k === ' ') && t.closest('button, a')) return; if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'r', 'f', ' ', 'shift', 'q', 'z'].includes(k)) { keys.current.add(k); e.preventDefault(); }
       if (k === 'e' || k === 'enter') { interact(); e.preventDefault(); }
     };
     const up = (e: KeyboardEvent) => keys.current.delete(e.key.toLowerCase());
