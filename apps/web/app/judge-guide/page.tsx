@@ -55,6 +55,7 @@ export default function JudgeGuidePage() {
       <p>MicroFire connects real NASA combustion records, evidence-aware dashboard tools and a five-mission learning experience. This tour shows what is real, what is illustrated and what remains unknown.</p>
       <div className={styles.actions}>
         <Link className="btn btn-primary" href="/proof">Watch the 60-second proof</Link>
+        <Link className="btn" href="/adventure">Play the 3D ISS Adventure</Link>
         <Link className="btn" href="/dashboard">Explore the science dashboard</Link>
         <Link className="btn" href={playable ? '/missions/play' : '/missions'}>{playable ? 'Play the five missions' : 'See the mission map'}</Link>
       </div>

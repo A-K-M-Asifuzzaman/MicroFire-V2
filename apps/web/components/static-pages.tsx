@@ -99,6 +99,7 @@ export function MissionsPage({ playable = false }: { playable?: boolean }) {
       <h1>Five places. One scientific mystery.</h1>
       <p className="lede">{playable ? 'Explore the research station, follow the evidence and earn source-linked Passport entries. Progress is saved on the server for this browser.' : 'An interactive research station is being built. Every decision will leave an evidence trail in your Passport.'}</p>
       {playable && <Link className="button" href="/missions/play">Enter or resume the campaign</Link>}
+      <Link className="button" href="/adventure">Play the 3D ISS Adventure</Link>
     </header>
     {!playable && <StatusBlock f={feature('/missions')!} />}
     <ol className="mission-route" aria-label={playable ? 'Mission briefs: five missions in campaign order' : 'Mission map: five missions in order, none playable yet'}>{missions.map((m) => <li key={m.id}>

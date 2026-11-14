@@ -9,12 +9,12 @@ const sections = [
   { label: 'Evidence', href: '/dashboard', match: ['/dashboard', '/ask', '/gaps', '/investigations', '/compare', '/sources', '/methodology'] },
   { label: 'Experiments', href: '/atlas', match: ['/atlas', '/experiments'] },
   { label: 'Flame Lab', href: '/lab', match: ['/lab'] },
-  { label: 'Missions', href: '/missions', match: ['/missions', '/passport'] }
+  { label: 'Missions', href: '/missions', match: ['/missions', '/passport', '/adventure'] }
 ] as const;
 const evidenceTools = [
   ['/dashboard', 'Workstation'], ['/ask', 'Ask PIX'], ['/gaps', 'Frontier'], ['/investigations', 'Library'], ['/compare', 'Compare'], ['/sources', 'Sources'], ['/methodology', 'Methodology']
 ] as const;
-const missionTools = [['/missions', 'Mission map'], ['/missions/bass-assembly/tour', 'Training bay'], ['/passport', 'Evidence Passport']] as const;
+const missionTools = [['/missions', 'Mission map'], ['/adventure', 'ISS Adventure (3D)'], ['/missions/bass-assembly/tour', 'Training bay'], ['/passport', 'Evidence Passport']] as const;
 /** Unfinished destinations say so before arrival (state straight from the shared registry). */
 
 

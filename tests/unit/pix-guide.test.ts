@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { guideFor } from '../../apps/web/components/pix-guide';
 
-const ROUTES = ['/', '/judge-guide', '/proof', '/lab', '/experiments/bass2-b20', '/dashboard', '/missions', '/missions/play', '/missions/bass-assembly/tour',
+const ROUTES = ['/', '/judge-guide', '/proof', '/lab', '/experiments/bass2-b20', '/dashboard', '/missions', '/missions/play', '/adventure', '/missions/bass-assembly/tour',
   '/missions/station-arrival', '/ask', '/atlas', '/gaps', '/investigations', '/compare', '/passport', '/sources', '/methodology', '/roadmap', '/somewhere-else'];
 
 describe('PIX guide', () => {

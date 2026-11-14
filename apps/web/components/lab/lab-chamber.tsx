@@ -6,7 +6,9 @@ import type { FlameScene, SceneState } from '../three/FlameScene';
 import { GRAVITY, regime, toyFlame, type Phase, type Settings } from '../../lib/lab-engine';
 
 const never = () => () => {};
-const hasGl = () => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } };
+// Probed ONCE: probing per render (the lab re-renders on every clock tick) would exhaust the WebGL context limit.
+let glCache: boolean | null = null;
+const hasGl = () => { if (glCache === null) { try { const c = document.createElement('canvas'); glCache = !!(c.getContext('webgl2') || c.getContext('webgl')); c.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext(); } catch { glCache = false; } } return glCache; };
 
 function sceneState(s: Settings, phase: Phase, focus: boolean): SceneState {
   const lit = phase === 'observe' || phase === 'record', r = regime(s).id;
