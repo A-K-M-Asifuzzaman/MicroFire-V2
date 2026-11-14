@@ -207,10 +207,10 @@ test('fix C: keyboard navigation from the mobile menu lands on the destination h
 });
 
 test('fix E: no automated axe violations (WCAG 2.x A/AA) on core routes', async ({ page }, info) => {
-  test.setTimeout(120_000); // a full axe scan on 13 routes (about 33 s on shared CI runners)
+  test.setTimeout(120_000); // a full axe scan on 16 routes (about 33 s on shared CI runners)
   await scienceBackedPosts(page);
   const results: Record<string, string[]> = {};
-  for (const path of ['/', '/atlas', '/experiments/bass2-b20', '/ask', '/dashboard', '/gaps', '/compare', '/passport', '/sources', '/methodology', '/missions', '/missions/bass-assembly', '/roadmap']) {
+  for (const path of ['/', '/atlas', '/experiments/bass2-b20', '/ask', '/dashboard', '/gaps', '/compare', '/passport', '/sources', '/methodology', '/missions', '/missions/bass-assembly', '/roadmap', '/proof', '/lab', '/judge-guide']) {
     await page.goto(path, { waitUntil: 'networkidle' });
     if (path === '/ask') { await page.getByRole('button', { name: 'What does B20 establish about airflow?' }).click(); await page.getByTestId('pix-answer').waitFor(); }
     if (path === '/dashboard') { await page.getByRole('button', { name: /recorded B20 observation/ }).click(); await page.getByTestId('chain-rail').waitFor(); }

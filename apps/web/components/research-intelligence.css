@@ -50,3 +50,15 @@ a.ri-node:hover, a.ri-node:focus-visible { outline: 3px solid var(--sun); }
 .ri-formula { margin: 0; padding: 10px 12px; border-radius: 10px; background: #0b0d4a; color: #ffd27a; font-family: var(--mono); font-size: 14px; }
 .ri-levels, .ri-ai { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-size: 14px; }
 @media (max-width: 960px) { .ri-grid { grid-template-columns: 1fr; } .ri-prov { grid-template-columns: 1fr; } .ri-col + .ri-col::before { content: '↓'; left: 0; top: -14px; } .ri-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.ri-ml { grid-column: 1 / -1; }
+.ri-mldl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; }
+.ri-mldl dt { font-weight: 700; }
+.ri-mldl dd { margin: 0; }
+.ri-scroll { overflow-x: auto; max-width: 100%; }
+.ri-scroll:focus-visible { outline: 3px solid var(--ultra); outline-offset: 2px; }
+.ri-mltable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ri-mltable caption { text-align: left; font-weight: 700; padding-bottom: 6px; }
+.ri-mltable th, .ri-mltable td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--lav); white-space: nowrap; }
+.ri-mlwhy { margin: 6px 0 0; font-weight: 700; }
+@media (max-width: 640px) { .ri-mldl { grid-template-columns: 1fr; } }

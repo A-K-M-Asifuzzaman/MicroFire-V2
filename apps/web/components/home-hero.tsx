@@ -42,6 +42,7 @@ export function HomeHero({ record, testId, stations, trail, children }: { record
           {children}
           <div className="actions">
             <Link className="btn btn-primary" href="/judge-guide">Start the guided tour</Link>
+            <Link className="btn" href="/proof">See the 60-second proof</Link>
             <Link className="btn" href={BAY_TOUR} prefetch={false} onMouseEnter={peek(true)} onMouseLeave={peek(false)} onFocus={peek(true)} onBlur={peek(false)}>Enter the training bay</Link>
             <Link className="btn" href={record.href}>Open the {testId} record</Link>
             <Link className="text-link" href="/atlas">Explore the Experiment Atlas</Link>

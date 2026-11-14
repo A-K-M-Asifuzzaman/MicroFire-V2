@@ -262,7 +262,7 @@ test('missions stay honestly unavailable and narrow screens never scroll sideway
   }
   await page.goto('http://127.0.0.1:3217/missions');
   await expect(page.getByRole('link', { name: 'Station Arrival' })).toBeVisible();
-  await expect(page.getByText('Mission 01 · Coming Soon')).toBeVisible();
+  await expect(page.getByText('Mission 01 · Preview')).toBeVisible();
   await page.screenshot({ path: 'docs/qa/screenshots/m1/missions-320.png', fullPage: true });
   await context.close();
 });

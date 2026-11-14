@@ -66,6 +66,8 @@ export function MethodologyPage() {
         <p>Citation checks confirm that a statement points at the page it came from (lineage), not that the statement is scientifically true. The admitted B20 record was checked against the original PDF, including its table columns; it has not yet had an independent human scientific review.</p>
         <h2>Illustrations</h2>
         <p>The observatory scene, flame and apparatus drawings are original artwork for teaching. They are not NASA footage, a combustion simulation or a dimensioned reconstruction; where a drawing uses a sourced dimension, it says so and cites the page.</p>
+        <h2>Use of AI tools</h2>
+        <p>The 3D models in the missions, the training bay and the opening film were generated with Meshy AI from the team&apos;s own design briefs, then optimized and reviewed; every one is labelled on screen and listed with its task ID in <code>data/asset-rights.json</code>. The code was written with AI coding assistants (Anthropic Claude Code and OpenAI Codex) under the team&apos;s direction. No AI model writes answers, chooses evidence or grades a mission: those come from deterministic rules over the cited NASA record. A machine-learning classifier was evaluated and not deployed; the dashboard shows why.</p>
         <h2>Offline and privacy</h2>
         <p>The app reads its bundled catalog without external requests. Offline here means an already-running local server with the internet disconnected; this is not an installable offline app. Questions you ask are not sent to any AI provider.</p>
       </div>
@@ -85,7 +87,7 @@ const MISSION_ART = new Set<string>(['station-arrival', 'bass-assembly', 'flame-
 function MissionArt({ id, glyph }: { id: string; glyph: React.ReactNode }) {
   const has = MISSION_ART.has(id);
   return <span className="mission-art" data-art={id} data-has-art={has || undefined} style={has ? { backgroundImage: `url(/media/missions/${id}.webp), radial-gradient(circle at 50% 62%, #fff 0, #dfe3ff 72%)` } : undefined} aria-hidden="true">
-    <svg viewBox="-40 -40 80 80">{glyph}</svg><span className="mission-art-tag">Illustration</span>
+    <svg viewBox="-40 -40 80 80">{glyph}</svg><span className="mission-art-tag">{has ? 'AI illustration (Meshy)' : 'Illustration'}</span>
   </span>;
 }
 
@@ -171,7 +173,7 @@ export function RoadmapPage() {
   return <>
     <PageHero eyebrow="Product progress" title="What works today, and what does not." lede="Every route's real release status, straight from the feature registry. No dates are promised." status={{ feature: feature('/roadmap')! }} />
     <Sheet>
-      <div className="notice" data-tone="info" style={{ marginBottom: 24 }}><p>Interfaces built for review (Evidence Workstation, Ask PIX, Research Frontier) keep their registry status until an independent review changes it.</p></div>
+      <div className="notice" data-tone="info" style={{ marginBottom: 24 }}><p>Preview means working and tested, with its limits stated. Nothing here is NASA-endorsed, and no feature certifies fire safety.</p></div>
       <div className="status-groups">{order.map((state) => {
         const group = features.filter((f) => f.state === state);
         if (!group.length) return null;
@@ -192,6 +194,6 @@ export function StatusPage({ f }: { f: Feature }) {
   return <div className="wrap page">
     <header className="page-head reveal"><p className="eyebrow">{featureLabels[f.state]}</p><h1>{f.title}</h1></header>
     <StatusBlock f={f} />
-    <div className="actions"><button className="btn btn-quiet" disabled>{featureLabels[f.state]}</button><Link className="btn btn-primary" href="/atlas">Explore the admitted evidence</Link></div>
+    <div className="actions">{f.state !== 'preview' && <button className="btn btn-quiet" disabled>{featureLabels[f.state]}</button>}<Link className="btn btn-primary" href="/atlas">Explore the admitted evidence</Link></div>
   </div>;
 }

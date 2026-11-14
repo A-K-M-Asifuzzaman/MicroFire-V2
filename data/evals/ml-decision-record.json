@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "decision": "not-deployed",
+  "decidedAt": "2026-11-14",
+  "model": {
+    "name": "flame-established v1.0",
+    "architecture": "L2-regularised logistic regression (lambda 1) on standardised oxygen vol% and a PMMA indicator",
+    "target": "Whether a flame was established after the ignition attempt, coded from NASA test-table comments. Not burn outcome, flame spread or fire risk.",
+    "comparedWith": [
+      "Majority-rate baseline (no features)",
+      "Logistic regression with airflow",
+      "Depth-2 decision tree",
+      "Random forest of 200 depth-2 trees"
+    ]
+  },
+  "data": {
+    "usableRecords": 41,
+    "negatives": 4,
+    "excludedRecords": 15,
+    "materials": [
+      "SIBAL fabric",
+      "PMMA"
+    ],
+    "origin": "Legacy BASS and BASS-II rows from an earlier MicroFire prototype. In MicroFire-V2 these rows are quarantined pending cell-by-cell primary-source review; only B20 is admitted.",
+    "provenanceDefect": "The legacy B16, B19 and B20 rows carry the uncalibrated oxygen readings (16.4 to 16.5 vol%). The calibrated columns of NASA TM-20210011385 Table A.1 read 17.3 to 17.4 vol%, and the offset varies by row (data/quarantine/b16-b19-source-review.json). Oxygen is the model's main feature."
+  },
+  "evaluation": {
+    "method": "Grouped leave-one-session-out cross-validation with 95% percentile bootstrap intervals",
+    "baseline": {
+      "brier": 0.094,
+      "brierCi": [
+        0.03,
+        0.17
+      ],
+      "logLoss": 0.353,
+      "balancedAccuracy": 0.5
+    },
+    "deployedCandidate": {
+      "brier": 0.077,
+      "brierCi": [
+        0.03,
+        0.14
+      ],
+      "logLoss": 0.246,
+      "auc": 0.8,
+      "aucCi": [
+        0.6,
+        1.0
+      ],
+      "balancedAccuracy": 0.5
+    }
+  },
+  "reasons": [
+    "Balanced accuracy is 0.50, the same as chance: with 4 negatives in 41 records the model effectively always predicts that a flame is established.",
+    "Its Brier-score interval overlaps the no-feature baseline, so the improvement is not established.",
+    "55 of the 56 rows it draws on are quarantined in MicroFire-V2 (data/quarantine/legacy-ledger.json); the 56th, B20, is admitted only with its corrected calibrated oxygen, which the model never saw.",
+    "Its target is ignition success inside one ISS glovebox setup; it cannot speak to lunar gravity, habitat pressure or fire safety."
+  ],
+  "reproduce": {
+    "repository": "MicroFire-Atlas-Final (the team’s private prototype repository; not part of this submission)",
+    "commit": "e9e9b72",
+    "command": "cd apps/web && node lib/model-lab-run.ts",
+    "note": "Deterministic and seeded; the figures above are copied from its output on 2026-11-14. Reviewers can request a run."
+  },
+  "wouldChangeTheDecision": "Independent review admitting enough BASS-II rows with calibrated oxygen, a held-out session set fixed before training, a model beating the baseline on balanced accuracy and Brier with non-overlapping intervals, and an operating-domain gate that abstains outside the recorded conditions."
+}

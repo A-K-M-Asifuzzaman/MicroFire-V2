@@ -14,6 +14,8 @@ import type { PartSpec } from '../contract';
 import { createPublicController, type PublicController } from './public-controller';
 import { createPublicTransport } from './public-transport';
 import { MissionGuide } from './mission-guide';
+import { guide } from '../missions/mission-kit';
+import { LiteToggle } from './lite-toggle';
 import { MISSIONS, currentMission, needsStart, sceneSnapshot, recordedActions } from './view-adapter';
 import '../missions/missions.css';
 import './campaign.css';
@@ -35,6 +37,8 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, parts, co
   const last = s.last?.result;
   const feedback = last?.ok ? (last.feedback ?? null) : null, refusal = last && !last.ok ? { code: last.code, message: last.message } : null;
   const snap = view ? sceneSnapshot(view) : null;
+  const done = view?.completedMissions.length ?? 0;
+  useEffect(() => { guide({ phase: s.phase, done, complete: done === 5 }); }, [s.phase, done]);
 
   const download = async () => {
     const data = await controller.exportPassport(); if (!data) return;
@@ -45,6 +49,7 @@ export function CampaignPlay({ claim, sourceTitle, evidence, recorded, parts, co
   return <div className="wrap page mf-play" aria-busy={s.phase === 'booting' || s.phase === 'sending'} data-phase={s.phase} data-revision={view?.revision}>
     <header className="mf-play-head">
       <h1>Flame in Freefall missions</h1>
+      <LiteToggle />
       <p className="mf-guide-intro">New here? Follow the highlighted next action and read each mission briefing. <Link href="/judge-guide">Open the full guided tour</Link> of the science tools and games.</p>
       {view && <ol className="mf-rail" aria-label="Mission progress (saved on the server)">{MISSIONS.map((m) => {
         const done = view.completedMissions.includes(m.id), here = m.id === mission;

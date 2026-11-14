@@ -78,3 +78,6 @@
 .mf-partname { all: unset; cursor: pointer; font-weight: 700; border-bottom: 2px dotted currentColor; }
 .mf-partname:focus-visible { outline: 3px solid #ffb020; outline-offset: 2px; }
 .mf-bench tr[data-selected="true"] th, .mf-bench tr[data-selected="true"] td { background: #fff3d6; }
+.mf-lite { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 0 0 12px; }
+.mf-lite .mf-fine { margin: 0; flex: 1 1 260px; }
+.mf-lite[data-on="true"] .btn { background: var(--mint-soft); }

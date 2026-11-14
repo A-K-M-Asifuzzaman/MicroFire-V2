@@ -79,7 +79,7 @@ it('abstains safely when a valid question would exceed the answer size contract'
 });
 it('does not promote backend-implemented features or missions without UI verification', async () => {
   const registry = FeaturesResponseSchema.parse(await readApi(['feature-status'], new URL('http://localhost')).json()).data;
-  expect(Object.fromEntries(registry.filter((f) => ['dashboard', 'atlas', 'experiment', 'gaps', 'ask', 'methodology'].includes(f.id)).map((f) => [f.id, f.state]))).toEqual({ dashboard: 'coming_soon', atlas: 'preview', experiment: 'preview', gaps: 'coming_soon', ask: 'coming_soon', methodology: 'preview' });
+  expect(Object.fromEntries(registry.filter((f) => ['dashboard', 'atlas', 'experiment', 'gaps', 'ask', 'methodology'].includes(f.id)).map((f) => [f.id, f.state]))).toEqual({ dashboard: 'preview', atlas: 'preview', experiment: 'preview', gaps: 'preview', ask: 'preview', methodology: 'preview' });
   expect(registry.some((f) => ['available', 'locked'].includes(f.state))).toBe(false);
 });
 it('bounds repeated POST traffic and recovers after the window', async () => {

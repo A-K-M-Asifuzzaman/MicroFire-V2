@@ -18,21 +18,24 @@ MicroFire is a research observatory and a five-mission learning game built on NA
 - **1** NASA experiment record is admitted after checking it against the primary source.
 - **55** legacy records stay quarantined and are never shown as evidence until each one is checked.
 - Unknown values (for example gravity level and pressure for B20) are shown as unknown. They are never filled in.
-- Nothing in MicroFire certifies fire safety, and it is not NASA-endorsed. 3D scenes are labelled as illustrations.
+- Nothing in MicroFire certifies fire safety, and it is not NASA-endorsed. 3D scenes are labelled as illustrations, and AI-generated 3D models are labelled as Meshy AI.
 
 ## What you can do
 
 | Feature | Route | What it does |
 |---|---|---|
+| **60-second proof** | `/proof` | One click: B20 observation → verified conditions → fictional lunar scenario → mismatches and unknowns → the engine's refusal → the research it would take |
 | Gravity Lens | `/` | Compares an illustrated flame at 1 g and in microgravity |
 | Evidence Atlas | `/atlas` | Separates admitted observations from quarantined records |
 | B20 dossier | `/experiments/bass2-b20` | Every value with its NASA page, including the 17.4% correction |
 | Investigation Library | `/investigations` | NASA investigation descriptions, kept separate from observations |
 | Ask PIX | `/ask` | A fixed-template guide (no AI model) that answers only from cited statements and refuses unsupported questions |
-| Evidence Workstation and At a Glance | `/dashboard` | What matches, what differs and what NASA never reported |
+| Evidence Workstation and At a Glance | `/dashboard` | What matches, what differs and what NASA never reported, plus the machine-learning decision record (a classifier was evaluated and **not deployed**: chance-level balanced accuracy on quarantined, uncalibrated data) |
 | Citation Checker | `/investigations/bass-ii` | Confirms the right NASA page and flags a wrong one |
 | **Five missions** | `/missions/play` | Station Arrival, BASS-II Training Bay, Flame Detective, Claim Trial, Lunar Habitat (fictional) |
 | Research Passport | inside the campaign | Five source-linked entries, exported as JSON |
+| Lightweight mode | `/missions/play` | Opt-in 2D missions for slow or metered connections: no 3D engine or models downloaded, same gameplay and Passport |
+| PIX guide | every page | Where you are, what to do now and what comes next; on missions it follows your live objective |
 
 ### The missions are checked on the server
 
@@ -73,7 +76,7 @@ The research site needs no secrets. The playable campaign also needs PostgreSQL 
 
 ## Testing evidence
 
-- `npm run check`: lint, strict types, 266/266 unit tests, and science evals (Ask 30/30, ranking 7/7, faithfulness 13/13, 0 forbidden claims).
+- `npm run check`: lint, strict types, the unit suite, and science evals (Ask 30/30, ranking 7/7, faithfulness 13/13, 0 forbidden claims).
 - Backend tests against real PostgreSQL over HTTPS cover CSRF and origin refusal, visitor isolation, retries, quota-starvation attacks and database restarts.
 - Hosted acceptance on the deployed site (`tests/visual/hosted-two-visitors.mjs`): two visitors at once (desktop and iPhone-sized touch), no login. Each completed all five missions (42 server-accepted steps), got 5 Passport entries in the export and the downloaded JSON, and recovered after reload, with isolated sessions and no page errors.
 

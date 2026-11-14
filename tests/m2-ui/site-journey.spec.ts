@@ -40,7 +40,7 @@ test('journey: home → training bay tour → missions → briefing → home, th
   await expect(page.getByRole('region', { name: 'Step inside the training bay.' })).toBeVisible();
   await page.getByRole('link', { name: 'BASS-II Assembly' }).click();
   await expect(page).toHaveURL(/\/missions\/bass-assembly$/);
-  await expect(page.getByRole('button', { name: 'Coming Soon' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Preview' })).toBeDisabled(); // no campaign backend in this suite
   await expect(page.getByText(/open only after the mission.s server integration is approved/)).toBeVisible();
   await page.getByRole('link', { name: /MicroFire, the Living Science Observatory/ }).click();
   await expect(page).toHaveURL(/\/$/);

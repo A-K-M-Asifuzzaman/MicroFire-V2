@@ -151,7 +151,7 @@ export function Ignition() {
         <p className="ign-sub">The Living Science Observatory</p>
         <p className="ign-line">Explore the science of fire beyond Earth.</p>
       </div>}
-      <p className="ign-note">A fictional story · not a real NASA incident</p>
+      <p className="ign-note">A fictional story · not a real NASA incident · 3D characters generated with Meshy AI</p>
       <div className="ign-controls">
         <button type="button" className="ign-btn" aria-pressed={sound} onClick={toggleSound}>{sound ? 'Sound on' : 'Sound off'}</button>
         {(beat === 'holo' || title) && <button type="button" className="ign-btn ign-enter" onClick={() => close('skip')}>Enter observatory</button>}
