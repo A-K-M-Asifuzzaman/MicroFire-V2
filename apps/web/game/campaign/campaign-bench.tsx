@@ -8,10 +8,11 @@ import type { BenchApi, BenchState } from '../ui/bench-scene';
 import { LAB_ENVIRONMENT } from '../ui/lab-assets';
 import type { PublicView } from './public-transport';
 import '../ui/game.css';
+import { useLite } from '../lite-mode';
 
 const QUALIFIED = new Set(['b20-inspection-required', 'passport-review', 'complete']);
 
-export function CampaignBench({ view, parts, selected, chosenMount, orientation, onSelectPart, onSelectAnchor, onDrop }: {
+function Bench3D({ view, parts, selected, chosenMount, orientation, onSelectPart, onSelectAnchor, onDrop }: {
   view: PublicView; parts: PartSpec[]; selected: string | null; chosenMount: Record<string, string>; orientation: 'correct' | 'reversed';
   onSelectPart: (id: string) => void; onSelectAnchor: (anchorId: string) => void; onDrop: (partId: string, anchorId: string) => void;
 }) {
@@ -69,7 +70,12 @@ export function CampaignBench({ view, parts, selected, chosenMount, orientation,
     </div>
     <figcaption className="mf-bay-cap">
       <span><b>How to use:</b> pick a part in the table (or click it here), then click or drag onto a glowing mount. The server decides whether it fits; faults appear only after the server&apos;s Training check.</span>
-      <span className="mf-fine">Schematic training model of the BASS-II flow duct, not NASA CAD. Bay, astronaut and Earth view are illustrations.</span>
+      <span className="mf-fine">Schematic training model of the BASS-II flow duct, not NASA CAD. Bay, astronaut and Earth view are illustrations. 3D models generated with Meshy AI.</span>
     </figcaption>
   </figure>;
+}
+
+/** Lightweight mode never loads three.js or the bay models; the parts table below carries every action. */
+export function CampaignBench(props: Parameters<typeof Bench3D>[0]) {
+  return useLite() ? <p className="mf-fallback-note">Lightweight mode: the 3D training bay is off to save data. Every action works in the parts table below.</p> : <Bench3D {...props} />;
 }

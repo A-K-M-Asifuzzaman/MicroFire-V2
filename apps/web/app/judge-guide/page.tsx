@@ -54,7 +54,8 @@ export default function JudgeGuidePage() {
       <h1>Start here. Explore fire science with confidence.</h1>
       <p>MicroFire connects real NASA combustion records, evidence-aware dashboard tools and a five-mission learning experience. This tour shows what is real, what is illustrated and what remains unknown.</p>
       <div className={styles.actions}>
-        <Link className="btn btn-primary" href="/dashboard">Explore the science dashboard</Link>
+        <Link className="btn btn-primary" href="/proof">Watch the 60-second proof</Link>
+        <Link className="btn" href="/dashboard">Explore the science dashboard</Link>
         <Link className="btn" href={playable ? '/missions/play' : '/missions'}>{playable ? 'Play the five missions' : 'See the mission map'}</Link>
       </div>
       <p className={styles.truth}><b>Evidence status:</b> 1 admitted B20 test; 55 quarantined legacy records. PIX is a deterministic citation guide, not a generative AI model. This project is not NASA-endorsed.</p>

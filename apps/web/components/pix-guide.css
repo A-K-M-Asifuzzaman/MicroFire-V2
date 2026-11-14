@@ -28,14 +28,17 @@
   background: var(--paper); color: var(--ink); font: 800 .95rem var(--display); box-shadow: 4px 4px 0 var(--ink); cursor: pointer; }
 .pixg-fab .pixg-face.pix-avatar { width: 44px; }
 .pixg-x:focus-visible, .pixg-next:focus-visible, .pixg-fab:focus-visible { outline: 3px solid var(--ultra); outline-offset: 3px; }
+/* Focus Not Obscured (WCAG 2.4.11): anything scrolled or focused into view stops above the docked guide. */
+html:has(.pixg[data-mode="mini"]) { scroll-padding-bottom: 132px; }
+html:has(.pixg[data-mode="hidden"]) { scroll-padding-bottom: 84px; }
 /* Keep the last lines of every page scrollable clear of the docked guide. */
 .site-footer { padding-bottom: 112px; }
 @media (max-width: 640px) {
   .pixg { right: 10px; bottom: 10px; left: auto; }
   .pixg[data-mode="full"], .pixg[data-mode="mini"] { left: 10px; }
-  .pixg-mini { width: auto; grid-template-columns: 36px 1fr auto; }
-  .pixg-mini .pixg-face.pix-avatar { width: 36px; }
-  .pixg-say { font-size: .86rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+  .pixg-mini { width: auto; grid-template-columns: 32px 1fr auto; gap: 8px; padding: 6px 8px; }
+  .pixg-mini .pixg-face.pix-avatar { width: 32px; }
+  .pixg-say { font-size: .86rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
   .pixg-mini .pixg-x { min-height: 40px; padding: 4px 10px; }
   .pixg-card { width: auto; max-height: 58vh; }
   .pixg-head { grid-template-columns: 48px 1fr auto; }

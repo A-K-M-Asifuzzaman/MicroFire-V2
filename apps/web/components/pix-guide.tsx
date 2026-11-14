@@ -24,9 +24,11 @@ const after = (p: string): Stop | undefined => { const i = PATH.findIndex((s) =>
 
 export function guideFor(path: string): Guide {
   if (path === '/') return { mood: 'greet', where: 'Welcome. MicroFire shows how fire behaves without gravity, using one real NASA test as its evidence.',
-    now: ['Drag the gravity slider in the illustration to see why a flame changes shape without buoyancy.', 'Press “Start the guided tour” for a six-step route through the site.'], next: PATH[0] };
+    now: ['Drag the gravity slider in the illustration to see why a flame changes shape without buoyancy.', 'Short on time? Press “See the 60-second proof” for the whole argument in six steps.'], next: PATH[0] };
   if (path === '/judge-guide') return { mood: 'greet', where: 'This is the route through MicroFire. Each step takes a minute or two.',
-    now: ['Follow steps 01 to 06 in order. Each card opens its tool.', 'I will be in the corner of every page with what to do there.'], next: after(path) };
+    now: ['Follow steps 01 to 06 in order. Each card opens its tool.', 'Short on time? “Watch the 60-second proof” shows the whole argument first.', 'I will be in the corner of every page with what to do there.'], next: after(path) };
+  if (path === '/proof') return { mood: 'cite', where: 'The proof: one NASA observation, its verified conditions, a fictional Moon scenario and why I refuse to call it safe.',
+    now: ['Press “Play the proof”: the six steps advance on their own. Back and Next step by hand.', 'Every step links to the evidence behind it.'], next: { href: '/missions/play', label: 'the five missions' } };
   if (path === '/lab') return { where: 'The Flame Lab. The drawing is a toy model that shows directions of effect, never measurements.',
     now: ['Press a gravity preset (Microgravity, Moon, Mars, Earth) and watch the flame change shape.', 'Move the airflow or oxygen slider, one at a time.', 'Press “Compare with the real B20 test” to see what NASA actually recorded.'], next: after(path) };
   if (path.startsWith('/experiments/')) return { mood: 'cite', where: 'The full record of BASS-II test B20, the one admitted NASA experiment.',

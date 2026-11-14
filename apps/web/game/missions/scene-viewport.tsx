@@ -3,6 +3,7 @@
 // plan of the same buttons without WebGL. Purely presentational; the parent decides which station is next from
 // engine snapshot facts and what each station does.
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useLite } from '../lite-mode';
 import type { Prop, StationScene } from './station-scene';
 
 export type Spot = { id: string; label: string; what: string };
@@ -23,7 +24,7 @@ const never = () => () => undefined;
 export function SceneViewport({ layout, spots, next, open, onToggle, loading }: {
   layout: 'station' | 'detective' | 'trial' | 'habitat'; spots: Spot[]; next: string | undefined; open: string | null; onToggle: (id: string) => void; loading: string;
 }) {
-  const flat = useSyncExternalStore(never, noWebgl, () => false);
+  const lite = useLite(), flat = useSyncExternalStore(never, noWebgl, () => false) || lite;
   const canvas = useRef<HTMLCanvasElement>(null), sceneRef = useRef<StationScene | null>(null);
   const [pos, setPos] = useState<Record<string, { x: number; y: number; visible: boolean }>>({});
   const [ready, setReady] = useState(false), [failed, setFailed] = useState(false);
@@ -60,11 +61,11 @@ export function SceneViewport({ layout, spots, next, open, onToggle, loading }: 
   const twoD = flat || failed;
   return <div className="mf-viewport" data-layout={layout} data-mode={twoD ? '2d' : '3d'} data-ready={ready}>
     {!twoD && <canvas ref={canvas} aria-hidden="true" />}
-    {twoD && <p className="mf-fallback-note">{flat ? 'The 3D room is not available on this device. Every station still works below.' : 'The 3D room could not start. Every station still works below.'}</p>}
+    {twoD && <p className="mf-fallback-note">{lite ? 'Lightweight mode: the 3D room is off to save data. Every station still works below.' : flat ? 'The 3D room is not available on this device. Every station still works below.' : 'The 3D room could not start. Every station still works below.'}</p>}
     {!twoD && !ready && <p className="mf-loading" role="status">{loading}</p>}
     <div className={twoD ? 'mf-plan' : 'mf-spots'} role="group" aria-label="Station hotspots">{spots.map((sp) => <button key={sp.id} ref={(el) => { btn.current[sp.id] = el; }} type="button" className="mf-spot" data-next={sp.id === next} aria-expanded={open === sp.id} aria-controls="mf-panel"
       style={!twoD && pos[sp.id] ? { left: `clamp(84px, ${pos[sp.id]!.x}px, calc(100% - 84px))`, top: pos[sp.id]!.y, visibility: pos[sp.id]!.visible ? undefined : 'hidden' } : undefined}
       onClick={() => onToggle(sp.id)}><span className="mf-spot-dot" aria-hidden="true" /><b>{sp.label}</b><span>{sp.what}</span></button>)}</div>
-    <span className="mf-tag">Original 3D illustration · not NASA imagery</span>
+    <span className="mf-tag">Original 3D illustration · AI-generated models (Meshy) · not NASA imagery</span>
   </div>;
 }

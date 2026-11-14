@@ -47,7 +47,7 @@ export function BayTour({ parts }: { parts: PartSpec[] }) {
             {canFull && <button type="button" className="m2-view" aria-pressed={full} onClick={() => { if (full) void document.exitFullscreen(); else void stage.current?.requestFullscreen().catch(() => undefined); }}>{full ? 'Exit full screen' : 'Full screen'}</button>}
             <button type="button" className="m2-view" onClick={() => setIntro(true)}>Replay intro</button>
           </div>
-          <p className="m2-bench-label">Illustrative tour. The apparatus is shown in its reference configuration from the equipment specification: a schematic training model, not a NASA engineering CAD reconstruction (duct proportions sourced, other geometry schematic).{lab && ' The bay, astronaut, inspection arm and Earth view are illustrative.'}{envOff && ' Lab scenery is off on this device (software graphics) so the page stays responsive.'}</p>
+          <p className="m2-bench-label">Illustrative tour. The apparatus is shown in its reference configuration from the equipment specification: a schematic training model, not a NASA engineering CAD reconstruction (duct proportions sourced, other geometry schematic).{lab && ' The bay, astronaut, inspection arm and Earth view are illustrative; their 3D models were generated with Meshy AI.'}{envOff && ' Lab scenery is off on this device (software graphics) so the page stays responsive.'}</p>
         </div>
       </div>}
       <div className="m2-tour-side">

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { answerQuestion, candidateReview, catalog, catalogCitations, coverage, investigationLibrary, isCatalogCitation, rankEvidence, RANKING_VERSION, RETRIEVAL_VERSION } from '@microfire/science';
 import type { TargetConditions } from '@microfire/shared';
 import { conditionLabels } from './page-kit';
+import ml from '../../../data/evals/ml-decision-record.json';
 import './research-intelligence.css';
 
 type Trace = { label: string; question: string; target: TargetConditions };
@@ -114,6 +115,27 @@ export function ResearchIntelligence() {
           <li><span className="ri-tag" data-known="false">not used</span> Generative language models. No LLM writes answers, ranks evidence or grades missions.</li>
         </ul>
         <p className="ri-fine">Why: an AI layer would add value only with strict grounding, citation validation, unsupported-claim rejection, a deterministic fallback and an evaluation set. With one admitted record and no reviewed model integration, a model would add risk without adding evidence, so this gap is documented rather than hidden.</p>
+      </section>
+      <section className="ri-card ri-ml" aria-labelledby="ri-ml-h">
+        <h3 id="ri-ml-h">Machine learning: evaluated, not deployed</h3>
+        <p>We trained and tested a flame classifier from an earlier prototype before deciding. It does not make any prediction on this site. Here is the evidence for that decision.</p>
+        <dl className="ri-mldl">
+          <dt>Model</dt><dd>{ml.model.architecture}. Compared with: {ml.model.comparedWith.join('; ')}.</dd>
+          <dt>Predicts</dt><dd>{ml.model.target}</dd>
+          <dt>Data</dt><dd>{ml.data.usableRecords} usable records, only {ml.data.negatives} without an established flame ({ml.data.excludedRecords} excluded). {ml.data.origin}</dd>
+          <dt>Validation</dt><dd>{ml.evaluation.method}.</dd>
+        </dl>
+        <table className="ri-mltable"><caption>Out-of-sample results (lower Brier and log loss are better)</caption>
+          <thead><tr><th scope="col">Model</th><th scope="col">Brier (95% CI)</th><th scope="col">Log loss</th><th scope="col">Balanced accuracy</th><th scope="col">AUC (95% CI)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">No-feature baseline</th><td>{ml.evaluation.baseline.brier.toFixed(3)} ({ml.evaluation.baseline.brierCi.join('–')})</td><td>{ml.evaluation.baseline.logLoss.toFixed(3)}</td><td>{ml.evaluation.baseline.balancedAccuracy.toFixed(2)}</td><td>n/a</td></tr>
+            <tr><th scope="row">Logistic regression</th><td>{ml.evaluation.deployedCandidate.brier.toFixed(3)} ({ml.evaluation.deployedCandidate.brierCi.join('–')})</td><td>{ml.evaluation.deployedCandidate.logLoss.toFixed(3)}</td><td>{ml.evaluation.deployedCandidate.balancedAccuracy.toFixed(2)}</td><td>{ml.evaluation.deployedCandidate.auc.toFixed(2)} ({ml.evaluation.deployedCandidate.aucCi.map((x) => x.toFixed(2)).join('–')})</td></tr>
+          </tbody></table>
+        <p className="ri-mlwhy"><span className="ri-tag" data-known="false">not deployed</span> Why:</p>
+        <ul className="ri-ai">{ml.reasons.map((r) => <li key={r}>{r}</li>)}</ul>
+        <p className="ri-fine"><b>Provenance problem found:</b> {ml.data.provenanceDefect}</p>
+        <p className="ri-fine"><b>What would change the decision:</b> {ml.wouldChangeTheDecision}</p>
+        <p className="ri-fine">Reproduce: {ml.reproduce.repository}, commit <code>{ml.reproduce.commit}</code>, <code>{ml.reproduce.command}</code>. {ml.reproduce.note}</p>
       </section>
     </div>
   </section>;
