@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import { PixGuide } from './pix-guide';
 
 const sections = [
-  { label: 'Discover', href: '/', match: ['/', '/judge-guide', '/proof', '/roadmap', '/challenge', '/impact', '/assets'] },
+  { label: 'Discover', href: '/', match: ['/', '/judge-guide', '/proof', '/roadmap', '/impact', '/assets'] },
   { label: 'Evidence', href: '/dashboard', match: ['/dashboard', '/ask', '/gaps', '/investigations', '/compare', '/sources', '/methodology'] },
   { label: 'Experiments', href: '/atlas', match: ['/atlas', '/experiments'] },
   { label: 'Flame Lab', href: '/lab', match: ['/lab'] },

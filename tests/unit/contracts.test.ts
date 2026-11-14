@@ -64,10 +64,10 @@ describe('feature gates and mission interfaces', () => {
     expect(PartIdSchema.options).toHaveLength(10);
     expect(new Set(features.map((f) => f.route)).size).toBe(features.length);
   });
-  it('never promotes unfinished missions based on progress', () => {
+  it('never changes a mission label from player progress (playable missions stay Preview, never Available)', () => {
     for (const mission of MissionIdSchema.options) {
       const f = features.find((f) => f.id === mission)!;
-      expect(resolveFeature(f, MissionIdSchema.options).state).toBe('coming_soon');
+      expect(resolveFeature(f, MissionIdSchema.options).state).toBe('preview');
     }
   });
   it('requires browser evidence before Available or Locked and resolves real progress gates', () => {
@@ -76,7 +76,7 @@ describe('feature gates and mission interfaces', () => {
     const built = FeatureSchema.parse({ ...f, state: 'available', prerequisites: ['station-arrival'], verification: { unitTest: 'unit', browserTest: 'browser', screenshot: 'capture.png', checkedAt: '2026-10-11T09:00:00Z' } });
     expect(resolveFeature(built, []).state).toBe('locked');
     expect(resolveFeature(built, ['station-arrival']).state).toBe('available');
-    expect(resolveFeature(features.find((f) => f.state === 'blocked')!, []).state).toBe('blocked');
+    expect(resolveFeature(FeatureSchema.parse({ ...f, state: 'blocked', implemented: false }), []).state).toBe('blocked');
   });
   it('rejects an unimplemented feature labelled Preview', () => {
     expect(FeatureSchema.safeParse({ ...features[0], state: 'preview', implemented: false }).success).toBe(false);

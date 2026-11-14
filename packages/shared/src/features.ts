@@ -24,26 +24,26 @@ export const featureLabels: Record<z.infer<typeof FeatureStateSchema>, string> =
 };
 const definitions = [
   ['home', '/', 'Living Science Observatory', 'preview', 'Foundation preview; Gravity Lens and premium visual design are pending.'],
-  ['dashboard', '/dashboard', 'Evidence Workstation', 'coming_soon', 'Search and ranking APIs exist over one validated record; the workstation UI is pending.'],
+  ['dashboard', '/dashboard', 'Evidence Workstation', 'preview', 'Traces a question to cited observations, their conditions and limits over the one admitted record. A machine-learning classifier was evaluated and not deployed.'],
   ['atlas', '/atlas', 'Experiment Atlas', 'preview', 'One audited BASS-II record; search API exists, search UI and broader coverage are pending.'],
   ['experiment', '/experiments/[id]', 'Experiment Dossier', 'preview', 'One cited record with field-level provenance; export API exists, export UI is pending.'],
-  ['compare', '/compare', 'Controlled Comparison', 'coming_soon', 'Requires multiple independently verified records.'],
+  ['compare', '/compare', 'Controlled Comparison', 'preview', 'Explains why a comparison is refused until a second record passes source review; it never invents one.'],
   ['lab', '/lab', 'Flame Lab', 'preview', 'Interactive authored toy model with accessible controls and a cited B20 comparison; an illustration, not a simulation.'],
-  ['gaps', '/gaps', 'Research Frontier', 'coming_soon', 'Gap-classification API exists over one validated record; the frontier UI is pending.'],
-  ['ask', '/ask', 'Ask PIX', 'coming_soon', 'Deterministic, catalog-grounded answers with citation-lineage checks and abstention exist as an API (no AI model); the PIX UI is pending.'],
-  ['missions', '/missions', 'Mission Map', 'preview', 'Mission descriptions only; none is playable yet.'],
-  ['station-arrival', '/missions/station-arrival', 'Station Arrival', 'coming_soon', 'Source-inspection gameplay is pending.'],
-  ['bass-assembly', '/missions/bass-assembly', 'BASS-II Assembly', 'coming_soon', 'Assembly, fault detection and repair gameplay are pending.'],
-  ['flame-detective', '/missions/flame-detective', 'Flame Detective', 'coming_soon', 'Prediction and recorded-result investigation are pending.'],
-  ['claim-trial', '/missions/claim-trial', 'Claim Trial', 'coming_soon', 'Evidence classification and correction gameplay are pending.'],
-  ['lunar-habitat', '/missions/lunar-habitat', 'Lunar Habitat', 'coming_soon', 'Fictional research decision gameplay is pending.'],
-  ['passport', '/passport', 'Evidence Passport', 'coming_soon', 'Contracts and local persistence exist; earned entries and export UI are pending.'],
+  ['gaps', '/gaps', 'Research Frontier', 'preview', 'Condition-by-condition coverage and transfer analysis over the admitted record; unknowns stay unknown.'],
+  ['ask', '/ask', 'Ask PIX', 'preview', 'Deterministic, catalog-grounded answers with page citations and refusals of unsupported questions (no AI model).'],
+  ['missions', '/missions', 'Mission Map', 'preview', 'Five playable missions with progress saved on the server and a downloadable Passport.'],
+  ['station-arrival', '/missions/station-arrival', 'Station Arrival', 'preview', 'Playable now as Mission 01 of the campaign.'],
+  ['bass-assembly', '/missions/bass-assembly', 'BASS-II Assembly', 'preview', 'Playable now as Mission 02 of the campaign, with the 3D training bay.'],
+  ['flame-detective', '/missions/flame-detective', 'Flame Detective', 'preview', 'Playable now as Mission 03 of the campaign.'],
+  ['claim-trial', '/missions/claim-trial', 'Claim Trial', 'preview', 'Playable now as Mission 04 of the campaign.'],
+  ['lunar-habitat', '/missions/lunar-habitat', 'Lunar Habitat', 'preview', 'Playable now as Mission 05 of the campaign (a fictional scenario).'],
+  ['passport', '/passport', 'Evidence Passport', 'preview', 'Earned in the five-mission campaign and downloaded as JSON from the mission page; this page is a local notebook.'],
   ['sources', '/sources', 'Sources & Rights', 'preview', 'One source audit; broader corpus and media rights review are pending.'],
   ['methodology', '/methodology', 'Methodology', 'preview', 'Fixture methodology; a small author-labelled ranking/Ask regression set exists, independent evaluation is pending.'],
   ['roadmap', '/roadmap', 'Product Progress', 'preview', 'Phase Zero status inventory; no public release approved.'],
-  ['challenge', '/challenge', 'Judge Tour', 'coming_soon', 'The complete 90-second research-to-game journey is pending.'],
-  ['impact', '/impact', 'Worldwide Usefulness', 'coming_soon', 'User research and measured impact are pending.'],
-  ['meshy-assets', '/assets', 'Meshy Asset Pipeline', 'blocked', 'No funded API entitlement or per-job spend approval verified.']
+  ['challenge', '/judge-guide', 'Judge Guide', 'preview', 'The judge tour: six guided steps and a 60-second proof.'],
+  ['impact', '/impact', 'Worldwide Usefulness', 'preview', 'Built for students and curious learners; measured learning impact has not been studied yet.'],
+  ['meshy-assets', '/assets', 'Meshy Asset Pipeline', 'preview', '231 Meshy-generated 3D assets in use, each listed with its task ID, credits and rights in data/asset-rights.json.']
 ] as const;
 export const features: readonly Feature[] = definitions.map(([id, route, title, state, reason]) => FeatureSchema.parse({
   id, route, title, state, reason, implemented: state === 'preview', prerequisites: [], verification: null

@@ -23,7 +23,7 @@ test('every advertised route resolves and all missions remain unavailable', asyn
   for (const feature of features) {
     const response = await page.goto(feature.route.replace('[id]', 'bass2-b20'));
     expect(response?.status()).toBe(200);
-    if (MissionIdSchema.options.some((id) => id === feature.id)) await expect(page.getByRole('button', { name: 'Coming Soon' })).toBeDisabled();
+    if (MissionIdSchema.options.some((id) => id === feature.id)) await expect(page.getByRole('button', { name: 'Preview' })).toBeDisabled(); // no campaign backend in this suite
   }
   await page.goto('/experiments/not-a-record');
   await expect(page.getByRole('heading', { name: 'Record or route not found' })).toBeVisible();

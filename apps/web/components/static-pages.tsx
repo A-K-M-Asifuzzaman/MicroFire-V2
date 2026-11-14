@@ -173,7 +173,7 @@ export function RoadmapPage() {
   return <>
     <PageHero eyebrow="Product progress" title="What works today, and what does not." lede="Every route's real release status, straight from the feature registry. No dates are promised." status={{ feature: feature('/roadmap')! }} />
     <Sheet>
-      <div className="notice" data-tone="info" style={{ marginBottom: 24 }}><p>Interfaces built for review (Evidence Workstation, Ask PIX, Research Frontier) keep their registry status until an independent review changes it.</p></div>
+      <div className="notice" data-tone="info" style={{ marginBottom: 24 }}><p>Preview means working and tested, with its limits stated. Nothing here is NASA-endorsed, and no feature certifies fire safety.</p></div>
       <div className="status-groups">{order.map((state) => {
         const group = features.filter((f) => f.state === state);
         if (!group.length) return null;
@@ -194,6 +194,6 @@ export function StatusPage({ f }: { f: Feature }) {
   return <div className="wrap page">
     <header className="page-head reveal"><p className="eyebrow">{featureLabels[f.state]}</p><h1>{f.title}</h1></header>
     <StatusBlock f={f} />
-    <div className="actions"><button className="btn btn-quiet" disabled>{featureLabels[f.state]}</button><Link className="btn btn-primary" href="/atlas">Explore the admitted evidence</Link></div>
+    <div className="actions">{f.state !== 'preview' && <button className="btn btn-quiet" disabled>{featureLabels[f.state]}</button>}<Link className="btn btn-primary" href="/atlas">Explore the admitted evidence</Link></div>
   </div>;
 }
