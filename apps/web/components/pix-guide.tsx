@@ -89,7 +89,6 @@ const touchSub = media('(pointer: coarse)');
 export function PixGuide() {
   const path = usePathname() ?? '/';
   const id = useId();
-  const client = useSyncExternalStore(noop, () => true, () => false);
   const touch = useSyncExternalStore(touchSub, () => matchMedia('(pointer: coarse)').matches, () => false);
   const stored = useSyncExternalStore(noop, readMode, () => null);
   const [choice, setChoice] = useState<Mode | null>(null);
@@ -103,7 +102,8 @@ export function PixGuide() {
     const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') { setChoice('mini'); try { sessionStorage.setItem(KEY, 'mini'); } catch { /* storage blocked */ } } };
     window.addEventListener('keydown', esc); return () => window.removeEventListener('keydown', esc);
   }, [mode]);
-  if (!client || path === '/design' || path.startsWith('/design/')) return null;
+  // Rendered on the server too (server snapshots: mini mode, no live state), so the phone strip never shifts the page.
+  if (path === '/design' || path.startsWith('/design/')) return null;
 
   const play = path === '/missions/play' || !!live.mission, g = play ? guideFor('/missions/play') : guideFor(path);
   const now = play && live.complete ? ['All five missions are done. Scroll to your Evidence Passport and press “Download Passport (JSON)”.']

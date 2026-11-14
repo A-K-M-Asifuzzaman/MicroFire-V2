@@ -29,20 +29,24 @@
 .pixg-fab .pixg-face.pix-avatar { width: 44px; }
 .pixg-x:focus-visible, .pixg-next:focus-visible, .pixg-fab:focus-visible { outline: 3px solid var(--ultra); outline-offset: 3px; }
 /* Focus Not Obscured (WCAG 2.4.11): anything scrolled or focused into view stops above the docked guide. */
-html:has(.pixg[data-mode="mini"]) { scroll-padding-bottom: 132px; }
-html:has(.pixg[data-mode="hidden"]) { scroll-padding-bottom: 84px; }
+@media (min-width: 641px) {
+  html:has(.pixg[data-mode="mini"]) { scroll-padding-bottom: 132px; }
+  html:has(.pixg[data-mode="hidden"]) { scroll-padding-bottom: 84px; }
+}
 /* Keep the last lines of every page scrollable clear of the docked guide. */
 .site-footer { padding-bottom: 112px; }
+/* Phones: PIX is a strip under the header, in the page flow, so it never covers a control or a bottom sheet. */
 @media (max-width: 640px) {
-  .pixg { right: 10px; bottom: 10px; left: auto; }
-  .pixg[data-mode="full"], .pixg[data-mode="mini"] { left: 10px; }
-  .pixg-mini { width: auto; grid-template-columns: 32px 1fr auto; gap: 8px; padding: 6px 8px; }
+  .pixg { position: static; margin: 10px 12px 0; max-width: none; }
+  .pixg-mini { width: auto; grid-template-columns: 32px 1fr auto; gap: 8px; padding: 6px 8px; box-shadow: 3px 3px 0 var(--ink); }
   .pixg-mini .pixg-face.pix-avatar { width: 32px; }
   .pixg-say { font-size: .86rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
   .pixg-mini .pixg-x { min-height: 40px; padding: 4px 10px; }
-  .pixg-card { width: auto; max-height: 58vh; }
+  .pixg-card { width: auto; max-height: none; }
   .pixg-head { grid-template-columns: 48px 1fr auto; }
   .pixg-face.pix-avatar { width: 48px; }
+  .pixg-fab { min-height: 44px; }
+  .site-footer { padding-bottom: 28px; }
 }
 @media (prefers-reduced-motion: reduce) { .pixg .pix-float { animation: none; } }
 @media print { .pixg { display: none; } }
