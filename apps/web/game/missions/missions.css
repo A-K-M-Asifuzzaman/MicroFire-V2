@@ -127,3 +127,22 @@
 .mf-gapboard th, .mf-gapboard td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #2a3150; }
 .mf-gapboard thead th { background: #1a1f36; font-size: 12px; }
 .mf-gapboard td[data-unknown="true"] { color: #ffb3b6; font-weight: 700; }
+
+/* Mission 02 coach: one plain "do this now" instruction, the stage strip, and a pulsing ring on the control to press. */
+.mf-coach { display: grid; gap: 10px; margin: 0 0 14px; padding: 14px 16px; background: var(--sun-soft); border: 3px solid var(--ink); border-radius: 18px; box-shadow: 4px 4px 0 var(--ink); }
+.mf-coach h3 { margin: 0; font: 800 clamp(1.1rem, 1rem + .6vw, 1.4rem)/1.2 var(--display); }
+.mf-coach-tag { display: inline-block; margin-right: 6px; padding: 2px 10px; border-radius: 999px; background: var(--ink); color: #fff; font-size: .8rem; vertical-align: middle; }
+.mf-coach-steps { margin: 0; padding-left: 22px; display: grid; gap: 4px; font-size: 1rem; line-height: 1.45; }
+.mf-coach-after { margin: 0; font-size: .92rem; color: var(--ink-2); }
+.mf-coach > .btn { justify-self: start; }
+.mf-coach-phases { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.mf-coach-phases li { display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px 2px 3px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: var(--paper); border: 2px solid var(--lav); color: var(--ink-3); }
+.mf-coach-phases li span { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--cloud); font-size: .72rem; }
+.mf-coach-phases li[data-state="done"] { color: var(--mint-ink); border-color: var(--mint-ink); } .mf-coach-phases li[data-state="done"] span { background: var(--mint); }
+.mf-coach-phases li[data-state="now"] { color: var(--ink); border-color: var(--ink); background: var(--sun); } .mf-coach-phases li[data-state="now"] span { background: var(--ink); color: #fff; }
+.mf-parthint { display: block; font-size: .78rem; font-weight: 600; color: var(--ink-3); margin-top: 2px; }
+.mf-mission [data-next="true"]:is(button, .btn) { outline: 4px solid var(--sun); outline-offset: 3px; animation: mf-next 1.3s ease-in-out infinite; }
+.mf-mission tr[data-next="true"] { background: var(--sun-soft); }
+.mf-mission tr[data-next="true"] th { box-shadow: inset 5px 0 0 var(--sun); }
+@keyframes mf-next { 50% { outline-color: var(--coral); outline-offset: 6px; } }
+@media (prefers-reduced-motion: reduce) { .mf-mission [data-next="true"]:is(button, .btn) { animation: none; } }
