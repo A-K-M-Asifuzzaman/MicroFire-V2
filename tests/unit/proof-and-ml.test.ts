@@ -33,7 +33,8 @@ describe('ML decision record', () => {
     const { baseline: b, deployedCandidate: c } = ml.evaluation;
     expect(ml.decision).toBe('not-deployed');
     expect(c.balancedAccuracy).toBeLessThanOrEqual(b.balancedAccuracy);
-    expect(c.brierCi[1]).toBeGreaterThan(b.brierCi[0]); // intervals overlap
+    const [cLo, cHi] = c.brierCi as [number, number], [bLo, bHi] = b.brierCi as [number, number];
+    expect(cHi > bLo && bHi > cLo).toBe(true); // the Brier intervals overlap
     expect(ml.data.negatives).toBeLessThan(10);
   });
 });
