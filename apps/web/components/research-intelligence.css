@@ -55,7 +55,9 @@ a.ri-node:hover, a.ri-node:focus-visible { outline: 3px solid var(--sun); }
 .ri-mldl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; }
 .ri-mldl dt { font-weight: 700; }
 .ri-mldl dd { margin: 0; }
-.ri-mltable { width: 100%; border-collapse: collapse; font-size: 14px; display: block; overflow-x: auto; }
+.ri-scroll { overflow-x: auto; max-width: 100%; }
+.ri-scroll:focus-visible { outline: 3px solid var(--ultra); outline-offset: 2px; }
+.ri-mltable { width: 100%; border-collapse: collapse; font-size: 14px; }
 .ri-mltable caption { text-align: left; font-weight: 700; padding-bottom: 6px; }
 .ri-mltable th, .ri-mltable td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--lav); white-space: nowrap; }
 .ri-mlwhy { margin: 6px 0 0; font-weight: 700; }

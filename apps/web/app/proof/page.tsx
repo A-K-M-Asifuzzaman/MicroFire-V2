@@ -25,12 +25,12 @@ export default function ProofPage() {
         </li>
         <li className="proof-step" data-step="2">
           <h2><span>02</span> Under which conditions, verified</h2>
-          <table className="proof-table"><caption>BASS-II test {e.testId}, as recorded in the source</caption>
+          <div className="proof-scroll" role="region" aria-label="B20 recorded conditions" tabIndex={0}><table className="proof-table"><caption>BASS-II test {e.testId}, as recorded in the source</caption>
             <thead><tr><th scope="col">Condition</th><th scope="col">Value</th><th scope="col">Status</th></tr></thead>
             <tbody>{conds.map(([k, c]) => <tr key={k}><th scope="row">{conditionLabels[k] ?? k}</th>
               <td>{c.status === 'known' ? fmt(c.value as string | number, 'unit' in c ? (c.unit as string) : null) : 'unknown'}</td>
               <td>{c.status === 'known' ? <span className="proof-kind" data-kind={c.basis === 'recorded' ? 'observed' : 'derived'}>{c.basis === 'recorded' ? `recorded · p. ${(c.citation.locator as { page?: number }).page}` : 'derived'}</span>
-                : <span className="proof-kind" data-kind="unknown" title={c.reason}>not reported</span>}</td></tr>)}</tbody></table>
+                : <span className="proof-kind" data-kind="unknown" title={c.reason}>not reported</span>}</td></tr>)}</tbody></table></div>
           <p className="proof-fine">Unknown means the source does not report it for this run. MicroFire never fills these in.</p>
         </li>
         <li className="proof-step" data-step="3">
@@ -41,11 +41,11 @@ export default function ProofPage() {
         </li>
         <li className="proof-step" data-step="4">
           <h2><span>04</span> Where the evidence and the scenario part ways</h2>
-          <table className="proof-table"><caption>Condition-by-condition comparison (engine: condition-transfer-v1)</caption>
+          <div className="proof-scroll" role="region" aria-label="Condition-by-condition comparison" tabIndex={0}><table className="proof-table"><caption>Condition-by-condition comparison (engine: condition-transfer-v1)</caption>
             <thead><tr><th scope="col">Condition</th><th scope="col">B20 recorded</th><th scope="col">Scenario</th><th scope="col">Result</th></tr></thead>
             <tbody>{asked.map((d) => <tr key={d.field}><th scope="row">{conditionLabels[d.field] ?? d.field}</th><td>{fmt(d.source, d.unit)}</td>
               <td>{fmt(d.target, d.field === 'oxygenPct' ? 'vol%' : d.field === 'pressureKpa' ? 'kPa' : null)}</td>
-              <td><span className="proof-kind" data-kind={STATUS[d.status]?.[1] ?? 'none'}>{STATUS[d.status]?.[0] ?? d.status}</span></td></tr>)}</tbody></table>
+              <td><span className="proof-kind" data-kind={STATUS[d.status]?.[1] ?? 'none'}>{STATUS[d.status]?.[0] ?? d.status}</span></td></tr>)}</tbody></table></div>
           <p className="proof-verdict">Engine conclusion: <b>{transfer.conclusion === 'insufficient-evidence' ? 'insufficient evidence' : transfer.conclusion.replace(/-/g, ' ')}</b>. Matching a condition is never proof that a result transfers.</p>
         </li>
         <li className="proof-step" data-step="5">

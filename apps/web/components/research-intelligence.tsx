@@ -125,12 +125,12 @@ export function ResearchIntelligence() {
           <dt>Data</dt><dd>{ml.data.usableRecords} usable records, only {ml.data.negatives} without an established flame ({ml.data.excludedRecords} excluded). {ml.data.origin}</dd>
           <dt>Validation</dt><dd>{ml.evaluation.method}.</dd>
         </dl>
-        <table className="ri-mltable"><caption>Out-of-sample results (lower Brier and log loss are better)</caption>
+        <div className="ri-scroll" role="region" aria-label="Machine-learning results table" tabIndex={0}><table className="ri-mltable"><caption>Out-of-sample results (lower Brier and log loss are better)</caption>
           <thead><tr><th scope="col">Model</th><th scope="col">Brier (95% CI)</th><th scope="col">Log loss</th><th scope="col">Balanced accuracy</th><th scope="col">AUC (95% CI)</th></tr></thead>
           <tbody>
             <tr><th scope="row">No-feature baseline</th><td>{ml.evaluation.baseline.brier.toFixed(3)} ({ml.evaluation.baseline.brierCi.join('–')})</td><td>{ml.evaluation.baseline.logLoss.toFixed(3)}</td><td>{ml.evaluation.baseline.balancedAccuracy.toFixed(2)}</td><td>n/a</td></tr>
             <tr><th scope="row">Logistic regression</th><td>{ml.evaluation.deployedCandidate.brier.toFixed(3)} ({ml.evaluation.deployedCandidate.brierCi.join('–')})</td><td>{ml.evaluation.deployedCandidate.logLoss.toFixed(3)}</td><td>{ml.evaluation.deployedCandidate.balancedAccuracy.toFixed(2)}</td><td>{ml.evaluation.deployedCandidate.auc.toFixed(2)} ({ml.evaluation.deployedCandidate.aucCi.map((x) => x.toFixed(2)).join('–')})</td></tr>
-          </tbody></table>
+          </tbody></table></div>
         <p className="ri-mlwhy"><span className="ri-tag" data-known="false">not deployed</span> Why:</p>
         <ul className="ri-ai">{ml.reasons.map((r) => <li key={r}>{r}</li>)}</ul>
         <p className="ri-fine"><b>Provenance problem found:</b> {ml.data.provenanceDefect}</p>
